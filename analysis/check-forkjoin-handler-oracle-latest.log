@@ -1,0 +1,1 @@
+OK: 40 rondas Java 25: handler recibe excepción de execute; submit y supplyAsync conservan fallo sin invocarlo; submit(Callable) envuelve la causa y no invoca el handler; invoke relanza el original o su causa; commonPool estable; contadores de workers dentro del paralelismo; shutdown/terminación/rechazo. Sin backend nativo ni pruebas de excepciones generales.

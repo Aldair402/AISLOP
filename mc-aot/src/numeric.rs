@@ -3076,7 +3076,7 @@ impl NumericCompiler<'_> {
                     let idx=u16::from_be_bytes([read()?,read()?]);let (owner,name,desc)=method_ref(&m.cp,idx)?;
                     match (owner,name,desc) {
                         ("java/util/concurrent/CompletableFuture",_,_) if self.multi_classes.is_some()=>{
-                            if !futures_optin()? {return Err("CompletableFuture: requiere MC_AOT_FUTURES=completed-only o MC_AOT_NUMERIC_COMPLETED_FUTURE=1".into());}
+                            if !futures_optin()? {return Err("CompletableFuture: requiere MC_AOT_NUMERIC_COMPLETED_FUTURE=1 (o el nombre unificado MC_AOT_FUTURES=completed-only)".into());}
                             match (name,desc) {
                                 ("get"|"join","()Ljava/lang/Object;")=>"let r=pop_r(&mut stack);stack.push(V::R(completed_future_value(heap,r)));".into(),
                                 ("getNow","(Ljava/lang/Object;)Ljava/lang/Object;")=>"let _fallback=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(completed_future_value(heap,r)));".into(),
@@ -3383,7 +3383,7 @@ impl NumericCompiler<'_> {
                         ("org/apache/logging/log4j/util/OsgiServiceLocator","loadServices","(Ljava/lang/Class;Ljava/lang/Class;Lorg/apache/logging/log4j/Logger;)Ljava/util/stream/Stream;") if self.multi_classes.is_some() && start==55 && self.active.last().is_some_and(|k| k=="org/apache/logging/log4j/util/ServiceLoaderUtil.safeStream(Ljava/lang/Class;Ljava/util/ServiceLoader;Lorg/apache/logging/log4j/Logger;)Ljava/util/stream/Stream;")=>{self.verify_log4j_absent_osgi()?;"{ error(\"Log4j OSGi: rama inalcanzable ejecutada\"); None }".into()},
                         ("java/util/stream/Stream","concat","(Ljava/util/stream/Stream;Ljava/util/stream/Stream;)Ljava/util/stream/Stream;") if self.multi_classes.is_some() && start==58 && self.active.last().is_some_and(|k| k=="org/apache/logging/log4j/util/ServiceLoaderUtil.safeStream(Ljava/lang/Class;Ljava/util/ServiceLoader;Lorg/apache/logging/log4j/Logger;)Ljava/util/stream/Stream;")=>{self.verify_log4j_absent_osgi()?;"{ error(\"Log4j OSGi: rama inalcanzable ejecutada\"); None }".into()},
                         ("java/util/concurrent/CompletableFuture","completedFuture","(Ljava/lang/Object;)Ljava/util/concurrent/CompletableFuture;") if self.multi_classes.is_some()=>{
-                            if !futures_optin()? {return Err("completedFuture: requiere MC_AOT_FUTURES=completed-only o MC_AOT_NUMERIC_COMPLETED_FUTURE=1".into());}
+                            if !futures_optin()? {return Err("completedFuture: requiere MC_AOT_NUMERIC_COMPLETED_FUTURE=1 (o el nombre unificado MC_AOT_FUTURES=completed-only)".into());}
                             "Some(completed_future_new(heap,x0))".into()
                         },
                         ("java/util/concurrent/ConcurrentHashMap","newKeySet","()Ljava/util/concurrent/ConcurrentHashMap$KeySetView;") if self.multi_classes.is_some()=>"Some(concurrent_keyset_new(heap))".into(),

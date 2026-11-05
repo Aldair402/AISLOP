@@ -59,7 +59,8 @@ usa **solo** el nombre nuevo (`analysis/a05-completed-future.log`). B sigue leye
 
 **Pregunta:** ¿B confirma el nombre `MC_AOT_FUTURES=completed-only` (con `MC_AOT_RAYON_COMPLETED_FUTURE` como
 alias una versión) y se compromete a usar el mismo mensaje literal
-`CompletableFuture: requiere MC_AOT_FUTURES=completed-only o MC_AOT_RAYON_COMPLETED_FUTURE=1`? Con un sí, A abre el
+`completedFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1 (o el nombre unificado MC_AOT_FUTURES=completed-only)`,
+con el literal viejo conservado en medio porque `check-futures-contract.py` lo exige tal cual? Con un sí, A abre el
 PR conjunto en `trabajo/a-06-opt-in-futuros` con **fecha objetivo 2026-11-07**; con un no, A se queda con el alias
 en su backend y deja el hueco documentado en vez de fingir unificación.
 

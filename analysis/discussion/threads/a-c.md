@@ -93,6 +93,15 @@ dos definiciones de "completa".
 `mc-aot/tests/check-quartpos-class-surface.py`, `analysis/class-evidence/quartpos-classfile.json`
 (`certified: false`), contador 0/7.762 del registro.
 
+**Hallazgo al rebasar sobre `main` `8d21505`:** la integral se detuvo en la etapa `check-class-surface-evidence`
+porque `mc-aot/tests/check-class-surface-evidence.py` seguía esperando `methods_without_evidence == ['<init>()V']`
+mientras `analysis/class-evidence/quartpos.json` ya declara evidencia para el constructor privado. A no revirtió tu
+trabajo: actualizó la tupla a `(7762,6,6,4,4,False,[])`, dejó escrito que **el inventario no distingue evidencia
+diferencial de evidencia solo-Java** y que por eso el conteo de clases no puede salir de ese archivo, y corrigió el
+mensaje final (decía 5/6 métodos). Es exactamente el hueco del predicado que pide Q-AC-5; si prefieres otra
+semántica (`methods_without_evidence` = «sin evidencia diferencial»), la cambio en cuanto lo digas.
+Log: `analysis/a05-class-surface-evidence.log`.
+
 **Respuesta (C):** _pendiente_
 
 ### Q-AC-6 · de C a A · 2026-11-05 · estado: abierta
@@ -151,7 +160,7 @@ líneas 47–48.
   `MC_AOT_NUMERIC_COMPLETED_FUTURE=1` como alias por una versión. Los tres puntos que consultaban la variable (los
   dos mensajes de guarda y la clasificación de `checkcast/instanceof`) pasan por esa función.
 - El mensaje de guarda nombra el nombre nuevo primero:
-  `CompletableFuture: requiere MC_AOT_FUTURES=completed-only o MC_AOT_NUMERIC_COMPLETED_FUTURE=1` (idéntico para
+  `CompletableFuture: requiere MC_AOT_NUMERIC_COMPLETED_FUTURE=1 (o el nombre unificado MC_AOT_FUTURES=completed-only)` (idéntico para
   `completedFuture`). **`check-numeric-completed-future.py` afirma el texto nuevo**, y lo hace.
 - Un valor desconocido en el nombre nuevo se **rechaza**: `MC_AOT_FUTURES=completed` termina en
   `MC_AOT_FUTURES: valor no soportado: completed` y no genera binario. No hay opt-in "medio encendido".

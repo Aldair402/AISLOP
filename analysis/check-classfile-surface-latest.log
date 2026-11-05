@@ -1,0 +1,16 @@
+class net/minecraft/core/QuartPos
+  flags: public final super (0x0031)
+  super: java/lang/Object  interfaces: []
+  classfile major: 69
+  fields: 4  methods: 6  <clinit>: False
+    field  public static final                      BITSI  = 2
+    field  public static final                      SIZEI  = 4
+    field  public static final                      MASKI  = 3
+    field  private static final                     SECTION_TO_QUARTS_BITSI  = 2
+    method private                                  <init>()V
+    method public static                            fromBlock(I)I
+    method public static                            quartLocal(I)I
+    method public static                            toBlock(I)I
+    method public static                            fromSection(I)I
+    method public static                            toSection(I)I
+OK: registry matches classfile — 6 methods (6 with evidence), 4 fields, <init>=True <clinit>=False

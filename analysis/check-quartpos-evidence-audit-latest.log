@@ -1,0 +1,25 @@
+{
+  "class": "net/minecraft/core/QuartPos",
+  "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
+  "class_sha256": "0821d686ee83185e5af97bbfbf384e768c23be925da4edfece98e9a4bb83b62c",
+  "classes_in_jar": 7762,
+  "methods_with_partial_evidence": 6,
+  "methods_declared": 6,
+  "fields_with_partial_evidence": 4,
+  "fields_declared": 4,
+  "methods_without_evidence": [],
+  "fields_without_evidence": [],
+  "evidence_files": {
+    "mc-aot/tests/check-quartpos-class-surface.py": "0b5ea43b38dd594e773fbb2079e6770e718ca9a69230f3bb594f15cb58805879",
+    "mc-aot/tools/classfile-surface.py": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c",
+    "analysis/quartpos-static-surface.log": "9568c831efd662082c1104e59a703da0da03435a4d53384c1a6b5542c69249d6",
+    "analysis/class-evidence/quartpos-classfile.json": "5db417fb59f1142bf98d6a1e8307756a1bf197640abfb7f4e6085a9f49afc25b"
+  },
+  "limitations": [
+    "La comparación de los cinco métodos usa 515 entradas int por método y cuatro lecturas de campo; no prueba todo el dominio, solo límites de int, vecindad y 500 valores aleatorios con semilla fija.",
+    "El constructor privado se mide por reflexión en Java (IllegalAccessException sin setAccessible, instancia con setAccessible) y su bytecode es el constructor por defecto; el traductor no implementa reflexión, así que no hay contraste nativo equivalente y no puede contar como diferencial.",
+    "La superficie se reconcilia con el classfile y con la reflexión (flags, superclase, interfaces, campos, constructores), pero no se verifica comportamiento heredado de Object ni identidad de la clase en nativo."
+  ],
+  "certified": false,
+  "warning": "Inventario de evidencias parciales, no verifica corrección de resultados ni certifica clases."
+}

@@ -1,0 +1,8 @@
+WARN: overlap 747 classes for batch batch-04-chunks-world pkg net.minecraft.world.level.levelgen (hierarchical, will refine): ['net.minecraft.world.level.levelgen.feature.stateproviders.NoiseThresholdProvider', 'net.minecraft.world.level.levelgen.structure.structures.StrongholdPieces$1']
+WARN: overlap 368 classes for batch batch-05-network-protocol pkg net.minecraft.network.protocol (hierarchical, will refine): ['net.minecraft.network.protocol.game.ClientboundSetDisplayObjectivePacket', 'net.minecraft.network.protocol.game.ServerboundSetCommandBlockPacket']
+INFO: some classes fall outside declared packages+uncovered — check
+OK: family partition — 6 batches, 5801 classes covered by packages, batch-01-primitives-coords:18, batch-02-collections-serialization:444, batch-03-registries-resources:36, batch-04-chunks-world:747, batch-05-network-protocol:368, batch-06-entities-server:201
+  batches: batch-01-primitives-coords:18, batch-02-collections-serialization:444, batch-03-registries-resources:36, batch-04-chunks-world:747, batch-05-network-protocol:368, batch-06-entities-server:201
+  total unique covered: 5801 / 7762 (uncovered packages are 9 groups, counted in total via their own prefixes)
+  blocked: ['batch-03-registries-resources']
+  counter remains 0 per class-registry — no batch claims completion

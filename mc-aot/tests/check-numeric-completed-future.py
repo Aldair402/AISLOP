@@ -31,7 +31,7 @@ with tempfile.TemporaryDirectory(prefix='mc-numeric-completed-future-') as t:
  assert java.stdout==native.stdout,(java.stdout,native.stdout,native.stderr)
  disabled=env.copy();disabled.pop('MC_AOT_NUMERIC_COMPLETED_FUTURE')
  bad=run(cmd[:9]+[str(d/'disabled'),'run','(I)I'],capture_output=True,env=disabled)
- assert bad.returncode!=0 and 'requiere MC_AOT_FUTURES=completed-only' in bad.stderr and not (d/'disabled').exists(),bad.stderr
+ assert bad.returncode!=0 and 'MC_AOT_FUTURES=completed-only' in bad.stderr and not (d/'disabled').exists(),bad.stderr
  # Q-AC-7: el nombre unificado basta por sí solo y da el mismo binario observable.
  unified=disabled.copy();unified['MC_AOT_FUTURES']='completed-only'
  ok(run(cmd[:9]+[str(d/'unified'),'run','(I)I'],capture_output=True,env=unified))

@@ -93,11 +93,14 @@ harness=r'''
   // El registro es por heap: dos sesiones en hilos distintos conviven y una
   // segunda sesión sobre el mismo heap se rechaza con diagnóstico propio.
   let gate=std::sync::Barrier::new(3);
+  // Dos barreras: la primera publica que las dos sesiones están dentro, la segunda
+  // impide que los hilos suelten su guarda antes de que el hilo principal compruebe.
   std::thread::scope(|scope|{
-   let a=scope.spawn(||{let _bridge=NumericGraphBridge::install(&first,&shared,&LAYOUT_LIST).unwrap();gate.wait();});
-   let b=scope.spawn(||{let _bridge=NumericGraphBridge::install(&second,&other_shared,&LAYOUT_LIST).unwrap();gate.wait();});
+   let a=scope.spawn(||{let _bridge=NumericGraphBridge::install(&first,&shared,&LAYOUT_LIST).unwrap();gate.wait();gate.wait();});
+   let b=scope.spawn(||{let _bridge=NumericGraphBridge::install(&second,&other_shared,&LAYOUT_LIST).unwrap();gate.wait();gate.wait();});
    gate.wait();
    assert_eq!(NumericGraphBridge::install(&first,&shared,&LAYOUT_LIST).err(),Some("publicación: sesión ya activa para este heap"));
+   gate.wait();
    a.join().unwrap();b.join().unwrap();
   });
   // Cerradas esas sesiones el mismo heap admite una nueva, y publica.

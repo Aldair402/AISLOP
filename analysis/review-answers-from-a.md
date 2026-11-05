@@ -73,7 +73,7 @@ trasladado el problema a B. Sigue vigente **una sesión por hilo y por heap**.
 `MC_AOT_NUMERIC_COMPLETED_FUTURE=1` sigue valiendo como alias por una versión y un valor desconocido se rechaza
 (`MC_AOT_FUTURES: valor no soportado: <valor>`), sin generar binario. Los tres puntos que consultaban la variable
 (dos guardas y la clasificación de `checkcast/instanceof`) pasan por la función. Mensaje de guarda:
-`CompletableFuture: requiere MC_AOT_FUTURES=completed-only o MC_AOT_NUMERIC_COMPLETED_FUTURE=1`.
+`CompletableFuture: requiere MC_AOT_NUMERIC_COMPLETED_FUTURE=1 (o el nombre unificado MC_AOT_FUTURES=completed-only)`.
 
 `check-numeric-completed-future.py` (ampliado) comprueba además: binario generado **solo** con el nombre nuevo,
 90 resultados idénticos a Java 25, y rechazo del valor desconocido. Log: `analysis/a05-completed-future.log`.
