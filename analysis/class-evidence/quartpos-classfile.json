@@ -1,0 +1,102 @@
+{
+  "class": "net/minecraft/core/QuartPos",
+  "class_sha256": "0821d686ee83185e5af97bbfbf384e768c23be925da4edfece98e9a4bb83b62c",
+  "fields": [
+    {
+      "descriptor": "I",
+      "flags": [
+        "public",
+        "static",
+        "final"
+      ],
+      "name": "BITS"
+    },
+    {
+      "descriptor": "I",
+      "flags": [
+        "public",
+        "static",
+        "final"
+      ],
+      "name": "SIZE"
+    },
+    {
+      "descriptor": "I",
+      "flags": [
+        "public",
+        "static",
+        "final"
+      ],
+      "name": "MASK"
+    },
+    {
+      "descriptor": "I",
+      "flags": [
+        "private",
+        "static",
+        "final"
+      ],
+      "name": "SECTION_TO_QUARTS_BITS"
+    }
+  ],
+  "flags": [
+    "public",
+    "final",
+    "super"
+  ],
+  "has_clinit": false,
+  "has_init": true,
+  "interfaces": [],
+  "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
+  "methods": [
+    {
+      "descriptor": "()V",
+      "flags": [
+        "private"
+      ],
+      "name": "<init>"
+    },
+    {
+      "descriptor": "(I)I",
+      "flags": [
+        "public",
+        "static"
+      ],
+      "name": "fromBlock"
+    },
+    {
+      "descriptor": "(I)I",
+      "flags": [
+        "public",
+        "static"
+      ],
+      "name": "quartLocal"
+    },
+    {
+      "descriptor": "(I)I",
+      "flags": [
+        "public",
+        "static"
+      ],
+      "name": "toBlock"
+    },
+    {
+      "descriptor": "(I)I",
+      "flags": [
+        "public",
+        "static"
+      ],
+      "name": "fromSection"
+    },
+    {
+      "descriptor": "(I)I",
+      "flags": [
+        "public",
+        "static"
+      ],
+      "name": "toSection"
+    }
+  ],
+  "schema": "classfile-surface-v1",
+  "super_class": "java/lang/Object"
+}

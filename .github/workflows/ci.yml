@@ -44,8 +44,11 @@ jobs:
         run: bash mc-aot/ci/fetch-server-jar.sh
       - name: cargo test
         run: cargo test --manifest-path mc-aot/Cargo.toml
-      - name: registry and partition
+      - name: class surface, evidence and registry
         run: |
+          python3 mc-aot/tools/classfile-surface.py net.minecraft.core.QuartPos --registry analysis/class-registry.json
+          python3 mc-aot/tools/class-surface-evidence.py analysis/class-evidence/quartpos.json
+          python3 mc-aot/tools/update-quartpos-evidence.py --check
           python3 mc-aot/tools/check-class-registry.py
           python3 mc-aot/tools/check-family-partition.py
       - name: baseline guard

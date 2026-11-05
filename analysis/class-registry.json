@@ -20,21 +20,37 @@
       "surface": {
         "methods_declared": 6,
         "fields_declared": 4,
-        "methods_with_evidence": 5,
+        "methods_with_evidence": 6,
         "fields_with_evidence": 4,
-        "methods_without_evidence": ["<init>()V"],
-        "fields_without_evidence": []
+        "methods_without_evidence": [],
+        "fields_without_evidence": [],
+        "methods_differential": [
+          "fromBlock(I)I",
+          "quartLocal(I)I",
+          "toBlock(I)I",
+          "fromSection(I)I",
+          "toSection(I)I"
+        ],
+        "methods_java_only": [
+          "<init>()V"
+        ]
       },
       "evidence": {
         "manifest": "analysis/class-evidence/quartpos.json",
+        "classfile_manifest": "analysis/class-evidence/quartpos-classfile.json",
         "report": "analysis/quartpos-evidence-report.json",
-        "tests": ["mc-aot/tests/check-quartpos-class-surface.py"],
-        "logs": ["analysis/quartpos-static-surface.log"]
+        "tests": [
+          "mc-aot/tests/check-quartpos-class-surface.py",
+          "mc-aot/tools/classfile-surface.py"
+        ],
+        "logs": [
+          "analysis/quartpos-static-surface.log"
+        ]
       },
       "limitations": [
-        "5/6 methods covered (515 int inputs per method, 4 field reads); private constructor not executed nor compared",
-        "No reflection, Class identity, inherited behavior, concurrency, or full domain proof",
-        "Hash of a log identifies the file, not its execution correctness"
+        "La comparación de los cinco métodos usa 515 entradas int por método y cuatro lecturas de campo; no prueba todo el dominio, solo límites de int, vecindad y 500 valores aleatorios con semilla fija.",
+        "El constructor privado se mide por reflexión en Java (IllegalAccessException sin setAccessible, instancia con setAccessible) y su bytecode es el constructor por defecto; el traductor no implementa reflexión, así que no hay contraste nativo equivalente y no puede contar como diferencial.",
+        "La superficie se reconcilia con el classfile y con la reflexión (flags, superclase, interfaces, campos, constructores), pero no se verifica comportamiento heredado de Object ni identidad de la clase en nativo."
       ],
       "certified": false,
       "review": null,
