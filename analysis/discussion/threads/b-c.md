@@ -64,7 +64,7 @@ duplican evidencia?
 
 **Respuesta (B):** _pendiente_
 
-### Q-BC-9 · de C a B · 2026-11-05 · estado: abierta
+### Q-BC-9 · de C a B · 2026-11-05 · estado: cerrada
 
 **Contexto:** el suite completo abortó dos veces con `No space left on device (os error 28)` por el tmpfs de
 992 MB, no por un fallo de código, y el primer error visible parecía un fallo de compilación en `compare-small-args`.
@@ -89,6 +89,32 @@ evidencia de una ejecución fresca (`--check`) es el criterio que quieres para t
 propones otro?
 **Evidencia:** [`analysis/c03-quartpos-class-surface.md`](../../c03-quartpos-class-surface.md),
 `mc-aot/tools/update-quartpos-evidence.py`, `analysis/quartpos-evidence-report.json`.
+
+**Respuesta (B):** `TMPDIR=$HOME/.cache/tmp` (fuera del tmpfs), `JAVA_HOME` al JDK 25, y **`unset
+CARGO_TARGET_DIR`** — no fijarlo es obligatorio porque `graal-test/audit.py` busca `target/release/mc-aot` y aborta
+si el binario se compiló en otro sitio. Los tres intentos fallidos quedan guardados sin sobrescribir
+(`full-regressions-b-frente-contrato-futures{,retry,retry2}.log`) y el bueno es el `retry3.log`.
+
+**Verificación de C:** adopté esa receta en CI y en el README de discusión. El job de CI ahora exporta `TMPDIR` a
+`$GITHUB_WORKSPACE/tmp` y **no** toca `CARGO_TARGET_DIR` (fue un bug propio: lo había fijado a
+`github.workspace/target` y `check-numeric-bridge-layout.py` lee `mc-aot/target/debug/mc-aot` por ruta). Tu nota
+sobre «el primer síntoma aparece como un fallo de compilación ajeno» es exactamente lo que vi en el run #6 y quedó
+escrito en `analysis/c10-ci-jar-fetch.md`. Cerrada.
+
+### Q-BC-11 · de C a B · 2026-11-05 · estado: abierta
+
+**Contexto:** C-15 publica el predicado ejecutable del contador
+(`mc-aot/tools/class-complete-predicate.py` + su prueba), y `QuartPos` queda en `review-required` con tres
+bloqueos: `no-review`, `no-reviewer`, `not-certified`. Es decir, **solo falta que alguien de otro frente firme la
+revisión** para que el contador pase de 0 a 1.
+**Pregunta:** ¿firmas tú esa revisión o la deja A? Si la firmas, necesito de vuelta: (a) que hayas corrido
+`check-quartpos-class-surface.py` y `class-complete-predicate.py` en tu máquina y pegues la salida; (b) qué
+consideras que falta en la evidencia (515 entradas por método con semilla fija, límites de `int`, constructor
+privado solo-Java e inalcanzable); (c) si aceptas que el constructor quede `java-only` con motivo escrito. Sin
+esas tres cosas la clase no cuenta, y prefiero el 0 a un 1 firmado por mí misma.
+**Evidencia:** [`analysis/c15-class-predicate.md`](../../c15-class-predicate.md),
+`mc-aot/tools/class-complete-predicate.py`, `mc-aot/tests/check-class-complete-predicate.py`,
+`analysis/quartpos-evidence-report.json`.
 
 **Respuesta (B):** _pendiente_
 

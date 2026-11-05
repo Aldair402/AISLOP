@@ -33,6 +33,46 @@
         ],
         "methods_java_only": [
           "<init>()V"
+        ],
+        "differential_members": [
+          {
+            "member": "fromBlock(I)I"
+          },
+          {
+            "member": "quartLocal(I)I"
+          },
+          {
+            "member": "toBlock(I)I"
+          },
+          {
+            "member": "fromSection(I)I"
+          },
+          {
+            "member": "toSection(I)I"
+          },
+          {
+            "member": "BITS:I"
+          },
+          {
+            "member": "SIZE:I"
+          },
+          {
+            "member": "MASK:I"
+          },
+          {
+            "member": "SECTION_TO_QUARTS_BITS:I"
+          }
+        ],
+        "java_only_members": [
+          {
+            "member": "<init>()V"
+          }
+        ],
+        "unreachable_java_only": [
+          {
+            "member": "<init>()V",
+            "reason": "constructor privado de una clase final con solo métodos estáticos: ningún bytecode traducido puede invocarlo; solo la reflexión con setAccessible lo alcanza, y esa ruta es java-only, no un camino del programa"
+          }
         ]
       },
       "evidence": {
