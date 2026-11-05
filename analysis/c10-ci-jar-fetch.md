@@ -90,3 +90,15 @@ With `CARGO_HOME=/tmp/ci-cargo-home` (empty, then primed by `cargo fetch`),
 - check-numeric-auto-publish: 20 rondas Java/Rust, guardas de sesión
 - check-futures-contract: differential=23, guard=19, huecos=7
 - check-rayon-pending-future: 48 resultados + oráculo de cancelación
+
+## Final state
+
+- `main` 2d71d6f (jar fetch + focused job fixes) run #8: **success** —
+  quick 33s, focused 49s, full skipped (manual only).
+- `trabajo/c-11-ci-action-bumps` c37fc1d: `actions/cache@v4 → @v6`,
+  `actions/upload-artifact@v4 → @v7`, run #9 **success** (no Node 20 warnings).
+  Merged as `a298273`.
+- `trabajo/c-qa-unified` 6ee7511 + 7111c83: same workflow merged, run **success**.
+- Old branches `c-10-ci-jar-fetch` and `c-11-ci-action-bumps` deleted after merge.
+- Still red-warning-free except informational annotations: baseline file missing
+  (C-01 not merged) and the Ubuntu 26 migration notice.
