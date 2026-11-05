@@ -1,0 +1,16 @@
+{
+  "schema": "class-spec-v1",
+  "class": "net/minecraft/world/flag/FeatureFlagUniverse",
+  "test": "mc-aot/tests/check-featureflaguniverse-class-surface.py",
+  "log": "analysis/featureflaguniverse-static-surface.log",
+  "manifest": "analysis/class-evidence/featureflaguniverse.json",
+  "classfile_manifest": "analysis/class-evidence/featureflaguniverse-classfile.json",
+  "report": "analysis/featureflaguniverse-evidence-report.json",
+  "date_verified": "2026-11-05",
+  "limitations": [
+    "El diferencial cubre 96 argumentos por operación (longitudes 0..64, unicode, pares sustitutos fuera del BMP, controles, comillas y null) contra Java 25; no cubre cadenas arbitrarias ni el dominio completo de String.",
+    "El efecto del constructor y del campo se observa a través de toString() de la propia clase: si toString tradujera mal, la operación de campo fallaría también. Está declarado como dependencia cruzada, no como evidencia separada.",
+    "No se mide identidad de la clase en el heap nativo más allá de getClass()==FeatureFlagUniverse.class, ni igualdad/hash de instancias: la clase no declara equals ni hashCode, así que hereda los de Object y esa parte no es de esta clase.",
+    "El arnés expone un único punto de entrada estático (run(I)I); no se ejercita el uso de la clase como valor de retorno de otro método traducido ni su publicación entre hilos."
+  ]
+}

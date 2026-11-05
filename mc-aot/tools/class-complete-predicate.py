@@ -101,6 +101,10 @@ def judge(entry, project_root=ROOT):
 
     # R3 — java-only may only be excluded when unreachable without reflection.
     unreachable = {item["member"]: item.get("reason", "") for item in report.get("unreachable_java_only", [])}
+    # Un hueco de reflexión declarado con motivo no deja de ser un bloqueo (el miembro no
+    # está medido), pero el veredicto tiene que poder leerse sin abrir el informe.
+    for gap in report.get("reflection_gap_members", []):
+        notes.append(f"reflection-gap:{gap['member']} ({gap.get('reason', '').strip() or 'sin motivo'})")
     for member, kind in kinds.items():
         if kind != "java-only":
             continue
