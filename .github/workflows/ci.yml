@@ -37,7 +37,6 @@ jobs:
     timeout-minutes: 20
     env:
       CARGO_TARGET_DIR: ${{ github.workspace }}/target
-      TMPDIR: ${{ runner.temp }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -47,6 +46,12 @@ jobs:
         with:
           distribution: temurin
           java-version: "25"
+      - name: set TMPDIR outside tmpfs
+        run: |
+          echo "TMPDIR=${{ github.workspace }}/tmp" >> $GITHUB_ENV
+          mkdir -p "${{ github.workspace }}/tmp"
+          echo "TMPDIR set to ${{ github.workspace }}/tmp to avoid 992M tmpfs (B-02 fix)"
+          df -h /tmp || true
       - name: check JAR present
         run: |
           test -f downloads/server-26.3-inner.jar || test -f downloads/server-26.3.jar || { echo "::warning::JAR not in repo (downloads/ gitignored). Focused tests will be skipped."; exit 0; }
@@ -70,7 +75,6 @@ jobs:
     timeout-minutes: 45
     env:
       CARGO_TARGET_DIR: ${{ github.workspace }}/target
-      TMPDIR: ${{ runner.temp }}
       JAVA_HOME: /usr/lib/jvm/temurin-25-jdk-amd64
     steps:
       - uses: actions/checkout@v4
@@ -81,11 +85,15 @@ jobs:
         with:
           distribution: temurin
           java-version: "25"
+      - name: set TMPDIR outside tmpfs
+        run: |
+          echo "TMPDIR=${{ github.workspace }}/tmp" >> $GITHUB_ENV
+          mkdir -p "${{ github.workspace }}/tmp"
+          df -h /tmp || true
+          df -h . || true
       - name: run full suite
         run: |
           echo "TMPDIR=$TMPDIR CARGO_TARGET_DIR=$CARGO_TARGET_DIR"
-          df -h /tmp || true
-          df -h . || true
           bash mc-aot/run-regressions.sh
           echo "EXIT=$?"
           tail -20 analysis/full-regressions-*.log 2>&1 | head -n 40 || true
@@ -98,4 +106,3 @@ jobs:
           path: analysis/full-regressions-*.log
           if-no-files-found: warn
           retention-days: 7
-
