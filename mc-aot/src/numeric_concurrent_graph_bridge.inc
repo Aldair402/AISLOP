@@ -13,7 +13,7 @@ fn graph_layout_matches(fields:&[V],layout:&NumericGraphLayout)->bool {
     backward:std::collections::HashMap<concurrent_heap::ObjectId,(usize,&'static str)>,
 }
 struct NumericGraphState {owner:std::sync::Arc<()>, map:std::sync::Mutex<NumericGraphMap>}
-struct NumericGraphBridge {shared:concurrent_heap::SharedHeap,state:std::sync::Arc<NumericGraphState>}
+struct NumericGraphBridge {shared:concurrent_heap::SharedHeap,state:std::sync::Arc<NumericGraphState>,session:Option<PublishSessionGuard>}
 struct NumericGraphObject { class:&'static str, handle:NumericObjectHandle, layout:&'static NumericGraphLayout, state:std::sync::Weak<NumericGraphState>, domain:usize }
 impl concurrent_heap::ExternalObject for NumericGraphObject {
     fn identity_key(&self)->usize {std::sync::Arc::as_ptr(&self.handle.fields) as usize}
@@ -53,7 +53,7 @@ impl concurrent_heap::ExternalObject for NumericGraphObject {
     fn enter(&self)->Result<Box<dyn concurrent_heap::ExternalGuard>,&'static str> {let _state=self.state.upgrade().ok_or("grafo: sesión cerrada")?;Ok(Box::new(self.handle.enter_monitor()?))}
 }
 impl NumericGraphBridge {
-    fn new(owner:&Heap,shared:&concurrent_heap::SharedHeap)->Self {Self {shared:shared.clone(),state:std::sync::Arc::new(NumericGraphState{owner:owner.bridge_owner.clone(),map:std::sync::Mutex::new(NumericGraphMap::default())})}}
+    fn new(owner:&Heap,shared:&concurrent_heap::SharedHeap)->Self {Self {shared:shared.clone(),state:std::sync::Arc::new(NumericGraphState{owner:owner.bridge_owner.clone(),map:std::sync::Mutex::new(NumericGraphMap::default())}),session:None}}
     fn attach(&self,owner:&mut Heap,id:usize,layout:&'static NumericGraphLayout)->Result<concurrent_heap::ObjectId,&'static str> {
         if !std::sync::Arc::ptr_eq(&owner.bridge_owner,&self.state.owner) {return Err("grafo: otro heap numérico");}
         fn valid(fields:&[V],layout:&NumericGraphLayout)->bool {graph_layout_matches(fields,layout)}
@@ -77,9 +77,9 @@ impl NumericGraphBridge {
     // objeto admitido que cree el bytecode numérico se comparte al construirse;
     // el harness no enumera instancias ni pasa layouts por objeto.
     fn install(owner:&Heap,shared:&concurrent_heap::SharedHeap,layouts:&'static [NumericGraphLayout])->Result<Self,&'static str> {
-        let bridge=Self::new(owner,shared);
+        let mut bridge=Self::new(owner,shared);
         let sink=NumericGraphSink{shared:shared.clone(),layouts,state:bridge.state.clone()};
-        install_publish_session(owner,std::sync::Arc::new(sink))?;
+        bridge.session=Some(install_publish_session(owner,std::sync::Arc::new(sink))?);
         Ok(bridge)
     }
     fn lookup(&self,id:usize)->Result<concurrent_heap::ObjectId,&'static str> {

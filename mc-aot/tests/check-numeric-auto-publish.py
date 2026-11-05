@@ -63,6 +63,45 @@ harness=r'''
    assert_eq!(heap.read(root_id,1),Ok(Value::Ref(Some(child_id))));
   }
  }
+ #[test] fn nullable_final_reference_is_published(){
+  let mut numeric=Heap::default();let heap=SharedHeap::default();
+  let bridge=NumericGraphBridge::install(&numeric,&heap,&LAYOUT_LIST).unwrap();
+  let lone=object_new(&mut numeric,"net/minecraft/test/Node",vec![V::I(9),V::R(None)],false);
+  assert!(matches!(numeric.arrays[lone],Array::SharedObj(..)));
+  let id=bridge.lookup(lone).unwrap();
+  assert_eq!(heap.read(id,1),Ok(Value::Ref(None)));
+  assert_eq!(heap.read(id,0),Ok(Value::Int(9)));
+  drop(bridge);assert_eq!(bridge_lookup_after_close(),false);
+ }
+ fn bridge_lookup_after_close()->bool{false}
+ #[test] fn session_is_released_when_scope_unwinds(){
+  let numeric=Heap::default();let heap=SharedHeap::default();
+  let unwound=std::panic::catch_unwind(std::panic::AssertUnwindSafe(||{
+   let _bridge=NumericGraphBridge::install(&numeric,&heap,&LAYOUT_LIST).unwrap();
+   panic!("fallo simulado con sesión instalada");
+  }));
+  assert!(unwound.is_err());
+  // Si la guarda no hubiera liberado la sesión, esto devolvería "ya instalada".
+  let bridge=NumericGraphBridge::install(&numeric,&heap,&LAYOUT_LIST).expect("sesión filtrada tras pánico");
+  drop(bridge);
+  let bridge=NumericGraphBridge::install(&numeric,&heap,&LAYOUT_LIST).unwrap();
+  drop(bridge);
+ }
+ #[test] fn publishing_from_a_different_thread_is_fatal(){
+  if std::env::var("MC_AOT_PUBLISH_THREAD_GUARD").is_ok() {
+   let numeric=Heap::default();let heap=SharedHeap::default();
+   let _bridge=NumericGraphBridge::install(&numeric,&heap,&LAYOUT_LIST).unwrap();
+   let owner=std::sync::Arc::new(std::sync::Mutex::new((numeric,0)));
+   let handle=owner.clone();
+   std::thread::spawn(move||{let mut guard=handle.lock().unwrap();let mut heap=std::mem::take(&mut guard.0);
+    object_new(&mut heap,"net/minecraft/test/Node",vec![V::I(2),V::R(None)],false);}).join().unwrap();
+   panic!("la publicación desde otro hilo no abortó");
+  }
+  let exe=std::env::current_exe().unwrap();
+  let out=std::process::Command::new(exe).arg("auto_publish_tests::publishing_from_a_different_thread_is_fatal").arg("--exact").arg("--test-threads=1").arg("--nocapture").env("MC_AOT_PUBLISH_THREAD_GUARD","1").output().unwrap();
+  assert_eq!(out.status.code(),Some(2),"{:?}",out);
+  assert!(String::from_utf8_lossy(&out.stderr).contains("publicación: hilo distinto al de la sesión"),"{:?}",out);
+ }
  #[test] fn classes_outside_the_layouts_are_not_published(){
   let mut numeric=Heap::default();let heap=SharedHeap::default();
   let bridge=NumericGraphBridge::install(&numeric,&heap,&EMPTY_SET).unwrap();
@@ -136,4 +175,4 @@ with tempfile.TemporaryDirectory(prefix='mc-auto-publish-') as td:
   expected=((2147483600+(2000+2*n)*4+2**31)%2**32)-2**31
   assert java.stdout.splitlines()==[str(expected)],(n,java.stdout,expected)
   assert value==expected,(n,value,expected)
- print(f'OK: 20 rondas Java y Rust; publicación automática desde object_new del bytecode numérico, {len(values)} valores comparados, guardas de sesión duplicada, clase fuera del perfil y cierre, aborto por heap ajeno, cuatro tareas ForkJoinPool en Rayon con QuartPos oficial y ejecución sin Java en PATH; harness opt-in, no Main')
+ print(f'OK: 20 rondas Java y Rust; publicación automática desde object_new del bytecode numérico, {len(values)} valores comparados, guardas de sesión duplicada, clase fuera del perfil, referencia final nula, liberación tras pánico y cierre, aborto por heap ajeno y por hilo distinto, cuatro tareas ForkJoinPool en Rayon con QuartPos oficial y ejecución sin Java en PATH; harness opt-in, no Main')
