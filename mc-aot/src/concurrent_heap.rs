@@ -44,6 +44,8 @@ struct Object {
     monitor: Arc<Monitor>,
     string_units: Option<Vec<u16>>,
     worker_name: Option<ObjectId>,
+    // Solo completedFuture normal e inmutable; None no es un future válido.
+    completed_future: Option<Option<ObjectId>>,
 }
 struct Store {
     id: u64,
@@ -105,7 +107,7 @@ impl SharedHeap {
         }
         if store.objects.len()>=10_000 || store.fields.checked_add(count).map_or(true,|v|v>1_000_000) {return Err("límite de objetos o campos");}
         let id=ObjectId{heap:store.id,index:store.objects.len()};store.fields+=count;
-        store.objects.push(Object{external:Some(object),external_domain:Some(domain),class:Some(class),fields:vec![],monitor:Arc::new(Monitor::default()),string_units:None,worker_name:None});
+        store.objects.push(Object{external:Some(object),external_domain:Some(domain),class:Some(class),fields:vec![],monitor:Arc::new(Monitor::default()),string_units:None,worker_name:None,completed_future:None});
         store.external_ids.insert(key,id);Ok(id)
     }
     pub fn allocate(&self, fields: Vec<Value>) -> Result<ObjectId, &'static str> {
@@ -150,6 +152,7 @@ impl SharedHeap {
             monitor: Arc::new(Monitor::default()),
             string_units: None,
             worker_name: None,
+            completed_future: None,
         });
         Ok(id)
     }
@@ -180,6 +183,7 @@ impl SharedHeap {
             monitor: Arc::new(Monitor::default()),
             string_units: Some(units.to_vec()),
             worker_name: None,
+            completed_future: None,
         });
         store.interned_strings.insert(units.to_vec(), id);
         Ok(id)
@@ -245,6 +249,7 @@ impl SharedHeap {
             monitor: Arc::new(Monitor::default()),
             string_units: Some(result),
             worker_name: None,
+            completed_future: None,
         });
         Ok(id)
     }
@@ -327,6 +332,7 @@ impl SharedHeap {
             monitor: Arc::new(Monitor::default()),
             string_units: None,
             worker_name: None,
+            completed_future: None,
         });
         store.default_forkjoin_factory = Some(id);
         Ok(id)
@@ -381,9 +387,34 @@ impl SharedHeap {
             monitor: Arc::new(Monitor::default()),
             string_units: None,
             worker_name: None,
+            completed_future: None,
         });
         store.time_units[index] = Some(id);
         Ok(id)
+    }
+    /// Perfil cerrado: future completado normalmente, valor referencia/null.
+    /// Nunca publica un future incompleto ni modela excepciones, cancelación,
+    /// callbacks, interrupción o subclases de CompletableFuture.
+    pub fn completed_future(&self, value: Option<ObjectId>) -> Result<ObjectId, &'static str> {
+        let mut store = self.store.lock().map_err(|_| "heap dañado")?;
+        store.check_value(Value::Ref(value))?;
+        if store.objects.len() >= 10_000 || store.fields.checked_add(1).map_or(true, |n| n > 1_000_000) {
+            return Err("límite de objetos o campos");
+        }
+        let id = ObjectId { heap: store.id, index: store.objects.len() };
+        store.fields += 1;
+        store.objects.push(Object {
+            external: None, external_domain: None,
+            class: Some("java/util/concurrent/CompletableFuture"), fields: vec![],
+            monitor: Arc::new(Monitor::default()), string_units: None, worker_name: None,
+            completed_future: Some(value),
+        });
+        Ok(id)
+    }
+    pub fn completed_future_value(&self, id: ObjectId) -> Result<Option<ObjectId>, &'static str> {
+        let store = self.store.lock().map_err(|_| "heap dañado")?;
+        let index = store.check(id)?;
+        store.objects[index].completed_future.ok_or("CompletableFuture no completado dentro del perfil")
     }
     pub fn class_of(&self, id: ObjectId) -> Result<Option<&'static str>, &'static str> {
         let store = self.store.lock().map_err(|_| "heap dañado")?;
@@ -539,6 +570,33 @@ impl Drop for LocalMonitorGuard {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn completed_future_reference_identity_and_heap_guards() {
+        use super::{SharedHeap, Value};
+        let heap = SharedHeap::default();
+        let value = heap.allocate_typed("net/minecraft/test/Cell", vec![]).unwrap();
+        let a = heap.completed_future(Some(value)).unwrap();
+        let b = heap.completed_future(Some(value)).unwrap();
+        let nil = heap.completed_future(None).unwrap();
+        assert_ne!(a,b);
+        assert_eq!(heap.completed_future_value(a), Ok(Some(value)));
+        assert_eq!(heap.completed_future_value(b), Ok(Some(value)));
+        assert_eq!(heap.completed_future_value(nil), Ok(None));
+        assert!(heap.write(a, 0, Value::Ref(None)).is_err());
+        assert!(heap.compare_exchange(a, 0, Value::Ref(Some(value)), Value::Ref(None)).is_err());
+        let fake = heap.allocate_typed("java/util/concurrent/CompletableFuture", vec![Value::Ref(None)]).unwrap();
+        assert!(heap.completed_future_value(fake).is_err());
+        let other = SharedHeap::default();
+        let foreign = other.allocate(vec![]).unwrap();
+        assert!(heap.completed_future(Some(foreign)).is_err());
+        assert!(other.completed_future_value(a).is_err());
+        let mut workers = Vec::new();
+        for _ in 0..8 { let heap = heap.clone(); workers.push(std::thread::spawn(move || {
+            for _ in 0..1000 { assert_eq!(heap.completed_future_value(a), Ok(Some(value))); }
+        })); }
+        for worker in workers { worker.join().unwrap(); }
+    }
+
     #[test]
     fn concat_string_int_returns_fresh_utf16_value_and_handles_null() {
         let heap = super::SharedHeap::default();

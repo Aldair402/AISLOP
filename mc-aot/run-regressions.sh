@@ -38,6 +38,12 @@ run_logged check-numeric-shared-monitors python3 mc-aot/tests/check-numeric-shar
 run_logged check-numeric-concurrent-bridge python3 mc-aot/tests/check-numeric-concurrent-bridge.py
 run_logged check-numeric-concurrent-graph python3 mc-aot/tests/check-numeric-concurrent-graph.py
 run_logged check-numeric-concurrent-graph-ticktask python3 mc-aot/tests/check-numeric-concurrent-graph.py --ticktask
+run_logged check-rayon-completed-future python3 mc-aot/tests/check-rayon-completed-future.py
+run_logged check-rayon-shared-completed-future python3 mc-aot/tests/check-rayon-shared-completed-future.py
+run_logged check-numeric-completed-future python3 mc-aot/tests/check-numeric-completed-future.py
+run_logged check-real-chunk-passthrough-future python3 mc-aot/tests/check-real-chunk-passthrough-future.py
+run_logged check-completable-future-oracle python3 mc-aot/tests/check-completable-future-oracle.py
+run_logged check-executor-inventory python3 mc-aot/tests/check-executor-inventory.py
 run_logged check-shared-worker-bytecode python3 mc-aot/tests/check-shared-worker-bytecode.py
 run_logged check-real-util4-shared-worker python3 mc-aot/tests/check-real-util4-shared-worker.py
 run_logged check-real-ticktask-shared-worker python3 mc-aot/tests/check-real-ticktask-shared-worker.py

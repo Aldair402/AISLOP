@@ -29,6 +29,7 @@ fn arg_count(desc: &str) -> Result<usize> {
         | "(Ljava/util/concurrent/ForkJoinPool;Ljava/lang/String;)V"
         | "(Ljava/lang/String;Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;" => Ok(2),
         "(Ljava/util/concurrent/ForkJoinPool;Ljava/lang/String;Ljava/lang/String;)V" | "(Ljava/util/concurrent/atomic/AtomicInteger;Ljava/lang/String;Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;" | "(Ljava/lang/String;Ljava/util/concurrent/atomic/AtomicInteger;Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;" => Ok(3),
+        "(Ljava/util/concurrent/CompletableFuture;)V" if std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()==Some(std::ffi::OsStr::new("1")) => Ok(1),
         "(ILjava/lang/Runnable;)V" if std::env::var_os("MC_AOT_RAYON_PROJECT_REFERENCES").as_deref()==Some(std::ffi::OsStr::new("1")) => Ok(2),
         _ if std::env::var_os("MC_AOT_RAYON_PROJECT_REFERENCES").as_deref()==Some(std::ffi::OsStr::new("1"))
             && desc.strip_prefix("(Lnet/minecraft/").and_then(|x|x.strip_suffix(";)V"))
@@ -149,8 +150,10 @@ impl Builder<'_> {
         let mut fields = Vec::new();
         for field in meta.fields.iter().filter(|f| f.flags & 8 == 0) {
             let project=self.project_reference(&field.descriptor)?;
+            let future=self.rayon && field.descriptor=="Ljava/util/concurrent/CompletableFuture;" && std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()==Some(std::ffi::OsStr::new("1"));
+            if future && field.flags&0x10==0 {return Err(format!("concurrent-int: captura CompletableFuture debe ser final: {owner}.{}",field.name));}
             if project.is_some() && field.flags&0x10==0 {return Err(format!("concurrent-int: captura de referencia debe ser final: {owner}.{}",field.name));}
-            if field.descriptor != "I" && project.is_none() && !(tick_task && field.descriptor=="Ljava/lang/Runnable;" && field.flags&0x10!=0)
+            if field.descriptor != "I" && project.is_none() && !future && !(tick_task && field.descriptor=="Ljava/lang/Runnable;" && field.flags&0x10!=0)
                 && !(self.rayon
                     && matches!(
                         field.descriptor.as_str(),
@@ -1191,7 +1194,10 @@ impl Builder<'_> {
                 0xb8 => {
                     let idx = u16::from_be_bytes([take()?, take()?]);
                     let (owner, callee, descriptor) = method_ref(&m.cp, idx)?;
-                    if tracing_unloaded && owner=="com/mojang/jtracy/TracyClient" && callee=="isAvailable" && descriptor=="()Z" {
+                    if self.rayon && owner=="java/util/concurrent/CompletableFuture" && callee=="completedFuture" && descriptor=="(Ljava/lang/Object;)Ljava/util/concurrent/CompletableFuture;" {
+                        if std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()!=Some(std::ffi::OsStr::new("1")) {return Err("completedFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1".into());}
+                        "let value=match f.pop()?{Value::Ref(v)=>v,_=>return Err(FrameError::Heap(\"completedFuture requiere referencia\"))};let id=heap.completed_future(value)?;f.push(Value::Ref(Some(id)));".into()
+                    } else if tracing_unloaded && owner=="com/mojang/jtracy/TracyClient" && callee=="isAvailable" && descriptor=="()Z" {
                         "f.push(Value::Int(0));".into()
                     } else if self.rayon && owner=="com/mojang/jtracy/TracyClient" && callee=="setThreadName" && descriptor=="(Ljava/lang/String;I)V" {
                         if std::env::var_os("MC_AOT_RAYON_ASSUME_NO_TRACY").as_deref()!=Some(std::ffi::OsStr::new("1")) {return Err("TracyClient.setThreadName: requiere MC_AOT_RAYON_ASSUME_NO_TRACY=1".into());}
@@ -1238,7 +1244,9 @@ impl Builder<'_> {
                 0xbb => {
                     let idx = u16::from_be_bytes([take()?, take()?]);
                     let klass = object::class_name(&m.cp, idx)?;
-                    if self.rayon && klass == "java/util/concurrent/ForkJoinPool" {
+                    if self.rayon && klass=="java/util/concurrent/CompletableFuture" {
+                        return Err("CompletableFuture incompleto no soportado".into());
+                    } else if self.rayon && klass == "java/util/concurrent/ForkJoinPool" {
                         format!("let id=heap.allocate_typed({klass:?},vec![])?;f.push(Value::Ref(Some(id)));")
                     } else if self.rayon && klass=="java/util/concurrent/atomic/AtomicInteger" {
                         format!("let id=heap.allocate_typed({klass:?},vec![Value::Int(0)])?;f.push(Value::Ref(Some(id)));")
@@ -1260,9 +1268,11 @@ impl Builder<'_> {
                     let idx = u16::from_be_bytes([take()?, take()?]);
                     let (klass, field, descriptor) = object::field_ref(&m.cp, idx)?;
                     let project=self.project_reference(descriptor)?;
+                    let future_ref=self.rayon && descriptor=="Ljava/util/concurrent/CompletableFuture;" && std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()==Some(std::ffi::OsStr::new("1"));
+                    if future_ref && op==0xb5 && (owner!=klass || name!="<init>") {return Err("concurrent-int: escritura de CompletableFuture final fuera del constructor".into());}
                     let task_ref=self.rayon && klass=="net/minecraft/server/TickTask" && descriptor=="Ljava/lang/Runnable;" && std::env::var_os("MC_AOT_RAYON_PROJECT_REFERENCES").as_deref()==Some(std::ffi::OsStr::new("1"));
                     if task_ref && op==0xb5 && (owner!=klass || name!="<init>") {return Err("concurrent-int: escritura de Runnable final fuera del constructor".into());}
-                    if descriptor != "I" && project.is_none() && !task_ref && !(self.rayon && matches!(descriptor,"Ljava/util/concurrent/ExecutorService;"|"Ljava/util/concurrent/atomic/AtomicInteger;"|"Ljava/lang/String;")) {
+                    if descriptor != "I" && project.is_none() && !task_ref && !future_ref && !(self.rayon && matches!(descriptor,"Ljava/util/concurrent/ExecutorService;"|"Ljava/util/concurrent/atomic/AtomicInteger;"|"Ljava/lang/String;")) {
                         return Err("concurrent-int: campo de instancia no soportado".into());
                     }
                     if project.is_some() && op==0xb5 && (owner!=klass || name!="<init>") {return Err("concurrent-int: escritura de captura final fuera del constructor".into());}
@@ -1273,6 +1283,8 @@ impl Builder<'_> {
                         format!("let id=pop_object(f,heap,{klass:?})?;f.push(heap.read(id,{slot})?);")
                     } else if descriptor=="I" {
                         format!("let v=Value::Int(pop_int(f)?);let id=pop_object(f,heap,{klass:?})?;heap.write(id,{slot},v)?;")
+                    } else if future_ref {
+                        format!("let v=f.pop()?;match v {{Value::Ref(None)=>{{}},Value::Ref(Some(id))=>{{let _=heap.completed_future_value(id)?;}},_=>return Err(FrameError::Heap(\"CompletableFuture de campo no soportado\"))}};let id=pop_object(f,heap,{klass:?})?;heap.write(id,{slot},v)?;")
                     } else if task_ref {
                         format!("let v=f.pop()?;match v {{Value::Ref(None)=>{{}},Value::Ref(Some(id))=>{{let _=runnable_method(heap,id)?;}},_=>return Err(FrameError::Heap(\"Runnable de campo no soportado\"))}};let id=pop_object(f,heap,{klass:?})?;heap.write(id,{slot},v)?;")
                     } else {
@@ -1283,7 +1295,18 @@ impl Builder<'_> {
                 0xb6 | 0xb7 => {
                     let idx = u16::from_be_bytes([take()?, take()?]);
                     let (klass, callee, descriptor) = method_ref(&m.cp, idx)?;
-                    if self.rayon && op==0xb6 && callee=="setName" && descriptor=="(Ljava/lang/String;)V" && ((name=="newThread" && self.is_factory(&owner)?) || self.factories.values().any(|(create,_,_,_,captures)|*create==id && *captures>0)) && self.is_worker_class(klass)? {
+                    if self.rayon && op==0xb6 && klass=="java/util/concurrent/CompletableFuture" {
+                        if std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()!=Some(std::ffi::OsStr::new("1")) {return Err("CompletableFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1".into());}
+                        match (callee,descriptor) {
+                            ("get"|"join", "()Ljava/lang/Object;") => "let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;f.push(Value::Ref(heap.completed_future_value(id)?));".into(),
+                            ("getNow", "(Ljava/lang/Object;)Ljava/lang/Object;") => "if !matches!(f.pop()?,Value::Ref(_)){return Err(FrameError::Heap(\"getNow requiere referencia\"));}let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;f.push(Value::Ref(heap.completed_future_value(id)?));".into(),
+                            ("isDone", "()Z") => "let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;let _=heap.completed_future_value(id)?;f.push(Value::Int(1));".into(),
+                            ("isCancelled"|"isCompletedExceptionally", "()Z") => "let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;let _=heap.completed_future_value(id)?;f.push(Value::Int(0));".into(),
+                            ("complete", "(Ljava/lang/Object;)Z") => "if !matches!(f.pop()?,Value::Ref(_)){return Err(FrameError::Heap(\"complete requiere referencia\"));}let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;let _=heap.completed_future_value(id)?;f.push(Value::Int(0));".into(),
+                            ("cancel", "(Z)Z") => "let _=pop_int(f)?;let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;let _=heap.completed_future_value(id)?;f.push(Value::Int(0));".into(),
+                            _ => return Err(format!("CompletableFuture: operación no soportada: {callee}{descriptor}")),
+                        }
+                    } else if self.rayon && op==0xb6 && callee=="setName" && descriptor=="(Ljava/lang/String;)V" && ((name=="newThread" && self.is_factory(&owner)?) || self.factories.values().any(|(create,_,_,_,captures)|*create==id && *captures>0)) && self.is_worker_class(klass)? {
                         "let name=pop_object(f,heap,\"java/lang/String\")?;let worker=pop_any_object(f)?;ensure_worker(heap,worker)?;heap.set_worker_name(worker,name)?;".into()
                     } else if self.rayon && op==0xb6 && callee=="getName" && descriptor=="()Ljava/lang/String;" && self.is_worker_class(klass)? {
                         "let worker=pop_any_object(f)?;ensure_worker(heap,worker)?;let name=heap.worker_name(worker)?.ok_or(FrameError::Heap(\"nombre predeterminado de worker no soportado\"))?;f.push(Value::Ref(Some(name)));".into()

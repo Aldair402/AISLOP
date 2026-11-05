@@ -1,0 +1,1 @@
+OK: 20 rondas Java/Rayon, cuatro Runnable capturan el mismo completedFuture normal; join/getNow, monitor estático y guarda de captura final; bytecode sintético, backend aislado

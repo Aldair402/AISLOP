@@ -1,0 +1,1 @@
+OK: 20 rondas Java 25: handler recibe excepción de execute; submit y supplyAsync conservan fallo sin invocarlo; shutdown/terminación/rechazo. Sin backend nativo ni pruebas de excepciones generales.

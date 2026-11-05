@@ -1,4 +1,6 @@
-> Estado actual: la última integral aprobada completó **300 etapas** con exit 0 (`analysis/full-regressions-numeric-concurrent-graph-ticktask.log`). Los puentes experimentales no se integran automáticamente en Main: el intento actual sigue bloqueado en `new ForkJoinPool`; **0/7.762 clases completas certificadas, sin servidor nativo**. Los apartados siguientes registran hitos históricos. Los ejecutables de ejemplo están archivados para el snapshot; restauración y regeneración en `analysis/generated-examples-note.md`.
+> Estado actual: la última integral aprobada completó **306 etapas** con exit 0 (`analysis/full-regressions-completed-future.log`). Los puentes experimentales no se integran automáticamente en Main: el intento actual sigue bloqueado en `new ForkJoinPool`; **0/7.762 clases completas certificadas, sin servidor nativo**. Los apartados siguientes registran hitos históricos. Los ejecutables de ejemplo están archivados para el snapshot; restauración y regeneración en `analysis/generated-examples-note.md`.
+
+> Futuros: opt-ins `MC_AOT_NUMERIC_COMPLETED_FUTURE=1` y `MC_AOT_RAYON_COMPLETED_FUTURE=1` admiten **solo futuros ya completados normalmente**, no espera/asíncrono ni excepciones. Se contrastaron 90 casos por backend, 20 rondas de captura compartida en Rayon y 80 casos con `ChunkStatusTasks.passThrough` oficial más colaboradores sintéticos; ver `ROADMAP.md` y `analysis/check-*-future-validation.log`. La integral de 306 etapas terminó con exit 0.
 
 # mc-aot: Minecraft JAR → nativo, etapa experimental
 

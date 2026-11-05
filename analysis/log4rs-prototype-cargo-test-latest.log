@@ -1,71 +1,71 @@
     Updating crates.io index
  Downloading crates ...
-  Downloaded num-traits v0.2.19
-  Downloaded fnv v1.0.7
-  Downloaded cfg-if v1.0.5
-  Downloaded thread-id v5.1.0
-  Downloaded mock_instant v0.6.1
-  Downloaded rustc_version v0.4.1
-  Downloaded log-mdc v0.1.0
-  Downloaded unicode-xid v0.2.6
-  Downloaded scopeguard v1.2.0
-  Downloaded autocfg v1.5.1
-  Downloaded rustversion v1.0.23
-  Downloaded lock_api v0.4.14
-  Downloaded thiserror-impl v2.0.21
-  Downloaded derive_more-impl v2.1.1
-  Downloaded iana-time-zone v0.1.65
-  Downloaded parking_lot_core v0.9.12
-  Downloaded thiserror v2.0.21
-  Downloaded parking_lot v0.12.5
-  Downloaded smallvec v1.16.4
-  Downloaded proc-macro2 v1.0.107
-  Downloaded semver v1.0.28
-  Downloaded unicode-ident v1.0.27
-  Downloaded quote v1.0.47
   Downloaded anyhow v1.0.100
-  Downloaded log v0.4.28
-  Downloaded arc-swap v1.9.3
-  Downloaded log4rs v1.4.0
-  Downloaded unicode-segmentation v1.13.3
+  Downloaded autocfg v1.5.1
+  Downloaded cfg-if v1.0.5
+  Downloaded mock_instant v0.6.1
+  Downloaded lock_api v0.4.14
+  Downloaded rustc_version v0.4.1
+  Downloaded scopeguard v1.2.0
+  Downloaded log-mdc v0.1.0
   Downloaded derive_more v2.1.1
+  Downloaded arc-swap v1.9.3
+  Downloaded fnv v1.0.7
+  Downloaded thiserror v2.0.21
+  Downloaded unicode-ident v1.0.27
+  Downloaded thread-id v5.1.0
+  Downloaded unicode-xid v0.2.6
+  Downloaded parking_lot_core v0.9.12
+  Downloaded quote v1.0.47
+  Downloaded smallvec v1.16.4
+  Downloaded log4rs v1.4.0
+  Downloaded num-traits v0.2.19
+  Downloaded rustversion v1.0.23
+  Downloaded semver v1.0.28
+  Downloaded thiserror-impl v2.0.21
+  Downloaded iana-time-zone v0.1.65
+  Downloaded log v0.4.28
+  Downloaded proc-macro2 v1.0.107
+  Downloaded parking_lot v0.12.5
   Downloaded chrono v0.4.45
+  Downloaded derive_more-impl v2.1.1
+  Downloaded unicode-segmentation v1.13.3
   Downloaded syn v2.0.119
   Downloaded syn v3.0.9
   Downloaded libc v0.2.191
    Compiling proc-macro2 v1.0.107
-   Compiling quote v1.0.47
    Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
    Compiling libc v0.2.191
    Compiling autocfg v1.5.1
    Compiling num-traits v0.2.19
-   Compiling rustversion v1.0.23
    Compiling parking_lot_core v0.9.12
-   Compiling syn v3.0.9
+   Compiling rustversion v1.0.23
    Compiling syn v2.0.119
+   Compiling syn v3.0.9
    Compiling cfg-if v1.0.5
-   Compiling unicode-xid v0.2.6
-   Compiling anyhow v1.0.100
    Compiling scopeguard v1.2.0
-   Compiling thiserror v2.0.21
+   Compiling anyhow v1.0.100
    Compiling smallvec v1.16.4
-   Compiling lock_api v0.4.14
+   Compiling thiserror v2.0.21
+   Compiling unicode-xid v0.2.6
    Compiling derive_more-impl v2.1.1
    Compiling thiserror-impl v2.0.21
+   Compiling lock_api v0.4.14
    Compiling iana-time-zone v0.1.65
    Compiling chrono v0.4.45
    Compiling arc-swap v1.9.3
-   Compiling derive_more v2.1.1
    Compiling parking_lot v0.12.5
+   Compiling derive_more v2.1.1
    Compiling thread-id v5.1.0
-   Compiling fnv v1.0.7
-   Compiling unicode-segmentation v1.13.3
    Compiling mock_instant v0.6.1
+   Compiling unicode-segmentation v1.13.3
    Compiling log v0.4.28
    Compiling log-mdc v0.1.0
+   Compiling fnv v1.0.7
    Compiling log4rs v1.4.0
    Compiling mc-log4rs-prototype v0.1.0 (/home/user/minecraft-rust/mc-aot/log4rs-prototype)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.78s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.24s
      Running unittests src/lib.rs (mc-aot/log4rs-prototype/target/debug/deps/mc_log4rs_prototype-ebb7943d52145b1f)
 
 running 5 tests
@@ -75,7 +75,7 @@ test tests::reject_path_interpolation ... ok
 test tests::write_error_is_not_silenced ... ok
 test tests::concurrent_records_are_complete ... ok
 
-test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
 
      Running unittests src/main.rs (mc-aot/log4rs-prototype/target/debug/deps/mc_log4rs_prototype-622f3ee9b3bafcde)
 

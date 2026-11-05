@@ -1,13 +1,14 @@
-running 22 tests
+running 23 tests
+test concurrent_heap::tests::completed_future_reference_identity_and_heap_guards ... ok
 test concurrent_heap::tests::concat_string_int_returns_fresh_utf16_value_and_handles_null ... ok
-test concurrent_heap::tests::default_factory_identity_is_shared_across_threads ... ok
 test concurrent_heap::tests::atomic_increment_returns_unique_values_under_contention_and_wraps ... ok
+test concurrent_heap::tests::default_factory_identity_is_shared_across_threads ... ok
 test concurrent_heap::tests::time_unit_wait_conversion_is_saturating_and_interned ... ok
-test concurrent_heap::tests::workers_share_reentrant_monitor_and_fields ... ok
-test concurrent_heap::tests::workers_update_shared_fields_via_cas_and_wrapping_add ... ok
 test concurrent_heap::tests::interned_utf16_strings_share_identity_and_preserve_unpaired_surrogates ... ok
-test executor_runtime::tests::constructor_and_unused_shutdown_do_not_start_workers ... ok
+test concurrent_heap::tests::workers_update_shared_fields_via_cas_and_wrapping_add ... ok
+test concurrent_heap::tests::workers_share_reentrant_monitor_and_fields ... ok
 test executor_runtime::tests::completed_future_does_not_keep_shutdown_pool_alive ... ok
+test executor_runtime::tests::constructor_and_unused_shutdown_do_not_start_workers ... ok
 test executor_runtime::tests::rejected_hooks_never_fall_back_to_default_pool ... ok
 test executor_runtime::tests::racing_first_use_creates_only_one_pool ... ok
 test frame_vm::tests::synchronized_frame_releases_monitor_on_step_error ... ok
@@ -22,5 +23,5 @@ test scheduler::tests::shutdown_timeout_rejection_and_panic ... ok
 test scheduler::tests::weak_helper_does_not_keep_closed_pool_alive ... ok
 test graph_tests::graph_traversal_between_backends ... ok
 
-test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.71s
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.82s
 OK: 20 rondas Java y Rust; dos backends traducidos, navegación de referencia final entre dos objetos y monitor compartido; cuatro tareas ForkJoinPool Java en Rayon, TickTask y QuartPos oficial, alias y guardas de identidad, registro y tipo, ejecución sin Java en PATH; harness externo opt-in, no Main

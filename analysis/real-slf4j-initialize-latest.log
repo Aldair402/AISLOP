@@ -1,44 +1,44 @@
 warning: unnecessary braces around function argument
-    --> /var/tmp/mc-provider-init-7pdrihv3/native.rs:3842:59
+    --> /var/tmp/mc-provider-init-8u9z7ei5/native.rs:3845:59
      |
-3842 | ... stack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=20; }
+3845 | ... stack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=20; }
      |                             ^                                                                           ^
      |
      = note: `#[warn(unused_braces)]` (part of `#[warn(unused)]`) on by default
 help: remove these braces
      |
-3842 -         17 => { let x0=pop_r(&mut stack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=20; }
-3842 +         17 => { let x0=pop_r(&mut stack); stack.push(V::R(error("DateTimeFormatter.ofPattern: locale predeterminada no implementada"))); pc=20; }
+3845 -         17 => { let x0=pop_r(&mut stack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=20; }
+3845 +         17 => { let x0=pop_r(&mut stack); stack.push(V::R(error("DateTimeFormatter.ofPattern: locale predeterminada no implementada"))); pc=20; }
      |
 
 warning: unnecessary braces around function argument
-    --> /var/tmp/mc-provider-init-7pdrihv3/native.rs:3876:33
+    --> /var/tmp/mc-provider-init-8u9z7ei5/native.rs:3879:33
      |
-3876 |         81 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=84; }
+3879 |         81 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=84; }
      |                                 ^                                                                  ^
      |
 help: remove these braces
      |
-3876 -         81 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=84; }
-3876 +         81 => { stack.push(V::R(error("ZoneId.systemDefault: zona predeterminada no implementada"))); pc=84; }
+3879 -         81 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=84; }
+3879 +         81 => { stack.push(V::R(error("ZoneId.systemDefault: zona predeterminada no implementada"))); pc=84; }
      |
 
 warning: unnecessary braces around function argument
-    --> /var/tmp/mc-provider-init-7pdrihv3/native.rs:3883:59
+    --> /var/tmp/mc-provider-init-8u9z7ei5/native.rs:3886:59
      |
-3883 |         97 => { let x0=pop_r(&mut stack); stack.push(V::R({error("ZoneId.of: zona no implementada")})); pc=100; }
+3886 |         97 => { let x0=pop_r(&mut stack); stack.push(V::R({error("ZoneId.of: zona no implementada")})); pc=100; }
      |                                                           ^                                        ^
      |
 help: remove these braces
      |
-3883 -         97 => { let x0=pop_r(&mut stack); stack.push(V::R({error("ZoneId.of: zona no implementada")})); pc=100; }
-3883 +         97 => { let x0=pop_r(&mut stack); stack.push(V::R(error("ZoneId.of: zona no implementada"))); pc=100; }
+3886 -         97 => { let x0=pop_r(&mut stack); stack.push(V::R({error("ZoneId.of: zona no implementada")})); pc=100; }
+3886 +         97 => { let x0=pop_r(&mut stack); stack.push(V::R(error("ZoneId.of: zona no implementada"))); pc=100; }
      |
 
 warning: unreachable expression
-    --> /var/tmp/mc-provider-init-7pdrihv3/native.rs:2943:200
+    --> /var/tmp/mc-provider-init-8u9z7ei5/native.rs:2946:200
      |
-2943 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+2946 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
      |                           ^^^^^^^------------------------------------------------------------
      |                           |      |
      |                           |      any code following this `match` expression is unreachable, as all arms diverge
@@ -47,60 +47,60 @@ warning: unreachable expression
      = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default
 
 warning: unreachable expression
-    --> /var/tmp/mc-provider-init-7pdrihv3/native.rs:2944:170
+    --> /var/tmp/mc-provider-init-8u9z7ei5/native.rs:2947:170
      |
-2944 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+2947 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
      |                             ^^^^^^^----------------------------------------------------------
      |                             |      |
      |                             |      any code following this `match` expression is unreachable, as all arms diverge
      |                             unreachable expression
 
 warning: unreachable expression
-    --> /var/tmp/mc-provider-init-7pdrihv3/native.rs:2945:181
+    --> /var/tmp/mc-provider-init-8u9z7ei5/native.rs:2948:181
      |
-2945 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+2948 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
      |                             ^^^^^^^----------------------------------------------------------
      |                             |      |
      |                             |      any code following this `match` expression is unreachable, as all arms diverge
      |                             unreachable expression
 
 warning: unreachable expression
-    --> /var/tmp/mc-provider-init-7pdrihv3/native.rs:2946:171
+    --> /var/tmp/mc-provider-init-8u9z7ei5/native.rs:2949:171
      |
-2946 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+2949 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
      |                             ^^^^^^^----------------------------------------------------------
      |                             |      |
      |                             |      any code following this `match` expression is unreachable, as all arms diverge
      |                             unreachable expression
 
 warning: unreachable call
-    --> /var/tmp/mc-provider-init-7pdrihv3/native.rs:3842:54
+    --> /var/tmp/mc-provider-init-8u9z7ei5/native.rs:3845:54
      |
-3842 | ...stack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=20; }
+3845 | ...stack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=20; }
      |                       ^^^^  --------------------------------------------------------------------------- any code following this expression is unreachable
      |                       |
      |                       unreachable call
 
 warning: unreachable call
-    --> /var/tmp/mc-provider-init-7pdrihv3/native.rs:3876:28
+    --> /var/tmp/mc-provider-init-8u9z7ei5/native.rs:3879:28
      |
-3876 |         81 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=84; }
+3879 |         81 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=84; }
      |                            ^^^^  ------------------------------------------------------------------ any code following this expression is unreachable
      |                            |
      |                            unreachable call
 
 warning: unreachable call
-    --> /var/tmp/mc-provider-init-7pdrihv3/native.rs:3883:54
+    --> /var/tmp/mc-provider-init-8u9z7ei5/native.rs:3886:54
      |
-3883 |         97 => { let x0=pop_r(&mut stack); stack.push(V::R({error("ZoneId.of: zona no implementada")})); pc=100; }
+3886 |         97 => { let x0=pop_r(&mut stack); stack.push(V::R({error("ZoneId.of: zona no implementada")})); pc=100; }
      |                                                      ^^^^  ---------------------------------------- any code following this expression is unreachable
      |                                                      |
      |                                                      unreachable call
 
 warning: unreachable statement
-    --> /var/tmp/mc-provider-init-7pdrihv3/native.rs:3915:79
+    --> /var/tmp/mc-provider-init-8u9z7ei5/native.rs:3918:79
      |
-3915 |         157 => { error("DateTimeFormatter.withZone: zonas no implementadas"); pc=160; }
+3918 |         157 => { error("DateTimeFormatter.withZone: zonas no implementadas"); pc=160; }
      |                  -----------------------------------------------------------  ^^^^^^^ unreachable statement
      |                  |
      |                  any code following this expression is unreachable
