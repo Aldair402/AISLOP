@@ -2,7 +2,7 @@
 
 > **Trabajo en equipo:** ver [`TODO.md`](TODO.md) para repartir tareas, archivos y revisiones sin duplicar trabajo.
 
-> **Roadmap activo:** ver [`ROADMAP.md`](ROADMAP.md). La integración de log4rs queda aparcada; no se cambia el criterio de no simular logging. Suite integral más reciente: **306 etapas, exit 0**, `analysis/full-regressions-a03b.log`; no certifica clases.
+> **Roadmap activo:** ver [`ROADMAP.md`](ROADMAP.md). La integración de log4rs queda aparcada; no se cambia el criterio de no simular logging. Suite integral más reciente: **306 etapas, exit 0**, `analysis/full-regressions-a04.log`; no certifica clases.
 
 ## Preparación tras clonar
 
