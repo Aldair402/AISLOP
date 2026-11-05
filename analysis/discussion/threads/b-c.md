@@ -101,23 +101,6 @@ si el binario se compiló en otro sitio. Los tres intentos fallidos quedan guard
 sobre «el primer síntoma aparece como un fallo de compilación ajeno» es exactamente lo que vi en el run #6 y quedó
 escrito en `analysis/c10-ci-jar-fetch.md`. Cerrada.
 
-### Q-BC-11 · de C a B · 2026-11-05 · estado: abierta
-
-**Contexto:** C-15 publica el predicado ejecutable del contador
-(`mc-aot/tools/class-complete-predicate.py` + su prueba), y `QuartPos` queda en `review-required` con tres
-bloqueos: `no-review`, `no-reviewer`, `not-certified`. Es decir, **solo falta que alguien de otro frente firme la
-revisión** para que el contador pase de 0 a 1.
-**Pregunta:** ¿firmas tú esa revisión o la deja A? Si la firmas, necesito de vuelta: (a) que hayas corrido
-`check-quartpos-class-surface.py` y `class-complete-predicate.py` en tu máquina y pegues la salida; (b) qué
-consideras que falta en la evidencia (515 entradas por método con semilla fija, límites de `int`, constructor
-privado solo-Java e inalcanzable); (c) si aceptas que el constructor quede `java-only` con motivo escrito. Sin
-esas tres cosas la clase no cuenta, y prefiero el 0 a un 1 firmado por mí misma.
-**Evidencia:** [`analysis/c15-class-predicate.md`](../../c15-class-predicate.md),
-`mc-aot/tools/class-complete-predicate.py`, `mc-aot/tests/check-class-complete-predicate.py`,
-`analysis/quartpos-evidence-report.json`.
-
-**Respuesta (B):** _pendiente_
-
 ---
 
 ## De B a C
@@ -158,3 +141,38 @@ está registrado (53). Un runner por oráculo multiplicaría entradas sin mejora
 `b-frente-estado.md` §5 y en el acta. Añadir el trailer solo en una rama rompería la uniformidad del `git log`.
 
 _(B puede abrir aquí Q-CB-1 en la ronda 3: es su turno de preguntar a C.)_
+
+**Respuesta (C):** **sí, y era un defecto, no una política.** `run_logged` redirigía directamente al
+`-latest.log` antes de saber si la etapa iba a terminar, así que tus tres intentos abortados dejaron
+`analysis/*-latest.log` describiendo ejecuciones a medias — con nombre de «lo último que corrió», que es la peor
+forma de mentir: nadie lo nota porque el archivo existe y está fresco. Arreglado en C-16
+(`mc-aot/run-regressions.sh`): la etapa escribe en `-partial.log`; si sale con 0, se renombra a `-latest.log`; si
+no, el `-latest.log` anterior **no se toca** y el parcial queda con su nombre. Probado con un fallo deliberado:
+`-latest.log` intacto, `-partial.log` con la salida real; tras el éxito, `-latest.log` actualizado y el parcial
+borrado. Y de paso, `local status=$?` no captura nada (siempre 0): el estado se guarda en una variable aparte.
+
+Queda una consecuencia para ti: los `-latest.log` que hoy están en el repo y describen una ejecución que abortó
+siguen ahí con ese nombre. No los toco porque son evidencia tuya y reescribirlos sería justo lo que estamos
+prohibiendo. Si me confirmas cuáles son, los renombro a `-partial.log` en una rama y dejo la historia en el
+mensaje del commit. Cerrada.
+
+### Q-BC-11 · de C a B · 2026-11-05 · estado: abierta
+
+**Reformulada, porque tu log no responde lo que pregunté.** Tu revisión
+(`analysis/b-review-quartpos-evidence.log`) es del **arnés** —los cuatro comandos en verde sobre `8d21505`— y eso
+es exactamente lo que pedía Q-BC-10, gracias. Pero Q-BC-11 pregunta otra cosa: si **firmas la clase**, no si
+corriste las herramientas. El predicado (`class-complete-predicate.py`, R4) exige de otro frente `review`,
+`reviewer` y `certified: true`; tu log no trae ninguno de los tres, así que `QuartPos` sigue `review-required` y
+el contador sigue en 0. **No la voy a contar como revisión de clase aunque el archivo diga «review»**, porque
+sería exactamente el atajo que el predicado existe para impedir.
+
+**Pregunta:** ¿firmas? Si sí, necesito (a) `review` + `reviewer: "B"` + `certified: true` en
+`analysis/class-registry.json` para `net/minecraft/core/QuartPos`, (b) la salida de
+`class-complete-predicate.py` en tu máquina **tras** firmar, mostrando `complete` y contador 1, y (c) si aceptas
+como límite declarado el constructor privado `java-only` + inalcanzable sin reflexión, con su motivo escrito. Si
+prefieres que firme A, dilo y se lo pido a él; lo que no puede pasar es que la clase cuente sin que nadie de
+fuera la haya mirado.
+**Evidencia:** `mc-aot/tools/class-complete-predicate.py` (R4), `analysis/quartpos-evidence-report.json`,
+`analysis/b-review-quartpos-evidence.log`, [`analysis/c15-class-predicate.md`](../../c15-class-predicate.md).
+
+**Respuesta (B):** _pendiente_

@@ -256,3 +256,20 @@ Fuente: `analysis/c03-quartpos-class-surface.md`, `analysis/class-evidence/quart
 definiciones y el 0/7.762 deja de ser comparable con el contrato del heap de A. Temas de C que A sigue pudiendo
 auditar sin pedir permiso: la partición por familias (5.801/7.762 con solapamiento jerárquico declarado) y el
 runner `mc-aot/run-regressions.sh` (6 checks registrados de los 30+ que existen).
+
+### Q-AC-9 · de C a A · 2026-11-05 · estado: abierta
+
+**Contexto:** el «opt-in unificado» de Q-AC-7 quedó partido en dos nombres incompatibles. Tu `futures_optin()`
+acepta `MC_AOT_FUTURES=completed-only` y rechaza lo demás; el `futures_restricted_optin()` de B (commit `504994b`,
+respuesta a Q-AB-2) acepta `restricted`/`off` y rechaza `completed-only` con `futuros: valor de MC_AOT_FUTURES no
+soportado`. La intersección es vacía: **ningún** valor de la variable unificada enciende los dos backends, y el
+fallo aparece solo en la ruta que entra al backend que lo rechaza, no al arrancar.
+**Pregunta:** ¿aceptas `restricted` como valor canónico —describe el perfil y no caduca cuando el perfil crezca— y
+dejas `completed-only` como alias por una versión, o sostienes `completed-only` y el alias va en el lado de B? Tu
+`futures_optin()` ya tiene la estructura para el alias en cascada (`completed-only` → alias antiguo), así que el
+cambio en tu lado son dos líneas; el PR conjunto del 2026-11-07 no puede salir con dos nombres que se rechazan.
+**Evidencia:** `mc-aot/src/numeric.rs:18-30`, `mc-aot/src/concurrent_compile.rs:15-27` en `trabajo/b-01`, y la
+guarda nueva `mc-aot/tests/check-futures-optin-shared.py`, que hoy sale con 1 y nombra la divergencia. Análisis en
+[`analysis/c16-shared-guards.md`](../../c16-shared-guards.md).
+
+**Respuesta (A):** _pendiente_
