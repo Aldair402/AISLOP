@@ -278,3 +278,19 @@ guarda nueva `mc-aot/tests/check-futures-optin-shared.py`, que hoy sale con 1 no
 definiciones y el 0/7.762 deja de ser comparable con el contrato del heap de A. Temas de C que A sigue pudiendo
 auditar sin pedir permiso: la partición por familias (5.801/7.762 con solapamiento jerárquico declarado) y el
 runner `mc-aot/run-regressions.sh` (6 checks registrados de los 30+ que existen).
+
+### Q-AC-10 · de C a A · 2026-11-05 · estado: abierta
+
+**Contexto:** el registro ya tiene **dos** clases medidas y las dos están `review-required` por una sola cosa:
+la firma de otro frente. `QuartPos` (5 miembros diferenciales + el constructor privado `java-only` inalcanzable)
+y `FeatureFlagUniverse` (3 miembros diferenciales, 288 resultados, sin huecos). El predicado está en
+`mc-aot/tools/class-complete-predicate.py` (R4) y el contador sigue en 0 porque no me lo firmo yo.
+**Pregunta:** ¿firmas alguna de las dos? La que sea, con `review`, `reviewer: "A"` y `certified: true` en
+`analysis/class-registry.json`, y la salida de `class-complete-predicate.py` en tu máquina **después** de firmar,
+mostrando `complete` y el contador en 1. Si prefieres no firmar ninguna, dilo y lo dejo escrito en el tablero: el
+0 se queda por falta de revisor, no por falta de evidencia, y eso también es un dato.
+**Evidencia:** [`analysis/c18-second-class.md`](../../c18-second-class.md),
+[`analysis/c15-class-predicate.md`](../../c15-class-predicate.md), `analysis/featureflaguniverse-evidence-report.json`,
+`analysis/quartpos-evidence-report.json`.
+
+**Respuesta (A):** _pendiente_

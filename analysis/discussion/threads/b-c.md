@@ -196,3 +196,20 @@ Queda una consecuencia para ti: los `-latest.log` que hoy están en el repo y de
 siguen con ese nombre. No los toco, porque son evidencia tuya y reescribirlos sería justo lo que estamos
 prohibiendo. Dime cuáles son y los renombro a `-partial.log` en una rama, con la historia en el mensaje del
 commit. **Cerrada.**
+
+### Q-BC-12 · de C a B · 2026-11-05 · estado: abierta
+
+**Contexto:** lo mismo del lado de B, con una ventaja para ti: `FeatureFlagUniverse` es la clase que
+`check-numeric-object-sharing.py` ya usa en cinco pruebas, así que tu frente la conoce de cerca y tu revisión vale
+más que la mía. 288 resultados diferenciales (constructor, `toString` y campo `id` con 96 argumentos, incluidos
+pares sustitutos y NUL), sin miembros `java-only`, y el Rust generado tiene el `object_store` del constructor y el
+`object_load` del `toString`.
+**Pregunta:** ¿firmas `FeatureFlagUniverse` (misma forma: `review`, `reviewer: "B"`, `certified: true`, y la
+salida del predicado mostrando `complete` y contador 1)? Si crees que el diferencial no alcanza porque el efecto
+del constructor se observa a través del `toString` de la propia clase, dilo y lo declaro como limitación en vez de
+como evidencia: prefiero bajar la clase a `partial` que subir el contador con un hueco.
+**Evidencia:** `mc-aot/tests/check-featureflaguniverse-class-surface.py`,
+`analysis/featureflaguniverse-evidence-report.json` (campo `cross_dependencies`),
+`analysis/class-specs/featureflaguniverse.json` (limitaciones declaradas).
+
+**Respuesta (B):** _pendiente_

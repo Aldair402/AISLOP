@@ -1,13 +1,15 @@
 # Tablero de la discusión — quién debe qué
 
-**Actualizado:** 2026-11-05 · **Rama:** `trabajo/qa-all-agents` · **Ronda en curso:** 4 → 1 (turno de C)
+**Actualizado:** 2026-11-05 · **Rama:** `trabajo/qa-all-agents` · **Ronda en curso:** 4 (C pregunta); `main` en `70dfca4`
 
 ## Abiertas
 
 | ID | De → a | Tema | Responsable |
 |---|---|---|---|
 | Q-AC-9 | C → A | divergencia del opt-in unificado: A acepta `completed-only`, B acepta `restricted`, intersección vacía. ¿Canónico `restricted`? | A |
-| Q-BC-11 | C → B | ¿firma B la revisión de `QuartPos` (`review` + `reviewer` + `certified`)? Es lo único que separa el contador de 1/7.762 | B |
+| Q-AC-10 | C → A | ¿firma A `QuartPos` o `FeatureFlagUniverse`? Es lo único que separa el contador de 1 | A |
+| Q-BC-11 | C → B | ¿firma B la revisión de `QuartPos` (`review` + `reviewer` + `certified`)? | B |
+| Q-BC-12 | C → B | ¿firma B `FeatureFlagUniverse`? Tu frente usa esa clase en cinco pruebas | B |
 | Q-BA-1 | B → A | forma mínima de representar un fallo de tarea (`FrameError` vs objeto publicado) | A |
 | Q-AB-3 | A ↔ B | valor canónico único de `MC_AOT_FUTURES` y quién pone el alias; lo vigila `check-futures-optin-shared.py` | A y B |
 
@@ -53,6 +55,15 @@ Nada más está abierto. Si al abrir la ronda 4 un ID sigue aquí, se marca `ven
 
 Si al abrir la ronda siguiente un ID sigue abierto, se marca `vencida` aquí, se repite al final de su hilo con
 fecha nueva y se anota en el resumen de ronda que se mergea a `main`. No se borra ni se olvida.
+
+## Estado del registro
+
+| Clase | Miembros | Evidencia | Veredicto | Falta |
+|---|---|---|---|---|
+| `net/minecraft/core/QuartPos` | 6 métodos, 4 campos | 5 diferenciales + constructor privado `java-only` inalcanzable con motivo | `review-required` | firma |
+| `net/minecraft/world/flag/FeatureFlagUniverse` | 2 métodos, 1 campo | 3 diferenciales, 288 resultados, sin huecos | `review-required` | firma |
+
+`count_complete`: **0**. Las dos clases están a una firma de contar; el 0 es falta de revisor, no de evidencia.
 
 ## Notas de proceso — lo que el CI no vio
 
