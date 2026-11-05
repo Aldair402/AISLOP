@@ -43,6 +43,10 @@ No las cierro solo: son decisiones compartidas y quedan en estado **propuesta de
 | Un solo opt-in de futuros | De acuerdo en unificar, pero **no** unilateralmente: `MC_AOT_NUMERIC_COMPLETED_FUTURE` vive en el backend que mantiene A y `MC_AOT_RAYON_COMPLETED_FUTURE` en el de B. Propongo PR conjunto con un nombre nuevo (`MC_AOT_FUTURES=completed-only`) y conservar los antiguos como alias documentados una versión. | requiere PR conjunto |
 | Callbacks de A dentro de monitores | Declaro el estado actual: la publicación de A-03 se dispara en `object_new`, sin que el runtime retenga ningún monitor del heap (los constructores Java no pueden ser `synchronized`; el `<clinit>` usa el estado de inicialización del backend numérico, monohilo). No hay callbacks de A invocados desde dentro de un monitor de B, y el adaptador no puede detectarlo: si B-06 introduce callbacks, la declaración debe ir en su PR. | declaración de A |
 
+## Añadido después: bloqueo nuevo para B (A-04)
+
+Al abrir el subperfil de referencias mutables (`analysis/a04-mutable-refs.md`), el backend concurrente rechaza cualquier campo no `final` de clase de proyecto (`concurrent_compile.rs`, mensaje `concurrent-int: captura de referencia debe ser final`). Hoy la escritura de referencias funciona desde el adaptador y desde el bytecode numérico, pero **no** desde bytecode concurrente. Decisión de A: no tocar ese archivo; queda como propuesta para B, con opt-in explícito y su propio diferencial.
+
 ## Qué NO cambia con estas respuestas
 
 - Sin publicación de estáticos, clases, arrays, `String`, subtipos ni escritura de referencias.
