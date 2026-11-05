@@ -54,6 +54,7 @@ literal y verificable.
 |---|---|
 | `cargo test` (5 binarios) | **66 + 32 + 34 + 32 + 33 = 197 pruebas, 0 fallos** |
 | Suite focalizada B (15 scripts `.py`, JDK 25) | **15/15 OK** — log `analysis/b03-b08-futures-suite-jdk25.log` |
+| **Integral completa** `bash mc-aot/run-regressions.sh` | **exit 0, 310 etapas**, «Todas las regresiones terminaron correctamente» — `analysis/full-regressions-b-frente-contrato-futures-retry3.log` |
 | `check-futures-contract.py` | exit 0: cada diferencial cita un test de la suite, cada guarda existe literalmente, cada unitaria existe, documento y JSON no divergen |
 | Contrato | 83 casos: 23 diferenciales, 19 guardas, 21 unitarias, 12 solo-Java, 8 sin modelar; 3 oráculos; 7 huecos |
 
@@ -77,3 +78,25 @@ literal y verificable.
 | `3a341fc` | B-07: interfaz de concurrencia para A; B-06: bloqueo caracterizado |
 
 `git diff --stat` contra la base: 22 archivos, +3230 / −29.
+
+## 7. Nota de entorno para reproducir la integral
+
+En esta máquina `/tmp` es un `tmpfs` de 992 MB. La integral construye varios `target` de Cargo que suman más de
+900 MB, así que con el `TMPDIR` por defecto muere con `Error: No space left on device (os error 28)`; el primer
+síntoma puede aparecer como un fallo de compilación ajeno al cambio (nos pasó en `compare-small-args`).
+
+Lo que sí funciona, y con lo que se obtuvo el registro `analysis/full-regressions-b-frente-contrato-futures-retry3.log`:
+
+```sh
+export PATH=$HOME/.cargo/bin:$PATH
+export JAVA_HOME=/ruta/al/jdk-25
+export TMPDIR=$HOME/.cache/tmp     # fuera del tmpfs
+unset CARGO_TARGET_DIR             # la auditoría busca el binario en mc-aot/target/release
+mkdir -p "$TMPDIR"
+bash mc-aot/run-regressions.sh > analysis/full-regressions-MI-TAREA.log 2>&1
+```
+
+No fijar `CARGO_TARGET_DIR` es obligatorio: `graal-test/audit.py` busca `target/release/mc-aot` y aborta con
+«No se encontró el ejecutable de mc-aot en target/release» si el binario se compiló en otro sitio.
+Los tres intentos fallidos quedan en `analysis/full-regressions-b-frente-contrato-futures{,retry,retry2}.log`,
+sin sobrescribir nada, porque una ejecución interrumpida no se presenta como aprobada.

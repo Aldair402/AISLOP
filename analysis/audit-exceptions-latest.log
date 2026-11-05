@@ -1,2 +1,2 @@
     Finished `release` profile [optimized] target(s) in 0.01s
-7762 clases leídas; 10 métodos con handlers y firma acotada; 7 con tipos catch de Minecraft/incorporados o catch-all; 0 compilan en 0 clases; 0 clases completas certificadas. Informe: /home/user/minecraft-rust/analysis/audit-exceptions.json
+7762 clases leídas; 10 métodos con handlers y firma acotada; 7 con tipos catch de Minecraft/incorporados o catch-all; 0 compilan en 0 clases; 0 clases completas certificadas. Informe: /home/user/aislop/analysis/audit-exceptions.json

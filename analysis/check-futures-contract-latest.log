@@ -1,0 +1,2 @@
+Resumen B-01: differential=23, guard=19, java-only=12, unit=21, unsupported=8; oraculos=3; huecos=7
+OK: contrato B-01 coherente con el repositorio: cada diferencial cita un test que esta en la suite, cada guarda existe literalmente en mc-aot/src, cada prueba unitaria existe, cada oraculo Java esta en la suite y sus lineas observadas coinciden con su codigo y su runner, y el documento y el JSON no divergen. NO verifica semantica ni equivalencia con Java: eso solo lo demuestran los diferenciales citados.

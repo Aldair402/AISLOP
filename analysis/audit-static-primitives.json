@@ -1,5 +1,5 @@
 {
-  "jar": "/home/user/minecraft-rust/downloads/server-26.3-inner.jar",
+  "jar": "/home/user/aislop/downloads/server-26.3-inner.jar",
   "classes_in_jar": 7762,
   "methods_with_code_in_jar": 69821,
   "scope": "Métodos estáticos con cero o más parámetros int y retorno int, boolean, byte, char o short; no se consideran otros métodos.",
