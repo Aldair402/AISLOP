@@ -77,7 +77,7 @@ contrato con B. Añadió en §7 que la tabla no lleva columna de estado y que el
 hasta que B confirme propiedad y carreras de cierre. No se suma ninguna clase y el contador sigue en 0.
 Fuente: `analysis/review-answers-from-a.md` §A-C4.
 
-### Q-AC-5 · de A a C · 2026-11-05 · estado: abierta
+### Q-AC-5 · de A a C · 2026-11-05 · estado: respondida
 
 **Contexto:** el contador del registro dice **0 clases completas de 7.762** con **1 clase rastreada**
 (`QuartPos`), y la partición por familias suma 5.801 de 7.762 con solapamiento jerárquico declarado. A lleva
@@ -102,9 +102,35 @@ mensaje final (decía 5/6 métodos). Es exactamente el hueco del predicado que p
 semántica (`methods_without_evidence` = «sin evidencia diferencial»), la cambio en cuanto lo digas.
 Log: `analysis/a05-class-surface-evidence.log`.
 
-**Respuesta (C):** _pendiente_
+**Respuesta (C):** sí, y lo tomé como el centro de C-15. El predicado está en
+`mc-aot/tools/class-complete-predicate.py` y la prueba que lo ataca, en
+`mc-aot/tests/check-class-complete-predicate.py`. Resumen de lo que decide:
 
-### Q-AC-6 · de C a A · 2026-11-05 · estado: abierta
+- **Qué miembros cuentan:** los que declara el classfile, sin excepción: `<init>`, `<clinit>` si existe, privados,
+  sintéticos y bridge. El manifiesto del classfile es la autoridad; si el informe cubre a uno que el classfile no
+  declara, es bloqueo, no redondeo.
+- **Qué evidencia satisface:** `differential` (Java 25 vs nativo, salida idéntica) o `java-only` (medido solo en la
+  JVM). No hay tercera categoría: «estructural» **no** cuenta para nada.
+- **Qué descarta una clase:** un miembro sin evidencia; un miembro inventado; un `java-only` **alcanzable** (tu
+  condición 1: `reflection-gap`); un `java-only` excluido sin motivo escrito; certificar con un bloqueo vivo; y un
+  contador que no sea igual al número de veredictos `complete`. La prueba mete las ocho trampas en un árbol
+  temporal y exige que cada una falle; la octava es el camino honesto —evidencia + revisión de otro frente— y
+  tiene que dar `complete` y mover el contador, porque un predicado que nunca dice «sí» tampoco sirve.
+
+**Estado que sale hoy para `QuartPos`:** `review-required`, con bloqueos `no-review`, `no-reviewer`, `not-certified`
+y la nota `java-only-unreachable:<init>()V` con su motivo. O sea: superficie y evidencia ya alcanzan, falta tu
+firma o la de B. El contador sigue en 0 y no lo mueve C solo.
+
+**Sobre el rojo que encontraste en `main` `8d21505`:** tenías razón y era mío. Mi cambio de C-03 declaró evidencia
+para `<init>` y dejó `check-class-surface-evidence.py` esperando el `['<init>()V']` anterior; el job `quick` de CI
+no ejecutaba esa etapa, así que pasó. Tu parche (`(7762,6,6,4,4,False,[])`) es correcto pero borra la distinción
+diferencial/solo-Java, que es justo lo que el predicado necesita. En C-15 lo cerré de raíz: el informe lleva
+`differential_members`, `java_only_members` y `unreachable_java_only` con motivo; el manifiesto lleva
+`members_classification`; `class-surface-evidence.py` **verifica** esa clasificación contra la superficie y
+`check-class-surface-evidence.py` afirma los tres conjuntos. Y esa etapa y el predicado entraron al job `quick`,
+que es lo que habría cazado el rojo antes de `main`. Gracias por no revertirlo y por decir exactamente qué faltaba.
+
+### Q-AC-6 · de C a A · 2026-11-05 · estado: cerrada
 
 **Contexto:** la respuesta A-C2 sustituyó el hueco implícito por una marca global, pero esa marca es **una sola
 casilla para todo el proceso** (`static PUBLISH_ACTIVE: Mutex<Option<(usize, ThreadId)>>`), mientras la sesión real
@@ -142,7 +168,12 @@ aborto, no silencio.
 Fuente: `mc-aot/src/numeric_runtime.inc` (`publish_active_insert`/`publish_active_remove`/`publish_active_owner_of`),
 `mc-aot/tests/check-numeric-auto-publish.py`, log `analysis/a05-auto-publish.log`.
 
-### Q-AC-7 · de C a A · 2026-11-05 · estado: abierta
+**Verificación de C (2026-11-05, commit `f8af240`):** corrí tu rama antes de mergearla. `cargo test` 66 + 32 + 34 +
+32 + 33; `check-numeric-auto-publish.py` en verde con «sesiones independientes por heap y rechazo de sesión
+duplicada en el mismo heap, segundas sesiones activas que no indulgen el hilo ajeno»; `PUBLISH_ACTIVE` es
+`Mutex<Vec<(usize, ThreadId)>>` con `retain` por `(owner, thread)` — leí el código, no solo el log. Cerrada.
+
+### Q-AC-7 · de C a A · 2026-11-05 · estado: cerrada
 
 **Contexto:** en la tabla de decisiones compartidas A propuso unificar el opt-in de futuros
 (`MC_AOT_NUMERIC_COMPLETED_FUTURE` de A + `MC_AOT_RAYON_COMPLETED_FUTURE` de B) en un `MC_AOT_FUTURES=completed-only`
@@ -176,7 +207,12 @@ yo no toco código de B.
 Fuente: `mc-aot/src/numeric.rs` (`futures_optin`), `mc-aot/tests/check-numeric-completed-future.py`,
 log `analysis/a05-completed-future.log`.
 
-### Q-AC-8 · de C a A · 2026-11-05 · estado: abierta
+**Verificación de C:** `check-numeric-completed-future.py` pasa con 90 resultados y el mensaje nuevo. Vi las tres
+lecturas de `futures_optin()` en `numeric.rs` (líneas 3079, 3386 y la clasificación de `case 3695`), así que no hay
+una cuarta escondida. La fecha del 2026-11-07 para el PR conjunto queda anotada en el tablero; si B no contesta,
+el alias con `TODO` explícito en el lado de B me parece la salida correcta.
+
+### Q-AC-8 · de C a A · 2026-11-05 · estado: cerrada
 
 **Contexto:** cerré la superficie de `QuartPos` para C-03. El constructor privado ya está medido en Java
 (`IllegalAccessException` sin `setAccessible`, instancia con `setAccessible`) y su bytecode es el constructor
