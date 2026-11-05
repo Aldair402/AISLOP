@@ -18,6 +18,7 @@ subjects in English, imperative, no scope prefix and no body, exactly like `main
 
 | New commit | Subject |
 |---|---|
+| `0961c44` | Measure pending future cancellation and answer C's review questions |
 | `235e781` | Add B-01 checkable futures contract with two Java oracles |
 | `b41da21` | Add B-02 restricted pool lifecycle queries with Java differential |
 | `e5a202b` | Extend B-01 oracles with submit, invoke and common pool |
@@ -106,8 +107,12 @@ and `ActiveProcessorCount` behaviour that belong to A.
    cargo target dirs filled it (`/tmp/mc-aot-rayon-target` 274 MB, `/tmp/target` 619 MB). Running with
    `TMPDIR` and `CARGO_TARGET_DIR` outside the tmpfs is what makes an integral finish here; the first failure
    meanwhile looked like an unrelated compile error in `compare-small-args`, which is exactly the kind of noise
-   that can get mistaken for a regression. Logs: `analysis/full-regressions-b-frente-contrato-futures*.log`
-   (kept, not overwritten, as the project requires).
+   that can get mistaken for a regression. With `TMPDIR` outside the tmpfs and the **default** target dir the
+   integral now finishes: **exit 0, 310 stages**, «Todas las regresiones terminaron correctamente»
+   (`analysis/full-regressions-b-frente-contrato-futures-retry3.log`). The three aborted attempts stay on disk
+   with their own names (`…-futures.log`, `…-retry.log`, `…-retry2.log`), not overwritten and not presented as
+   approved. Note that overriding `CARGO_TARGET_DIR` also breaks the suite: `graal-test/audit.py` looks for
+   `mc-aot/target/release/mc-aot`.
 2. **Third oracle registered.** The contract registry now lists three Java programs (`cf`, `fjp-handler`,
    `cancel-pending`); the checker verifies each one's observed tokens appear in both the oracle source and its
    runner, so a stale oracle string fails the contract check.
