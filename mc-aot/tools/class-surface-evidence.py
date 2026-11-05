@@ -11,7 +11,10 @@ def error(text):raise ValueError(text)
 def main():
  ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('manifest',type=pathlib.Path);ap.add_argument('--jar',type=pathlib.Path,default=root/'downloads/server-26.3-inner.jar');a=ap.parse_args()
  data=json.loads(a.manifest.read_text(encoding='utf-8'))
- if set(data)!={'schema','jar_sha256','class','class_sha256','members','limitations'} or data['schema']!='partial-surface-v1':error('esquema de manifiesto inválido; no se permiten afirmaciones de certificación')
+ # `members_classification` es opcional y solo puede clasificar; no certifica nada.
+ allowed_keys={'schema','jar_sha256','class','class_sha256','members','limitations','members_classification'}
+ if not set(data)<=allowed_keys or not {'schema','jar_sha256','class','class_sha256','members','limitations'}<=set(data) or data['schema']!='partial-surface-v1':error('esquema de manifiesto inválido; no se permiten afirmaciones de certificación')
+ if 'certified' in data or data.get('schema')!='partial-surface-v1':error('no se permiten afirmaciones de certificación')
  if sha(a.jar)!=data['jar_sha256']:error('hash de JAR no coincide')
  name=data['class']
  if not isinstance(name,str) or not re.fullmatch(r'[A-Za-z0-9_/$]+',name):error('nombre de clase fuera del perfil')
@@ -59,12 +62,34 @@ def main():
    if actual!=evidence['sha256']:error('hash de evidencia no coincide: '+evidence['path'])
    files[evidence['path']]=actual
   recorded[kind].add(key)
+ # El manifiesto declara evidencia por miembro; el auditor comprueba que esa clasificación
+ # cubra exactamente la superficie declarada y la devuelve para que quien la consuma no
+ # tenga que inferirla. Sin esto, "sin evidencia" y "solo medida en Java" se confunden.
+ classification=data.get('members_classification')
+ if classification is not None:
+  allowed={'differential','java-only'}
+  differential={m for m,k in classification.items() if k=='differential'}
+  java_only={m for m,k in classification.items() if k=='java-only'}
+  unknown={m for m,k in classification.items() if k not in allowed}
+  if unknown:error('clasificación de evidencia desconocida: '+', '.join(sorted(unknown)))
+  declared={n+d for n,d in surface['method']}|{n+':'+d for n,d in surface['field']}
+  if not set(classification)<=declared:error('clasificación menciona miembros no declarados')
+  classified_methods={m for m in classification if ':' not in m}
+  classified_fields={m for m in classification if ':' in m}
+  reported_methods={n+d for n,d in surface['method']} & classified_methods
+  reported_fields={n+':'+d for n,d in surface['field']} & classified_fields
+  classification_summary={'differential':sorted(differential),'java_only':sorted(java_only),
+   'unclassified_methods':sorted({n+d for n,d in surface['method']}-classified_methods),
+   'unclassified_fields':sorted({n+':'+d for n,d in surface['field']}-classified_fields)}
+ else:
+  classification_summary=None
  result={'class':name,'jar_sha256':data['jar_sha256'],'class_sha256':data['class_sha256'],'classes_in_jar':total,
   'methods_with_partial_evidence':len(recorded['method']),'methods_declared':len(surface['method']),
   'fields_with_partial_evidence':len(recorded['field']),'fields_declared':len(surface['field']),
   'methods_without_evidence':[n+d for n,d in sorted(surface['method']-recorded['method'])],
   'fields_without_evidence':[n+' '+d for n,d in sorted(surface['field']-recorded['field'])],
   'evidence_files':files,'limitations':data['limitations'],'certified':False,
+  'evidence_classification':classification_summary,
   'warning':'Inventario de evidencias parciales, no verifica corrección de resultados ni certifica clases.'}
  print(json.dumps(result,ensure_ascii=False,indent=2))
 if __name__=='__main__':
