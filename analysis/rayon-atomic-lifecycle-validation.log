@@ -1,0 +1,1 @@
+OK: 216 resultados Java: factory traducida, constructor de worker, onStart/onTermination, tareas QuartPos, AtomicInteger con referencias capturadas, literales/concatenación UTF-16 y factory lambda con String y AtomicInteger capturados en ambos órdenes, shutdown/awaitTermination por interfaz y cierre sin tareas; guardas de factory, override de worker, modo y paralelismo

@@ -1,0 +1,3 @@
+Error: invokevirtual no soportado: java/lang/Thread.getContextClassLoader()Ljava/lang/ClassLoader;
+  al compilar org/apache/logging/log4j/util/LoaderUtil$ThreadContextClassLoaderGetter.run()Ljava/lang/ClassLoader;
+compile_exit= 1

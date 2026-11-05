@@ -1,0 +1,101 @@
+Compiled from "TickTask.java"
+public class net.minecraft.server.TickTask implements java.lang.Runnable {
+  private final int tick;
+    descriptor: I
+
+  private final java.lang.Runnable runnable;
+    descriptor: Ljava/lang/Runnable;
+
+  public net.minecraft.server.TickTask(int, java.lang.Runnable);
+    descriptor: (ILjava/lang/Runnable;)V
+    Code:
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: aload_0
+         5: iload_1
+         6: putfield      #7                  // Field tick:I
+         9: aload_0
+        10: aload_2
+        11: putfield      #13                 // Field runnable:Ljava/lang/Runnable;
+        14: return
+
+  public int getTick();
+    descriptor: ()I
+    Code:
+         0: aload_0
+         1: getfield      #7                  // Field tick:I
+         4: ireturn
+
+  public void run();
+    descriptor: ()V
+    Code:
+         0: aload_0
+         1: getfield      #13                 // Field runnable:Ljava/lang/Runnable;
+         4: invokeinterface #17,  1           // InterfaceMethod java/lang/Runnable.run:()V
+         9: return
+}
+Compiled from "StrictQueue.java"
+public final class net.minecraft.util.thread.StrictQueue$RunnableWithPriority extends java.lang.Record implements java.lang.Runnable {
+  private final int priority;
+    descriptor: I
+
+  private final java.lang.Runnable task;
+    descriptor: Ljava/lang/Runnable;
+
+  public net.minecraft.util.thread.StrictQueue$RunnableWithPriority(int, java.lang.Runnable);
+    descriptor: (ILjava/lang/Runnable;)V
+    Code:
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Record."<init>":()V
+         4: aload_0
+         5: iload_1
+         6: putfield      #7                  // Field priority:I
+         9: aload_0
+        10: aload_2
+        11: putfield      #13                 // Field task:Ljava/lang/Runnable;
+        14: return
+
+  public void run();
+    descriptor: ()V
+    Code:
+         0: aload_0
+         1: getfield      #13                 // Field task:Ljava/lang/Runnable;
+         4: invokeinterface #17,  1           // InterfaceMethod java/lang/Runnable.run:()V
+         9: return
+
+  public final java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+    Code:
+         0: aload_0
+         1: invokedynamic #22,  0             // InvokeDynamic #0:toString:(Lnet/minecraft/util/thread/StrictQueue$RunnableWithPriority;)Ljava/lang/String;
+         6: areturn
+
+  public final int hashCode();
+    descriptor: ()I
+    Code:
+         0: aload_0
+         1: invokedynamic #26,  0             // InvokeDynamic #0:hashCode:(Lnet/minecraft/util/thread/StrictQueue$RunnableWithPriority;)I
+         6: ireturn
+
+  public final boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+    Code:
+         0: aload_0
+         1: aload_1
+         2: invokedynamic #30,  0             // InvokeDynamic #0:equals:(Lnet/minecraft/util/thread/StrictQueue$RunnableWithPriority;Ljava/lang/Object;)Z
+         7: ireturn
+
+  public int priority();
+    descriptor: ()I
+    Code:
+         0: aload_0
+         1: getfield      #7                  // Field priority:I
+         4: ireturn
+
+  public java.lang.Runnable task();
+    descriptor: ()Ljava/lang/Runnable;
+    Code:
+         0: aload_0
+         1: getfield      #13                 // Field task:Ljava/lang/Runnable;
+         4: areturn
+}

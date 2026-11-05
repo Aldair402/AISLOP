@@ -1,0 +1,413 @@
+{
+  "classes_read": 7762,
+  "scope": "Métodos static con long en la firma, argumentos y retorno únicamente I/Z/B/C/S/J. Excluye los candidatos de audit.py y audit-small-args.py.",
+  "candidates": 63,
+  "candidate_classes": 25,
+  "compiled_methods": 40,
+  "classes_with_at_least_one_compiled_method": 15,
+  "fully_supported_classes_certified": 0,
+  "limitations": "Compilación sin evaluar equivalencia, inicializadores, excepciones ni métodos excluidos; no certifica clases completas.",
+  "results": [
+    {
+      "class": "net/minecraft/core/BlockPos",
+      "method": "offset",
+      "descriptor": "(JIII)J",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/core/BlockPos.getX(J)I\n  al compilar net/minecraft/core/BlockPos.offset(JIII)J"
+    },
+    {
+      "class": "net/minecraft/core/BlockPos",
+      "method": "getX",
+      "descriptor": "(J)I",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/core/BlockPos.getX(J)I"
+    },
+    {
+      "class": "net/minecraft/core/BlockPos",
+      "method": "getY",
+      "descriptor": "(J)I",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/core/BlockPos.getY(J)I"
+    },
+    {
+      "class": "net/minecraft/core/BlockPos",
+      "method": "getZ",
+      "descriptor": "(J)I",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/core/BlockPos.getZ(J)I"
+    },
+    {
+      "class": "net/minecraft/core/BlockPos",
+      "method": "asLong",
+      "descriptor": "(III)J",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/core/BlockPos.asLong(III)J"
+    },
+    {
+      "class": "net/minecraft/core/BlockPos",
+      "method": "getFlatIndex",
+      "descriptor": "(J)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "offset",
+      "descriptor": "(JIII)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "x",
+      "descriptor": "(J)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "y",
+      "descriptor": "(J)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "z",
+      "descriptor": "(J)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "blockToSection",
+      "descriptor": "(J)J",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/core/BlockPos.X_OFFSETI\n  al compilar net/minecraft/core/BlockPos.getX(J)I\n  al compilar net/minecraft/core/SectionPos.blockToSection(J)J"
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "getZeroNode",
+      "descriptor": "(II)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "getZeroNode",
+      "descriptor": "(J)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "sectionToChunk",
+      "descriptor": "(J)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "asLong",
+      "descriptor": "(III)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/VarLong",
+      "method": "getByteSize",
+      "descriptor": "(J)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/protocol/game/VecDeltaCodec",
+      "method": "isDeltaTooBig",
+      "descriptor": "(JJJ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/SuppressedExceptionCollector",
+      "method": "currentTimeMs",
+      "descriptor": "()J",
+      "compiled": false,
+      "error": "Error: invokestatic no soportado: java/lang/System.currentTimeMillis()J\n  al compilar net/minecraft/server/SuppressedExceptionCollector.currentTimeMs()J"
+    },
+    {
+      "class": "net/minecraft/server/commands/TimeCommand",
+      "method": "wrapTime",
+      "descriptor": "(J)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ColumnPos",
+      "method": "asLong",
+      "descriptor": "(II)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ColumnPos",
+      "method": "getX",
+      "descriptor": "(J)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ColumnPos",
+      "method": "getZ",
+      "descriptor": "(J)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Crypt$SaltSupplier",
+      "method": "getLong",
+      "descriptor": "()J",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/Crypt$SaltSupplier.getLong()J"
+    },
+    {
+      "class": "net/minecraft/util/LinearCongruentialGenerator",
+      "method": "next",
+      "descriptor": "(JJ)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "clamp",
+      "descriptor": "(JJJ)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "isPowerOfTwo",
+      "descriptor": "(J)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "getSeed",
+      "descriptor": "(III)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "square",
+      "descriptor": "(J)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "roundToward",
+      "descriptor": "(JJ)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "positiveCeilDiv",
+      "descriptor": "(JJ)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/TimeSource",
+      "method": "lambda$constant$0",
+      "descriptor": "(J)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "getMillis",
+      "descriptor": "()J",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/Util.getNanos()J\n  al compilar net/minecraft/util/Util.getMillis()J"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "getNanos",
+      "descriptor": "()J",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/Util.getNanos()J"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "getEpochMillis",
+      "descriptor": "()J",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/util/Util.getEpochMillis()J"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "lambda$static$0",
+      "descriptor": "()J",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/Util.lambda$static$0()J"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ChunkHeightAndBiomeFix",
+      "method": "lambda$getFixedHeightmap$0",
+      "descriptor": "(J)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/Stopwatches",
+      "method": "currentTime",
+      "descriptor": "()J",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/util/Util.timeSourceLnet/minecraft/util/TimeSource$NanoTimeSource;\n  al compilar net/minecraft/util/Util.getNanos()J\n  al compilar net/minecraft/util/Util.getMillis()J\n  al compilar net/minecraft/world/Stopwatches.currentTime()J"
+    },
+    {
+      "class": "net/minecraft/world/clock/ClockTimeMarker",
+      "method": "durationToNext",
+      "descriptor": "(IJJ)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/ChunkPos",
+      "method": "pack",
+      "descriptor": "(II)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/ChunkPos",
+      "method": "fromSectionNode",
+      "descriptor": "(J)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/ChunkPos",
+      "method": "getX",
+      "descriptor": "(J)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/ChunkPos",
+      "method": "getZ",
+      "descriptor": "(J)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/ChunkPos",
+      "method": "getRegionX",
+      "descriptor": "(J)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/ChunkPos",
+      "method": "getRegionZ",
+      "descriptor": "(J)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/biome/BiomeManager",
+      "method": "obfuscateSeed",
+      "descriptor": "(J)J",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/world/level/biome/BiomeManager.obfuscateSeed(J)J"
+    },
+    {
+      "class": "net/minecraft/world/level/entity/EntitySectionStorage",
+      "method": "getChunkKeyFromSectionKey",
+      "descriptor": "(J)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/RandomSupport",
+      "method": "mixStafford13",
+      "descriptor": "(J)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/RandomSupport",
+      "method": "generateUniqueSeed",
+      "descriptor": "()J",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/level/levelgen/RandomSupport.generateUniqueSeed()J"
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/RandomSupport",
+      "method": "lambda$generateUniqueSeed$0",
+      "descriptor": "(J)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/WorldOptions",
+      "method": "randomSeed",
+      "descriptor": "()J",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/world/level/levelgen/WorldOptions.randomSeed()J"
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LightEngine$QueueEntry",
+      "method": "decreaseAllDirections",
+      "descriptor": "(I)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LightEngine$QueueEntry",
+      "method": "increaseLightFromEmission",
+      "descriptor": "(IZ)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LightEngine$QueueEntry",
+      "method": "increaseSkySourceInDirections",
+      "descriptor": "(ZZZZZ)J",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/core/Direction.DOWNLnet/minecraft/core/Direction;\n  al compilar net/minecraft/world/level/lighting/LightEngine$QueueEntry.increaseSkySourceInDirections(ZZZZZ)J"
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LightEngine$QueueEntry",
+      "method": "getFromLevel",
+      "descriptor": "(J)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LightEngine$QueueEntry",
+      "method": "isFromEmptyShape",
+      "descriptor": "(J)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LightEngine$QueueEntry",
+      "method": "isIncreaseFromEmission",
+      "descriptor": "(J)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LightEngine$QueueEntry",
+      "method": "withLevel",
+      "descriptor": "(JI)J",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/SpatialLongSet$InternalMap",
+      "method": "getOuterKey",
+      "descriptor": "(J)J",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/level/lighting/SpatialLongSet$InternalMap.getOuterKey(J)J"
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/SpatialLongSet$InternalMap",
+      "method": "getInnerKey",
+      "descriptor": "(J)I",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/level/lighting/SpatialLongSet$InternalMap.getInnerKey(J)I"
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/SpatialLongSet$InternalMap",
+      "method": "getFullKey",
+      "descriptor": "(JI)J",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/level/lighting/SpatialLongSet$InternalMap.getFullKey(JI)J"
+    },
+    {
+      "class": "net/minecraft/world/level/pathfinder/PathTypeCache",
+      "method": "index",
+      "descriptor": "(J)I",
+      "compiled": false,
+      "error": "Error: clase no encontrada en versiones ni bibliotecas: it/unimi/dsi/fastutil/HashCommon.class\n  al compilar net/minecraft/world/level/pathfinder/PathTypeCache.index(J)I"
+    },
+    {
+      "class": "net/minecraft/world/level/storage/loot/providers/number/ints/ContextIntProvider",
+      "method": "longToIntSafe",
+      "descriptor": "(J)I",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/world/level/storage/loot/providers/number/ints/ContextIntProvider.longToIntSafe(J)I"
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/Shapes",
+      "method": "lcm",
+      "descriptor": "(II)J",
+      "compiled": false,
+      "error": "Error: clase no encontrada en versiones ni bibliotecas: com/google/common/math/IntMath.class\n  al compilar net/minecraft/world/phys/shapes/Shapes.lcm(II)J"
+    }
+  ]
+}

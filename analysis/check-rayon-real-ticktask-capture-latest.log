@@ -1,0 +1,1 @@
+OK: 28 resultados Java/ForkJoinPool frente a Rayon con TickTask.run/getTick y QuartPos oficiales; TickTask y Runnable anidado materializados, cuatro capturas comparten objeto, monitores, overflow y 6 guardas; backend concurrente aislado

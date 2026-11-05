@@ -1,0 +1,2085 @@
+warning: unnecessary braces around function argument
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:10764:59
+      |
+10764 | ...stack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=20; }
+      |                            ^                                                                           ^
+      |
+      = note: `#[warn(unused_braces)]` (part of `#[warn(unused)]`) on by default
+help: remove these braces
+      |
+10764 -         17 => { let x0=pop_r(&mut stack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=20; }
+10764 +         17 => { let x0=pop_r(&mut stack); stack.push(V::R(error("DateTimeFormatter.ofPattern: locale predeterminada no implementada"))); pc=20; }
+      |
+
+warning: unnecessary braces around function argument
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:10798:33
+      |
+10798 |         81 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=84; }
+      |                                 ^                                                                  ^
+      |
+help: remove these braces
+      |
+10798 -         81 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=84; }
+10798 +         81 => { stack.push(V::R(error("ZoneId.systemDefault: zona predeterminada no implementada"))); pc=84; }
+      |
+
+warning: unnecessary braces around function argument
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:10805:59
+      |
+10805 |         97 => { let x0=pop_r(&mut stack); stack.push(V::R({error("ZoneId.of: zona no implementada")})); pc=100; }
+      |                                                           ^                                        ^
+      |
+help: remove these braces
+      |
+10805 -         97 => { let x0=pop_r(&mut stack); stack.push(V::R({error("ZoneId.of: zona no implementada")})); pc=100; }
+10805 +         97 => { let x0=pop_r(&mut stack); stack.push(V::R(error("ZoneId.of: zona no implementada"))); pc=100; }
+      |
+
+warning: unnecessary braces around function argument
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:18325:58
+      |
+18325 | ...stack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=6; }
+      |                            ^                                                                           ^
+      |
+help: remove these braces
+      |
+18325 -         3 => { let x0=pop_r(&mut stack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=6; }
+18325 +         3 => { let x0=pop_r(&mut stack); stack.push(V::R(error("DateTimeFormatter.ofPattern: locale predeterminada no implementada"))); pc=6; }
+      |
+
+warning: unnecessary braces around function argument
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:18326:32
+      |
+18326 |         6 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=9; }
+      |                                ^                                                                  ^
+      |
+help: remove these braces
+      |
+18326 -         6 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=9; }
+18326 +         6 => { stack.push(V::R(error("ZoneId.systemDefault: zona predeterminada no implementada"))); pc=9; }
+      |
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2812:183
+     |
+2812 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+     |
+     = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2813:172
+     |
+2813 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2814:183
+     |
+2814 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2815:200
+     |
+2815 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2816:183
+     |
+2816 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2817:183
+     |
+2817 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2818:200
+     |
+2818 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2819:183
+     |
+2819 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2820:189
+     |
+2820 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2821:223
+     |
+2821 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2822:207
+     |
+2822 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2823:207
+     |
+2823 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2824:174
+     |
+2824 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2825:224
+     |
+2825 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2826:218
+     |
+2826 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2827:184
+     |
+2827 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2828:218
+     |
+2828 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2830:201
+     |
+2830 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2831:218
+     |
+2831 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2832:218
+     |
+2832 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2833:218
+     |
+2833 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2834:201
+     |
+2834 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2835:218
+     |
+2835 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2836:191
+     |
+2836 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2837:201
+     |
+2837 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2838:218
+     |
+2838 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2839:201
+     |
+2839 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2840:207
+     |
+2840 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2841:224
+     |
+2841 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2842:201
+     |
+2842 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2843:191
+     |
+2843 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2844:207
+     |
+2844 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2845:191
+     |
+2845 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2848:184
+     |
+2848 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2849:224
+     |
+2849 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2850:207
+     |
+2850 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2851:224
+     |
+2851 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2852:184
+     |
+2852 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2853:190
+     |
+2853 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2854:207
+     |
+2854 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2855:241
+     |
+2855 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2856:190
+     |
+2856 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2857:190
+     |
+2857 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2859:207
+     |
+2859 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2860:207
+     |
+2860 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2861:174
+     |
+2861 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2862:276
+     |
+2862 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2863:190
+     |
+2863 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2866:207
+     |
+2866 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2867:242
+     |
+2867 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2868:201
+     |
+2868 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2869:258
+     |
+2869 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2870:275
+     |
+2870 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2871:191
+     |
+2871 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2872:201
+     |
+2872 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2873:191
+     |
+2873 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2874:241
+     |
+2874 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2875:201
+     |
+2875 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2876:201
+     |
+2876 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2877:184
+     |
+2877 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2878:173
+     |
+2878 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2879:235
+     |
+2879 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2880:184
+     |
+2880 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2881:218
+     |
+2881 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2882:252
+     |
+2882 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2883:201
+     |
+2883 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2884:218
+     |
+2884 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2885:184
+     |
+2885 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2886:184
+     |
+2886 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2887:258
+     |
+2887 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2888:286
+     |
+2888 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2889:190
+     |
+2889 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2890:269
+     |
+2890 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2891:184
+     |
+2891 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2892:184
+     |
+2892 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2893:181
+     |
+2893 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2894:170
+     |
+2894 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2895:181
+     |
+2895 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2896:181
+     |
+2896 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2897:187
+     |
+2897 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2898:181
+     |
+2898 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2899:181
+     |
+2899 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2900:171
+     |
+2900 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2901:171
+     |
+2901 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2902:171
+     |
+2902 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2903:182
+     |
+2903 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2904:189
+     |
+2904 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2905:188
+     |
+2905 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2906:171
+     |
+2906 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2907:182
+     |
+2907 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2908:199
+     |
+2908 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2909:182
+     |
+2909 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2910:199
+     |
+2910 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2911:172
+     |
+2911 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2912:172
+     |
+2912 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2913:182
+     |
+2913 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2914:182
+     |
+2914 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2915:199
+     |
+2915 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2916:216
+     |
+2916 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2917:172
+     |
+2917 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2918:256
+     |
+2918 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2919:189
+     |
+2919 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2920:172
+     |
+2920 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2921:182
+     |
+2921 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2922:182
+     |
+2922 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2923:182
+     |
+2923 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2924:199
+     |
+2924 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2925:196
+     |
+2925 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2926:216
+     |
+2926 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2927:182
+     |
+2927 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2928:189
+     |
+2928 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2929:182
+     |
+2929 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2930:182
+     |
+2930 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2931:216
+     |
+2931 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2932:205
+     |
+2932 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2933:274
+     |
+2933 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2934:199
+     |
+2934 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2935:216
+     |
+2935 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2936:178
+     |
+2936 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2937:188
+     |
+2937 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2938:188
+     |
+2938 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2939:188
+     |
+2939 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2940:188
+     |
+2940 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2941:188
+     |
+2941 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2942:188
+     |
+2942 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2943:188
+     |
+2943 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2944:188
+     |
+2944 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2945:256
+     |
+2945 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2946:182
+     |
+2946 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2947:273
+     |
+2947 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2948:256
+     |
+2948 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2949:290
+     |
+2949 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2950:182
+     |
+2950 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2951:182
+     |
+2951 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2952:182
+     |
+2952 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2953:182
+     |
+2953 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2954:182
+     |
+2954 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2955:240
+     |
+2955 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2956:240
+     |
+2956 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2957:256
+     |
+2957 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2958:257
+     |
+2958 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2959:273
+     |
+2959 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2960:240
+     |
+2960 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2961:256
+     |
+2961 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2962:274
+     |
+2962 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2963:290
+     |
+2963 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2964:172
+     |
+2964 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2965:216
+     |
+2965 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2966:172
+     |
+2966 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2967:199
+     |
+2967 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2968:222
+     |
+2968 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2969:273
+     |
+2969 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2970:273
+     |
+2970 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2971:216
+     |
+2971 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2972:222
+     |
+2972 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2973:240
+     |
+2973 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2974:199
+     |
+2974 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2975:188
+     |
+2975 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2976:196
+     |
+2976 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2977:216
+     |
+2977 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2978:182
+     |
+2978 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2979:233
+     |
+2979 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2980:216
+     |
+2980 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2981:250
+     |
+2981 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2982:256
+     |
+2982 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2983:324
+     |
+2983 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2984:182
+     |
+2984 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2985:182
+     |
+2985 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2986:216
+     |
+2986 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2987:307
+     |
+2987 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2988:308
+     |
+2988 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2989:324
+     |
+2989 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2990:188
+     |
+2990 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2991:291
+     |
+2991 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2992:307
+     |
+2992 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2993:285
+     |
+2993 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:2994:268
+     |
+2994 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable statement
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:4311:73
+     |
+4311 |         44 => { let r=pop_r(&mut stack);empty_enumeration_next(heap,r); pc=49; }
+     |                                         ------------------------------  ^^^^^^ unreachable statement
+     |                                         |
+     |                                         any code following this expression is unreachable
+
+warning: unreachable call
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:10764:54
+      |
+10764 | ...ack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=20; }
+      |                     ^^^^  --------------------------------------------------------------------------- any code following this expression is unreachable
+      |                     |
+      |                     unreachable call
+
+warning: unreachable call
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:10798:28
+      |
+10798 |         81 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=84; }
+      |                            ^^^^  ------------------------------------------------------------------ any code following this expression is unreachable
+      |                            |
+      |                            unreachable call
+
+warning: unreachable call
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:10805:54
+      |
+10805 |         97 => { let x0=pop_r(&mut stack); stack.push(V::R({error("ZoneId.of: zona no implementada")})); pc=100; }
+      |                                                      ^^^^  ---------------------------------------- any code following this expression is unreachable
+      |                                                      |
+      |                                                      unreachable call
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:10837:79
+      |
+10837 |         157 => { error("DateTimeFormatter.withZone: zonas no implementadas"); pc=160; }
+      |                  -----------------------------------------------------------  ^^^^^^^ unreachable statement
+      |                  |
+      |                  any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:11603:77
+      |
+11603 |         5 => { error("CopyOnWriteArrayList: concurrencia no implementada"); pc=8; }
+      |                -----------------------------------------------------------  ^^^^^ unreachable statement
+      |                |
+      |                any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:11605:77
+      |
+11605 |         9 => { error("CopyOnWriteArrayList: concurrencia no implementada"); pc=12; }
+      |                -----------------------------------------------------------  ^^^^^^ unreachable statement
+      |                |
+      |                any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:12024:121
+      |
+12024 |         1 => { let r=pop_r(&mut stack);array_id(heap,r);error("SecurityManager.getClassContext: pila JDK no modelada"); pc=4; }
+      |                                                         --------------------------------------------------------------  ^^^^^ unreachable statement
+      |                                                         |
+      |                                                         any code following this expression is unreachable
+
+warning: unreachable expression
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:12893:163
+      |
+12893 | ...k.push(V::R({ error("Log4j OSGi: rama inalcanzable ejecutada"); None })); pc=58; }
+      |                  ------------------------------------------------  ^^^^ unreachable expression
+      |                  |
+      |                  any code following this expression is unreachable
+
+warning: unreachable expression
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:12894:137
+      |
+12894 | ...k.push(V::R({ error("Log4j OSGi: rama inalcanzable ejecutada"); None })); pc=61; }
+      |                  ------------------------------------------------  ^^^^ unreachable expression
+      |                  |
+      |                  any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:13124:74
+      |
+13124 |         111 => { let r=pop_r(&mut stack);empty_enumeration_next(heap,r); pc=116; }
+      |                                          ------------------------------  ^^^^^^^ unreachable statement
+      |                                          |
+      |                                          any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:13406:100
+      |
+13406 |         1 => { let r=pop_r(&mut stack);array_id(heap,r);error("URL.openStream: URL no soportada"); pc=4; }
+      |                                                         -----------------------------------------  ^^^^^ unreachable statement
+      |                                                         |
+      |                                                         any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:13589:101
+      |
+13589 |         41 => { let r=pop_r(&mut stack);array_id(heap,r);error("URL.openStream: URL no soportada"); pc=44; }
+      |                                                          -----------------------------------------  ^^^^^^ unreachable statement
+      |                                                          |
+      |                                                          any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:13939:58
+      |
+13939 |         164 => { error("new PrintStream: no soportado"); pc=167; }
+      |                  --------------------------------------  ^^^^^^^ unreachable statement
+      |                  |
+      |                  any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:13941:63
+      |
+13941 |         168 => { error("new FileOutputStream: no soportado"); pc=171; }
+      |                  -------------------------------------------  ^^^^^^^ unreachable statement
+      |                  |
+      |                  any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:13944:67
+      |
+13944 |         173 => { error("FileOutputStream(String): no soportado"); pc=176; }
+      |                  -----------------------------------------------  ^^^^^^^ unreachable statement
+      |                  |
+      |                  any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:13945:68
+      |
+13945 |         176 => { error("PrintStream(OutputStream): no soportado"); pc=179; }
+      |                  ------------------------------------------------  ^^^^^^^ unreachable statement
+      |                  |
+      |                  any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:17791:63
+      |
+17791 |         138 => { error("new SimpleDateFormat: no soportado"); pc=141; }
+      |                  -------------------------------------------  ^^^^^^^ unreachable statement
+      |                  |
+      |                  any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:17794:67
+      |
+17794 |         144 => { error("SimpleDateFormat(String): no soportado"); pc=147; }
+      |                  -----------------------------------------------  ^^^^^^^ unreachable statement
+      |                  |
+      |                  any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:17798:63
+      |
+17798 |         154 => { error("new SimpleDateFormat: no soportado"); pc=157; }
+      |                  -------------------------------------------  ^^^^^^^ unreachable statement
+      |                  |
+      |                  any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:17801:67
+      |
+17801 |         160 => { error("SimpleDateFormat(String): no soportado"); pc=163; }
+      |                  -----------------------------------------------  ^^^^^^^ unreachable statement
+      |                  |
+      |                  any code following this expression is unreachable
+
+warning: unreachable call
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:18325:53
+      |
+18325 | ...ack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=6; }
+      |                     ^^^^  --------------------------------------------------------------------------- any code following this expression is unreachable
+      |                     |
+      |                     unreachable call
+
+warning: unreachable call
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:18326:27
+      |
+18326 |         6 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=9; }
+      |                           ^^^^  ------------------------------------------------------------------ any code following this expression is unreachable
+      |                           |
+      |                           unreachable call
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:18327:77
+      |
+18327 |         9 => { error("DateTimeFormatter.withZone: zonas no implementadas"); pc=12; }
+      |                -----------------------------------------------------------  ^^^^^^ unreachable statement
+      |                |
+      |                any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:19719:87
+      |
+19719 |         0 => { error("new WeakHashMap: semántica de claves débiles no implementada"); pc=3; }
+      |                ---------------------------------------------------------------------  ^^^^^ unreachable statement
+      |                |
+      |                any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:19721:85
+      |
+19721 |         4 => { error("WeakHashMap(): semántica de claves débiles no implementada"); pc=7; }
+      |                -------------------------------------------------------------------  ^^^^^ unreachable statement
+      |                |
+      |                any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:20488:97
+      |
+20488 |         121 => { error("StringBuilder.append(double): representación decimal no implementada"); pc=124; }
+      |                  -----------------------------------------------------------------------------  ^^^^^^^ unreachable statement
+      |                  |
+      |                  any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:20528:96
+      |
+20528 |         209 => { error("StringBuilder.append(float): representación decimal no implementada"); pc=212; }
+      |                  ----------------------------------------------------------------------------  ^^^^^^^ unreachable statement
+      |                  |
+      |                  any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:20581:89
+      |
+20581 |         20 => { error("DateTimeFormatter.formatTo: formateo de fecha no implementado"); pc=23; }
+      |                 ----------------------------------------------------------------------  ^^^^^^ unreachable statement
+      |                 |
+      |                 any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:20861:95
+      |
+20861 |         25 => { error("StringBuilder.append(float): representación decimal no implementada"); pc=28; }
+      |                 ----------------------------------------------------------------------------  ^^^^^^ unreachable statement
+      |                 |
+      |                 any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:20874:95
+      |
+20874 |         46 => { error("StringBuilder.append(float): representación decimal no implementada"); pc=49; }
+      |                 ----------------------------------------------------------------------------  ^^^^^^ unreachable statement
+      |                 |
+      |                 any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:20911:96
+      |
+20911 |         25 => { error("StringBuilder.append(double): representación decimal no implementada"); pc=28; }
+      |                 -----------------------------------------------------------------------------  ^^^^^^ unreachable statement
+      |                 |
+      |                 any code following this expression is unreachable
+
+warning: unreachable statement
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:20924:96
+      |
+20924 |         46 => { error("StringBuilder.append(double): representación decimal no implementada"); pc=49; }
+      |                 -----------------------------------------------------------------------------  ^^^^^^ unreachable statement
+      |                 |
+      |                 any code following this expression is unreachable
+
+warning: comparison is useless due to type limits
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:4033:164
+     |
+4033 | ...ef::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<18 && exception_matches(e.kind,"java/util/ServiceConfi...
+     |                                                                 ^^^^^
+     |
+     = note: `#[warn(unused_comparisons)]` on by default
+
+warning: comparison is useless due to type limits
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:4715:164
+     |
+4715 | ...ef::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<86 && exception_matches(e.kind,"java/lang/Exception") ...
+     |                                                                 ^^^^^
+
+warning: comparison is useless due to type limits
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:4778:164
+     |
+4778 | ...ef::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<103 && exception_matches(e.kind,"java/lang/Throwable")...
+     |                                                                 ^^^^^
+
+warning: comparison is useless due to type limits
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:4946:164
+     |
+4946 | ...ef::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<8 && exception_matches(e.kind,"java/lang/SecurityExcep...
+     |                                                                 ^^^^^
+
+warning: comparison is useless due to type limits
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:5428:164
+     |
+5428 | ...ef::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<17 && exception_matches(e.kind,"java/lang/LinkageError...
+     |                                                                 ^^^^^
+
+warning: comparison is useless due to type limits
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:5429:22
+     |
+5429 | if next.is_none() && pc>=0 && pc<17 && exception_matches(e.kind,"java/lang/Exception") {next=Some(21);}
+     |                      ^^^^^
+
+warning: comparison is useless due to type limits
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:5483:164
+     |
+5483 | ...ef::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<17 && exception_matches(e.kind,"java/lang/LinkageError...
+     |                                                                 ^^^^^
+
+warning: comparison is useless due to type limits
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:5484:22
+     |
+5484 | if next.is_none() && pc>=0 && pc<17 && exception_matches(e.kind,"java/lang/Exception") {next=Some(21);}
+     |                      ^^^^^
+
+warning: comparison is useless due to type limits
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:5538:164
+     |
+5538 | ...ef::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<17 && exception_matches(e.kind,"java/lang/LinkageError...
+     |                                                                 ^^^^^
+
+warning: comparison is useless due to type limits
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:5539:22
+     |
+5539 | if next.is_none() && pc>=0 && pc<17 && exception_matches(e.kind,"java/lang/Exception") {next=Some(21);}
+     |                      ^^^^^
+
+warning: comparison is useless due to type limits
+    --> /var/tmp/mc-eula-real-3ye33uir/native.rs:9803:22
+     |
+9803 | if next.is_none() && pc>=0 && pc<45 && exception_matches(e.kind,"java/lang/Exception") {next=Some(67);}
+     |                      ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:12822:164
+      |
+12822 | ...f::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<42 && exception_matches(e.kind,"java/lang/ClassNotFoun...
+      |                                                                ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:12823:22
+      |
+12823 | if next.is_none() && pc>=0 && pc<42 && exception_matches(e.kind,"java/lang/NoSuchMethodException") {next=Some(43);}
+      |                      ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:12824:22
+      |
+12824 | if next.is_none() && pc>=0 && pc<42 && exception_matches(e.kind,"java/lang/LinkageError") {next=Some(43);}
+      |                      ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:12825:22
+      |
+12825 | if next.is_none() && pc>=0 && pc<42 && exception_matches(e.kind,"java/lang/Throwable") {next=Some(46);}
+      |                      ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:13034:164
+      |
+13034 | ...f::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<24 && exception_matches(e.kind,"java/lang/SecurityExce...
+      |                                                                ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:13426:164
+      |
+13426 | ...f::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<22 && exception_matches(e.kind,"java/io/IOException") ...
+      |                                                                ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:14641:164
+      |
+14641 | ...f::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<16 && exception_matches(e.kind,"java/lang/IllegalState...
+      |                                                                ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:16186:164
+      |
+16186 | ...f::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<14 && exception_matches(e.kind,"java/lang/IllegalState...
+      |                                                                ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:17323:164
+      |
+17323 | ...f::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<7 && exception_matches(e.kind,"java/util/NoSuchElement...
+      |                                                                ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:17408:164
+      |
+17408 | ...f::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<13 && exception_matches(e.kind,"java/lang/Throwable") ...
+      |                                                                ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:17476:164
+      |
+17476 | ...f::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<19 && exception_matches(e.kind,"") {next=Some(25);}
+      |                                                                ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:17569:164
+      |
+17569 | ...f::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<11 && exception_matches(e.kind,"") {next=Some(19);}
+      |                                                                ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:18181:164
+      |
+18181 | ...f::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<12 && exception_matches(e.kind,"java/lang/Throwable") ...
+      |                                                                ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:20066:164
+      |
+20066 | ...f::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<6 && exception_matches(e.kind,"java/lang/ClassNotFound...
+      |                                                                ^^^^^
+
+warning: comparison is useless due to type limits
+     --> /var/tmp/mc-eula-real-3ye33uir/native.rs:21563:164
+      |
+21563 | ...f::<JException>() { let mut next=None; if next.is_none() && pc>=0 && pc<9 && exception_matches(e.kind,"java/lang/Throwable") {...
+      |                                                                ^^^^^
+
+warning: 241 warnings emitted
+
+compile_exit= 0
+Java: 0 '1\n' OpenJDK 64-Bit Server VM warning: Option FlightRecorder was deprecated in version 13.0 and will likely be removed in a future release.
+
+native: 2 '' ServiceLoader: proveedor no registrado para reflexión
+

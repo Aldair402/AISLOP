@@ -1,0 +1,8 @@
+{
+  "compiled_methods_in_audit": 40,
+  "methods_compared": 40,
+  "comparisons": 960,
+  "arithmetic_errors_compared_by_category": 2,
+  "skipped_java_errors": {},
+  "limitations": "Muestras acotadas de métodos compilados; errores aritméticos por categoría, no excepciones capturables. No prueba inicialización equivalente, métodos excluidos ni clases completas."
+}

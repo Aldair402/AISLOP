@@ -1,0 +1,1201 @@
+{
+  "jar": "minecraft-rust/downloads/server-26.3-inner.jar",
+  "classes": 7762,
+  "methods_with_code": 69821,
+  "instructions": 1315735,
+  "opcodes": [
+    {
+      "opcode": "0xb6",
+      "name": "invokevirtual",
+      "count": 135311
+    },
+    {
+      "opcode": "0x2a",
+      "name": "aload_0",
+      "count": 134140
+    },
+    {
+      "opcode": "0xb8",
+      "name": "invokestatic",
+      "count": 86433
+    },
+    {
+      "opcode": "0xb2",
+      "name": "getstatic",
+      "count": 76833
+    },
+    {
+      "opcode": "0x2b",
+      "name": "aload_1",
+      "count": 56093
+    },
+    {
+      "opcode": "0x13",
+      "name": "ldc_w",
+      "count": 52091
+    },
+    {
+      "opcode": "0xb4",
+      "name": "getfield",
+      "count": 47429
+    },
+    {
+      "opcode": "0x19",
+      "name": "aload",
+      "count": 45687
+    },
+    {
+      "opcode": "0xb9",
+      "name": "invokeinterface",
+      "count": 38873
+    },
+    {
+      "opcode": "0x59",
+      "name": "dup",
+      "count": 37953
+    },
+    {
+      "opcode": "0xb0",
+      "name": "areturn",
+      "count": 35057
+    },
+    {
+      "opcode": "0x12",
+      "name": "ldc",
+      "count": 33004
+    },
+    {
+      "opcode": "0x2c",
+      "name": "aload_2",
+      "count": 29739
+    },
+    {
+      "opcode": "0xb7",
+      "name": "invokespecial",
+      "count": 27416
+    },
+    {
+      "opcode": "0xba",
+      "name": "invokedynamic",
+      "count": 25614
+    },
+    {
+      "opcode": "0xb1",
+      "name": "return",
+      "count": 24185
+    },
+    {
+      "opcode": "0x03",
+      "name": "iconst_0",
+      "count": 22976
+    },
+    {
+      "opcode": "0x04",
+      "name": "iconst_1",
+      "count": 22765
+    },
+    {
+      "opcode": "0xb3",
+      "name": "putstatic",
+      "count": 19866
+    },
+    {
+      "opcode": "0x10",
+      "name": "bipush",
+      "count": 19300
+    },
+    {
+      "opcode": "0xc0",
+      "name": "checkcast",
+      "count": 18376
+    },
+    {
+      "opcode": "0x2d",
+      "name": "aload_3",
+      "count": 18115
+    },
+    {
+      "opcode": "0x53",
+      "name": "aastore",
+      "count": 18108
+    },
+    {
+      "opcode": "0xbb",
+      "name": "new",
+      "count": 17702
+    },
+    {
+      "opcode": "0xb5",
+      "name": "putfield",
+      "count": 17043
+    },
+    {
+      "opcode": "0xac",
+      "name": "ireturn",
+      "count": 16989
+    },
+    {
+      "opcode": "0x99",
+      "name": "ifeq",
+      "count": 16605
+    },
+    {
+      "opcode": "0x15",
+      "name": "iload",
+      "count": 16478
+    },
+    {
+      "opcode": "0x3a",
+      "name": "astore",
+      "count": 16283
+    },
+    {
+      "opcode": "0xa7",
+      "name": "goto",
+      "count": 15555
+    },
+    {
+      "opcode": "0x57",
+      "name": "pop",
+      "count": 12546
+    },
+    {
+      "opcode": "0x9a",
+      "name": "ifne",
+      "count": 7865
+    },
+    {
+      "opcode": "0x36",
+      "name": "istore",
+      "count": 6825
+    },
+    {
+      "opcode": "0x05",
+      "name": "iconst_2",
+      "count": 6669
+    },
+    {
+      "opcode": "0xbd",
+      "name": "anewarray",
+      "count": 5631
+    },
+    {
+      "opcode": "0x14",
+      "name": "ldc2_w",
+      "count": 5495
+    },
+    {
+      "opcode": "0x1b",
+      "name": "iload_1",
+      "count": 5265
+    },
+    {
+      "opcode": "0x1c",
+      "name": "iload_2",
+      "count": 5226
+    },
+    {
+      "opcode": "0x06",
+      "name": "iconst_3",
+      "count": 4311
+    },
+    {
+      "opcode": "0x4d",
+      "name": "astore_2",
+      "count": 4220
+    },
+    {
+      "opcode": "0x4e",
+      "name": "astore_3",
+      "count": 4185
+    },
+    {
+      "opcode": "0x11",
+      "name": "sipush",
+      "count": 4164
+    },
+    {
+      "opcode": "0x18",
+      "name": "dload",
+      "count": 4085
+    },
+    {
+      "opcode": "0x1d",
+      "name": "iload_3",
+      "count": 3977
+    },
+    {
+      "opcode": "0x60",
+      "name": "iadd",
+      "count": 3690
+    },
+    {
+      "opcode": "0x07",
+      "name": "iconst_4",
+      "count": 3559
+    },
+    {
+      "opcode": "0x08",
+      "name": "iconst_5",
+      "count": 2792
+    },
+    {
+      "opcode": "0xc6",
+      "name": "ifnull",
+      "count": 2742
+    },
+    {
+      "opcode": "0x01",
+      "name": "aconst_null",
+      "count": 2725
+    },
+    {
+      "opcode": "0x17",
+      "name": "fload",
+      "count": 2511
+    },
+    {
+      "opcode": "0x64",
+      "name": "isub",
+      "count": 2401
+    },
+    {
+      "opcode": "0x84",
+      "name": "iinc",
+      "count": 2367
+    },
+    {
+      "opcode": "0x4c",
+      "name": "astore_1",
+      "count": 2350
+    },
+    {
+      "opcode": "0x0c",
+      "name": "fconst_1",
+      "count": 2150
+    },
+    {
+      "opcode": "0xa2",
+      "name": "if_icmpge",
+      "count": 2078
+    },
+    {
+      "opcode": "0x39",
+      "name": "dstore",
+      "count": 1990
+    },
+    {
+      "opcode": "0xc1",
+      "name": "instanceof",
+      "count": 1927
+    },
+    {
+      "opcode": "0xbf",
+      "name": "athrow",
+      "count": 1871
+    },
+    {
+      "opcode": "0x63",
+      "name": "dadd",
+      "count": 1755
+    },
+    {
+      "opcode": "0x87",
+      "name": "i2d",
+      "count": 1723
+    },
+    {
+      "opcode": "0x6b",
+      "name": "dmul",
+      "count": 1711
+    },
+    {
+      "opcode": "0x0e",
+      "name": "dconst_0",
+      "count": 1672
+    },
+    {
+      "opcode": "0xa6",
+      "name": "if_acmpne",
+      "count": 1652
+    },
+    {
+      "opcode": "0x6a",
+      "name": "fmul",
+      "count": 1605
+    },
+    {
+      "opcode": "0x0b",
+      "name": "fconst_0",
+      "count": 1585
+    },
+    {
+      "opcode": "0x8d",
+      "name": "f2d",
+      "count": 1564
+    },
+    {
+      "opcode": "0x38",
+      "name": "fstore",
+      "count": 1315
+    },
+    {
+      "opcode": "0xc7",
+      "name": "ifnonnull",
+      "count": 1277
+    },
+    {
+      "opcode": "0xae",
+      "name": "freturn",
+      "count": 1244
+    },
+    {
+      "opcode": "0x1a",
+      "name": "iload_0",
+      "count": 1227
+    },
+    {
+      "opcode": "0x9e",
+      "name": "ifle",
+      "count": 1198
+    },
+    {
+      "opcode": "0x67",
+      "name": "dsub",
+      "count": 1146
+    },
+    {
+      "opcode": "0x4f",
+      "name": "iastore",
+      "count": 1135
+    },
+    {
+      "opcode": "0x3e",
+      "name": "istore_3",
+      "count": 1132
+    },
+    {
+      "opcode": "0xa0",
+      "name": "if_icmpne",
+      "count": 1061
+    },
+    {
+      "opcode": "0x23",
+      "name": "fload_1",
+      "count": 1011
+    },
+    {
+      "opcode": "0x3d",
+      "name": "istore_2",
+      "count": 979
+    },
+    {
+      "opcode": "0x9c",
+      "name": "ifge",
+      "count": 933
+    },
+    {
+      "opcode": "0xbe",
+      "name": "arraylength",
+      "count": 897
+    },
+    {
+      "opcode": "0x32",
+      "name": "aaload",
+      "count": 895
+    },
+    {
+      "opcode": "0x24",
+      "name": "fload_2",
+      "count": 862
+    },
+    {
+      "opcode": "0x0f",
+      "name": "dconst_1",
+      "count": 839
+    },
+    {
+      "opcode": "0x62",
+      "name": "fadd",
+      "count": 836
+    },
+    {
+      "opcode": "0x02",
+      "name": "iconst_m1",
+      "count": 818
+    },
+    {
+      "opcode": "0x68",
+      "name": "imul",
+      "count": 805
+    },
+    {
+      "opcode": "0x86",
+      "name": "i2f",
+      "count": 798
+    },
+    {
+      "opcode": "0x25",
+      "name": "fload_3",
+      "count": 733
+    },
+    {
+      "opcode": "0xa3",
+      "name": "if_icmpgt",
+      "count": 700
+    },
+    {
+      "opcode": "0x4b",
+      "name": "astore_0",
+      "count": 690
+    },
+    {
+      "opcode": "0xa5",
+      "name": "if_acmpeq",
+      "count": 663
+    },
+    {
+      "opcode": "0x1f",
+      "name": "lload_1",
+      "count": 641
+    },
+    {
+      "opcode": "0x29",
+      "name": "dload_3",
+      "count": 638
+    },
+    {
+      "opcode": "0x66",
+      "name": "fsub",
+      "count": 623
+    },
+    {
+      "opcode": "0x9f",
+      "name": "if_icmpeq",
+      "count": 620
+    },
+    {
+      "opcode": "0xa1",
+      "name": "if_icmplt",
+      "count": 613
+    },
+    {
+      "opcode": "0x27",
+      "name": "dload_1",
+      "count": 604
+    },
+    {
+      "opcode": "0x97",
+      "name": "dcmpl",
+      "count": 599
+    },
+    {
+      "opcode": "0xa4",
+      "name": "if_icmple",
+      "count": 596
+    },
+    {
+      "opcode": "0x16",
+      "name": "lload",
+      "count": 578
+    },
+    {
+      "opcode": "0x28",
+      "name": "dload_2",
+      "count": 566
+    },
+    {
+      "opcode": "0x9b",
+      "name": "iflt",
+      "count": 534
+    },
+    {
+      "opcode": "0x98",
+      "name": "dcmpg",
+      "count": 529
+    },
+    {
+      "opcode": "0xaf",
+      "name": "dreturn",
+      "count": 528
+    },
+    {
+      "opcode": "0x21",
+      "name": "lload_3",
+      "count": 525
+    },
+    {
+      "opcode": "0x95",
+      "name": "fcmpl",
+      "count": 514
+    },
+    {
+      "opcode": "0xbc",
+      "name": "newarray",
+      "count": 505
+    },
+    {
+      "opcode": "0x3c",
+      "name": "istore_1",
+      "count": 502
+    },
+    {
+      "opcode": "0x7e",
+      "name": "iand",
+      "count": 470
+    },
+    {
+      "opcode": "0x22",
+      "name": "fload_0",
+      "count": 447
+    },
+    {
+      "opcode": "0x96",
+      "name": "fcmpg",
+      "count": 446
+    },
+    {
+      "opcode": "0x6f",
+      "name": "ddiv",
+      "count": 436
+    },
+    {
+      "opcode": "0x6e",
+      "name": "fdiv",
+      "count": 431
+    },
+    {
+      "opcode": "0x9d",
+      "name": "ifgt",
+      "count": 420
+    },
+    {
+      "opcode": "0x0d",
+      "name": "fconst_2",
+      "count": 418
+    },
+    {
+      "opcode": "0x85",
+      "name": "i2l",
+      "count": 380
+    },
+    {
+      "opcode": "0x94",
+      "name": "lcmp",
+      "count": 375
+    },
+    {
+      "opcode": "0x90",
+      "name": "d2f",
+      "count": 374
+    },
+    {
+      "opcode": "0x2e",
+      "name": "iaload",
+      "count": 335
+    },
+    {
+      "opcode": "0x09",
+      "name": "lconst_0",
+      "count": 323
+    },
+    {
+      "opcode": "0xaa",
+      "name": "tableswitch",
+      "count": 302
+    },
+    {
+      "opcode": "0xad",
+      "name": "lreturn",
+      "count": 289
+    },
+    {
+      "opcode": "0x37",
+      "name": "lstore",
+      "count": 286
+    },
+    {
+      "opcode": "0x20",
+      "name": "lload_2",
+      "count": 272
+    },
+    {
+      "opcode": "0x80",
+      "name": "ior",
+      "count": 266
+    },
+    {
+      "opcode": "0x52",
+      "name": "dastore",
+      "count": 225
+    },
+    {
+      "opcode": "0x45",
+      "name": "fstore_2",
+      "count": 224
+    },
+    {
+      "opcode": "0x74",
+      "name": "ineg",
+      "count": 221
+    },
+    {
+      "opcode": "0x6c",
+      "name": "idiv",
+      "count": 214
+    },
+    {
+      "opcode": "0x46",
+      "name": "fstore_3",
+      "count": 196
+    },
+    {
+      "opcode": "0x61",
+      "name": "ladd",
+      "count": 196
+    },
+    {
+      "opcode": "0x33",
+      "name": "baload",
+      "count": 188
+    },
+    {
+      "opcode": "0x4a",
+      "name": "dstore_3",
+      "count": 187
+    },
+    {
+      "opcode": "0x26",
+      "name": "dload_0",
+      "count": 183
+    },
+    {
+      "opcode": "0x76",
+      "name": "fneg",
+      "count": 174
+    },
+    {
+      "opcode": "0x78",
+      "name": "ishl",
+      "count": 169
+    },
+    {
+      "opcode": "0x70",
+      "name": "irem",
+      "count": 161
+    },
+    {
+      "opcode": "0xc4",
+      "name": "wide",
+      "count": 160
+    },
+    {
+      "opcode": "0xab",
+      "name": "lookupswitch",
+      "count": 148
+    },
+    {
+      "opcode": "0x1e",
+      "name": "lload_0",
+      "count": 144
+    },
+    {
+      "opcode": "0x88",
+      "name": "l2i",
+      "count": 136
+    },
+    {
+      "opcode": "0x91",
+      "name": "i2b",
+      "count": 136
+    },
+    {
+      "opcode": "0x49",
+      "name": "dstore_2",
+      "count": 133
+    },
+    {
+      "opcode": "0x51",
+      "name": "fastore",
+      "count": 130
+    },
+    {
+      "opcode": "0x44",
+      "name": "fstore_1",
+      "count": 113
+    },
+    {
+      "opcode": "0x77",
+      "name": "dneg",
+      "count": 110
+    },
+    {
+      "opcode": "0x5a",
+      "name": "dup_x1",
+      "count": 108
+    },
+    {
+      "opcode": "0x65",
+      "name": "lsub",
+      "count": 104
+    },
+    {
+      "opcode": "0x7a",
+      "name": "ishr",
+      "count": 98
+    },
+    {
+      "opcode": "0x7f",
+      "name": "land",
+      "count": 98
+    },
+    {
+      "opcode": "0x42",
+      "name": "lstore_3",
+      "count": 88
+    },
+    {
+      "opcode": "0x0a",
+      "name": "lconst_1",
+      "count": 86
+    },
+    {
+      "opcode": "0x8b",
+      "name": "f2i",
+      "count": 85
+    },
+    {
+      "opcode": "0x41",
+      "name": "lstore_2",
+      "count": 83
+    },
+    {
+      "opcode": "0x48",
+      "name": "dstore_1",
+      "count": 80
+    },
+    {
+      "opcode": "0x8e",
+      "name": "d2i",
+      "count": 77
+    },
+    {
+      "opcode": "0x8a",
+      "name": "l2d",
+      "count": 75
+    },
+    {
+      "opcode": "0x69",
+      "name": "lmul",
+      "count": 68
+    },
+    {
+      "opcode": "0x79",
+      "name": "lshl",
+      "count": 66
+    },
+    {
+      "opcode": "0x2f",
+      "name": "laload",
+      "count": 60
+    },
+    {
+      "opcode": "0x93",
+      "name": "i2s",
+      "count": 59
+    },
+    {
+      "opcode": "0x30",
+      "name": "faload",
+      "count": 57
+    },
+    {
+      "opcode": "0xc3",
+      "name": "monitorexit",
+      "count": 56
+    },
+    {
+      "opcode": "0x81",
+      "name": "lor",
+      "count": 54
+    },
+    {
+      "opcode": "0x40",
+      "name": "lstore_1",
+      "count": 52
+    },
+    {
+      "opcode": "0x83",
+      "name": "lxor",
+      "count": 49
+    },
+    {
+      "opcode": "0x89",
+      "name": "l2f",
+      "count": 48
+    },
+    {
+      "opcode": "0x54",
+      "name": "bastore",
+      "count": 47
+    },
+    {
+      "opcode": "0x50",
+      "name": "lastore",
+      "count": 42
+    },
+    {
+      "opcode": "0x7b",
+      "name": "lshr",
+      "count": 40
+    },
+    {
+      "opcode": "0x6d",
+      "name": "ldiv",
+      "count": 39
+    },
+    {
+      "opcode": "0x71",
+      "name": "lrem",
+      "count": 38
+    },
+    {
+      "opcode": "0x82",
+      "name": "ixor",
+      "count": 33
+    },
+    {
+      "opcode": "0x31",
+      "name": "daload",
+      "count": 33
+    },
+    {
+      "opcode": "0x55",
+      "name": "castore",
+      "count": 32
+    },
+    {
+      "opcode": "0x58",
+      "name": "pop2",
+      "count": 32
+    },
+    {
+      "opcode": "0x72",
+      "name": "frem",
+      "count": 28
+    },
+    {
+      "opcode": "0x7d",
+      "name": "lushr",
+      "count": 28
+    },
+    {
+      "opcode": "0xc2",
+      "name": "monitorenter",
+      "count": 26
+    },
+    {
+      "opcode": "0x3b",
+      "name": "istore_0",
+      "count": 25
+    },
+    {
+      "opcode": "0x7c",
+      "name": "iushr",
+      "count": 17
+    },
+    {
+      "opcode": "0x5c",
+      "name": "dup2",
+      "count": 16
+    },
+    {
+      "opcode": "0x35",
+      "name": "saload",
+      "count": 13
+    },
+    {
+      "opcode": "0x3f",
+      "name": "lstore_0",
+      "count": 8
+    },
+    {
+      "opcode": "0x8f",
+      "name": "d2l",
+      "count": 7
+    },
+    {
+      "opcode": "0x47",
+      "name": "dstore_0",
+      "count": 7
+    },
+    {
+      "opcode": "0xc5",
+      "name": "multianewarray",
+      "count": 6
+    },
+    {
+      "opcode": "0x34",
+      "name": "caload",
+      "count": 6
+    },
+    {
+      "opcode": "0x73",
+      "name": "drem",
+      "count": 6
+    },
+    {
+      "opcode": "0x5d",
+      "name": "dup2_x1",
+      "count": 6
+    },
+    {
+      "opcode": "0x8c",
+      "name": "f2l",
+      "count": 5
+    },
+    {
+      "opcode": "0x92",
+      "name": "i2c",
+      "count": 5
+    },
+    {
+      "opcode": "0x56",
+      "name": "sastore",
+      "count": 3
+    },
+    {
+      "opcode": "0x75",
+      "name": "lneg",
+      "count": 3
+    },
+    {
+      "opcode": "0x43",
+      "name": "fstore_0",
+      "count": 2
+    },
+    {
+      "opcode": "0x5b",
+      "name": "dup_x2",
+      "count": 1
+    }
+  ],
+  "same_class_branch_call_candidates": [
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "multiply",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.alpha(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "multiply",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.alpha(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "multiply",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.red(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "multiply",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.red(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "multiply",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.green(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "multiply",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.green(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "multiply",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.blue(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "multiply",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.blue(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "multiply",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.color(IIII)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlend",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.alpha(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlend",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.alpha(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlend",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.red(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlend",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.red(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlend",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.alphaBlendChannel(IIII)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlend",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.green(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlend",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.green(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlend",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.alphaBlendChannel(IIII)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlend",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.blue(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlend",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.blue(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlend",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.alphaBlendChannel(IIII)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlend",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/ARGB.color(IIII)I"
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "lightCoordsWithEmission",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/LightCoordsUtil.sky(I)I"
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "lightCoordsWithEmission",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/LightCoordsUtil.block(I)I"
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "lightCoordsWithEmission",
+      "descriptor": "(II)I",
+      "calls": "net/minecraft/util/LightCoordsUtil.pack(II)I"
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "smoothBlend",
+      "descriptor": "(IIII)I",
+      "calls": "net/minecraft/util/LightCoordsUtil.sky(I)I"
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "smoothBlend",
+      "descriptor": "(IIII)I",
+      "calls": "net/minecraft/util/LightCoordsUtil.block(I)I"
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "smoothBlend",
+      "descriptor": "(IIII)I",
+      "calls": "net/minecraft/util/LightCoordsUtil.sky(I)I"
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "smoothBlend",
+      "descriptor": "(IIII)I",
+      "calls": "net/minecraft/util/LightCoordsUtil.sky(I)I"
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "smoothBlend",
+      "descriptor": "(IIII)I",
+      "calls": "net/minecraft/util/LightCoordsUtil.sky(I)I"
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "log2",
+      "descriptor": "(I)I",
+      "calls": "net/minecraft/util/Mth.ceillog2(I)I"
+    }
+  ],
+  "candidate_count": 30,
+  "cross_class_branch_call_candidates": [],
+  "cross_candidate_count": 0,
+  "simple_cross_class_candidates": [
+    {
+      "class": "net/minecraft/server/commands/FillBiomeCommand",
+      "method": "quantize",
+      "descriptor": "(I)I",
+      "calls": "net/minecraft/core/QuartPos.fromBlock(I)I"
+    },
+    {
+      "class": "net/minecraft/server/commands/FillBiomeCommand",
+      "method": "quantize",
+      "descriptor": "(I)I",
+      "calls": "net/minecraft/core/QuartPos.toBlock(I)I"
+    },
+    {
+      "class": "net/minecraft/world/entity/ai/goal/Goal",
+      "method": "reducedTickDelay",
+      "descriptor": "(I)I",
+      "calls": "net/minecraft/util/Mth.positiveCeilDiv(II)I"
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/Strategy",
+      "method": "minimumBitsRequiredForDistinctValues",
+      "descriptor": "(I)I",
+      "calls": "net/minecraft/util/Mth.ceillog2(I)I"
+    }
+  ],
+  "simple_cross_candidate_count": 4,
+  "parse_failures": [],
+  "warning": "Conteo estático del JAR interno entero; incluye código inalcanzable y no demuestra compatibilidad. No evalúa excepciones ni semántica de llamadas.",
+  "static_int_methods": 138,
+  "static_primitive_return_methods": 202,
+  "classes_with_static_int_methods": 57,
+  "classes_with_static_primitive_return_methods": 90
+}

@@ -1,0 +1,5 @@
+Error: new no soportado: java/text/SimpleDateFormat
+  al compilar org/apache/logging/log4j/simple/SimpleLogger.<init>(Ljava/lang/String;Lorg/apache/logging/log4j/Level;ZZZZLjava/lang/String;Lorg/apache/logging/log4j/message/MessageFactory;Lorg/apache/logging/log4j/util/PropertiesUtil;Ljava/io/PrintStream;)V
+  al compilar org/apache/logging/log4j/simple/SimpleLoggerContext.createLogger(Ljava/lang/String;Lorg/apache/logging/log4j/message/MessageFactory;)Lorg/apache/logging/log4j/spi/ExtendedLogger;
+  al compilar org/apache/logging/log4j/simple/SimpleLoggerContext.getLogger(Ljava/lang/String;Lorg/apache/logging/log4j/message/MessageFactory;)Lorg/apache/logging/log4j/spi/ExtendedLogger;
+compile_exit= 1

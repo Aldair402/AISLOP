@@ -1,0 +1,18 @@
+==> cargo-test
+==> build-examples
+==> casefold-oracle-compile
+==> casefold-oracle
+==> check-guards
+==> check-index
+==> check-inspect
+==> check-graph
+Traceback (most recent call last):
+  File "/var/tmp/mc-regression-snapshot/mc-aot/tests/check-graph.py", line 7, in <module>
+    with gzip.open(root.parent/'analysis/class-dependencies.tsv.gz','rt') as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/gzip.py", line 66, in open
+    binary_file = GzipFile(filename, gz_mode, compresslevel)
+  File "/usr/local/lib/python3.13/gzip.py", line 205, in __init__
+    fileobj = self.myfileobj = builtins.open(filename, mode or 'rb')
+                               ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/var/tmp/mc-regression-snapshot/analysis/class-dependencies.tsv.gz'

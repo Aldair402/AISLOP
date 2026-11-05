@@ -1,0 +1,34 @@
+==> cargo-test
+==> build-examples
+==> casefold-oracle-compile
+==> casefold-oracle
+==> check-guards
+==> check-index
+==> check-inspect
+==> check-graph
+==> check-wide
+==> check-numeric-stack
+==> check-dup-x
+==> check-numeric-guards
+==> check-object
+==> check-multi
+==> check-reference
+==> check-static-demo
+==> check-static-constants
+==> check-static-guards
+==> check-string-main
+==> check-string-guards
+==> check-exceptions
+==> check-exception-static
+==> check-exception-table
+==> check-nbt-exceptions
+==> check-multi-static
+==> check-multi-static-guards
+==> check-static-references
+==> check-static-string-constant
+==> check-static-array-types
+Traceback (most recent call last):
+  File "/home/user/minecraft-rust/mc-aot/tests/check-static-array-types.py", line 31, in <module>
+    if java!=native:raise AssertionError(next(((i,a,b) for i,(a,b) in enumerate(zip(java,native)) if a!=b),('longitud',len(java),len(native))))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (0, '[0.001s][warning][perf,memops] Cannot use file /tmp/hsperfdata_user/1340085 because it is locked by another process (errno = 11)', 'OK')

@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+"""Arrays.asList: vista respaldada, iteración, errores y representación String/null."""
+import os,pathlib,subprocess,tempfile
+root=pathlib.Path(__file__).resolve().parents[1];jdk=pathlib.Path(os.environ['JAVA_HOME'])/'bin'
+source='''package net.minecraft.test;import java.util.*;public class ArraysListDemo {public static int run(int n){try{String[] a={"a",null,"b"};List<String> l=Arrays.asList(a);switch(n){case 0:return l.toString().equals("[a, null, b]")?1:0;case 1:l.set(1,"x");return a[1].equals("x")?2:0;case 2:a[0]="z";return l.get(0).equals("z")?3:0;case 3:Iterator<String>i=l.iterator();a[0]="z";return i.next().equals("z")&&i.next()==null&&i.next().equals("b")&&!i.hasNext()?4:0;case 4:l.add("x");return 0;case 5:l.remove(0);return 0;case 6:l.clear();return 0;case 7:List<String> empty=Arrays.asList(new String[0]);empty.clear();return empty.isEmpty()?7:0;case 8:l.get(3);return 0;case 9:List<Object> v=Arrays.asList((Object[])a);v.set(0,new Object());return 0;case 10:List<String> copy=new ArrayList<>(l);a[0]="z";return copy.get(0).equals("a")?10:0;case 11:Arrays.asList((Object[])null);return 0;case 12:return l.size();default:return 99;}}catch(UnsupportedOperationException e){return 104;}catch(IndexOutOfBoundsException e){return 105;}catch(ArrayStoreException e){return 106;}catch(NullPointerException e){return 107;}}}'''
+driver='''import net.minecraft.test.ArraysListDemo;public class ArraysListDriver{public static void main(String[]a){for(String s:a)System.out.println(ArraysListDemo.run(Integer.parseInt(s)));}}'''
+with tempfile.TemporaryDirectory(prefix='mc-aslist-') as t:
+ d=pathlib.Path(t);(d/'ArraysListDemo.java').write_text(source);(d/'ArraysListDriver.java').write_text(driver);subprocess.run([str(jdk/'javac'),'-d',str(d),str(d/'ArraysListDemo.java'),str(d/'ArraysListDriver.java')],check=True);subprocess.run([str(jdk/'jar'),'cf',str(d/'fixture.jar'),'-C',str(d),'net'],check=True)
+ p=subprocess.run(['cargo','run','--quiet','--manifest-path',str(root/'Cargo.toml'),'--','multi-static-demo',str(d/'fixture.jar'),'net/minecraft/test/ArraysListDemo',str(d/'native'),'run','(I)I'],capture_output=True,text=True)
+ if p.returncode:raise RuntimeError(p.stderr)
+ seq=[str(n) for n in range(13)]*12;java=subprocess.run([str(jdk/'java'),'-cp',str(d),'ArraysListDriver',*seq],capture_output=True,text=True,check=True).stdout;native=subprocess.run([str(d/'native'),*[v for n in seq for v in ('0',n)]],capture_output=True,text=True,check=True).stdout
+ if java!=native:raise AssertionError((java,native))
+ print(f'OK: {len(seq)} resultados Java Arrays.asList: alias, set/get, iteración, errores, copia y toString')

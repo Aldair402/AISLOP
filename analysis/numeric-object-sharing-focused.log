@@ -1,0 +1,16 @@
+==> check-multi-objects
+OK: 238 operaciones Java con objetos, campos, alias, identidad, llamadas de instancia, referencias externas y FeatureFlagUniverse real
+==> check-project-casts
+OK: 122 casts e instanceof Java: interfaz transitiva, clase concreta, arrays, null y ClassCastException
+==> check-multi-interfaces
+OK: implementadores sin defaults no inicializan interfaces y el despacho directo coincide
+==> check-enum-valueof-profile
+OK: 144 resultados Enum.valueOf con Java 25; identidad, unicode, enum con subclase, null, errores e inicialización fallida; reentrada, anidado desconocido y clases no registradas abortan
+==> check-real-minecraft-enum-valueof
+OK: 180 resultados Java 25/nativo; valueOf en tres enums Minecraft oficiales y hashes verificados; no certifica clases completas
+==> check-numeric-guards
+OK: 5 rechazos: recursión, synchronized, arrays multidimensionales, tipo catch desconocido y llamada externa
+==> check-rayon-java-forkjoin
+OK: 78 decisiones y 279 tareas por execute con Runnable de bytecode Java que ejecutan QuartPos.toBlock oficial, incluidos execute por interfaz y joins anidados en un pool de un hilo, sobre Rayon, resultados contrastados con ForkJoinPool Java; join repetido y tras shutdown, y guardas de fallo de tarea, paralelismo, cierre y factory personalizada
+==> check-real-util-worker-onstart
+OK: 12 resultados con constructor y onStart de Util$2 oficiales, invocados directamente con Tracy desactivado y nombres Unicode/null; no prueba ciclo de vida completo ni logger

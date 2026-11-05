@@ -1,0 +1,1 @@
+OK Java real: directorio eula.txt produce WARN de lectura sin Throwable y WARN de escritura con FileSystemException; log4rs aún no modela Throwable

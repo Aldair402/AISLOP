@@ -1,0 +1,14 @@
+Error: invokevirtual no soportado: java/lang/ClassLoader.loadClass(Ljava/lang/String;)Ljava/lang/Class;
+  al compilar org/slf4j/LoggerFactory.loadExplicitlySpecified(Ljava/lang/ClassLoader;)Lorg/slf4j/spi/SLF4JServiceProvider;
+  al compilar org/slf4j/LoggerFactory.findServiceProviders()Ljava/util/List;
+  al compilar org/slf4j/LoggerFactory.bind()V
+  al compilar org/slf4j/LoggerFactory.performInitialization()V
+  al compilar org/slf4j/LoggerFactory.getProvider()Lorg/slf4j/spi/SLF4JServiceProvider;
+  al compilar org/slf4j/MarkerFactory.<clinit>()V
+  al compilar com/mojang/logging/LogUtils.<clinit>()V
+  al compilar net/minecraft/server/Main.<clinit>()V
+
+real	0m1.450s
+user	0m1.108s
+sys	0m0.432s
+exit=1

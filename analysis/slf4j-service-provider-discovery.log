@@ -1,0 +1,1 @@
+META-INF/services/org.slf4j.spi.SLF4JServiceProvider se encontró en log4j-slf4j2-impl del bundle; su implementación declarada es org.apache.logging.slf4j.SLF4JServiceProvider. Resolver la clase de proveedor no implementa todavía ServiceLoader, ClassLoader, reflexión, inicialización de Log4j ni el servidor. Véase la salida de javap en la consola o inspección directa del JAR.

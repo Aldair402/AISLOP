@@ -1,0 +1,113 @@
+{
+  "classes_read": 7762,
+  "scope": "Métodos static con Code y tabla de manejadores, firmas acotadas; se prueban candidatos con tipos catch incorporados, de Minecraft o catch-all; los tipos de Minecraft solo se admiten si su jerarquía puede resolverse.",
+  "signature_candidates_with_handlers": 10,
+  "handler_types_all_signature_candidates": {
+    "java/lang/Throwable": 17,
+    "java/io/IOException": 5,
+    "net/minecraft/nbt/NbtException": 1,
+    "net/minecraft/nbt/ReportedNbtException": 1,
+    "java/lang/Exception": 1,
+    "java/lang/NumberFormatException": 2,
+    "com/google/gson/JsonParseException": 3,
+    "java/net/URISyntaxException": 2
+  },
+  "candidates_with_supported_catch_types": 7,
+  "candidate_classes": 6,
+  "compiled_methods": 0,
+  "classes_with_compiled_method": 0,
+  "fully_supported_classes_certified": 0,
+  "limitations": "Compilación no garantiza equivalencia ni ejecución de inicializadores o clases completas. Tipos incorporados y jerarquías Minecraft verificadas; constructores Minecraft solo triviales y sin estado.",
+  "results": [
+    {
+      "class": "net/minecraft/data/structures/SnbtDatafixer",
+      "method": "updateInDirectory",
+      "descriptor": "(Ljava/lang/String;)V",
+      "handler_types": [
+        "java/lang/Throwable",
+        "java/lang/Throwable"
+      ],
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/data/structures/SnbtDatafixer.updateInDirectory(Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/gametest/framework/GameTestMainUtil",
+      "method": "copyPacks",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)V",
+      "handler_types": [
+        "java/lang/Throwable",
+        "java/lang/Throwable"
+      ],
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/gametest/framework/GameTestMainUtil.copyPacks(Ljava/lang/String;Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/server/Main",
+      "method": "main",
+      "descriptor": "([Ljava/lang/String;)V",
+      "handler_types": [
+        "java/io/IOException",
+        "net/minecraft/nbt/NbtException",
+        "net/minecraft/nbt/ReportedNbtException",
+        "java/lang/Exception",
+        "java/lang/Throwable",
+        "java/lang/Throwable",
+        "java/lang/Throwable",
+        "java/lang/Throwable",
+        "java/lang/Throwable",
+        "java/lang/Throwable",
+        "java/lang/Throwable",
+        "java/lang/Throwable"
+      ],
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/SharedConstants.CURRENT_VERSIONLnet/minecraft/WorldVersion;\n  al compilar net/minecraft/SharedConstants.tryDetectVersion()V\n  al compilar net/minecraft/server/Main.main([Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/util/HttpUtil",
+      "method": "getAvailablePort",
+      "descriptor": "()I",
+      "handler_types": [
+        "java/lang/Throwable",
+        "java/lang/Throwable",
+        "java/io/IOException",
+        "java/io/IOException"
+      ],
+      "compiled": false,
+      "error": "Error: traductor entero: tablas de excepciones todavía no soportadas; traductor numérico: new no soportado: java/net/ServerSocket\n  al compilar net/minecraft/util/HttpUtil.getAvailablePort()I"
+    },
+    {
+      "class": "net/minecraft/util/HttpUtil",
+      "method": "isPortAvailable",
+      "descriptor": "(I)Z",
+      "handler_types": [
+        "java/lang/Throwable",
+        "java/lang/Throwable",
+        "java/io/IOException",
+        "java/io/IOException"
+      ],
+      "compiled": false,
+      "error": "Error: traductor entero: tablas de excepciones todavía no soportadas; traductor numérico: new no soportado: java/net/ServerSocket\n  al compilar net/minecraft/util/HttpUtil.isPortAvailable(I)Z"
+    },
+    {
+      "class": "net/minecraft/util/MemoryReserve",
+      "method": "release",
+      "descriptor": "()V",
+      "handler_types": [
+        "java/lang/Throwable"
+      ],
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/MemoryReserve.release()V"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "getMaxThreads",
+      "descriptor": "()I",
+      "handler_types": [
+        "java/lang/NumberFormatException",
+        "java/lang/NumberFormatException"
+      ],
+      "compiled": false,
+      "error": "Error: traductor entero: tablas de excepciones todavía no soportadas; traductor numérico: invokestatic no soportado: java/lang/System.getProperty(Ljava/lang/String;)Ljava/lang/String;\n  al compilar net/minecraft/util/Util.getMaxThreads()I"
+    }
+  ]
+}

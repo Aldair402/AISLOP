@@ -1,0 +1,10 @@
+Error: invokestatic no soportado: java/lang/Math.addExact(II)I
+  al compilar org/apache/logging/log4j/message/ParameterFormatter$MessagePatternAnalysis.ensurePlaceholderCharIndicesCapacity(I)V
+  al compilar org/apache/logging/log4j/message/ParameterFormatter$MessagePatternAnalysis.access$000(Lorg/apache/logging/log4j/message/ParameterFormatter$MessagePatternAnalysis;I)V
+  al compilar org/apache/logging/log4j/message/ParameterFormatter.analyzePattern(Ljava/lang/String;ILorg/apache/logging/log4j/message/ParameterFormatter$MessagePatternAnalysis;)V
+  al compilar org/apache/logging/log4j/message/ParameterFormatter.analyzePattern(Ljava/lang/String;I)Lorg/apache/logging/log4j/message/ParameterFormatter$MessagePatternAnalysis;
+  al compilar org/apache/logging/log4j/message/ParameterizedMessage.<init>(Ljava/lang/String;[Ljava/lang/Object;Ljava/lang/Throwable;)V
+  al compilar org/apache/logging/log4j/message/ParameterizedMessage.<init>(Ljava/lang/String;[Ljava/lang/Object;)V
+  al compilar org/apache/logging/log4j/message/ParameterizedMessage.<init>(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+  al compilar org/apache/logging/log4j/message/ParameterizedMessageFactory.newMessage(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)Lorg/apache/logging/log4j/message/Message;
+compile_exit= 1

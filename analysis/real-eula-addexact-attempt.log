@@ -1,0 +1,5 @@
+Error: constructor no soportado: java/lang/StringBuilder.<init>(I)V
+  al compilar org/apache/logging/log4j/message/ReusableParameterizedMessage.<init>()V
+  al compilar org/apache/logging/log4j/message/ReusableMessageFactory.getParameterized()Lorg/apache/logging/log4j/message/ReusableParameterizedMessage;
+  al compilar org/apache/logging/log4j/message/ReusableMessageFactory.newMessage(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)Lorg/apache/logging/log4j/message/Message;
+compile_exit= 1

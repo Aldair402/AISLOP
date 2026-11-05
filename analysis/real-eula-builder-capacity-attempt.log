@@ -1,0 +1,3 @@
+Error: lambda método JDK no soportado: java/lang/StackWalker$StackFrame.toStackTraceElement()Ljava/lang/StackTraceElement;
+  al compilar org/apache/logging/log4j/util/StackLocator.calcLocation(Ljava/lang/String;)Ljava/lang/StackTraceElement;
+compile_exit= 1

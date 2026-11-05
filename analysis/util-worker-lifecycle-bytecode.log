@@ -1,0 +1,52 @@
+Compiled from "Util.java"
+class net.minecraft.util.Util$2 extends java.util.concurrent.ForkJoinWorkerThread {
+  final java.lang.String val$threadName;
+
+  final java.lang.String val$name;
+
+  net.minecraft.util.Util$2(java.util.concurrent.ForkJoinPool, java.lang.String, java.lang.String);
+    Code:
+         0: aload_0
+         1: aload_2
+         2: putfield      #1                  // Field val$threadName:Ljava/lang/String;
+         5: aload_0
+         6: aload_3
+         7: putfield      #7                  // Field val$name:Ljava/lang/String;
+        10: aload_0
+        11: aload_1
+        12: invokespecial #10                 // Method java/util/concurrent/ForkJoinWorkerThread."<init>":(Ljava/util/concurrent/ForkJoinPool;)V
+        15: return
+
+  protected void onStart();
+    Code:
+         0: aload_0
+         1: getfield      #1                  // Field val$threadName:Ljava/lang/String;
+         4: aload_0
+         5: getfield      #7                  // Field val$name:Ljava/lang/String;
+         8: invokevirtual #16                 // Method java/lang/String.hashCode:()I
+        11: invokestatic  #22                 // Method com/mojang/jtracy/TracyClient.setThreadName:(Ljava/lang/String;I)V
+        14: aload_0
+        15: invokespecial #28                 // Method java/util/concurrent/ForkJoinWorkerThread.onStart:()V
+        18: return
+
+  protected void onTermination(java.lang.Throwable);
+    Code:
+         0: aload_1
+         1: ifnull        22
+         4: getstatic     #32                 // Field net/minecraft/util/Util.LOGGER:Lorg/slf4j/Logger;
+         7: ldc           #38                 // String {} died
+         9: aload_0
+        10: invokevirtual #40                 // Method getName:()Ljava/lang/String;
+        13: aload_1
+        14: invokeinterface #44,  4           // InterfaceMethod org/slf4j/Logger.warn:(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+        19: goto          36
+        22: getstatic     #32                 // Field net/minecraft/util/Util.LOGGER:Lorg/slf4j/Logger;
+        25: ldc           #50                 // String {} shutdown
+        27: aload_0
+        28: invokevirtual #40                 // Method getName:()Ljava/lang/String;
+        31: invokeinterface #52,  3           // InterfaceMethod org/slf4j/Logger.debug:(Ljava/lang/String;Ljava/lang/Object;)V
+        36: aload_0
+        37: aload_1
+        38: invokespecial #56                 // Method java/util/concurrent/ForkJoinWorkerThread.onTermination:(Ljava/lang/Throwable;)V
+        41: return
+}

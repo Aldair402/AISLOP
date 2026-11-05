@@ -1,0 +1,3 @@
+Error: invokeinterface no soportado: java/lang/StackWalker$StackFrame.getClassName()Ljava/lang/String;
+  al compilar org/apache/logging/log4j/util/StackLocator.lambda$calcLocation$13(Ljava/lang/String;Ljava/lang/StackWalker$StackFrame;)Z
+compile_exit= 1

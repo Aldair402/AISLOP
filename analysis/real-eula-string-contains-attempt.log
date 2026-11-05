@@ -1,0 +1,5 @@
+Error: invokestatic no soportado: java/util/concurrent/Executors.defaultThreadFactory()Ljava/util/concurrent/ThreadFactory;
+  al compilar org/apache/logging/log4j/core/util/DefaultShutdownCallbackRegistry.<init>()V
+  al compilar org/apache/logging/log4j/core/impl/Log4jContextFactory.createShutdownCallbackRegistry()Lorg/apache/logging/log4j/core/util/ShutdownCallbackRegistry;
+  al compilar org/apache/logging/log4j/core/impl/Log4jContextFactory.<init>()V
+compile_exit= 1

@@ -1,0 +1,8 @@
+
+running 47 tests
+...............................................
+test result: ok. 47 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+OK: 4.000 trabajos, rechazo, espera acotada, join anidado y fallo contrastados con ForkJoinPool Java 25; el adaptador no es ForkJoinPool completo
+OK: 66 decisiones y 279 tareas por execute con Runnable de bytecode Java que ejecutan QuartPos.toBlock oficial, incluidos execute por interfaz y joins anidados en un pool de un hilo, sobre Rayon, resultados contrastados con ForkJoinPool Java; join repetido y tras shutdown, y guardas de fallo de tarea, paralelismo, cierre y factory
+OK: 615 resultados de tres métodos oficiales QuartPos ejecutados en frames y workers Rust

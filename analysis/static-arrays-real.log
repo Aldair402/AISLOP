@@ -1,0 +1,1 @@
+OK: inicialización real de PktUtils.HEX_CHAR y dos arrays de 65,536 elementos; asignación de int[], null y vacío coinciden con Java 25

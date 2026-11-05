@@ -1,0 +1,4 @@
+Error: invokevirtual no soportado: java/lang/StringBuilder.capacity()I
+  al compilar org/apache/logging/log4j/util/StringBuilders.trimToMaxSize(Ljava/lang/StringBuilder;I)V
+  al compilar org/apache/logging/log4j/message/ParameterizedMessage.getFormattedMessage()Ljava/lang/String;
+compile_exit= 1

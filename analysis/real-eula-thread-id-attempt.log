@@ -1,0 +1,3 @@
+Error: invokevirtual no soportado: java/lang/StackWalker.walk(Ljava/util/function/Function;)Ljava/lang/Object;
+  al compilar org/apache/logging/log4j/util/StackLocator.getCallerClass(I)Ljava/lang/Class;
+compile_exit= 1

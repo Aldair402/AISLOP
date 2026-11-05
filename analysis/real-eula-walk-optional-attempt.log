@@ -1,0 +1,6 @@
+Error: invokeinterface no soportado: java/lang/CharSequence.toString()Ljava/lang/String;
+  al compilar org/apache/logging/log4j/util/PropertySource$Util.tokenize(Ljava/lang/CharSequence;)Ljava/util/List;
+  al compilar org/apache/logging/log4j/util/PropertiesUtil$Environment.get(Ljava/lang/String;)Ljava/lang/String;
+  al compilar org/apache/logging/log4j/util/PropertiesUtil$Environment.access$500(Lorg/apache/logging/log4j/util/PropertiesUtil$Environment;Ljava/lang/String;)Ljava/lang/String;
+  al compilar org/apache/logging/log4j/util/PropertiesUtil.getStringProperty(Ljava/lang/String;)Ljava/lang/String;
+compile_exit= 1

@@ -1,0 +1,1 @@
+public class MthMathOracleJava25 {public static void main(String[]a){for(int i=0;i<=256;i++){double v=Math.asin((double)i/256.0);System.out.printf("%016x %016x%n",Double.doubleToRawLongBits(v),Double.doubleToRawLongBits(Math.cos(v)));}}}

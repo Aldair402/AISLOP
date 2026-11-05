@@ -1,0 +1,102 @@
+{
+  "classes_read": 7762,
+  "scope": "Métodos static con al menos un argumento array unidimensional I/J/Z/B/C/S; demás argumentos primitivos y retorno I/J/Z/B/C/S. No incluye arrays de objetos, multidimensionales, float ni double.",
+  "candidates": 15,
+  "candidate_classes": 4,
+  "compiled_methods": 15,
+  "classes_with_at_least_one_compiled_method": 4,
+  "fully_supported_classes_certified": 0,
+  "limitations": "Compilar no demuestra equivalencia, inicializadores ni excepciones capturables. Heap limitado sin GC y solo arrays primitivos; no certifica clases completas.",
+  "results": [
+    {
+      "class": "net/minecraft/Optionull",
+      "method": "isNullOrEmpty",
+      "descriptor": "([Z)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/Optionull",
+      "method": "isNullOrEmpty",
+      "descriptor": "([B)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/Optionull",
+      "method": "isNullOrEmpty",
+      "descriptor": "([C)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/Optionull",
+      "method": "isNullOrEmpty",
+      "descriptor": "([S)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/Optionull",
+      "method": "isNullOrEmpty",
+      "descriptor": "([I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/Optionull",
+      "method": "isNullOrEmpty",
+      "descriptor": "([J)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/rcon/PktUtils",
+      "method": "intFromByteArray",
+      "descriptor": "([BI)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/rcon/PktUtils",
+      "method": "intFromByteArray",
+      "descriptor": "([BII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/rcon/PktUtils",
+      "method": "intFromNetworkByteArray",
+      "descriptor": "([BII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ChunkHeightAndBiomeFix",
+      "method": "getOldBiome",
+      "descriptor": "([II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ChunkHeightAndBiomeFix",
+      "method": "lambda$getBiomeContainers$3",
+      "descriptor": "([II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ChunkHeightAndBiomeFix",
+      "method": "lambda$getBiomeContainers$2",
+      "descriptor": "([II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ChunkHeightAndBiomeFix",
+      "method": "lambda$getBiomeContainers$1",
+      "descriptor": "([III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ChunkHeightAndBiomeFix",
+      "method": "lambda$getBiomeContainers$0",
+      "descriptor": "([III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/item/MapItem",
+      "method": "isBiomeWatery",
+      "descriptor": "([ZII)Z",
+      "compiled": true
+    }
+  ]
+}

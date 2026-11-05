@@ -1,0 +1,106 @@
+{
+  "classes_scanned": 7762,
+  "candidate_method_pairs": 17,
+  "compiled_method_pairs": 6,
+  "classes_with_pair_compiled": 6,
+  "classes_fully_certified": 0,
+  "results": [
+    {
+      "class": "net/minecraft/network/chat/contents/PlainTextContents$LiteralContents",
+      "getter": "text",
+      "compiled": false,
+      "error": "Error: se requiere clase concreta que herede directamente de Object"
+    },
+    {
+      "class": "net/minecraft/network/protocol/game/ClientboundCommandsPacket$LiteralNodeStub",
+      "getter": "id",
+      "compiled": false,
+      "error": "Error: se requiere clase concreta que herede directamente de Object"
+    },
+    {
+      "class": "net/minecraft/server/dialog/action/Action$ValueGetter$1",
+      "getter": "asTemplateSubstitution",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/jsonrpc/security/SecurityConfig",
+      "getter": "secretKey",
+      "compiled": false,
+      "error": "Error: se requiere clase concreta que herede directamente de Object"
+    },
+    {
+      "class": "net/minecraft/server/network/ConfigurationTask$Type",
+      "getter": "toString",
+      "compiled": false,
+      "error": "Error: se requiere clase concreta que herede directamente de Object"
+    },
+    {
+      "class": "net/minecraft/server/network/ConfigurationTask$Type",
+      "getter": "id",
+      "compiled": false,
+      "error": "Error: se requiere clase concreta que herede directamente de Object"
+    },
+    {
+      "class": "net/minecraft/server/packs/linkfs/LinkFSFileStore",
+      "getter": "name",
+      "compiled": false,
+      "error": "Error: se requiere clase concreta que herede directamente de Object"
+    },
+    {
+      "class": "net/minecraft/util/ProblemReporter$FieldPathElement",
+      "getter": "name",
+      "compiled": false,
+      "error": "Error: se requiere clase concreta que herede directamente de Object"
+    },
+    {
+      "class": "net/minecraft/util/ProblemReporter$RootFieldPathElement",
+      "getter": "get",
+      "compiled": false,
+      "error": "Error: se requiere clase concreta que herede directamente de Object"
+    },
+    {
+      "class": "net/minecraft/util/ProblemReporter$RootFieldPathElement",
+      "getter": "name",
+      "compiled": false,
+      "error": "Error: se requiere clase concreta que herede directamente de Object"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/References$1",
+      "getter": "typeName",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/filefix/operations/DeleteFileOrEmptyDirectory",
+      "getter": "target",
+      "compiled": false,
+      "error": "Error: se requiere clase concreta que herede directamente de Object"
+    },
+    {
+      "class": "net/minecraft/util/parsing/packrat/Atom",
+      "getter": "name",
+      "compiled": false,
+      "error": "Error: se requiere clase concreta que herede directamente de Object"
+    },
+    {
+      "class": "net/minecraft/world/entity/ai/village/ReputationEventType$1",
+      "getter": "toString",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/flag/FeatureFlagUniverse",
+      "getter": "toString",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/item/crafting/RecipeType$1",
+      "getter": "toString",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/scores/ScoreHolder$3",
+      "getter": "getScoreboardName",
+      "compiled": true
+    }
+  ],
+  "limitations": "Solo constructor(String) y getter String específicos. Compilar no valida comportamiento ni clase completa. No se ejecutan inicializadores, métodos restantes ni semántica general de String."
+}

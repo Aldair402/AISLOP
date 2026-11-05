@@ -1,0 +1,3 @@
+Java exit: 0 stdout: '42\n' stderr: ''
+AOT compile exit: 0 stdout: 'Binario nativo con Rayon: /var/tmp/mc-tracing-real-kwsd93a1/probe\nRust generado: /var/tmp/mc-tracing-real-kwsd93a1/probe.rs\n' stderr: ''
+AOT run exit: 0 stdout: '42\n' stderr: ''

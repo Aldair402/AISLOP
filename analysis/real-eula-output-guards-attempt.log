@@ -1,0 +1,10 @@
+Error: invokevirtual no soportado: java/lang/Class.getDeclaredConstructor([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;
+  al compilar org/apache/logging/log4j/util/LoaderUtil.newInstanceOf(Ljava/lang/Class;)Ljava/lang/Object;
+  al compilar org/apache/logging/log4j/spi/Provider.getThreadContextMapInstance()Lorg/apache/logging/log4j/spi/ThreadContextMap;
+  al compilar org/apache/logging/log4j/simple/internal/SimpleProvider.<init>()V
+  al compilar org/apache/logging/log4j/util/ProviderUtil.selectProvider(Lorg/apache/logging/log4j/util/PropertiesUtil;Ljava/util/Collection;Lorg/apache/logging/log4j/Logger;)Lorg/apache/logging/log4j/spi/Provider;
+  al compilar org/apache/logging/log4j/util/ProviderUtil.lazyInit()V
+  al compilar org/apache/logging/log4j/util/ProviderUtil.getProvider()Lorg/apache/logging/log4j/spi/Provider;
+  al compilar org/apache/logging/log4j/LogManager.<clinit>()V
+  al compilar org/apache/logging/slf4j/Log4jLoggerFactory.getContext()Lorg/apache/logging/log4j/spi/LoggerContext;
+compile_exit= 1

@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+"""Bytecode real traducido a frames nativos con heap compartido y trabajadores."""
+import os,pathlib,subprocess,tempfile
+root=pathlib.Path(__file__).resolve().parents[1];jdk=pathlib.Path(os.environ['JAVA_HOME'])/'bin'
+src='''package net.minecraft.test;public class ConcurrentDemo {public static volatile int state;static volatile TinyBox box;static int twice(int n){return n*2;}public static int run(int n){state=n;if(n<0)return -twice(n)+1;return twice(n)+1;}public static int echo(int n){state=n;return state;}public static int publish(int n){if(n>0){state=42;return 1;}return state;}public static int sharing(int n){if(n>0){box=new TinyBox(0);return 1;}return box.update();}public static int boxes(int n){return new TinyBox(n).update();}public static int badObject(int n){return new NonFinal(n).v;}public static int badInitializer(int n){return new InitBox(n).v;}public static int badField(int n){return new RefBox(n).v;}public static synchronized int inc(int n){state=state+1;return state;}public static synchronized int nested(int n){return inc(n);}public static int forbidden(int n){return Integer.bitCount(n);} }final class TinyBox {int n; TinyBox(int n){this.n=n;} synchronized int update(){n=n+1;return n;}} class NonFinal{int v;NonFinal(int n){v=n;}} final class InitBox{static int state=1;int v;InitBox(int n){v=n;}} final class RefBox{Object ref;int v;RefBox(int n){v=n;}} class WithInit{static volatile int v=7;static final int k=make();static int make(){return v+3;}static int run(int n){return v+k+n;}}class ForbiddenInit{static volatile int v=Integer.bitCount(7);static int run(int n){return v+n;}}class NotVolatile{static int v;static int run(int n){return v+n;}}class Parent{}class Child extends Parent{static int run(int n){return n;}}'''
+driver='''import net.minecraft.test.ConcurrentDemo;public class CDriver{public static void main(String[]a){for(String x:a)System.out.println(ConcurrentDemo.run(Integer.parseInt(x)));}}'''
+with tempfile.TemporaryDirectory(prefix='mc-concurrent-int-') as t:
+ d=pathlib.Path(t);(d/'ConcurrentDemo.java').write_text(src);(d/'CDriver.java').write_text(driver);(d/'PubDriver.java').write_text('import net.minecraft.test.ConcurrentDemo;public class PubDriver{public static void main(String[]a){for(String x:a)System.out.println(ConcurrentDemo.publish(Integer.parseInt(x)));}}');(d/'BoxDriver.java').write_text('import net.minecraft.test.ConcurrentDemo;public class BoxDriver{public static void main(String[]a){for(String x:a)System.out.println(ConcurrentDemo.boxes(Integer.parseInt(x)));}}');(d/'InitDriver.java').write_text('package net.minecraft.test;public class InitDriver{public static void main(String[]a){for(String x:a)System.out.println(WithInit.run(Integer.parseInt(x)));}}');(d/'Shared.java').write_text('import net.minecraft.test.ConcurrentDemo;import java.util.concurrent.*;import java.util.*;public class Shared{public static void main(String[]a)throws Exception{System.out.println(ConcurrentDemo.sharing(1));ExecutorService p=Executors.newFixedThreadPool(4);List<Future<Integer>> results=new ArrayList<>();for(int i=0;i<100;i++)results.add(p.submit(()->ConcurrentDemo.sharing(0)));for(Future<Integer> f:results)System.out.println(f.get());p.shutdown();}}');(d/'Threads.java').write_text('import net.minecraft.test.ConcurrentDemo;import java.util.concurrent.*;import java.util.*;public class Threads{public static void main(String[]a)throws Exception{ExecutorService p=Executors.newFixedThreadPool(4);List<Future<Integer>> results=new ArrayList<>();for(int i=0;i<100;i++)results.add(p.submit(()->ConcurrentDemo.nested(0)));for(Future<Integer> f:results)System.out.println(f.get());p.shutdown();}}');subprocess.run([str(jdk/'javac'),'-d',str(d),str(d/'ConcurrentDemo.java'),str(d/'CDriver.java'),str(d/'PubDriver.java'),str(d/'BoxDriver.java'),str(d/'InitDriver.java'),str(d/'Shared.java'),str(d/'Threads.java')],check=True);subprocess.run([str(jdk/'jar'),'cf',str(d/'fixture.jar'),'-C',str(d),'net'],check=True)
+ def compile(method,path):return subprocess.run(['cargo','run','--quiet','--manifest-path',str(root/'Cargo.toml'),'--',os.environ.get('MC_AOT_CONCURRENT_BACKEND','concurrent-int-demo'),str(d/'fixture.jar'),'net/minecraft/test/ConcurrentDemo',str(path),method,'(I)I'],capture_output=True,text=True)
+ p=compile('run',d/'native')
+ if p.returncode:raise RuntimeError(p.stderr)
+ vals=list(range(-100,100))+[-2147483648,2147483647];j=subprocess.run([str(jdk/'java'),'-cp',str(d),'CDriver',*map(str,vals)],capture_output=True,text=True,check=True).stdout;a=subprocess.run([str(d/'native'),*map(str,vals)],capture_output=True,text=True)
+ if a.returncode or j!=a.stdout:raise AssertionError((a.returncode,j,a.stdout,a.stderr))
+ p=compile('echo',d/'echo')
+ if p.returncode:raise RuntimeError(p.stderr)
+ a=subprocess.run([str(d/'echo'),*map(str,range(100))],capture_output=True,text=True)
+ if a.returncode or len(a.stdout.splitlines())!=100 or any(int(x) not in range(100) for x in a.stdout.splitlines()):raise AssertionError((a.returncode,a.stdout,a.stderr))
+ p=compile('publish',d/'publish')
+ if p.returncode:raise RuntimeError(p.stderr)
+ p=subprocess.run([str(d/'publish'),*(['1']*100),*(['0']*100)],capture_output=True,text=True)
+ jpub=subprocess.run([str(jdk/'java'),'-cp',str(d),'PubDriver',*(['1']*100),*(['0']*100)],capture_output=True,text=True,check=True)
+ if p.returncode or p.stdout!=jpub.stdout:raise AssertionError((p.returncode,p.stdout,p.stderr,jpub.stdout))
+ p=compile('boxes',d/'boxes')
+ if p.returncode:raise RuntimeError(p.stderr)
+ jboxes=subprocess.run([str(jdk/'java'),'-cp',str(d),'BoxDriver',*map(str,vals)],capture_output=True,text=True,check=True)
+ p=subprocess.run([str(d/'boxes'),*map(str,vals)],capture_output=True,text=True)
+ if p.returncode or p.stdout!=jboxes.stdout:raise AssertionError((p.returncode,p.stdout,p.stderr,jboxes.stdout))
+ p=compile('sharing',d/'sharing')
+ if p.returncode:raise RuntimeError(p.stderr)
+ jshared=subprocess.run([str(jdk/'java'),'-cp',str(d),'Shared'],capture_output=True,text=True,check=True)
+ p=subprocess.run([str(d/'sharing'),'1','--phase',*(['0']*100)],capture_output=True,text=True)
+ if p.returncode or p.stdout.splitlines()[0]!='1' or sorted(map(int,p.stdout.splitlines()[1:]))!=sorted(map(int,jshared.stdout.splitlines()[1:])):raise AssertionError((p.returncode,p.stdout,p.stderr,jshared.stdout))
+ p=compile('nested',d/'nested')
+ if p.returncode:raise RuntimeError(p.stderr)
+ jthread=subprocess.run([str(jdk/'java'),'-cp',str(d),'Threads'],capture_output=True,text=True,check=True)
+ p=subprocess.run([str(d/'nested'),*(['0']*100)],capture_output=True,text=True)
+ if p.returncode or sorted(map(int,p.stdout.splitlines()))!=sorted(map(int,jthread.stdout.splitlines())):raise AssertionError((p.returncode,p.stdout,p.stderr,jthread.stdout))
+ for method,err in [('badObject','clase final'),('badInitializer','sin inicializador'),('badField','campo de instancia no int')]:
+  p=compile(method,d/method)
+  if p.returncode==0 or err not in p.stderr:raise AssertionError((method,p.returncode,p.stderr))
+ p=compile('forbidden',d/'bad')
+ if p.returncode==0 or 'llamada externa no soportada' not in p.stderr:raise AssertionError((p.returncode,p.stderr))
+ p=subprocess.run(['cargo','run','--quiet','--manifest-path',str(root/'Cargo.toml'),'--',os.environ.get('MC_AOT_CONCURRENT_BACKEND','concurrent-int-demo'),str(d/'fixture.jar'),'net/minecraft/test/WithInit',str(d/'initialized'),'run','(I)I'],capture_output=True,text=True)
+ if p.returncode:raise RuntimeError(p.stderr)
+ jinit=subprocess.run([str(jdk/'java'),'-cp',str(d),'net.minecraft.test.InitDriver',*map(str,vals)],capture_output=True,text=True,check=True)
+ p=subprocess.run([str(d/'initialized'),*map(str,vals)],capture_output=True,text=True)
+ if p.returncode or p.stdout!=jinit.stdout:raise AssertionError((p.returncode,p.stdout,p.stderr,jinit.stdout))
+ for cls,err in [('ForbiddenInit','llamada externa no soportada'),('NotVolatile','campo no volatile'),('Child','jerarquía')]:
+  p=subprocess.run(['cargo','run','--quiet','--manifest-path',str(root/'Cargo.toml'),'--',os.environ.get('MC_AOT_CONCURRENT_BACKEND','concurrent-int-demo'),str(d/'fixture.jar'),'net/minecraft/test/'+cls,str(d/cls),'run','(I)I'],capture_output=True,text=True)
+  if p.returncode==0 or err not in p.stderr:raise AssertionError((cls,p.returncode,p.stderr))
+ print('OK: 202 resultados de bytecode real, llamadas y ramas en frames concurrentes; 100 lecturas volatile y publicación, 202 resultados de inicialización estática y 202 objetos final con constructores y métodos synchronized, 100 incrementos sobre un objeto compartido por referencia volatile, 100 incrementos synchronized reentrantes con hilos reales y guardas de inicialización, jerarquía y bytecode')

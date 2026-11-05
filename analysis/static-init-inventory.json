@@ -1,0 +1,524 @@
+{
+  "scope": "Clases directas de Object, sin interfaces, con campos estáticos I/J/Z/B/C/S no volatile y al menos un método static de firma admitida. Filtro de forma, no verifica inicialización ni compatibilidad.",
+  "classes": 15,
+  "classes_with_clinit": 2,
+  "methods": 43,
+  "results": [
+    {
+      "class": "net/minecraft/core/QuartPos",
+      "static_fields": 4,
+      "field_details": [
+        {
+          "name": "BITS",
+          "descriptor": "I"
+        },
+        {
+          "name": "SIZE",
+          "descriptor": "I"
+        },
+        {
+          "name": "MASK",
+          "descriptor": "I"
+        },
+        {
+          "name": "SECTION_TO_QUARTS_BITS",
+          "descriptor": "I"
+        }
+      ],
+      "has_clinit": false,
+      "clinit_instructions": [],
+      "candidate_methods": [
+        {
+          "method": "fromBlock",
+          "descriptor": "(I)I"
+        },
+        {
+          "method": "quartLocal",
+          "descriptor": "(I)I"
+        },
+        {
+          "method": "toBlock",
+          "descriptor": "(I)I"
+        },
+        {
+          "method": "fromSection",
+          "descriptor": "(I)I"
+        },
+        {
+          "method": "toSection",
+          "descriptor": "(I)I"
+        }
+      ]
+    },
+    {
+      "class": "net/minecraft/network/VarInt",
+      "static_fields": 4,
+      "field_details": [
+        {
+          "name": "MAX_VARINT_SIZE",
+          "descriptor": "I"
+        },
+        {
+          "name": "DATA_BITS_MASK",
+          "descriptor": "I"
+        },
+        {
+          "name": "CONTINUATION_BIT_MASK",
+          "descriptor": "I"
+        },
+        {
+          "name": "DATA_BITS_PER_BYTE",
+          "descriptor": "I"
+        }
+      ],
+      "has_clinit": false,
+      "clinit_instructions": [],
+      "candidate_methods": [
+        {
+          "method": "getByteSize",
+          "descriptor": "(I)I"
+        },
+        {
+          "method": "hasContinuationBit",
+          "descriptor": "(B)Z"
+        }
+      ]
+    },
+    {
+      "class": "net/minecraft/network/VarLong",
+      "static_fields": 4,
+      "field_details": [
+        {
+          "name": "MAX_VARLONG_SIZE",
+          "descriptor": "I"
+        },
+        {
+          "name": "DATA_BITS_MASK",
+          "descriptor": "I"
+        },
+        {
+          "name": "CONTINUATION_BIT_MASK",
+          "descriptor": "I"
+        },
+        {
+          "name": "DATA_BITS_PER_BYTE",
+          "descriptor": "I"
+        }
+      ],
+      "has_clinit": false,
+      "clinit_instructions": [],
+      "candidate_methods": [
+        {
+          "method": "getByteSize",
+          "descriptor": "(J)I"
+        },
+        {
+          "method": "hasContinuationBit",
+          "descriptor": "(B)Z"
+        }
+      ]
+    },
+    {
+      "class": "net/minecraft/server/SuppressedExceptionCollector",
+      "static_fields": 1,
+      "field_details": [
+        {
+          "name": "LATEST_ENTRY_COUNT",
+          "descriptor": "I"
+        }
+      ],
+      "has_clinit": false,
+      "clinit_instructions": [],
+      "candidate_methods": [
+        {
+          "method": "currentTimeMs",
+          "descriptor": "()J"
+        }
+      ]
+    },
+    {
+      "class": "net/minecraft/util/BlockUtil",
+      "static_fields": 1,
+      "field_details": [
+        {
+          "name": "MAX_POSITION_DIFFERENCE_PACKING_RADIUS",
+          "descriptor": "I"
+        }
+      ],
+      "has_clinit": false,
+      "clinit_instructions": [],
+      "candidate_methods": [
+        {
+          "method": "packDifferenceInPositionInternal",
+          "descriptor": "(IIIIII)I"
+        },
+        {
+          "method": "checkDifferenceInBounds",
+          "descriptor": "(II)I"
+        }
+      ]
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "static_fields": 3,
+      "field_details": [
+        {
+          "name": "FULL_BRIGHT",
+          "descriptor": "I"
+        },
+        {
+          "name": "FULL_SKY",
+          "descriptor": "I"
+        },
+        {
+          "name": "MAX_SMOOTH_LIGHT_LEVEL",
+          "descriptor": "I"
+        }
+      ],
+      "has_clinit": false,
+      "clinit_instructions": [],
+      "candidate_methods": [
+        {
+          "method": "pack",
+          "descriptor": "(II)I"
+        },
+        {
+          "method": "block",
+          "descriptor": "(I)I"
+        },
+        {
+          "method": "sky",
+          "descriptor": "(I)I"
+        },
+        {
+          "method": "withBlock",
+          "descriptor": "(II)I"
+        },
+        {
+          "method": "smoothPack",
+          "descriptor": "(II)I"
+        },
+        {
+          "method": "smoothBlock",
+          "descriptor": "(I)I"
+        },
+        {
+          "method": "smoothSky",
+          "descriptor": "(I)I"
+        },
+        {
+          "method": "max",
+          "descriptor": "(II)I"
+        },
+        {
+          "method": "lightCoordsWithEmission",
+          "descriptor": "(II)I"
+        },
+        {
+          "method": "smoothBlend",
+          "descriptor": "(IIII)I"
+        }
+      ]
+    },
+    {
+      "class": "net/minecraft/util/LinearCongruentialGenerator",
+      "static_fields": 2,
+      "field_details": [
+        {
+          "name": "MULTIPLIER",
+          "descriptor": "J"
+        },
+        {
+          "name": "INCREMENT",
+          "descriptor": "J"
+        }
+      ],
+      "has_clinit": false,
+      "clinit_instructions": [],
+      "candidate_methods": [
+        {
+          "method": "next",
+          "descriptor": "(JJ)J"
+        }
+      ]
+    },
+    {
+      "class": "net/minecraft/world/entity/player/StackedContents$RecipePicker",
+      "static_fields": 1,
+      "field_details": [
+        {
+          "name": "$assertionsDisabled",
+          "descriptor": "Z"
+        }
+      ],
+      "has_clinit": true,
+      "clinit_instructions": [
+        "ldc",
+        "invokevirtual",
+        "ifne",
+        "iconst_1",
+        "goto",
+        "iconst_0",
+        "putstatic",
+        "return"
+      ],
+      "candidate_methods": [
+        {
+          "method": "isPathIndexItem",
+          "descriptor": "(I)Z"
+        }
+      ]
+    },
+    {
+      "class": "net/minecraft/world/level/biome/BiomeManager",
+      "static_fields": 4,
+      "field_details": [
+        {
+          "name": "CHUNK_CENTER_QUART",
+          "descriptor": "I"
+        },
+        {
+          "name": "ZOOM_BITS",
+          "descriptor": "I"
+        },
+        {
+          "name": "ZOOM",
+          "descriptor": "I"
+        },
+        {
+          "name": "ZOOM_MASK",
+          "descriptor": "I"
+        }
+      ],
+      "has_clinit": true,
+      "clinit_instructions": [
+        "bipush",
+        "invokestatic",
+        "putstatic",
+        "return"
+      ],
+      "candidate_methods": [
+        {
+          "method": "obfuscateSeed",
+          "descriptor": "(J)J"
+        }
+      ]
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/DataLayer",
+      "static_fields": 4,
+      "field_details": [
+        {
+          "name": "LAYER_COUNT",
+          "descriptor": "I"
+        },
+        {
+          "name": "LAYER_SIZE",
+          "descriptor": "I"
+        },
+        {
+          "name": "SIZE",
+          "descriptor": "I"
+        },
+        {
+          "name": "NIBBLE_SIZE",
+          "descriptor": "I"
+        }
+      ],
+      "has_clinit": false,
+      "clinit_instructions": [],
+      "candidate_methods": [
+        {
+          "method": "getIndex",
+          "descriptor": "(III)I"
+        },
+        {
+          "method": "getNibbleIndex",
+          "descriptor": "(I)I"
+        },
+        {
+          "method": "getByteIndex",
+          "descriptor": "(I)I"
+        },
+        {
+          "method": "packFilled",
+          "descriptor": "(I)B"
+        }
+      ]
+    },
+    {
+      "class": "net/minecraft/world/level/entity/EntitySectionStorage",
+      "static_fields": 2,
+      "field_details": [
+        {
+          "name": "CHONKY_ENTITY_SEARCH_GRACE",
+          "descriptor": "I"
+        },
+        {
+          "name": "MAX_NON_CHONKY_ENTITY_SIZE",
+          "descriptor": "I"
+        }
+      ],
+      "has_clinit": false,
+      "clinit_instructions": [],
+      "candidate_methods": [
+        {
+          "method": "getChunkKeyFromSectionKey",
+          "descriptor": "(J)J"
+        }
+      ]
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/ChunkSkyLightSources",
+      "static_fields": 2,
+      "field_details": [
+        {
+          "name": "SIZE",
+          "descriptor": "I"
+        },
+        {
+          "name": "NEGATIVE_INFINITY",
+          "descriptor": "I"
+        }
+      ],
+      "has_clinit": false,
+      "clinit_instructions": [],
+      "candidate_methods": [
+        {
+          "method": "index",
+          "descriptor": "(II)I"
+        }
+      ]
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LayerLightSectionStorage$SectionState",
+      "static_fields": 5,
+      "field_details": [
+        {
+          "name": "EMPTY",
+          "descriptor": "B"
+        },
+        {
+          "name": "MIN_NEIGHBORS",
+          "descriptor": "I"
+        },
+        {
+          "name": "MAX_NEIGHBORS",
+          "descriptor": "I"
+        },
+        {
+          "name": "HAS_DATA_BIT",
+          "descriptor": "B"
+        },
+        {
+          "name": "NEIGHBOR_COUNT_BITS",
+          "descriptor": "B"
+        }
+      ],
+      "has_clinit": false,
+      "clinit_instructions": [],
+      "candidate_methods": [
+        {
+          "method": "hasData",
+          "descriptor": "(BZ)B"
+        },
+        {
+          "method": "neighborCount",
+          "descriptor": "(BI)B"
+        },
+        {
+          "method": "hasData",
+          "descriptor": "(B)Z"
+        },
+        {
+          "method": "neighborCount",
+          "descriptor": "(B)I"
+        }
+      ]
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LightEngine$QueueEntry",
+      "static_fields": 6,
+      "field_details": [
+        {
+          "name": "FROM_LEVEL_BITS",
+          "descriptor": "I"
+        },
+        {
+          "name": "DIRECTION_BITS",
+          "descriptor": "I"
+        },
+        {
+          "name": "LEVEL_MASK",
+          "descriptor": "J"
+        },
+        {
+          "name": "DIRECTIONS_MASK",
+          "descriptor": "J"
+        },
+        {
+          "name": "FLAG_FROM_EMPTY_SHAPE",
+          "descriptor": "J"
+        },
+        {
+          "name": "FLAG_INCREASE_FROM_EMISSION",
+          "descriptor": "J"
+        }
+      ],
+      "has_clinit": false,
+      "clinit_instructions": [],
+      "candidate_methods": [
+        {
+          "method": "decreaseAllDirections",
+          "descriptor": "(I)J"
+        },
+        {
+          "method": "increaseLightFromEmission",
+          "descriptor": "(IZ)J"
+        },
+        {
+          "method": "increaseSkySourceInDirections",
+          "descriptor": "(ZZZZZ)J"
+        },
+        {
+          "method": "getFromLevel",
+          "descriptor": "(J)I"
+        },
+        {
+          "method": "isFromEmptyShape",
+          "descriptor": "(J)Z"
+        },
+        {
+          "method": "isIncreaseFromEmission",
+          "descriptor": "(J)Z"
+        },
+        {
+          "method": "withLevel",
+          "descriptor": "(JI)J"
+        }
+      ]
+    },
+    {
+      "class": "net/minecraft/world/level/pathfinder/PathTypeCache",
+      "static_fields": 2,
+      "field_details": [
+        {
+          "name": "SIZE",
+          "descriptor": "I"
+        },
+        {
+          "name": "MASK",
+          "descriptor": "I"
+        }
+      ],
+      "has_clinit": false,
+      "clinit_instructions": [],
+      "candidate_methods": [
+        {
+          "method": "index",
+          "descriptor": "(J)I"
+        }
+      ]
+    }
+  ]
+}

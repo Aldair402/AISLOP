@@ -1,0 +1,3 @@
+Error: interfaz JDK no inspeccionada: java/lang/CharSequence
+  al compilar org/apache/logging/log4j/internal/DefaultLogBuilder.<clinit>()V
+compile_exit= 1

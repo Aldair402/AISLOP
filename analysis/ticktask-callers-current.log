@@ -1,0 +1,3 @@
+net/minecraft/server/MinecraftServer	wrapRunnable	(Ljava/lang/Runnable;)Lnet/minecraft/server/TickTask;	9	<init>	(ILjava/lang/Runnable;)V
+net/minecraft/server/MinecraftServer	shouldRun	(Lnet/minecraft/server/TickTask;)Z	1	getTick	()I
+total 2 llamadas directas; no incluye despacho virtual heredado, referencias por interfaces ni llamadas dinámicas

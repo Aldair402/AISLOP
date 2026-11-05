@@ -1,0 +1,48 @@
+
+running 58 tests
+..........................................................
+test result: ok. 58 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+
+running 25 tests
+.........................
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+==> check-stackwalker-walk-prefix
+OK: 73 comparaciones Java walk/skip/findFirst/map, null, opciones y valores negativos; frames externos y consumo fuera de walk abortan
+==> check-optional-map
+OK: 162 resultados Optional.map y cast/instanceof Optional frente a Java
+==> check-real-log4j-stacklocator
+OK: 91 resultados del StackLocator oficial Java 25 para profundidad conocida y negativos; marco externo aborta; SHA-256 b0bde864bd4cb3eab35d1530589b25f243307ac1483c15e1fb394a9f993fe917
+==> check-charsequence-tostring
+OK: 81 resultados CharSequence.toString en String/StringBuilder/null; proyecto fuera del perfil aborta
+==> check-log4j-property-patterns
+OK: 1832 resultados Java Matcher.find/end/group para dos patrones Log4j, posiciones, Unicode y entrada mutable
+==> check-root-lowercase
+OK: 81 resultados Java Locale.ROOT, identidad y null con idioma tr; Unicode aborta
+==> check-set-stream-profile
+OK: 81 resultados Set.stream de HashSet/LinkedHashSet/KeySet, laziness y estado; collect/max sobre Set abortan
+==> check-comparator-project-class
+OK: 81 resultados de registro/clase Comparator y guarda de compare
+==> check-lambda-private-special
+OK: 162 resultados REF_7 privado sintético, receptores/capturas, int y String
+==> check-objects-nonnull-methodref
+OK: 81 resultados Objects::nonNull con null, String y objeto traducido
+==> check-context-classloader
+OK: 81 resultados del cargador de contexto principal estándar, identidad/null y guarda de supuesto
+==> check-objects-tostring-default
+OK: 81 resultados Objects.toString con null/String/StringBuilder, identidad y guarda de objetos
+==> check-duration-pattern-profile
+OK: 81 resultados Pattern de duración de Log4j, identidad, flags y null; guardas de patrón, flags y matcher
+==> check-arraylist-stream-profile
+OK: 162 resultados ArrayList.stream secuencial y perezoso, cierre, estado y null; otras fuentes abortan; sin terminales
+==> check-arraylist-stream-max
+OK: 202 resultados Java de ArrayList.stream().max, orden, late-binding, vacío/null y cierre; mutación durante recorrido aborta
+==> check-arraylist-stream-joining
+OK: 162 resultados Java collect(joining) con Unicode/null/estado; map aborta explícitamente
+==> check-stream-map-profile
+OK: 81 resultados map perezoso, encadenado, null, cierre y estado; consumo transformado no implementado
+==> check-stream-sorted-profile
+OK: 82 resultados sorted perezoso, null, cierre y orden de validaciones; consumo ordenado no implementado
+==> check-real-log4j-safestream
+OK: 201 resultados del safeStream oficial contra Java con stubs de fixture, filtros, forEach y excepciones; guardas de opt-in, presencia, fuente y hashes; no prueba el logger real

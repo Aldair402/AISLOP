@@ -1,0 +1,1270 @@
+{
+  "jar": "/home/user/minecraft-rust/downloads/server-26.3-inner.jar",
+  "classes_in_jar": 7762,
+  "methods_with_code_in_jar": 69821,
+  "scope": "Métodos estáticos con cero o más parámetros int y retorno int, boolean, byte, char o short; no se consideran otros métodos.",
+  "candidate_methods": 202,
+  "candidate_classes": 90,
+  "compiled_methods": 160,
+  "classes_with_at_least_one_compiled_method": 73,
+  "compiled_int_return_methods": 107,
+  "compiled_narrow_return_methods": 53,
+  "fully_supported_classes_certified": 0,
+  "results": [
+    {
+      "class": "net/minecraft/SharedConstants",
+      "method": "getProtocolVersion",
+      "descriptor": "()I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/arguments/HexColorArgument",
+      "method": "duplicateDigit",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/arguments/OperationArgument",
+      "method": "lambda$getSimpleOperation$4",
+      "descriptor": "(II)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0x9a en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 4; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/commands/arguments/OperationArgument.lambda$getSimpleOperation$4(II)I"
+    },
+    {
+      "class": "net/minecraft/commands/arguments/OperationArgument",
+      "method": "lambda$getSimpleOperation$3",
+      "descriptor": "(II)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0x9a en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 4; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/commands/arguments/OperationArgument.lambda$getSimpleOperation$3(II)I"
+    },
+    {
+      "class": "net/minecraft/commands/arguments/OperationArgument",
+      "method": "lambda$getSimpleOperation$2",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/arguments/OperationArgument",
+      "method": "lambda$getSimpleOperation$1",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/arguments/OperationArgument",
+      "method": "lambda$getSimpleOperation$0",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/QuartPos",
+      "method": "fromBlock",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/QuartPos",
+      "method": "quartLocal",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/QuartPos",
+      "method": "toBlock",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/QuartPos",
+      "method": "fromSection",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/QuartPos",
+      "method": "toSection",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "blockToSectionCoord",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "sectionRelative",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "sectionToBlockCoord",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "sectionToBlockCoord",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/gametest/framework/TestCommand",
+      "method": "stopTests",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0; traductor numérico: campo estático externo no soportado: net/minecraft/gametest/framework/GameTestTicker.SINGLETONLnet/minecraft/gametest/framework/GameTestTicker;\n  al compilar net/minecraft/gametest/framework/TestCommand.stopTests()I"
+    },
+    {
+      "class": "net/minecraft/network/LpVec3",
+      "method": "hasContinuationBit",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/VarInt",
+      "method": "getByteSize",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/chat/SubStringSource",
+      "method": "lambda$create$0",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/protocol/game/ClientboundMoveEntityPacket",
+      "method": "unpackOnGround",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/protocol/game/ClientboundMoveEntityPacket",
+      "method": "unpackStepCount",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/protocol/game/ClientboundSetPlayerTeamPacket",
+      "method": "shouldHavePlayerList",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/protocol/game/ClientboundSetPlayerTeamPacket",
+      "method": "shouldHaveParameters",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/protocol/game/ServerboundMovePlayerPacket",
+      "method": "unpackOnGround",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/protocol/game/ServerboundMovePlayerPacket",
+      "method": "unpackHorizontalCollision",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/Main",
+      "method": "lambda$main$2",
+      "descriptor": "()Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/MinecraftServer",
+      "method": "lambda$processPacketsAndTick$0",
+      "descriptor": "()Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/MinecraftServer",
+      "method": "lambda$stopServer$1",
+      "descriptor": "()Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/commands/ExecuteCommand$ExecuteIfFunctionCustomModifier",
+      "method": "lambda$new$1",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/commands/ExecuteCommand$ExecuteIfFunctionCustomModifier",
+      "method": "lambda$new$0",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/commands/ExecuteCommand",
+      "method": "lambda$addConditionals$13",
+      "descriptor": "(II)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/commands/ExecuteCommand",
+      "method": "lambda$addConditionals$11",
+      "descriptor": "(II)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/commands/ExecuteCommand",
+      "method": "lambda$addConditionals$9",
+      "descriptor": "(II)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/commands/ExecuteCommand",
+      "method": "lambda$addConditionals$7",
+      "descriptor": "(II)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/commands/ExecuteCommand",
+      "method": "lambda$addConditionals$5",
+      "descriptor": "(II)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/commands/FillBiomeCommand",
+      "method": "quantize",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/commands/data/DataCommands",
+      "method": "getOffset",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ChunkLevel",
+      "method": "isEntityTicking",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ChunkLevel",
+      "method": "isBlockTicking",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ChunkLevel",
+      "method": "isLoaded",
+      "descriptor": "(I)Z",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 1; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/server/level/ChunkLevel.isLoaded(I)Z"
+    },
+    {
+      "class": "net/minecraft/server/level/ChunkMap",
+      "method": "lambda$saveAllChunks$3",
+      "descriptor": "()Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ChunkTrackingView",
+      "method": "isInViewDistance",
+      "descriptor": "(IIIII)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/DistanceManager$PlayerTicketTracker",
+      "method": "lambda$onLevelChange$3",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/PlayerSpawnFinder",
+      "method": "getCoprime",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ThreadedLevelLightEngine",
+      "method": "lambda$retainData$0",
+      "descriptor": "()I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ThreadedLevelLightEngine",
+      "method": "lambda$queueSectionData$0",
+      "descriptor": "()I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ThreadedLevelLightEngine",
+      "method": "lambda$updateSectionStatus$0",
+      "descriptor": "()I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ThreadedLevelLightEngine",
+      "method": "lambda$updateChunkStatus$0",
+      "descriptor": "()I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/packs/resources/SimpleReloadInstance",
+      "method": "weightProgress",
+      "descriptor": "(III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/players/OldUsersConverter",
+      "method": "areOldUserlistsRemoved",
+      "descriptor": "()Z",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 2; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 2; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/server/players/OldUsersConverter.areOldUserlistsRemoved()Z"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "meanLinear",
+      "descriptor": "(IIII)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0; control de flujo: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/ARGB.linearChannelMean(IIII)I\n  al compilar net/minecraft/util/ARGB.meanLinear(IIII)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "linearChannelMean",
+      "descriptor": "(IIII)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/ARGB.linearChannelMean(IIII)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alpha",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "red",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "green",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "blue",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "color",
+      "descriptor": "(IIII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "color",
+      "descriptor": "(III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "multiply",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "addRgb",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "scaleRGB",
+      "descriptor": "(II)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0x85 en offset 8; no se produjo binario; control de flujo: opcode de flujo no soportado 0x85 en offset 8; traductor numérico: invokestatic no soportado: java/lang/Math.clamp(JII)I\n  al compilar net/minecraft/util/ARGB.scaleRGB(II)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "greyscale",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0x86 en offset 4; no se produjo binario; control de flujo: opcode de flujo no soportado 0x86 en offset 4; traductor numérico: opcode numérico no soportado 0x86 en offset 4\n  al compilar net/minecraft/util/ARGB.greyscale(I)I"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlend",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlendChannel",
+      "descriptor": "(IIII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "opaque",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "transparent",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "color",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "white",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "black",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "average",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "toABGR",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "fromABGR",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/BlockUtil",
+      "method": "packDifferenceInPositionInternal",
+      "descriptor": "(IIIIII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/BlockUtil",
+      "method": "checkDifferenceInBounds",
+      "descriptor": "(II)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xa3 en offset 7; no se produjo binario; control de flujo: opcode de flujo no soportado 0xbb en offset 16; traductor numérico: campo estático externo no soportado: java/util/Locale.ROOTLjava/util/Locale;\n  al compilar net/minecraft/util/BlockUtil.checkDifferenceInBounds(II)I"
+    },
+    {
+      "class": "net/minecraft/util/HttpUtil",
+      "method": "getAvailablePort",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traductor entero: tablas de excepciones todavía no soportadas; traductor numérico: new no soportado: java/net/ServerSocket\n  al compilar net/minecraft/util/HttpUtil.getAvailablePort()I"
+    },
+    {
+      "class": "net/minecraft/util/HttpUtil",
+      "method": "isPortAvailable",
+      "descriptor": "(I)Z",
+      "compiled": false,
+      "error": "Error: traductor entero: tablas de excepciones todavía no soportadas; traductor numérico: new no soportado: java/net/ServerSocket\n  al compilar net/minecraft/util/HttpUtil.isPortAvailable(I)Z"
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "pack",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "block",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "sky",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "withBlock",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "smoothPack",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "smoothBlock",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "smoothSky",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "max",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "lightCoordsWithEmission",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "smoothBlend",
+      "descriptor": "(IIII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "abs",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "clamp",
+      "descriptor": "(III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "absMax",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "chessboardDistance",
+      "descriptor": "(IIII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "floorDiv",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "positiveModulo",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "isMultipleOf",
+      "descriptor": "(II)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "wrapDegrees",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "smallestEncompassingPowerOfTwo",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "smallestSquareSide",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0x9c en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0xbb en offset 4; traductor numérico: opcode numérico no soportado 0x87 en offset 15\n  al compilar net/minecraft/util/Mth.smallestSquareSide(I)I"
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "isPowerOfTwo",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "ceillog2",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0x99 en offset 4; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 16; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/Mth.ceillog2(I)I"
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "log2",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: traducción lineal: opcode no soportado 0x99 en offset 4; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 16; control de flujo: traducción lineal: opcode no soportado 0x99 en offset 4; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 16; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/Mth.ceillog2(I)I\n  al compilar net/minecraft/util/Mth.log2(I)I"
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "murmurHash3Mixer",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "square",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "roundToward",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "positiveCeilDiv",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "lambda$outFromOrigin$1",
+      "descriptor": "(IIIII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "lambda$outFromOrigin$0",
+      "descriptor": "(IIII)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/PngInfo",
+      "method": "validateBitDepth",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/PngInfo",
+      "method": "validateColorType",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/SortedArraySet",
+      "method": "getInsertionPosition",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/SpecialDates",
+      "method": "isHalloween",
+      "descriptor": "()Z",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/SpecialDates.isHalloween()Z"
+    },
+    {
+      "class": "net/minecraft/util/SpecialDates",
+      "method": "isExtendedChristmas",
+      "descriptor": "()Z",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/SpecialDates.isExtendedChristmas()Z"
+    },
+    {
+      "class": "net/minecraft/util/StringUtil",
+      "method": "isAllowedChatCharacter",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/StringUtil",
+      "method": "isWhitespace",
+      "descriptor": "(I)Z",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: invokestatic no soportado: java/lang/Character.isWhitespace(I)Z en offset 1; control de flujo: invokestatic no soportado: java/lang/Character.isWhitespace(I)Z en offset 1; traductor numérico: invokestatic no soportado: java/lang/Character.isWhitespace(I)Z\n  al compilar net/minecraft/util/StringUtil.isWhitespace(I)Z"
+    },
+    {
+      "class": "net/minecraft/util/StringUtil",
+      "method": "lambda$isValidPlayerName$0",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "maxAllowedExecutorThreads",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: invokestatic no soportado: java/lang/Runtime.getRuntime()Ljava/lang/Runtime; en offset 0; control de flujo: solo se admiten argumentos y retornos int/boolean/byte/char/short; traductor numérico: retorno no soportado\n  al compilar net/minecraft/util/Util.maxAllowedExecutorThreads()I"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "getMaxThreads",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traductor entero: tablas de excepciones todavía no soportadas; traductor numérico: invokestatic no soportado: java/lang/System.getProperty(Ljava/lang/String;)Ljava/lang/String;\n  al compilar net/minecraft/util/Util.getMaxThreads()I"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "growByHalf",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "isAarch64",
+      "descriptor": "()Z",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: ldc solo admite constantes int; índice 545 en offset 0; control de flujo: ldc solo soporta int; traductor numérico: invokestatic no soportado: java/lang/System.getProperty(Ljava/lang/String;)Ljava/lang/String;\n  al compilar net/minecraft/util/Util.isAarch64()Z"
+    },
+    {
+      "class": "net/minecraft/util/datafix/DataFixTypes",
+      "method": "currentVersion",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: solo se admiten argumentos y retornos int/boolean/byte/char/short; control de flujo: solo se admiten argumentos y retornos int/boolean/byte/char/short; traductor numérico: retorno no soportado\n  al compilar net/minecraft/util/datafix/DataFixTypes.currentVersion()I"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ChunkHeightAndBiomeFix",
+      "method": "ceillog2",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0x9a en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0x87 en offset 7; traductor numérico: opcode numérico no soportado 0x87 en offset 7\n  al compilar net/minecraft/util/datafix/fixes/ChunkHeightAndBiomeFix.ceillog2(I)I"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ChunkProtoTickListFix",
+      "method": "lambda$makeTickList$1",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ChunkToProtochunkFix",
+      "method": "packOffsetCoordinates",
+      "descriptor": "(III)S",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ItemStackComponentizationFix",
+      "method": "lambda$isValidPlayerName$0",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/LeavesFix",
+      "method": "getIndex",
+      "descriptor": "(III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/VillagerRebuildLevelAndXpFix",
+      "method": "getMinXpPerLevel",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/datafix/fixes/VillagerRebuildLevelAndXpFix.getMinXpPerLevel(I)I"
+    },
+    {
+      "class": "net/minecraft/util/filefix/FileFixerUpper",
+      "method": "worldVersionToFileFixerVersion",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/profiling/SingleTickProfiler",
+      "method": "lambda$startTick$1",
+      "descriptor": "()Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/profiling/metrics/profiling/ActiveMetricsRecorder",
+      "method": "lambda$endTick$1",
+      "descriptor": "()Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/profiling/metrics/profiling/ActiveMetricsRecorder",
+      "method": "lambda$new$3",
+      "descriptor": "()Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/profiling/metrics/profiling/ActiveMetricsRecorder",
+      "method": "lambda$new$1",
+      "descriptor": "()Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/effect/MobEffectInstance",
+      "method": "lambda$tickDownDuration$0",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/AgeableMob",
+      "method": "getSpeedUpSecondsWhenFeeding",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0x86 en offset 4; no se produjo binario; control de flujo: opcode de flujo no soportado 0x86 en offset 4; traductor numérico: opcode numérico no soportado 0x86 en offset 4\n  al compilar net/minecraft/world/entity/AgeableMob.getSpeedUpSecondsWhenFeeding(I)I"
+    },
+    {
+      "class": "net/minecraft/world/entity/ExperienceOrb",
+      "method": "getExperienceValue",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/ai/goal/Goal",
+      "method": "reducedTickDelay",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/ai/gossip/GossipContainer",
+      "method": "mergeValuesForTransfer",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/animal/equine/AbstractHorse",
+      "method": "lambda$static$5",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/animal/equine/AbstractHorse",
+      "method": "lambda$static$4",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/boss/enderdragon/phases/EnderDragonPhase",
+      "method": "getCount",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/entity/boss/enderdragon/phases/EnderDragonPhase.getCount()I"
+    },
+    {
+      "class": "net/minecraft/world/entity/decoration/Mannequin",
+      "method": "lambda$static$4",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/decoration/Mannequin",
+      "method": "lambda$static$0",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/monster/Ghast",
+      "method": "lambda$new$0",
+      "descriptor": "()Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/npc/villager/VillagerData",
+      "method": "getMinXpPerLevel",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0x99 en offset 4; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 7; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/entity/npc/villager/VillagerData.getMinXpPerLevel(I)I"
+    },
+    {
+      "class": "net/minecraft/world/entity/npc/villager/VillagerData",
+      "method": "getMaxXpPerLevel",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0x99 en offset 4; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 7; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/entity/npc/villager/VillagerData.getMaxXpPerLevel(I)I"
+    },
+    {
+      "class": "net/minecraft/world/entity/npc/villager/VillagerData",
+      "method": "canLevelUp",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/player/Inventory",
+      "method": "getSelectionSize",
+      "descriptor": "()I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/player/Inventory",
+      "method": "isHotbarSlot",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/player/StackedContents$RecipePicker",
+      "method": "isPathIndexItem",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/inventory/AbstractContainerMenu",
+      "method": "isContainerClickButton",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/inventory/AbstractContainerMenu",
+      "method": "getQuickcraftType",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/inventory/AbstractContainerMenu",
+      "method": "getQuickcraftHeader",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/inventory/AbstractContainerMenu",
+      "method": "getQuickcraftMask",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/inventory/AbstractMountInventoryMenu",
+      "method": "getInventorySize",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/inventory/AnvilMenu",
+      "method": "calculateIncreasedRepairCost",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/inventory/InventoryMenu",
+      "method": "isHotbarSlot",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/ChunkPos",
+      "method": "isValid",
+      "descriptor": "(II)Z",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 5; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 5; traductor numérico: campo estático externo no soportado: net/minecraft/world/level/chunk/status/ChunkPyramid.MAX_CHUNK_COORDINATE_VALUEI\n  al compilar net/minecraft/world/level/ChunkPos.isValid(II)Z"
+    },
+    {
+      "class": "net/minecraft/world/level/ChunkPos",
+      "method": "hash",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/GameType",
+      "method": "isValidId",
+      "descriptor": "(I)Z",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: solo se admiten argumentos y retornos int/boolean/byte/char/short; control de flujo: solo se admiten argumentos y retornos int/boolean/byte/char/short; traductor numérico: retorno no soportado\n  al compilar net/minecraft/world/level/GameType.isValidId(I)Z"
+    },
+    {
+      "class": "net/minecraft/world/level/GrassColor",
+      "method": "getDefaultColor",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0x14 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0x14 en offset 0; traductor numérico: constante no soportada en 0\n  al compilar net/minecraft/world/level/GrassColor.getDefaultColor()I"
+    },
+    {
+      "class": "net/minecraft/world/level/Level",
+      "method": "isOutsideSpawnableHeight",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/block/CakeBlock",
+      "method": "getOutputSignal",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/block/MossyCarpetBlock",
+      "method": "lambda$performBonemeal$0",
+      "descriptor": "()Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/block/MossyCarpetBlock",
+      "method": "lambda$isValidBonemealTarget$0",
+      "descriptor": "()Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/block/PitcherCropBlock",
+      "method": "isDouble",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/block/RedstoneWireBlock",
+      "method": "getColorForPower",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/level/block/RedstoneWireBlock.getColorForPower(I)I"
+    },
+    {
+      "class": "net/minecraft/world/level/block/state/properties/RotationSegment",
+      "method": "getMaxSegmentIndex",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/level/block/state/properties/RotationSegment.getMaxSegmentIndex()I"
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/DataLayer",
+      "method": "getIndex",
+      "descriptor": "(III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/DataLayer",
+      "method": "getNibbleIndex",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/DataLayer",
+      "method": "getByteIndex",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/DataLayer",
+      "method": "packFilled",
+      "descriptor": "(I)B",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/Strategy",
+      "method": "minimumBitsRequiredForDistinctValues",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: traducción lineal: opcode no soportado 0x99 en offset 4; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 16; control de flujo: traducción lineal: opcode no soportado 0x99 en offset 4; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 16; traductor numérico: campo estático externo no soportado: net/minecraft/util/Mth.MULTIPLY_DE_BRUIJN_BIT_POSITION[I\n  al compilar net/minecraft/util/Mth.ceillog2(I)I\n  al compilar net/minecraft/world/level/chunk/Strategy.minimumBitsRequiredForDistinctValues(I)I"
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/storage/RegionFile",
+      "method": "getTimestamp",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: solo se admiten argumentos y retornos int/boolean/byte/char/short; control de flujo: solo se admiten argumentos y retornos int/boolean/byte/char/short; traductor numérico: retorno no soportado\n  al compilar net/minecraft/util/Util.getEpochMillis()J\n  al compilar net/minecraft/world/level/chunk/storage/RegionFile.getTimestamp()I"
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/storage/RegionFile",
+      "method": "getNumSectors",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/storage/RegionFile",
+      "method": "getSectorNumber",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/storage/RegionFile",
+      "method": "sizeToSectors",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/storage/RegionFileVersion",
+      "method": "isValidVersion",
+      "descriptor": "(I)Z",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/level/chunk/storage/RegionFileVersion.isValidVersion(I)Z"
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer",
+      "method": "gridX",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer",
+      "method": "fromGridX",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer",
+      "method": "gridY",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer",
+      "method": "fromGridY",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer",
+      "method": "gridZ",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer",
+      "method": "fromGridZ",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Beardifier",
+      "method": "isInKernelRange",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Heightmap",
+      "method": "getIndex",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/blending/BlendingData",
+      "method": "getInsideIndex",
+      "descriptor": "(II)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/level/levelgen/blending/BlendingData.getInsideIndex(II)I"
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/blending/BlendingData",
+      "method": "getOutsideIndex",
+      "descriptor": "(II)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/level/levelgen/blending/BlendingData.getOutsideIndex(II)I"
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/blending/BlendingData",
+      "method": "getX",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 1; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/level/levelgen/blending/BlendingData.getX(I)I"
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/blending/BlendingData",
+      "method": "getZ",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb2 en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 1; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/level/levelgen/blending/BlendingData.getZ(I)I"
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/blending/BlendingData",
+      "method": "zeroIfNegative",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/feature/VoidStartPlatformFeature",
+      "method": "checkerboardDistance",
+      "descriptor": "(IIII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/feature/foliageplacers/PoplarFoliagePlacer",
+      "method": "isWithinRhombusShape",
+      "descriptor": "(IIIII)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/feature/foliageplacers/PoplarFoliagePlacer",
+      "method": "isLeftLowerCornerOrRightTopCorner",
+      "descriptor": "(II)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/feature/foliageplacers/PoplarFoliagePlacer",
+      "method": "isLeftTopCornerOrRightLowerCorner",
+      "descriptor": "(II)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/material/condition/BiomeCondition",
+      "method": "lambda$compile$1",
+      "descriptor": "()Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/material/condition/BiomeCondition",
+      "method": "lambda$compile$0",
+      "descriptor": "()Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/structure/structures/OceanMonumentPieces$OceanMonumentPiece",
+      "method": "getRoomIndex",
+      "descriptor": "(III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/structure/structures/StrongholdPieces",
+      "method": "updatePieceWeight",
+      "descriptor": "()Z",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: opcode no soportado 0xb3 en offset 3; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb3 en offset 3; traductor numérico: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/level/levelgen/structure/structures/StrongholdPieces.updatePieceWeight()Z"
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/ChunkSkyLightSources",
+      "method": "index",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/SkyLightEngine",
+      "method": "isSourceLevel",
+      "descriptor": "(I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/material/MapColor",
+      "method": "getColorFromPackedId",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traductor entero: traducción lineal: solo se admiten argumentos y retornos int/boolean/byte/char/short; control de flujo: solo se admiten argumentos y retornos int/boolean/byte/char/short; traductor numérico: retorno no soportado\n  al compilar net/minecraft/world/level/material/MapColor.getColorFromPackedId(I)I"
+    },
+    {
+      "class": "net/minecraft/world/level/pathfinder/Node",
+      "method": "createHash",
+      "descriptor": "(III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/pathfinder/PathFinder",
+      "method": "lambda$new$0",
+      "descriptor": "()Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/redstone/ExperimentalRedstoneWireEvaluator",
+      "method": "unpackPower",
+      "descriptor": "(I)I",
+      "compiled": true
+    }
+  ],
+  "limitations": "Compilación Rust exitosa ≠ equivalencia ni clase completa: no valida resultados, inicializadores, excepciones, métodos excluidos ni el arranque del servidor."
+}

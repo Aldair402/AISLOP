@@ -1,0 +1,3 @@
+   Compiling mc-aot v0.1.0 (/home/user/minecraft-rust/mc-aot)
+    Finished `release` profile [optimized] target(s) in 3.35s
+Candidatas: 99 clases (11 con <clinit>); programas compilados: 92 (4 con <clinit>); 0 clases completas certificadas. Informe: /home/user/minecraft-rust/analysis/audit-static-references.json

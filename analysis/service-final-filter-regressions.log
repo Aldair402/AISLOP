@@ -1,0 +1,18 @@
+
+running 58 tests
+..........................................................
+test result: ok. 58 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.34s
+
+
+running 25 tests
+.........................
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.50s
+
+OK: 103 resultados de AbstractSpliterator estimateSize/characteristics/getExactSizeIfKnown/hasCharacteristics, Java 25; guardas de override y trySplit
+OK: 86 resultados StreamSupport/filter secuencial, laziness, cierre, null/SORTED y guardias paralelo/predicado no lambda; sin operaciones terminales
+OK: 102 operaciones Java de Iterable.iterator sobre ArrayList, set, alias, null, agotamiento y fail-fast
+OK: 13 operaciones Java ServiceLoader y despacho Iterable.iterator: recursos reales en orden, comentarios, duplicados, caché, instanciación, causa y configuración inválida; proveedor no registrado aborta
+OK: 180 resultados Java StackWalker: llamantes, recursión, inicialización, identidad, opciones y null
+OK: 41 resultados Class.forName OSGi ausente/null frente a Java; guardas de classpath, clase presente y nombre distinto
+OK: identidad de loader de clases/interfaz y bootstrap Java coincide; literal de interfaz no inicializa; null coincide
+OK: 81 operaciones HashSet con Class/String/null y getClass de objetos, add por Collection, frente a Java; rechazo de claves arbitrarias

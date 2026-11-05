@@ -1,0 +1,20 @@
+
+running 58 tests
+..........................................................
+test result: ok. 58 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.28s
+
+
+running 25 tests
+.........................
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.73s
+
+==> check-printstream-construction-guard
+OK: rama sin PrintStream coincide con Java y construcción PrintStream/FileOutputStream ejecutada aborta explícitamente
+==> check-reflection-declared-constructors
+OK: 80 resultados getDeclaredConstructor público/ausente frente a Java; rechaza privado y clase no registrada
+==> check-class-forname-loader
+OK: 161 resultados Class.forName con loader, inicialización y casts Class; guardas opt-in, no precompilada y bootstrap
+==> check-class-as-subclass
+OK: 120 resultados Class.asSubclass, identidad, mensajes, herencia e interfaces; tipo JDK desconocido aborta
+==> check-comparator-comparing-guard
+OK: 60 casos Java; construcción no nula aborta explícitamente

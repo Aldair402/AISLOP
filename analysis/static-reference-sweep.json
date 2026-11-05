@@ -1,0 +1,8 @@
+{
+  "compiled_programs_in_audit": 96,
+  "programs_compared": 96,
+  "string_fields_compared": 19,
+  "programs_with_clinit_compared": 8,
+  "skipped_java_errors": [],
+  "limitations": "Lee un campo por clase, no verifica todos los campos, arrays, efectos, métodos ni clases completas. Formato stdout es diagnóstico."
+}

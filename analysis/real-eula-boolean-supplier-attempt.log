@@ -1,0 +1,7 @@
+Error: interfaz JDK no inspeccionada: java/security/PrivilegedAction
+  al compilar org/apache/logging/log4j/util/LoaderUtil.<clinit>()V
+  al compilar org/apache/logging/log4j/util/ProviderUtil.lazyInit()V
+  al compilar org/apache/logging/log4j/util/ProviderUtil.getProvider()Lorg/apache/logging/log4j/spi/Provider;
+  al compilar org/apache/logging/log4j/LogManager.<clinit>()V
+  al compilar org/apache/logging/slf4j/Log4jLoggerFactory.getContext()Lorg/apache/logging/log4j/spi/LoggerContext;
+compile_exit= 1

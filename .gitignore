@@ -1,0 +1,15 @@
+# Toolchains, caches and Cargo build products
+**/target/
+**/__pycache__/
+*.py[cod]
+
+# Local third-party downloads and binaries: retrieve from official sources
+/downloads/
+/tools/*.jar
+*.class
+
+# Generated examples and local archive; regenerate with mc-aot/build-examples.sh
+/mc-aot/examples/
+/analysis/generated-examples-binaries.tar.gz
+/analysis/sample/
+/logs/

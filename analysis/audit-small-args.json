@@ -1,0 +1,293 @@
+{
+  "scope": "Métodos static con al menos un argumento boolean, byte, char o short; demás argumentos y retorno también solo I/Z/B/C/S. Excluye los métodos con solo argumentos int que analiza audit.py.",
+  "candidates": 47,
+  "candidate_classes": 20,
+  "compiled_methods": 47,
+  "classes_with_at_least_one_compiled_method": 20,
+  "fully_supported_classes_certified": 0,
+  "limitations": "La compilación no comprueba equivalencia, inicialización, excepciones ni métodos excluidos; no certifica clases completas.",
+  "results": [
+    {
+      "class": "net/minecraft/commands/arguments/NbtPathArgument",
+      "method": "isAllowedInUnquotedName",
+      "descriptor": "(C)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/arguments/ResourceSelectorArgument",
+      "method": "isAllowedPatternCharacter",
+      "descriptor": "(C)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/synchronization/ArgumentUtils",
+      "method": "createNumberFlags",
+      "descriptor": "(ZZ)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/synchronization/ArgumentUtils",
+      "method": "numberHasMin",
+      "descriptor": "(B)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/synchronization/ArgumentUtils",
+      "method": "numberHasMax",
+      "descriptor": "(B)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "sectionRelativeX",
+      "descriptor": "(S)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "sectionRelativeY",
+      "descriptor": "(S)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "sectionRelativeZ",
+      "descriptor": "(S)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/nbt/SnbtGrammar",
+      "method": "isAllowedToStartUnquotedString",
+      "descriptor": "(C)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/nbt/SnbtGrammar",
+      "method": "canStartNumber",
+      "descriptor": "(C)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/VarInt",
+      "method": "hasContinuationBit",
+      "descriptor": "(B)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/VarLong",
+      "method": "hasContinuationBit",
+      "descriptor": "(B)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/protocol/game/ClientboundBossEventPacket",
+      "method": "encodeProperties",
+      "descriptor": "(ZZZ)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/protocol/game/ClientboundMoveEntityPacket",
+      "method": "packProperties",
+      "descriptor": "(ZI)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/protocol/game/ServerboundMovePlayerPacket",
+      "method": "packFlags",
+      "descriptor": "(ZZ)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/resources/Identifier",
+      "method": "isAllowedInIdentifier",
+      "descriptor": "(C)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/resources/Identifier",
+      "method": "validPathChar",
+      "descriptor": "(C)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/resources/Identifier",
+      "method": "validNamespaceChar",
+      "descriptor": "(C)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ChunkTrackingView",
+      "method": "isWithinDistance",
+      "descriptor": "(IIIIIZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/PngInfo",
+      "method": "validateBounds",
+      "descriptor": "(IIBB)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ChunkPalettedStorageFix",
+      "method": "getSideMask",
+      "descriptor": "(ZZZZ)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/EntityItemFrameDirectionFix",
+      "method": "direction2dTo3d",
+      "descriptor": "(B)B",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/LeavesFix",
+      "method": "getSideMask",
+      "descriptor": "(ZZZZ)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/inventory/SlotRanges",
+      "method": "lambda$read$0",
+      "descriptor": "(C)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/inventory/SlotRanges",
+      "method": "lambda$tryRead$0",
+      "descriptor": "(C)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/storage/RegionFile",
+      "method": "isExternalStreamChunk",
+      "descriptor": "(B)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/storage/RegionFile",
+      "method": "getExternalChunkVersion",
+      "descriptor": "(B)B",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LayerLightSectionStorage$SectionState",
+      "method": "hasData",
+      "descriptor": "(BZ)B",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LayerLightSectionStorage$SectionState",
+      "method": "neighborCount",
+      "descriptor": "(BI)B",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LayerLightSectionStorage$SectionState",
+      "method": "hasData",
+      "descriptor": "(B)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LayerLightSectionStorage$SectionState",
+      "method": "neighborCount",
+      "descriptor": "(B)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$15",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$14",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$13",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$12",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$11",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$10",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$9",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$8",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$7",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$6",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$5",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$4",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$3",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$2",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$1",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/phys/shapes/BooleanOp",
+      "method": "lambda$static$0",
+      "descriptor": "(ZZ)Z",
+      "compiled": true
+    }
+  ]
+}

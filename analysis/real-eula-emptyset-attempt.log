@@ -1,0 +1,10 @@
+Error: constructor no soportado: java/util/HashMap.<init>(I)V
+  al compilar org/apache/logging/log4j/core/lookup/PropertiesLookup.createConfigurationPropertyMap([Lorg/apache/logging/log4j/core/config/Property;)Ljava/util/Map;
+  al compilar org/apache/logging/log4j/core/lookup/PropertiesLookup.<init>([Lorg/apache/logging/log4j/core/config/Property;Ljava/util/Map;)V
+  al compilar org/apache/logging/log4j/core/lookup/PropertiesLookup.<init>(Ljava/util/Map;)V
+  al compilar org/apache/logging/log4j/core/lookup/Interpolator.<init>(Ljava/util/Map;)V
+  al compilar org/apache/logging/log4j/core/config/AbstractConfiguration.<init>(Lorg/apache/logging/log4j/core/LoggerContext;Lorg/apache/logging/log4j/core/config/ConfigurationSource;)V
+  al compilar org/apache/logging/log4j/core/config/NullConfiguration.<init>()V
+  al compilar org/apache/logging/log4j/core/LoggerContext.<clinit>()V
+  al compilar org/apache/logging/log4j/core/impl/Log4jContextFactory.getContext(Ljava/lang/String;Ljava/lang/ClassLoader;Ljava/lang/Object;ZLjava/net/URI;Ljava/lang/String;)Lorg/apache/logging/log4j/core/LoggerContext;
+compile_exit= 1

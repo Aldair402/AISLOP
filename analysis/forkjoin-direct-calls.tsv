@@ -1,0 +1,6 @@
+clase	método	descriptor	offset	owner	callee	descriptor_destino
+net/minecraft/util/Util	lambda$makeExecutor$0	(Ljava/lang/String;Ljava/util/concurrent/atomic/AtomicInteger;Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;	26	java/util/concurrent/ForkJoinWorkerThread	setName	(Ljava/lang/String;)V
+net/minecraft/util/Util	makeExecutor	(Ljava/lang/String;)Lnet/minecraft/TracingExecutor;	42	java/util/concurrent/ForkJoinPool	<init>	(ILjava/util/concurrent/ForkJoinPool$ForkJoinWorkerThreadFactory;Ljava/lang/Thread$UncaughtExceptionHandler;Z)V
+net/minecraft/util/Util$2	<init>	(Ljava/util/concurrent/ForkJoinPool;Ljava/lang/String;Ljava/lang/String;)V	12	java/util/concurrent/ForkJoinWorkerThread	<init>	(Ljava/util/concurrent/ForkJoinPool;)V
+net/minecraft/util/Util$2	onStart	()V	15	java/util/concurrent/ForkJoinWorkerThread	onStart	()V
+net/minecraft/util/Util$2	onTermination	(Ljava/lang/Throwable;)V	38	java/util/concurrent/ForkJoinWorkerThread	onTermination	(Ljava/lang/Throwable;)V

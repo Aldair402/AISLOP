@@ -1,0 +1,147 @@
+{
+  "scope": "Un programa static-demo por clase con al menos un campo estático primitivo; clases directas de Object sin interfaces y sin otros campos estáticos. Lee un campo y compila <clinit> si existe. No incluye métodos de instancia ni todas las operaciones de la clase.",
+  "candidate_classes": 15,
+  "candidates_with_clinit": 2,
+  "compiled_programs": 14,
+  "compiled_programs_with_clinit": 1,
+  "fully_supported_classes_certified": 0,
+  "limitations": "Compilación aislada no prueba equivalencia; clase completa no traducida. Se omiten sincronización, excepciones, herencia y múltiples clases con inicializadores.",
+  "results": [
+    {
+      "class": "net/minecraft/core/QuartPos",
+      "has_clinit": false,
+      "field": {
+        "name": "BITS",
+        "descriptor": "I"
+      },
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/VarInt",
+      "has_clinit": false,
+      "field": {
+        "name": "MAX_VARINT_SIZE",
+        "descriptor": "I"
+      },
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/VarLong",
+      "has_clinit": false,
+      "field": {
+        "name": "MAX_VARLONG_SIZE",
+        "descriptor": "I"
+      },
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/SuppressedExceptionCollector",
+      "has_clinit": false,
+      "field": {
+        "name": "LATEST_ENTRY_COUNT",
+        "descriptor": "I"
+      },
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/BlockUtil",
+      "has_clinit": false,
+      "field": {
+        "name": "MAX_POSITION_DIFFERENCE_PACKING_RADIUS",
+        "descriptor": "I"
+      },
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "has_clinit": false,
+      "field": {
+        "name": "FULL_BRIGHT",
+        "descriptor": "I"
+      },
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LinearCongruentialGenerator",
+      "has_clinit": false,
+      "field": {
+        "name": "MULTIPLIER",
+        "descriptor": "J"
+      },
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/player/StackedContents$RecipePicker",
+      "has_clinit": true,
+      "field": {
+        "name": "$assertionsDisabled",
+        "descriptor": "Z"
+      },
+      "compiled": false,
+      "error": "Error: constante no soportada en 0\n  al compilar net/minecraft/world/entity/player/StackedContents$RecipePicker.<clinit>()V"
+    },
+    {
+      "class": "net/minecraft/world/level/biome/BiomeManager",
+      "has_clinit": true,
+      "field": {
+        "name": "CHUNK_CENTER_QUART",
+        "descriptor": "I"
+      },
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/DataLayer",
+      "has_clinit": false,
+      "field": {
+        "name": "LAYER_COUNT",
+        "descriptor": "I"
+      },
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/entity/EntitySectionStorage",
+      "has_clinit": false,
+      "field": {
+        "name": "CHONKY_ENTITY_SEARCH_GRACE",
+        "descriptor": "I"
+      },
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/ChunkSkyLightSources",
+      "has_clinit": false,
+      "field": {
+        "name": "SIZE",
+        "descriptor": "I"
+      },
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LayerLightSectionStorage$SectionState",
+      "has_clinit": false,
+      "field": {
+        "name": "EMPTY",
+        "descriptor": "B"
+      },
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/LightEngine$QueueEntry",
+      "has_clinit": false,
+      "field": {
+        "name": "FROM_LEVEL_BITS",
+        "descriptor": "I"
+      },
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/pathfinder/PathTypeCache",
+      "has_clinit": false,
+      "field": {
+        "name": "SIZE",
+        "descriptor": "I"
+      },
+      "compiled": true
+    }
+  ]
+}

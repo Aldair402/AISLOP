@@ -1,0 +1,5 @@
+OK: 90 operaciones HashSet String/null; iteración múltiple aborta por orden no verificado
+OK: 120 operaciones Java LinkedHashSet String/null, igualdad, orden, alias e iterador fail-fast; otros tipos abortan
+OK: 300 operaciones Java de ConcurrentHashMap y LinkedBlockingQueue monohilo; 5 casos null y clave no String rechazada
+OK: 13 operaciones Java ServiceLoader: recursos reales en orden, comentarios, duplicados, caché, instanciación, causa y configuración inválida; proveedor no registrado aborta
+OK: 81 operaciones HashSet con Class/String/null y getClass de objetos, add por Collection, frente a Java; rechazo de claves arbitrarias

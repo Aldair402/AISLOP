@@ -1,0 +1,3 @@
+Error: invokevirtual no soportado: java/lang/Object.equals(Ljava/lang/Object;)Z
+  al compilar org/apache/logging/slf4j/Log4jLoggerFactory.lambda$static$0(Ljava/lang/Class;)Z
+compile_exit= 1

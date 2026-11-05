@@ -1,0 +1,1 @@
+OK: 28 resultados Java/ForkJoinPool frente a Rayon, cuatro tareas Java capturan el mismo objeto final; monitor synchronized, hilo principal, QuartPos oficial, overflow y 5 guardas; backend concurrente aislado

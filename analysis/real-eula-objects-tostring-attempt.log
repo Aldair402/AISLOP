@@ -1,0 +1,3 @@
+Error: invokeinterface no soportado: java/util/stream/Stream.dropWhile(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;
+  al compilar org/apache/logging/log4j/util/StackLocator.lambda$getCallerClass$2(Ljava/lang/Class;Ljava/util/function/Predicate;Ljava/util/stream/Stream;)Ljava/lang/Class;
+compile_exit= 1

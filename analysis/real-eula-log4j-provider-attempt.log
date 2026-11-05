@@ -1,0 +1,8 @@
+Error: invokevirtual no soportado: java/lang/ClassLoader.getParent()Ljava/lang/ClassLoader;
+  al compilar org/apache/logging/log4j/core/util/Loader.isChild(Ljava/lang/ClassLoader;Ljava/lang/ClassLoader;)Z
+  al compilar org/apache/logging/log4j/core/util/Loader.getClassLoader(Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/ClassLoader;
+  al compilar org/apache/logging/log4j/core/util/Loader.getClassLoader()Ljava/lang/ClassLoader;
+  al compilar org/apache/logging/log4j/core/util/Loader.newCheckedInstanceOfProperty(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;
+  al compilar org/apache/logging/log4j/core/impl/Log4jContextFactory.createContextSelector()Lorg/apache/logging/log4j/core/selector/ContextSelector;
+  al compilar org/apache/logging/log4j/core/impl/Log4jContextFactory.<init>()V
+compile_exit= 1

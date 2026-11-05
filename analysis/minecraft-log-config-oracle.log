@@ -1,0 +1,1 @@
+OK: fixture log4rs del filtro raíz coincide con XML oficial: INFO/WARN, DEBUG, NETWORK_PACKETS directo/heredado e isEnabled; no implementa Marker mutable ni XML

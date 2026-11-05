@@ -1,0 +1,5 @@
+Error: invokevirtual no soportado: java/lang/Thread.setContextClassLoader(Ljava/lang/ClassLoader;)V
+  al compilar org/apache/logging/log4j/core/util/Loader.newCheckedInstanceOfProperty(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;
+  al compilar org/apache/logging/log4j/core/impl/Log4jContextFactory.createContextSelector()Lorg/apache/logging/log4j/core/selector/ContextSelector;
+  al compilar org/apache/logging/log4j/core/impl/Log4jContextFactory.<init>()V
+compile_exit= 1

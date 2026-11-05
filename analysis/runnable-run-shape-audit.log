@@ -1,0 +1,7 @@
+JAR downloads/server-26.3-inner.jar métodos instancia run()V 31 formas exactas aload_0/getfield/invokevirtual/return 0 errores de lectura 0
+Inventario de forma solamente; NO verifica interfaz Runnable, captura, constructor, destino, flags, inicialización ni compatibilidad.
+Formas exactas aload_0/getfield/invokeinterface/return: 3
+net/minecraft/server/TickTask	java/lang/Runnable	run	()V
+net/minecraft/util/Util$4	java/lang/Runnable	run	()V
+net/minecraft/util/thread/StrictQueue$RunnableWithPriority	java/lang/Runnable	run	()V
+Inventario de forma: no comprueba captura, constructor ni rutas de ejecución.

@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+"""Rutas Linux y consultas reales con enlaces, comparadas con Java."""
+import os,pathlib,subprocess,tempfile
+root=pathlib.Path(__file__).resolve().parents[1];jdk=pathlib.Path(os.environ['JAVA_HOME'])/'bin'
+src='''package net.minecraft.test;import java.nio.file.*;import java.io.File;public class PathDemo{public static int run(int n){switch(n%13){case 0:{Path p=Paths.get("abc//", "def/");return p.toString().length()*10+p.getParent().toString().length();}case 1:{Path p=Path.of("abc");return p.resolve("")==p?1:0;}case 2:return Path.of("/").getParent()==null?2:0;case 3:return Files.exists(Path.of(""))?3:0;case 4:return Files.isDirectory(Path.of("test-dir"))?4:0;case 5:return Files.isRegularFile(Path.of("test-dir/a"))?5:0;case 6:return Files.isSymbolicLink(Path.of("link"))?6:0;case 7:return Files.exists(Path.of("link"))?7:0;case 8:return Files.isSymbolicLink(Path.of("broken"))?8:0;case 9:return Files.exists(Path.of("broken"))?0:9;case 10:{Path p=Path.of("x");return p.toAbsolutePath().toString().length();}case 11:try{Files.exists(Path.of("x"),(LinkOption[])null);return 0;}catch(NullPointerException e){return 11;}default:{File f=new File("test-dir//a");Path p=f.toPath();return (p==f.toPath()?100:0)+p.toString().length();}}}}'''
+driver='''import net.minecraft.test.PathDemo;public class PathDriver{public static void main(String[]a){for(String x:a)System.out.println(PathDemo.run(Integer.parseInt(x)));}}'''
+with tempfile.TemporaryDirectory(prefix='mc-paths-') as t:
+ d=pathlib.Path(t);(d/'PathDemo.java').write_text(src);(d/'PathDriver.java').write_text(driver);subprocess.run([str(jdk/'javac'),'-d',str(d),str(d/'PathDemo.java'),str(d/'PathDriver.java')],check=True);subprocess.run([str(jdk/'jar'),'cf',str(d/'fixture.jar'),'-C',str(d),'net'],check=True)
+ p=subprocess.run(['cargo','run','--quiet','--manifest-path',str(root/'Cargo.toml'),'--','multi-static-demo',str(d/'fixture.jar'),'net/minecraft/test/PathDemo',str(d/'native'),'run','(I)I'],capture_output=True,text=True)
+ if p.returncode:raise RuntimeError(p.stderr)
+ (d/'test-dir').mkdir();(d/'test-dir/a').write_text('x');(d/'link').symlink_to('test-dir/a');(d/'broken').symlink_to('missing');vals=list(range(130));j=subprocess.run([str(jdk/'java'),'-cp',str(d),'PathDriver',*map(str,vals)],cwd=d,capture_output=True,text=True,check=True);a=subprocess.run([str(d/'native'),*[v for n in vals for v in ('0',str(n))]],cwd=d,capture_output=True,text=True)
+ if a.returncode or j.stdout!=a.stdout:raise AssertionError((a.returncode,j.stdout,a.stdout,a.stderr))
+ print('OK: 130 consultas reales de rutas, cwd, enlaces y errores comparadas con Java')

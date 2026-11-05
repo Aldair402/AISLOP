@@ -1,0 +1,1 @@
+OK: 4.000 trabajos, rechazo, espera acotada, join anidado, fallo y conteos de ciclo de vida de 4 hilos contrastados con ForkJoinPool Java 25; el adaptador no es ForkJoinPool completo

@@ -1,0 +1,2040 @@
+{
+  "classes_read": 7762,
+  "scope": "Métodos static con String o String[] en la firma y argumentos limitados a estos, primitivas o arrays primitivos; retorno primitivo, void o String.",
+  "candidates": 310,
+  "candidate_classes": 171,
+  "compiled_methods": 142,
+  "classes_with_at_least_one_compiled_method": 95,
+  "fully_supported_classes_certified": 0,
+  "limitations": "Compilar no demuestra equivalencia, inicializadores, excepciones capturables ni clases completas. Heap limitado sin GC.",
+  "results": [
+    {
+      "class": "net/minecraft/ChatFormatting",
+      "method": "stripFormatting",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/ChatFormatting.stripFormatting(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/SharedConstants",
+      "method": "prefixDebugFlagName",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/SharedConstants.prefixDebugFlagName(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/SharedConstants",
+      "method": "booleanProperty",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: invokestatic no soportado: java/lang/System.getProperty(Ljava/lang/String;)Ljava/lang/String;\n  al compilar net/minecraft/SharedConstants.booleanProperty(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/SharedConstants",
+      "method": "debugFlag",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/SharedConstants.debugFlag(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/SharedConstants",
+      "method": "debugIntValue",
+      "descriptor": "(Ljava/lang/String;)I",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/SharedConstants.debugIntValue(Ljava/lang/String;)I"
+    },
+    {
+      "class": "net/minecraft/SystemReport",
+      "method": "lambda$putSpaceForProperty$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokestatic no soportado: java/lang/System.getProperty(Ljava/lang/String;)Ljava/lang/String;\n  al compilar net/minecraft/SystemReport.lambda$putSpaceForProperty$0(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/SystemReport",
+      "method": "lambda$putStorage$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/SystemReport",
+      "method": "lambda$new$11",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/SystemReport",
+      "method": "lambda$new$9",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/advancements/Advancement",
+      "method": "lambda$validate$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/advancements/Advancement",
+      "method": "lambda$validate$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/advancements/Advancement",
+      "method": "lambda$static$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/advancements/AdvancementRequirements",
+      "method": "lambda$validate$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/Commands",
+      "method": "trimOptionalPrefix",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokevirtual no soportado: java/lang/String.substring(I)Ljava/lang/String;\n  al compilar net/minecraft/commands/Commands.trimOptionalPrefix(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/commands/Commands",
+      "method": "lambda$performCommand$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/commands/Commands.lambda$performCommand$0(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/commands/SharedSuggestionProvider",
+      "method": "matchesSubStr",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: invokevirtual no soportado: java/lang/String.startsWith(Ljava/lang/String;I)Z\n  al compilar net/minecraft/commands/SharedSuggestionProvider.matchesSubStr(Ljava/lang/String;Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/commands/SharedSuggestionProvider",
+      "method": "lambda$suggest$0",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: java/util/Locale.ROOTLjava/util/Locale;\n  al compilar net/minecraft/commands/SharedSuggestionProvider.lambda$suggest$0(Ljava/lang/String;Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/commands/arguments/HeightmapTypeArgument",
+      "method": "lambda$static$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: java/util/Locale.ROOTLjava/util/Locale;\n  al compilar net/minecraft/commands/arguments/HeightmapTypeArgument.lambda$static$0(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/commands/arguments/ResourceSelectorArgument",
+      "method": "ensureNamespaced",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokevirtual no soportado: java/lang/String.contains(Ljava/lang/CharSequence;)Z\n  al compilar net/minecraft/commands/arguments/ResourceSelectorArgument.ensureNamespaced(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/commands/arguments/blocks/BlockInput",
+      "method": "lambda$place$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/arguments/blocks/BlockInput",
+      "method": "lambda$place$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/functions/StringTemplate",
+      "method": "isValidVariableName",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: invokestatic no soportado: java/lang/Character.isLetterOrDigit(C)Z\n  al compilar net/minecraft/commands/functions/StringTemplate.isValidVariableName(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/core/ClientAsset$ResourceTexture",
+      "method": "lambda$new$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/core/ClientAsset$ResourceTexture.lambda$new$0(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/core/Direction",
+      "method": "lambda$verifyVertical$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/particles/VibrationParticleOption",
+      "method": "lambda$static$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/registries/codec/HolderSetCodec",
+      "method": "lambda$decode$3",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/registries/codec/RegistryFileCodec",
+      "method": "lambda$decode$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/data/DataProvider",
+      "method": "lambda$static$1",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/data/Main",
+      "method": "main",
+      "descriptor": "([Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/SharedConstants.CURRENT_VERSIONLnet/minecraft/WorldVersion;\n  al compilar net/minecraft/SharedConstants.tryDetectVersion()V\n  al compilar net/minecraft/data/Main.main([Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/data/structures/SnbtDatafixer",
+      "method": "main",
+      "descriptor": "([Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/DetectedVersion.BUILT_INLnet/minecraft/WorldVersion;\n  al compilar net/minecraft/data/structures/SnbtDatafixer.main([Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/data/structures/SnbtDatafixer",
+      "method": "updateInDirectory",
+      "descriptor": "(Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/data/structures/SnbtDatafixer.updateInDirectory(Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/data/worldgen/AbandonedCampStructurePools",
+      "method": "getDefaultCampsiteStructureName",
+      "descriptor": "(Ljava/lang/String;I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: java/util/Locale.ROOTLjava/util/Locale;\n  al compilar net/minecraft/data/worldgen/AbandonedCampStructurePools.getDefaultCampsiteStructureName(Ljava/lang/String;I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/data/worldgen/TrialChambersStructurePools",
+      "method": "spawner",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/data/worldgen/TrialChambersStructurePools.spawner(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/gametest/Main",
+      "method": "main",
+      "descriptor": "([Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/SharedConstants.CURRENT_VERSIONLnet/minecraft/WorldVersion;\n  al compilar net/minecraft/SharedConstants.tryDetectVersion()V\n  al compilar net/minecraft/gametest/Main.main([Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/gametest/Main",
+      "method": "lambda$main$0",
+      "descriptor": "(Ljava/lang/String;)V",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/gametest/framework/GameTestMainUtil",
+      "method": "createOrResetDir",
+      "descriptor": "(Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/gametest/framework/GameTestMainUtil.createOrResetDir(Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/gametest/framework/GameTestMainUtil",
+      "method": "copyPacks",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/gametest/framework/GameTestMainUtil.copyPacks(Ljava/lang/String;Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/nbt/NbtOps",
+      "method": "lambda$getStream$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/nbt/NbtOps",
+      "method": "lambda$getStringValue$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/nbt/NbtOps",
+      "method": "lambda$getNumberValue$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/nbt/SnbtGrammar",
+      "method": "escapeControlCharacters",
+      "descriptor": "(C)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/nbt/SnbtGrammar.escapeControlCharacters(C)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/nbt/SnbtGrammar",
+      "method": "needsUnderscoreRemoval",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/nbt/SnbtGrammar",
+      "method": "parseUnsignedShort",
+      "descriptor": "(Ljava/lang/String;I)S",
+      "compiled": false,
+      "error": "Error: invokestatic no soportado: java/lang/Integer.parseInt(Ljava/lang/String;I)I\n  al compilar net/minecraft/nbt/SnbtGrammar.parseUnsignedShort(Ljava/lang/String;I)S"
+    },
+    {
+      "class": "net/minecraft/nbt/SnbtPrinterTagVisitor",
+      "method": "handleEscapePretty",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/nbt/SnbtPrinterTagVisitor.handleEscapePretty(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/nbt/StringTag",
+      "method": "quoteAndEscape",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: new no soportado: java/lang/StringBuilder\n  al compilar net/minecraft/nbt/StringTag.quoteAndEscape(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/nbt/StringTag",
+      "method": "escapeWithoutQuotes",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: new no soportado: java/lang/StringBuilder\n  al compilar net/minecraft/nbt/StringTag.escapeWithoutQuotes(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/network/Connection",
+      "method": "outboundHandlerName",
+      "descriptor": "(Z)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/Connection",
+      "method": "inboundHandlerName",
+      "descriptor": "(Z)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/chat/ComponentSerialization$1",
+      "method": "lambda$decode$1",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/network/chat/ComponentSerialization$1.lambda$decode$1(I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/network/chat/ComponentSerialization$FuzzyCodec",
+      "method": "lambda$decode$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/chat/SubStringSource",
+      "method": "lambda$create$1",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/chat/TextColor",
+      "method": "lambda$parseColor$2",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/network/chat/TextColor.lambda$parseColor$2(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/network/chat/TextColor",
+      "method": "lambda$parseColor$1",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/network/chat/TextColor.lambda$parseColor$1(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/network/chat/TextColor",
+      "method": "lambda$parseColor$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/network/chat/TextColor.lambda$parseColor$0(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/network/chat/contents/NbtContents",
+      "method": "lambda$static$2",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/chat/contents/TranslatableContents",
+      "method": "lambda$filterAllowedArguments$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/chat/contents/objects/PlayerSprite",
+      "method": "lambda$defaultFallback$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/network/chat/contents/objects/PlayerSprite.lambda$defaultFallback$0(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/network/protocol/status/ServerStatus$Favicon",
+      "method": "lambda$static$2",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/protocol/status/ServerStatus$Favicon",
+      "method": "lambda$static$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/references/ItemIds",
+      "method": "lambda$createMusicDisc$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/references/ItemIds.lambda$createMusicDisc$0(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/resources/Identifier",
+      "method": "isValidPath",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/resources/Identifier",
+      "method": "isValidNamespace",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/resources/Identifier",
+      "method": "assertValidNamespace",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/resources/Identifier.assertValidNamespace(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/resources/Identifier",
+      "method": "assertValidPath",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/resources/Identifier.assertValidPath(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/resources/RegistryOps",
+      "method": "lambda$retrieveElement$4",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/resources/RegistryOps",
+      "method": "lambda$retrieveGetter$4",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/Bootstrap",
+      "method": "realStdoutPrintln",
+      "descriptor": "(Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/server/Bootstrap.realStdoutPrintln(Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/server/Bootstrap",
+      "method": "lambda$validate$1",
+      "descriptor": "(Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/server/Bootstrap.lambda$validate$1(Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/server/Bootstrap",
+      "method": "lambda$validate$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/Main",
+      "method": "main",
+      "descriptor": "([Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/SharedConstants.CURRENT_VERSIONLnet/minecraft/WorldVersion;\n  al compilar net/minecraft/SharedConstants.tryDetectVersion()V\n  al compilar net/minecraft/server/Main.main([Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/server/commands/TickCommand",
+      "method": "nanosToMilisString",
+      "descriptor": "(J)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: java/util/Locale.ROOTLjava/util/Locale;\n  al compilar net/minecraft/server/commands/TickCommand.nanosToMilisString(J)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/commands/WorldBorderCommand",
+      "method": "formatTicksToSeconds",
+      "descriptor": "(J)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: java/util/Locale.ROOTLjava/util/Locale;\n  al compilar net/minecraft/server/commands/WorldBorderCommand.formatTicksToSeconds(J)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/commands/data/DataCommands",
+      "method": "validatedSubstring",
+      "descriptor": "(Ljava/lang/String;II)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/server/commands/data/DataCommands.validatedSubstring(Ljava/lang/String;II)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/commands/data/DataCommands",
+      "method": "substring",
+      "descriptor": "(Ljava/lang/String;II)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/server/commands/data/DataCommands.validatedSubstring(Ljava/lang/String;II)Ljava/lang/String;\n  al compilar net/minecraft/server/commands/data/DataCommands.substring(Ljava/lang/String;II)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/commands/data/DataCommands",
+      "method": "substring",
+      "descriptor": "(Ljava/lang/String;I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/server/commands/data/DataCommands.validatedSubstring(Ljava/lang/String;II)Ljava/lang/String;\n  al compilar net/minecraft/server/commands/data/DataCommands.substring(Ljava/lang/String;I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/commands/data/DataCommands",
+      "method": "lambda$decorateModification$10",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/commands/data/DataCommands",
+      "method": "lambda$decorateModification$8",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/dedicated/DedicatedServerProperties",
+      "method": "lambda$parseResourcePackPrompt$0",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/server/dedicated/DedicatedServerProperties.lambda$parseResourcePackPrompt$0(Ljava/lang/String;Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/server/dedicated/DedicatedServerProperties",
+      "method": "lambda$new$3",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: java/util/Locale.ROOTLjava/util/Locale;\n  al compilar net/minecraft/server/dedicated/DedicatedServerProperties.lambda$new$3(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/dialog/CommonDialogData",
+      "method": "lambda$static$2",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/dialog/action/ParsedTemplate",
+      "method": "lambda$static$2",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/server/dialog/action/ParsedTemplate.lambda$static$2(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/dialog/input/SingleOptionInput",
+      "method": "lambda$static$2",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/dialog/input/TextInput",
+      "method": "lambda$static$2",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/jsonrpc/api/Schema",
+      "method": "lambda$static$4",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/jsonrpc/security/JsonRpcSslContextProvider",
+      "method": "getKeystorePassword",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/server/jsonrpc/security/JsonRpcSslContextProvider.getKeystorePassword(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/jsonrpc/security/SecurityConfig",
+      "method": "isValid",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: invokevirtual no soportado: java/lang/String.matches(Ljava/lang/String;)Z\n  al compilar net/minecraft/server/jsonrpc/security/SecurityConfig.isValid(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/server/jsonrpc/security/SecurityConfig",
+      "method": "generateSecretKey",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: new no soportado: java/security/SecureRandom\n  al compilar net/minecraft/server/jsonrpc/security/SecurityConfig.generateSecretKey()Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/level/ChunkResult",
+      "method": "lambda$error$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/PlayerSpawnFinder",
+      "method": "lambda$scheduleCandidate$2",
+      "descriptor": "(II)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/server/level/PlayerSpawnFinder.lambda$scheduleCandidate$2(II)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/level/ServerPlayer",
+      "method": "lambda$respawnEntityOnShoulder$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ThrottlingChunkTaskDispatcher",
+      "method": "lambda$getDebugStatus$0",
+      "descriptor": "(J)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/server/level/ThrottlingChunkTaskDispatcher.lambda$getDebugStatus$0(J)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/network/ServerGamePacketListenerImpl",
+      "method": "isChatMessageIllegal",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/network/ServerTextFilter$IgnoreStrategy",
+      "method": "lambda$ignoreOverThreshold$0",
+      "descriptor": "(ILjava/lang/String;I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/network/ServerTextFilter$IgnoreStrategy",
+      "method": "lambda$static$1",
+      "descriptor": "(Ljava/lang/String;I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/network/ServerTextFilter$IgnoreStrategy",
+      "method": "lambda$static$0",
+      "descriptor": "(Ljava/lang/String;I)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/packs/FilePackResources",
+      "method": "extractNamespace",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokevirtual no soportado: java/lang/String.substring(I)Ljava/lang/String;\n  al compilar net/minecraft/server/packs/FilePackResources.extractNamespace(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/packs/OverlayMetadataSection",
+      "method": "lambda$validateOverlayDir$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/server/packs/OverlayMetadataSection.lambda$validateOverlayDir$0(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat",
+      "method": "lambda$validateOldFormat$2",
+      "descriptor": "(Ljava/lang/String;II)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat.lambda$validateOldFormat$2(Ljava/lang/String;II)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat",
+      "method": "lambda$validateOldFormat$1",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat",
+      "method": "lambda$validateOldFormat$0",
+      "descriptor": "(Ljava/lang/String;I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat.lambda$validateOldFormat$0(Ljava/lang/String;I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat",
+      "method": "lambda$validateNewFormat$7",
+      "descriptor": "(Ljava/lang/String;II)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat.lambda$validateNewFormat$7(Ljava/lang/String;II)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat",
+      "method": "lambda$validateNewFormat$6",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat",
+      "method": "lambda$validateNewFormat$5",
+      "descriptor": "(Ljava/lang/String;IILjava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat.lambda$validateNewFormat$5(Ljava/lang/String;IILjava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat",
+      "method": "lambda$validateNewFormat$2",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat",
+      "method": "lambda$validateNewFormat$1",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat.lambda$validateNewFormat$1(Ljava/lang/String;Ljava/lang/String;I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat",
+      "method": "lambda$validate$3",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat.lambda$validate$3(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat",
+      "method": "lambda$validate$2",
+      "descriptor": "(Ljava/lang/String;I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat.lambda$validate$2(Ljava/lang/String;I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat",
+      "method": "lambda$validate$1",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat.lambda$validate$1(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat",
+      "method": "lambda$validate$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/server/packs/metadata/pack/PackFormat$IntermediaryFormat.lambda$validate$0(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/packs/resources/MultiPackResourceManager",
+      "method": "checkTrailingDirectoryPath",
+      "descriptor": "(Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/server/packs/resources/MultiPackResourceManager.checkTrailingDirectoryPath(Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/server/players/OldUsersConverter",
+      "method": "lambda$lookupPlayers$0",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: solo argumentos primitivos, String o String[]\n  al compilar net/minecraft/util/StringUtil.isNullOrEmpty(Ljava/lang/String;)Z\n  al compilar net/minecraft/server/players/OldUsersConverter.lambda$lookupPlayers$0(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/server/rcon/PktUtils",
+      "method": "stringFromByteArray",
+      "descriptor": "([BII)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: new no soportado: java/lang/String\n  al compilar net/minecraft/server/rcon/PktUtils.stringFromByteArray([BII)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/server/rcon/PktUtils",
+      "method": "toHexString",
+      "descriptor": "(B)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/server/rcon/PktUtils.toHexString(B)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/stats/StatFormatter",
+      "method": "lambda$static$2",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: opcode numérico no soportado 0x87 en offset 1\n  al compilar net/minecraft/stats/StatFormatter.lambda$static$2(I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/stats/StatFormatter",
+      "method": "lambda$static$1",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: opcode numérico no soportado 0x87 en offset 1\n  al compilar net/minecraft/stats/StatFormatter.lambda$static$1(I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/stats/StatFormatter",
+      "method": "lambda$static$0",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/stats/StatFormatter.lambda$static$0(I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/tags/TagKey",
+      "method": "lambda$hashedCodec$2",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/EasingType$CubicBezierControls",
+      "method": "lambda$validate$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/EasingType$CubicBezierControls",
+      "method": "lambda$validate$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs$StrictUnboundedMapCodec",
+      "method": "lambda$decode$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$legacyEnum$1",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/ExtraCodecs.lambda$legacyEnum$1(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$static$64",
+      "descriptor": "(C)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/ExtraCodecs.lambda$static$64(C)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$static$61",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/ExtraCodecs.lambda$static$61(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$static$59",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/ExtraCodecs.lambda$static$59(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$static$57",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$static$55",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/ExtraCodecs.lambda$static$55(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$static$35",
+      "descriptor": "([B)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/util/ExtraCodecs.lambda$static$35([B)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$static$34",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$nonEmptyMap$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$nonEmptyHolderSet$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$nonEmptyList$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$hexColor$4",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/ExtraCodecs.lambda$hexColor$4(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$hexColor$3",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/ExtraCodecs.lambda$hexColor$3(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$hexColor$2",
+      "descriptor": "(II)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/ExtraCodecs.lambda$hexColor$2(II)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/ExtraCodecs",
+      "method": "lambda$hexColor$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/FileUtil",
+      "method": "sanitizeName",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/SharedConstants.ILLEGAL_FILE_CHARACTERS[C\n  al compilar net/minecraft/util/FileUtil.sanitizeName(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/FileUtil",
+      "method": "isPathPartPortable",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/FileUtil.isPathPartPortable(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/util/FileUtil",
+      "method": "getFullResourcePath",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: clase no encontrada en versiones ni bibliotecas: org/apache/commons/io/FilenameUtils.class\n  al compilar net/minecraft/util/FileUtil.getFullResourcePath(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/FileUtil",
+      "method": "normalizeResourcePath",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: clase no encontrada en versiones ni bibliotecas: org/apache/commons/io/FilenameUtils.class\n  al compilar net/minecraft/util/FileUtil.normalizeResourcePath(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/FileUtil",
+      "method": "containsAllowedCharactersOnly",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/FileUtil.containsAllowedCharactersOnly(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/util/FileUtil",
+      "method": "isValidPathSegment",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/FileUtil.containsAllowedCharactersOnly(Ljava/lang/String;)Z\n  al compilar net/minecraft/util/FileUtil.isValidPathSegment(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/util/FileUtil",
+      "method": "validatePath",
+      "descriptor": "([Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/FileUtil.containsAllowedCharactersOnly(Ljava/lang/String;)Z\n  al compilar net/minecraft/util/FileUtil.isValidPathSegment(Ljava/lang/String;)Z\n  al compilar net/minecraft/util/FileUtil.validatePath([Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/util/FileUtil",
+      "method": "lambda$decomposePath$3",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/FileUtil.lambda$decomposePath$3(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/FileUtil",
+      "method": "lambda$decomposePath$2",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/FileUtil.lambda$decomposePath$2(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/FileUtil",
+      "method": "lambda$decomposePath$1",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/FileUtil.lambda$decomposePath$1(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/FileUtil",
+      "method": "lambda$decomposePath$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/FileUtil.lambda$decomposePath$0(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/HashOps",
+      "method": "lambda$static$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/IdentifierPattern",
+      "method": "lambda$new$1",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/IdentifierPattern",
+      "method": "lambda$new$0",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/InclusiveRange",
+      "method": "lambda$create$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/KeyframeTrack",
+      "method": "lambda$validateKeyframes$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/KeyframeTrack",
+      "method": "lambda$validateKeyframes$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "getInt",
+      "descriptor": "(Ljava/lang/String;I)I",
+      "compiled": false,
+      "error": "Error: clase no encontrada en versiones ni bibliotecas: org/apache/commons/lang3/math/NumberUtils.class\n  al compilar net/minecraft/util/Mth.getInt(Ljava/lang/String;I)I"
+    },
+    {
+      "class": "net/minecraft/util/NativeModuleLister",
+      "method": "langTableKey",
+      "descriptor": "(Ljava/lang/String;II)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: java/util/Locale.ROOTLjava/util/Locale;\n  al compilar net/minecraft/util/NativeModuleLister.langTableKey(Ljava/lang/String;II)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/NativeModuleLister",
+      "method": "sanitize",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/util/Util.CONTROL_CHARACTER_ESCAPERLcom/google/common/escape/Escaper;\n  al compilar net/minecraft/util/NativeModuleLister.sanitize(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/NativeModuleLister",
+      "method": "lambda$addCrashSection$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/util/NativeModuleLister.lambda$addCrashSection$0()Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/ProblemReporter$Collector$ProblemTreeNode",
+      "method": "lambda$getLines$2",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/ProblemReporter$Collector$ProblemTreeNode.lambda$getLines$2(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/ProblemReporter$Collector",
+      "method": "lambda$static$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/StringDecomposer",
+      "method": "filterBrokenSurrogates",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: new no soportado: java/lang/StringBuilder\n  al compilar net/minecraft/util/StringDecomposer.filterBrokenSurrogates(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/StringRepresentable",
+      "method": "lambda$fromEnum$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/StringUtil",
+      "method": "stripColor",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/StringUtil.stripColor(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/StringUtil",
+      "method": "isNullOrEmpty",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: solo argumentos primitivos, String o String[]\n  al compilar net/minecraft/util/StringUtil.isNullOrEmpty(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/util/StringUtil",
+      "method": "truncateStringIfNecessary",
+      "descriptor": "(Ljava/lang/String;IZ)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokevirtual no soportado: java/lang/String.substring(II)Ljava/lang/String;\n  al compilar net/minecraft/util/StringUtil.truncateStringIfNecessary(Ljava/lang/String;IZ)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/StringUtil",
+      "method": "lineCount",
+      "descriptor": "(Ljava/lang/String;)I",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/StringUtil.lineCount(Ljava/lang/String;)I"
+    },
+    {
+      "class": "net/minecraft/util/StringUtil",
+      "method": "endsWithNewLine",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/StringUtil.endsWithNewLine(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/util/StringUtil",
+      "method": "trimChatMessage",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokevirtual no soportado: java/lang/String.substring(II)Ljava/lang/String;\n  al compilar net/minecraft/util/StringUtil.truncateStringIfNecessary(Ljava/lang/String;IZ)Ljava/lang/String;\n  al compilar net/minecraft/util/StringUtil.trimChatMessage(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/StringUtil",
+      "method": "isValidPlayerName",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: invokevirtual no soportado: java/lang/String.chars()Ljava/util/stream/IntStream;\n  al compilar net/minecraft/util/StringUtil.isValidPlayerName(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/util/StringUtil",
+      "method": "filterText",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: new no soportado: java/lang/StringBuilder\n  al compilar net/minecraft/util/StringUtil.filterText(Ljava/lang/String;Z)Ljava/lang/String;\n  al compilar net/minecraft/util/StringUtil.filterText(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/StringUtil",
+      "method": "filterText",
+      "descriptor": "(Ljava/lang/String;Z)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: new no soportado: java/lang/StringBuilder\n  al compilar net/minecraft/util/StringUtil.filterText(Ljava/lang/String;Z)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/StringUtil",
+      "method": "isBlank",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: invokevirtual no soportado: java/lang/String.chars()Ljava/util/stream/IntStream;\n  al compilar net/minecraft/util/StringUtil.isBlank(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "getFilenameFormattedDateTime",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/Util.getFilenameFormattedDateTime()Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "isAppleSiliconMac",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "logAndPauseIfInIde",
+      "descriptor": "(Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/Util.logAndPauseIfInIde(Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "doPause",
+      "descriptor": "(Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/util/Util.doPause(Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "offsetByCodepoints",
+      "descriptor": "(Ljava/lang/String;II)I",
+      "compiled": false,
+      "error": "Error: invokestatic no soportado: java/lang/Character.isHighSurrogate(C)Z\n  al compilar net/minecraft/util/Util.offsetByCodepoints(Ljava/lang/String;II)I"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "lambda$fixedSize$2",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/Util.lambda$fixedSize$2(I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "lambda$fixedSize$1",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/Util.lambda$fixedSize$1(I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "lambda$fixedSize$0",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/Util.lambda$fixedSize$0(I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "lambda$static$4",
+      "descriptor": "(Ljava/lang/String;)V",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/DataFixers",
+      "method": "lambda$createRenamer$1",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/util/datafix/schemas/NamespacedSchema.ensureNamespaced(Ljava/lang/String;)Ljava/lang/String;\n  al compilar net/minecraft/util/datafix/DataFixers.lambda$createRenamer$1(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/DataFixers",
+      "method": "lambda$addFixers$15",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/DataFixers",
+      "method": "lambda$addFixers$14",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/DataFixers",
+      "method": "lambda$addFixers$7",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokevirtual no soportado: java/lang/String.replace(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;\n  al compilar net/minecraft/util/datafix/DataFixers.lambda$addFixers$7(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/DataFixers",
+      "method": "lambda$addFixers$2",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/util/datafix/schemas/NamespacedSchema.ensureNamespaced(Ljava/lang/String;)Ljava/lang/String;\n  al compilar net/minecraft/util/datafix/DataFixers.lambda$addFixers$2(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/DataFixers",
+      "method": "lambda$addFixers$1",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/util/datafix/schemas/NamespacedSchema.ensureNamespaced(Ljava/lang/String;)Ljava/lang/String;\n  al compilar net/minecraft/util/datafix/DataFixers.lambda$addFixers$1(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/DataFixers",
+      "method": "lambda$addFixers$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/util/datafix/schemas/NamespacedSchema.ensureNamespaced(Ljava/lang/String;)Ljava/lang/String;\n  al compilar net/minecraft/util/datafix/DataFixers.lambda$addFixers$0(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/ExtraDataFixUtils",
+      "method": "dyeColorIdToName",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/LegacyComponentDataFixUtils",
+      "method": "createTextComponentJson",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: new no soportado: com/google/gson/JsonObject\n  al compilar net/minecraft/util/datafix/LegacyComponentDataFixUtils.createTextComponentJson(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/LegacyComponentDataFixUtils",
+      "method": "createTranslatableComponentJson",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: new no soportado: com/google/gson/JsonObject\n  al compilar net/minecraft/util/datafix/LegacyComponentDataFixUtils.createTranslatableComponentJson(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/LegacyComponentDataFixUtils",
+      "method": "rewriteFromLenient",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: tipo catch no soportado: com/google/gson/JsonParseException: clase no encontrada en versiones ni bibliotecas: com/google/gson/JsonParseException.class\n  al compilar net/minecraft/util/datafix/LegacyComponentDataFixUtils.rewriteFromLenient(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/LegacyComponentDataFixUtils",
+      "method": "lambda$isStrictlyValidJson$0",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: tipo catch no soportado: com/google/gson/JsonParseException: clase no encontrada en versiones ni bibliotecas: com/google/gson/JsonParseException.class\n  al compilar net/minecraft/util/datafix/LegacyComponentDataFixUtils.lambda$isStrictlyValidJson$0(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/AdvancementsFix",
+      "method": "lambda$new$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/datafix/fixes/AdvancementsFix.lambda$new$0(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/AttributeIdPrefixFix",
+      "method": "replaceId",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/util/datafix/schemas/NamespacedSchema.ensureNamespaced(Ljava/lang/String;)Ljava/lang/String;\n  al compilar net/minecraft/util/datafix/fixes/AttributeIdPrefixFix.replaceId(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/BannerEntityCustomNameToOverrideComponentFix",
+      "method": "lambda$fix$1",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/BannerPatternFormatFix",
+      "method": "lambda$fixLayer$1",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/datafix/fixes/BannerPatternFormatFix.lambda$fixLayer$1(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/BlockEntityIdFix",
+      "method": "lambda$makeRule$2",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/datafix/fixes/BlockEntityIdFix.lambda$makeRule$2(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/BlockNameFlatteningFix",
+      "method": "lambda$makeRule$3",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/util/datafix/schemas/NamespacedSchema.ensureNamespaced(Ljava/lang/String;)Ljava/lang/String;\n  al compilar net/minecraft/util/datafix/fixes/BlockNameFlatteningFix.lambda$makeRule$3(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/BlockStateData",
+      "method": "upgradeBlock",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/datafix/fixes/BlockStateData.upgradeBlock(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/BlockStateData",
+      "method": "upgradeBlock",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/datafix/fixes/BlockStateData.upgradeBlock(I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/BoatSplitFix",
+      "method": "isNormalBoat",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/BoatSplitFix",
+      "method": "isChestBoat",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/BoatSplitFix",
+      "method": "isAnyBoat",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/BoatSplitFix",
+      "method": "mapVariantToNormalBoat",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/BoatSplitFix",
+      "method": "mapVariantToChestBoat",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/EntityBlockStateFix",
+      "method": "getBlockId",
+      "descriptor": "(Ljava/lang/String;)I",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/datafix/fixes/EntityBlockStateFix.getBlockId(Ljava/lang/String;)I"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/EntityIdFix",
+      "method": "lambda$makeRule$2",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/datafix/fixes/EntityIdFix.lambda$makeRule$2(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/EntitySpawnerItemVariantComponentFix",
+      "method": "getBaseColor",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/EntitySpawnerItemVariantComponentFix",
+      "method": "getPatternColor",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/EntitySpawnerItemVariantComponentFix",
+      "method": "getPattern",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/EntitySpawnerItemVariantComponentFix",
+      "method": "lambda$fixPainting$0",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ExplorerMapItemFix",
+      "method": "lambda$makeRule$1",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ExplorerMapItemFix",
+      "method": "lambda$removeLegacyItemName$0",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/FilteredBooksFix",
+      "method": "lambda$new$0",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/GoatHornIdFix",
+      "method": "lambda$new$0",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ItemIdFix",
+      "method": "getItem",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/datafix/fixes/ItemIdFix.getItem(I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ItemPotionFix",
+      "method": "lambda$static$0",
+      "descriptor": "([Ljava/lang/String;)V",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ItemSpawnEggFix",
+      "method": "lambda$static$0",
+      "descriptor": "([Ljava/lang/String;)V",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ItemStackComponentizationFix",
+      "method": "fixMapDecorationType",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ItemStackComponentizationFix",
+      "method": "isValidPlayerName",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: invokevirtual no soportado: java/lang/String.chars()Ljava/util/stream/IntStream;\n  al compilar net/minecraft/util/datafix/fixes/ItemStackComponentizationFix.isValidPlayerName(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ItemStackComponentizationFix",
+      "method": "lambda$fixPotionContents$0",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ItemStackCustomNameToOverrideComponentFix",
+      "method": "lambda$fixBanner$0",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ItemStackCustomNameToOverrideComponentFix",
+      "method": "lambda$makeRule$2",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ItemStackCustomNameToOverrideComponentFix",
+      "method": "lambda$makeRule$1",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ItemStackTheFlatteningFix",
+      "method": "updateItem",
+      "descriptor": "(Ljava/lang/String;I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/datafix/fixes/ItemStackTheFlatteningFix.updateItem(Ljava/lang/String;I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ItemStackTheFlatteningFix",
+      "method": "lambda$static$1",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokevirtual no soportado: java/lang/String.substring(II)Ljava/lang/String;\n  al compilar net/minecraft/util/datafix/fixes/ItemStackTheFlatteningFix.lambda$static$1(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/LeavesFix$Section",
+      "method": "getStateId",
+      "descriptor": "(Ljava/lang/String;ZI)I",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/util/datafix/fixes/LeavesFix.LEAVESLit/unimi/dsi/fastutil/objects/Object2IntMap;\n  al compilar net/minecraft/util/datafix/fixes/LeavesFix$Section.getStateId(Ljava/lang/String;ZI)I"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/MergeTerrainChunkStatusFix",
+      "method": "fixStatus",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/datafix/fixes/MergeTerrainChunkStatusFix.fixStatus(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/NewVillageFix",
+      "method": "lambda$cap$7",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ObjectiveRenderTypeFix",
+      "method": "getRenderType",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/OminousBannerBlockEntityRenameFix",
+      "method": "lambda$fix$2",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokevirtual no soportado: java/lang/String.replace(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;\n  al compilar net/minecraft/util/datafix/fixes/OminousBannerBlockEntityRenameFix.lambda$fix$2(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/OminousBannerRarityFix",
+      "method": "lambda$fix$2",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/OminousBannerRenameFix",
+      "method": "lambda$new$0",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/OptionsAmbientOcclusionFix",
+      "method": "updateValue",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/RedstoneWireConnectionsFix",
+      "method": "isConnected",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/RenameNameplateToNameTagFix",
+      "method": "rename",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/SavedDataFeaturePoolElementFix",
+      "method": "lambda$get$0",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/datafix/fixes/SavedDataFeaturePoolElementFix.lambda$get$0(I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ScoreboardDisplaySlotFix",
+      "method": "rename",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/datafix/fixes/ScoreboardDisplaySlotFix.rename(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/StatsCounterFix",
+      "method": "upgradeItem",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/util/datafix/fixes/ItemStackTheFlatteningFix.IDSLjava/util/Set;\n  al compilar net/minecraft/util/datafix/fixes/ItemStackTheFlatteningFix.updateItem(Ljava/lang/String;I)Ljava/lang/String;\n  al compilar net/minecraft/util/datafix/fixes/StatsCounterFix.upgradeItem(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/StatsCounterFix",
+      "method": "upgradeBlock",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/util/datafix/fixes/BlockStateData.ID_BY_OLD_NAMELit/unimi/dsi/fastutil/objects/Object2IntMap;\n  al compilar net/minecraft/util/datafix/fixes/BlockStateData.upgradeBlock(Ljava/lang/String;)Ljava/lang/String;\n  al compilar net/minecraft/util/datafix/fixes/StatsCounterFix.upgradeBlock(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/StatsCounterFix",
+      "method": "lambda$makeObjectiveFixer$2",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/util/datafix/fixes/StatsCounterFix.lambda$makeObjectiveFixer$2(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/TextComponentHoverAndClickEventFix",
+      "method": "validateUri",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": false,
+      "error": "Error: new no soportado: java/net/URI\n  al compilar net/minecraft/util/datafix/fixes/TextComponentHoverAndClickEventFix.validateUri(Ljava/lang/String;)Z"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/TextComponentHoverAndClickEventFix",
+      "method": "validateChat",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/TrappedChestBlockEntityFix",
+      "method": "lambda$makeRule$5",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: solo argumentos primitivos, String o String[]\n  al compilar net/minecraft/util/datafix/fixes/TrappedChestBlockEntityFix.lambda$makeRule$5(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/UnfilledBuriedTreasureMapFix",
+      "method": "lambda$fix$1",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/UnfilledBuriedTreasureMapFix",
+      "method": "lambda$makeRule$1",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/VillagerDataFix",
+      "method": "upgradeData",
+      "descriptor": "(II)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/VillagerTradeFix",
+      "method": "lambda$updateItemStack$1",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: solo argumentos primitivos, String o String[]\n  al compilar net/minecraft/util/datafix/fixes/VillagerTradeFix.lambda$updateItemStack$1(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/WallPropertyFix",
+      "method": "mapProperty",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/WorldGenSettingsFix",
+      "method": "getInt",
+      "descriptor": "(Ljava/lang/String;I)I",
+      "compiled": false,
+      "error": "Error: clase no encontrada en versiones ni bibliotecas: org/apache/commons/lang3/math/NumberUtils.class\n  al compilar net/minecraft/util/datafix/fixes/WorldGenSettingsFix.getInt(Ljava/lang/String;I)I"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/WorldGenSettingsFix",
+      "method": "getInt",
+      "descriptor": "(Ljava/lang/String;II)I",
+      "compiled": false,
+      "error": "Error: clase no encontrada en versiones ni bibliotecas: org/apache/commons/lang3/math/NumberUtils.class\n  al compilar net/minecraft/util/datafix/fixes/WorldGenSettingsFix.getInt(Ljava/lang/String;I)I\n  al compilar net/minecraft/util/datafix/fixes/WorldGenSettingsFix.getInt(Ljava/lang/String;II)I"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/WorldGenSettingsFix",
+      "method": "lambda$fix$0",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: java/util/Locale.ROOTLjava/util/Locale;\n  al compilar net/minecraft/util/datafix/fixes/WorldGenSettingsFix.lambda$fix$0(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/WrittenBookPagesStrictJsonFix",
+      "method": "lambda$new$0",
+      "descriptor": "(Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/schemas/NamespacedSchema",
+      "method": "ensureNamespaced",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/util/datafix/schemas/NamespacedSchema.ensureNamespaced(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/schemas/V1451_6",
+      "method": "packNamespacedWithDot",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: retorno no soportado\n  al compilar net/minecraft/util/datafix/schemas/V1451_6.packNamespacedWithDot(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/datafix/schemas/V704",
+      "method": "lambda$registerBlockEntities$1",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/util/datafix/schemas/V704.lambda$registerBlockEntities$1(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/profiling/FilledProfileResults",
+      "method": "isDirectChild",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)Z",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/profiling/ProfileResults",
+      "method": "demanglePath",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokevirtual no soportado: java/lang/String.replace(CC)Ljava/lang/String;\n  al compilar net/minecraft/util/profiling/ProfileResults.demanglePath(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/util/profiling/jfr/SummaryReporter",
+      "method": "lambda$recordingStopped$3",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/profiling/jfr/SummaryReporter",
+      "method": "lambda$recordingStopped$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/random/WeightedList",
+      "method": "lambda$entryToNonEmptyListCodec$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/animal/fish/TropicalFish",
+      "method": "getPredefinedName",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/world/entity/animal/fish/TropicalFish.getPredefinedName(I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/world/inventory/AnvilMenu",
+      "method": "validateName",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: new no soportado: java/lang/StringBuilder\n  al compilar net/minecraft/util/StringUtil.filterText(Ljava/lang/String;Z)Ljava/lang/String;\n  al compilar net/minecraft/util/StringUtil.filterText(Ljava/lang/String;)Ljava/lang/String;\n  al compilar net/minecraft/world/inventory/AnvilMenu.validateName(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/world/item/Item",
+      "method": "lambda$static$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/item/ItemStack",
+      "method": "lambda$validateContainedItemSizes$0",
+      "descriptor": "(II)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/world/item/ItemStack.lambda$validateContainedItemSizes$0(II)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/world/item/ItemStack",
+      "method": "lambda$validateComponents$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/item/component/BundleContents",
+      "method": "lambda$computeContentWeight$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/item/component/TypedEntityData",
+      "method": "lambda$loadInto$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/item/crafting/ShapedRecipePattern$Data",
+      "method": "lambda$static$7",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/item/crafting/ShapedRecipePattern$Data",
+      "method": "lambda$static$6",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/world/item/crafting/ShapedRecipePattern$Data.lambda$static$6(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/world/item/crafting/ShapedRecipePattern$Data",
+      "method": "lambda$static$4",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/item/crafting/ShapedRecipePattern$Data",
+      "method": "lambda$static$3",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/item/crafting/ShapedRecipePattern$Data",
+      "method": "lambda$static$2",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/item/crafting/ShapedRecipePattern$Data",
+      "method": "lambda$static$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/item/crafting/ShapedRecipePattern",
+      "method": "firstNonEmpty",
+      "descriptor": "(Ljava/lang/String;)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/item/crafting/ShapedRecipePattern",
+      "method": "lastNonEmpty",
+      "descriptor": "(Ljava/lang/String;)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/item/crafting/ShapedRecipePattern",
+      "method": "lambda$unpack$0",
+      "descriptor": "(C)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/world/item/crafting/ShapedRecipePattern.lambda$unpack$0(C)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/world/item/crafting/ShapedRecipePattern",
+      "method": "lambda$static$2",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/item/enchantment/effects/SpawnParticlesEffect$PositionSource",
+      "method": "lambda$static$2",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/SpawnData$CustomSpawnRules",
+      "method": "lambda$checkLightBoundaries$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/level/SpawnData$CustomSpawnRules.lambda$checkLightBoundaries$0()Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/world/level/block/ColorCollection",
+      "method": "lambda$prefixWithColor$0",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/world/level/block/ColorCollection.lambda$prefixWithColor$0(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/world/level/block/WeatheringCopperCollection",
+      "method": "lambda$prefixWithState$0",
+      "descriptor": "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/world/level/block/WeatheringCopperCollection.lambda$prefixWithState$0(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/world/level/block/entity/SignText",
+      "method": "lambda$validateLineCounts$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/block/state/StateDefinition",
+      "method": "lambda$appendPropertyCodec$0",
+      "descriptor": "(Ljava/lang/String;)V",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/PalettedContainer",
+      "method": "lambda$unpack$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/storage/RegionFileVersion",
+      "method": "configure",
+      "descriptor": "(Ljava/lang/String;)V",
+      "compiled": false,
+      "error": "Error: campos estáticos solo se admiten en static-demo\n  al compilar net/minecraft/world/level/chunk/storage/RegionFileVersion.configure(Ljava/lang/String;)V"
+    },
+    {
+      "class": "net/minecraft/world/level/gamerules/GameRule",
+      "method": "lambda$deserialize$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/gamerules/GameRule",
+      "method": "lambda$deserialize$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/BelowZeroRetrogen",
+      "method": "lambda$static$3",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/NoiseSettings",
+      "method": "lambda$guardY$2",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/NoiseSettings",
+      "method": "lambda$guardY$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/NoiseSettings",
+      "method": "lambda$guardY$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/world/level/dimension/DimensionType.MAX_YI\n  al compilar net/minecraft/world/level/levelgen/NoiseSettings.lambda$guardY$0()Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/blending/BlendingData$Packed",
+      "method": "lambda$validateArraySize$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/world/level/levelgen/blending/BlendingData.CELL_COLUMN_COUNTI\n  al compilar net/minecraft/world/level/levelgen/blending/BlendingData$Packed.lambda$validateArraySize$0()Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/blockpredicates/VolumeMatchPredicate",
+      "method": "lambda$static$2",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/densityfunction/generator/GradientFunction",
+      "method": "lambda$validate$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/densityfunction/op/IntervalSelectFunction",
+      "method": "lambda$validate$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/feature/FossilFeature",
+      "method": "lambda$static$2",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/feature/MultifaceGrowthFeature",
+      "method": "lambda$validateBlock$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/feature/trunkplacers/CherryTrunkPlacer",
+      "method": "lambda$static$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/flat/FlatLevelGeneratorSettings",
+      "method": "lambda$validateHeight$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: campo estático externo no soportado: net/minecraft/world/level/dimension/DimensionType.Y_SIZEI\n  al compilar net/minecraft/world/level/levelgen/flat/FlatLevelGeneratorSettings.lambda$validateHeight$0()Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/presets/WorldPreset",
+      "method": "lambda$requireOverworld$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/structure/placement/RandomSpreadStructurePlacement",
+      "method": "lambda$validate$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/structure/pools/SinglePoolElement",
+      "method": "lambda$encodeTemplate$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/structure/structures/JigsawStructure",
+      "method": "lambda$verifyRange$0",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/synth/BlendedNoise$FbmSet",
+      "method": "lambda$parityConfigString$0",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/synth/NormalNoise$Normalization",
+      "method": "lambda$static$1",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/world/level/levelgen/synth/NormalNoise$Normalization.lambda$static$1(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/world/level/saveddata/maps/MapItemSavedData",
+      "method": "getFrameKey",
+      "descriptor": "(I)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/world/level/saveddata/maps/MapItemSavedData.getFrameKey(I)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/world/level/storage/loot/ContainerComponentManipulators",
+      "method": "lambda$static$2",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/storage/loot/functions/ListOperation",
+      "method": "lambda$codec$2",
+      "descriptor": "(II)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/world/level/storage/loot/functions/ListOperation.lambda$codec$2(II)Ljava/lang/String;"
+    },
+    {
+      "class": "net/minecraft/world/level/storage/loot/functions/SetContainerLootTable",
+      "method": "lambda$static$1",
+      "descriptor": "()Ljava/lang/String;",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/scores/criteria/ObjectiveCriteria",
+      "method": "lambda$static$1",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;",
+      "compiled": false,
+      "error": "Error: invokedynamic concat solo en multi-static-demo\n  al compilar net/minecraft/world/scores/criteria/ObjectiveCriteria.lambda$static$1(Ljava/lang/String;)Ljava/lang/String;"
+    }
+  ]
+}

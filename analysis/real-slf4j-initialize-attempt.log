@@ -1,0 +1,113 @@
+warning: unnecessary braces around function argument
+    --> /var/tmp/mc-provider-init-f4glcm69/native.rs:2371:59
+     |
+2371 | ... stack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=20; }
+     |                             ^                                                                           ^
+     |
+     = note: `#[warn(unused_braces)]` (part of `#[warn(unused)]`) on by default
+help: remove these braces
+     |
+2371 -         17 => { let x0=pop_r(&mut stack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=20; }
+2371 +         17 => { let x0=pop_r(&mut stack); stack.push(V::R(error("DateTimeFormatter.ofPattern: locale predeterminada no implementada"))); pc=20; }
+     |
+
+warning: unnecessary braces around function argument
+    --> /var/tmp/mc-provider-init-f4glcm69/native.rs:2405:33
+     |
+2405 |         81 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=84; }
+     |                                 ^                                                                  ^
+     |
+help: remove these braces
+     |
+2405 -         81 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=84; }
+2405 +         81 => { stack.push(V::R(error("ZoneId.systemDefault: zona predeterminada no implementada"))); pc=84; }
+     |
+
+warning: unnecessary braces around function argument
+    --> /var/tmp/mc-provider-init-f4glcm69/native.rs:2412:59
+     |
+2412 |         97 => { let x0=pop_r(&mut stack); stack.push(V::R({error("ZoneId.of: zona no implementada")})); pc=100; }
+     |                                                           ^                                        ^
+     |
+help: remove these braces
+     |
+2412 -         97 => { let x0=pop_r(&mut stack); stack.push(V::R({error("ZoneId.of: zona no implementada")})); pc=100; }
+2412 +         97 => { let x0=pop_r(&mut stack); stack.push(V::R(error("ZoneId.of: zona no implementada"))); pc=100; }
+     |
+
+warning: unreachable expression
+    --> /var/tmp/mc-provider-init-f4glcm69/native.rs:1472:200
+     |
+1472 | ...aptures=values.clone();return match n{_=>error("invokeinterface: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                           ^^^^^^^------------------------------------------------------------
+     |                           |      |
+     |                           |      any code following this `match` expression is unreachable, as all arms diverge
+     |                           unreachable expression
+     |
+     = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable expression
+    --> /var/tmp/mc-provider-init-f4glcm69/native.rs:1473:170
+     |
+1473 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-provider-init-f4glcm69/native.rs:1474:181
+     |
+1474 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable expression
+    --> /var/tmp/mc-provider-init-f4glcm69/native.rs:1475:171
+     |
+1475 | ... captures=values.clone();return match n{_=>error("invokevirtual: lambda no precompilada")};}let class=match &heap.arrays[id]{Ar...
+     |                             ^^^^^^^----------------------------------------------------------
+     |                             |      |
+     |                             |      any code following this `match` expression is unreachable, as all arms diverge
+     |                             unreachable expression
+
+warning: unreachable call
+    --> /var/tmp/mc-provider-init-f4glcm69/native.rs:2371:54
+     |
+2371 | ...stack); stack.push(V::R({error("DateTimeFormatter.ofPattern: locale predeterminada no implementada")})); pc=20; }
+     |                       ^^^^  --------------------------------------------------------------------------- any code following this expression is unreachable
+     |                       |
+     |                       unreachable call
+
+warning: unreachable call
+    --> /var/tmp/mc-provider-init-f4glcm69/native.rs:2405:28
+     |
+2405 |         81 => { stack.push(V::R({error("ZoneId.systemDefault: zona predeterminada no implementada")})); pc=84; }
+     |                            ^^^^  ------------------------------------------------------------------ any code following this expression is unreachable
+     |                            |
+     |                            unreachable call
+
+warning: unreachable call
+    --> /var/tmp/mc-provider-init-f4glcm69/native.rs:2412:54
+     |
+2412 |         97 => { let x0=pop_r(&mut stack); stack.push(V::R({error("ZoneId.of: zona no implementada")})); pc=100; }
+     |                                                      ^^^^  ---------------------------------------- any code following this expression is unreachable
+     |                                                      |
+     |                                                      unreachable call
+
+warning: unreachable statement
+    --> /var/tmp/mc-provider-init-f4glcm69/native.rs:2444:79
+     |
+2444 |         157 => { error("DateTimeFormatter.withZone: zonas no implementadas"); pc=160; }
+     |                  -----------------------------------------------------------  ^^^^^^^ unreachable statement
+     |                  |
+     |                  any code following this expression is unreachable
+
+warning: 11 warnings emitted
+
+compile_exit= 0
+Java: 0 '1\n' 
+native: 0 '1\n' 
+OK: inicialización real del proveedor SLF4J con configuración predeterminada; formato configurado rechazado explícitamente

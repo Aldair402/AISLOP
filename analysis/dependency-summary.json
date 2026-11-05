@@ -1,0 +1,16 @@
+{
+  "root": "net/minecraft/server/Main",
+  "classes_in_inner_jar": 7762,
+  "libraries_scanned_and_verified": 39,
+  "library_class_names": 22905,
+  "static_closure_classes_in_inner_jar": 7253,
+  "unique_references_from_static_closure": 8347,
+  "reference_categories": {
+    "minecraft_inner": 7253,
+    "bundled_libraries": 643,
+    "jdk_like_prefix": 451,
+    "other_unresolved": 0
+  },
+  "most_frequent_other_references": [],
+  "limitations": "Cierre del grafo estático a nivel de clase: incluye referencias no ejecutadas y omite reflexión, carga dinámica, detalles de multi-release y recursos; no representa el conjunto real de arranque ni indica soporte. Prefijos JDK no garantizan disponibilidad."
+}

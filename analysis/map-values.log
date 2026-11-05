@@ -1,0 +1,1 @@
+OK: 169 operaciones Java de Map.values y copia ordenada tras inserciones, resize, eliminación, null y clear; colisiones complejas se rechazan

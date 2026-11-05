@@ -1,0 +1,28 @@
+
+running 58 tests
+..........................................................
+test result: ok. 58 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+running 25 tests
+.........................
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+==> check-arraylist-stream-profile
+OK: 162 resultados ArrayList.stream secuencial y perezoso, cierre, estado y null; otras fuentes abortan; sin terminales
+==> check-stream-support-profile
+OK: 86 resultados StreamSupport/filter secuencial, laziness, cierre, null/SORTED y guardias paralelo/predicado no lambda; sin operaciones terminales
+==> check-real-log4j-safestream
+OK: 201 resultados del safeStream oficial contra Java con stubs de fixture, filtros, forEach y excepciones; guardas de opt-in, presencia, fuente y hashes; no prueba el logger real
+==> check-iterable-arraylist
+OK: 102 operaciones Java de Iterable.iterator sobre ArrayList, set, alias, null, agotamiento y fail-fast
+==> check-class-as-subclass
+OK: 120 resultados Class.asSubclass, identidad, mensajes, herencia e interfaces; tipo JDK desconocido aborta
+==> check-class-forname-loader
+OK: 161 resultados Class.forName con loader, inicialización y casts Class; guardas opt-in, no precompilada y bootstrap
+==> check-comparator-comparing-guard
+Traceback (most recent call last):
+  File "/home/user/minecraft-rust/mc-aot/tests/check-comparator-comparing-guard.py", line 15, in <module>
+    p=subprocess.run(['cargo','run','--quiet','--manifest-path',str(root/'Cargo.toml'),'--','multi-static-demo',str(d/'fixture.jar'),'net/minecraft/test/ComparatorDemo',str(d/method),method,'(I)I'],capture_output=True,text=True,timeout=120)
+                                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (0, '1\n', '')

@@ -1,0 +1,149 @@
+{
+  "schema": "partial-surface-v1",
+  "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
+  "class": "net/minecraft/core/QuartPos",
+  "class_sha256": "0821d686ee83185e5af97bbfbf384e768c23be925da4edfece98e9a4bb83b62c",
+  "members": [
+    {
+      "kind": "method",
+      "name": "fromBlock",
+      "descriptor": "(I)I",
+      "evidence": [
+        {
+          "path": "mc-aot/tests/check-quartpos-class-surface.py",
+          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+        },
+        {
+          "path": "analysis/quartpos-static-surface.log",
+          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+        }
+      ]
+    },
+    {
+      "kind": "method",
+      "name": "quartLocal",
+      "descriptor": "(I)I",
+      "evidence": [
+        {
+          "path": "mc-aot/tests/check-quartpos-class-surface.py",
+          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+        },
+        {
+          "path": "analysis/quartpos-static-surface.log",
+          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+        }
+      ]
+    },
+    {
+      "kind": "method",
+      "name": "toBlock",
+      "descriptor": "(I)I",
+      "evidence": [
+        {
+          "path": "mc-aot/tests/check-quartpos-class-surface.py",
+          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+        },
+        {
+          "path": "analysis/quartpos-static-surface.log",
+          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+        }
+      ]
+    },
+    {
+      "kind": "method",
+      "name": "fromSection",
+      "descriptor": "(I)I",
+      "evidence": [
+        {
+          "path": "mc-aot/tests/check-quartpos-class-surface.py",
+          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+        },
+        {
+          "path": "analysis/quartpos-static-surface.log",
+          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+        }
+      ]
+    },
+    {
+      "kind": "method",
+      "name": "toSection",
+      "descriptor": "(I)I",
+      "evidence": [
+        {
+          "path": "mc-aot/tests/check-quartpos-class-surface.py",
+          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+        },
+        {
+          "path": "analysis/quartpos-static-surface.log",
+          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+        }
+      ]
+    },
+    {
+      "kind": "field",
+      "name": "BITS",
+      "descriptor": "I",
+      "evidence": [
+        {
+          "path": "mc-aot/tests/check-quartpos-class-surface.py",
+          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+        },
+        {
+          "path": "analysis/quartpos-static-surface.log",
+          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+        }
+      ]
+    },
+    {
+      "kind": "field",
+      "name": "SIZE",
+      "descriptor": "I",
+      "evidence": [
+        {
+          "path": "mc-aot/tests/check-quartpos-class-surface.py",
+          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+        },
+        {
+          "path": "analysis/quartpos-static-surface.log",
+          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+        }
+      ]
+    },
+    {
+      "kind": "field",
+      "name": "MASK",
+      "descriptor": "I",
+      "evidence": [
+        {
+          "path": "mc-aot/tests/check-quartpos-class-surface.py",
+          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+        },
+        {
+          "path": "analysis/quartpos-static-surface.log",
+          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+        }
+      ]
+    },
+    {
+      "kind": "field",
+      "name": "SECTION_TO_QUARTS_BITS",
+      "descriptor": "I",
+      "evidence": [
+        {
+          "path": "mc-aot/tests/check-quartpos-class-surface.py",
+          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+        },
+        {
+          "path": "analysis/quartpos-static-surface.log",
+          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "La comparación usa 515 entradas int por método y cuatro lecturas; no prueba todo el dominio.",
+    "El constructor privado no está ejecutado ni contrastado.",
+    "No demuestra reflexión, identidad Class, entorno ni comportamiento heredado completos.",
+    "El hash de un log identifica el archivo; no prueba su autenticidad, ejecución ni corrección."
+  ]
+}

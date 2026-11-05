@@ -1,0 +1,5 @@
+Error: lambda MethodHandle no soportado: REF_7 org/apache/logging/log4j/util/PropertiesUtil$Environment.lambda$get$1(Ljava/util/List;Ljava/lang/String;Lorg/apache/logging/log4j/util/PropertySource;)Ljava/lang/String;
+  al compilar org/apache/logging/log4j/util/PropertiesUtil$Environment.get(Ljava/lang/String;)Ljava/lang/String;
+  al compilar org/apache/logging/log4j/util/PropertiesUtil$Environment.access$500(Lorg/apache/logging/log4j/util/PropertiesUtil$Environment;Ljava/lang/String;)Ljava/lang/String;
+  al compilar org/apache/logging/log4j/util/PropertiesUtil.getStringProperty(Ljava/lang/String;)Ljava/lang/String;
+compile_exit= 1

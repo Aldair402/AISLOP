@@ -1,0 +1,9 @@
+{
+  "candidate_classes_without_clinit": 33,
+  "fields_candidates": 97,
+  "programs_compared": 33,
+  "fields_compared": 97,
+  "jvm_skips": [],
+  "compile_failures": [],
+  "limitations": "Lectura diagnóstica de bits tras preparación; no soporta bytecode ni aritmética float/double. No verifica clases completas."
+}

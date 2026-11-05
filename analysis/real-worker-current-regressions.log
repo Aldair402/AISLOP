@@ -1,0 +1,7 @@
+OK: 48 resultados con TracingExecutor.execute/service/shutdownAndAwait, TracyClient y QuartPos oficiales frente a Java; guardas de interrupción, Tracy desactivado, timeout/shutdownNow y SHA-256
+OK: 24 resultados con TracyClient.setThreadName oficial desactivado, null y callback de worker sintético; guardas de opt-in y SHA-256
+OK: 12 resultados con constructor y onStart de Util$2 oficiales, invocados directamente con Tracy desactivado y nombres Unicode/null; no prueba ciclo de vida completo ni logger
+OK: Util$2 oficial y constructor registrados por patrón con llamador artificial; rechazos Tracy sin opt-in, LOGGER no implementado y clase modificada; no se ejecutó worker ni se produjo binario
+OK: 78 decisiones y 279 tareas por execute con Runnable de bytecode Java que ejecutan QuartPos.toBlock oficial, incluidos execute por interfaz y joins anidados en un pool de un hilo, sobre Rayon, resultados contrastados con ForkJoinPool Java; join repetido y tras shutdown, y guardas de fallo de tarea, paralelismo, cierre y factory personalizada
+OK: 4.000 trabajos, rechazo, espera acotada, join anidado, fallo y conteos de ciclo de vida de 4 hilos contrastados con ForkJoinPool Java 25; el adaptador no es ForkJoinPool completo
+OK: 615 resultados de tres métodos oficiales QuartPos ejecutados en frames y workers Rust

@@ -1,0 +1,27 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running unittests src/lib.rs (mc-aot/log4rs-prototype/target/debug/deps/mc_log4rs_prototype-ebb7943d52145b1f)
+
+running 5 tests
+test tests::append_and_filter ... ok
+test tests::formatting_and_guard ... ok
+test tests::reject_path_interpolation ... ok
+test tests::write_error_is_not_silenced ... ok
+test tests::concurrent_records_are_complete ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/main.rs (mc-aot/log4rs-prototype/target/debug/deps/mc_log4rs_prototype-622f3ee9b3bafcde)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests mc_log4rs_prototype
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+OK: 1680 eventos reales y 120 consultas isEnabled con seis niveles de raíz frente a SLF4J+Log4j oficiales; archivo log4rs real; no es configuración Minecraft ni conexión al backend
+OK: evento WARN de Eula.class real con archivo ausente coincide con fixture log4rs; Eula sólo se ejecuta en Java
+OK: fixture log4rs del filtro raíz coincide con XML oficial: INFO/WARN, DEBUG, NETWORK_PACKETS directo/heredado e isEnabled; no implementa Marker mutable ni XML

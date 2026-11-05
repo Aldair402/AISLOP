@@ -1,0 +1,875 @@
+{
+  "jar": "/home/user/minecraft-rust/downloads/server-26.3-inner.jar",
+  "classes_in_jar": 7762,
+  "methods_with_code_in_jar": 69821,
+  "scope": "Todos los métodos estáticos de firma (I...)I, incluidas clases con inicialización; no se consideran otros métodos.",
+  "candidate_methods": 138,
+  "candidate_classes": 57,
+  "compiled_methods": 105,
+  "classes_with_at_least_one_compiled_method": 42,
+  "fully_supported_classes_certified": 0,
+  "results": [
+    {
+      "class": "net/minecraft/SharedConstants",
+      "method": "getProtocolVersion",
+      "descriptor": "()I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/arguments/HexColorArgument",
+      "method": "duplicateDigit",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/arguments/OperationArgument",
+      "method": "lambda$getSimpleOperation$4",
+      "descriptor": "(II)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0x9a en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 4"
+    },
+    {
+      "class": "net/minecraft/commands/arguments/OperationArgument",
+      "method": "lambda$getSimpleOperation$3",
+      "descriptor": "(II)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0x9a en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 4"
+    },
+    {
+      "class": "net/minecraft/commands/arguments/OperationArgument",
+      "method": "lambda$getSimpleOperation$2",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/arguments/OperationArgument",
+      "method": "lambda$getSimpleOperation$1",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/commands/arguments/OperationArgument",
+      "method": "lambda$getSimpleOperation$0",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/QuartPos",
+      "method": "fromBlock",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/QuartPos",
+      "method": "quartLocal",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/QuartPos",
+      "method": "toBlock",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/QuartPos",
+      "method": "fromSection",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/QuartPos",
+      "method": "toSection",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "blockToSectionCoord",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "sectionRelative",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "sectionToBlockCoord",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/core/SectionPos",
+      "method": "sectionToBlockCoord",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/gametest/framework/TestCommand",
+      "method": "stopTests",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0"
+    },
+    {
+      "class": "net/minecraft/network/VarInt",
+      "method": "getByteSize",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/chat/SubStringSource",
+      "method": "lambda$create$0",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/network/protocol/game/ClientboundMoveEntityPacket",
+      "method": "unpackStepCount",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/commands/FillBiomeCommand",
+      "method": "quantize",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/commands/data/DataCommands",
+      "method": "getOffset",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/DistanceManager$PlayerTicketTracker",
+      "method": "lambda$onLevelChange$3",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/PlayerSpawnFinder",
+      "method": "getCoprime",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ThreadedLevelLightEngine",
+      "method": "lambda$retainData$0",
+      "descriptor": "()I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ThreadedLevelLightEngine",
+      "method": "lambda$queueSectionData$0",
+      "descriptor": "()I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ThreadedLevelLightEngine",
+      "method": "lambda$updateSectionStatus$0",
+      "descriptor": "()I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/level/ThreadedLevelLightEngine",
+      "method": "lambda$updateChunkStatus$0",
+      "descriptor": "()I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/server/packs/resources/SimpleReloadInstance",
+      "method": "weightProgress",
+      "descriptor": "(III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "meanLinear",
+      "descriptor": "(IIII)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0; control de flujo: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "linearChannelMean",
+      "descriptor": "(IIII)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alpha",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "red",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "green",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "blue",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "color",
+      "descriptor": "(IIII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "color",
+      "descriptor": "(III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "multiply",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "addRgb",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "scaleRGB",
+      "descriptor": "(II)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0x85 en offset 8; no se produjo binario; control de flujo: opcode de flujo no soportado 0x85 en offset 8"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "greyscale",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0x86 en offset 4; no se produjo binario; control de flujo: opcode de flujo no soportado 0x86 en offset 4"
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlend",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "alphaBlendChannel",
+      "descriptor": "(IIII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "opaque",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "transparent",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "color",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "white",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "black",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "average",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "toABGR",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/ARGB",
+      "method": "fromABGR",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/BlockUtil",
+      "method": "packDifferenceInPositionInternal",
+      "descriptor": "(IIIIII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/BlockUtil",
+      "method": "checkDifferenceInBounds",
+      "descriptor": "(II)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0xa3 en offset 7; no se produjo binario; control de flujo: opcode de flujo no soportado 0xbb en offset 16"
+    },
+    {
+      "class": "net/minecraft/util/HttpUtil",
+      "method": "getAvailablePort",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: tablas de excepciones todavía no soportadas"
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "pack",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "block",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "sky",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "withBlock",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "smoothPack",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "smoothBlock",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "smoothSky",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "max",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "lightCoordsWithEmission",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/LightCoordsUtil",
+      "method": "smoothBlend",
+      "descriptor": "(IIII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "abs",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "clamp",
+      "descriptor": "(III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "absMax",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "chessboardDistance",
+      "descriptor": "(IIII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "floorDiv",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "positiveModulo",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "wrapDegrees",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "smallestEncompassingPowerOfTwo",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "smallestSquareSide",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0x9c en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0xbb en offset 4"
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "ceillog2",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: solo se admiten descriptores (I...)I; control de flujo: solo se admiten descriptores (I...)I"
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "log2",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: traducción lineal: solo se admiten descriptores (I...)I; control de flujo: solo se admiten descriptores (I...)I; control de flujo: traducción lineal: solo se admiten descriptores (I...)I; control de flujo: solo se admiten descriptores (I...)I"
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "murmurHash3Mixer",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "square",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "roundToward",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "positiveCeilDiv",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Mth",
+      "method": "lambda$outFromOrigin$1",
+      "descriptor": "(IIIII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/SortedArraySet",
+      "method": "getInsertionPosition",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "maxAllowedExecutorThreads",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traducción lineal: invokestatic no soportado: java/lang/Runtime.getRuntime()Ljava/lang/Runtime; en offset 0; control de flujo: solo se admiten descriptores (I...)I"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "getMaxThreads",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: tablas de excepciones todavía no soportadas"
+    },
+    {
+      "class": "net/minecraft/util/Util",
+      "method": "growByHalf",
+      "descriptor": "(II)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0x85 en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0x85 en offset 1"
+    },
+    {
+      "class": "net/minecraft/util/datafix/DataFixTypes",
+      "method": "currentVersion",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traducción lineal: solo se admiten descriptores (I...)I; control de flujo: solo se admiten descriptores (I...)I"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/ChunkHeightAndBiomeFix",
+      "method": "ceillog2",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0x9a en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0x87 en offset 7"
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/LeavesFix",
+      "method": "getIndex",
+      "descriptor": "(III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/util/datafix/fixes/VillagerRebuildLevelAndXpFix",
+      "method": "getMinXpPerLevel",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0"
+    },
+    {
+      "class": "net/minecraft/util/filefix/FileFixerUpper",
+      "method": "worldVersionToFileFixerVersion",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/effect/MobEffectInstance",
+      "method": "lambda$tickDownDuration$0",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/AgeableMob",
+      "method": "getSpeedUpSecondsWhenFeeding",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0x86 en offset 4; no se produjo binario; control de flujo: opcode de flujo no soportado 0x86 en offset 4"
+    },
+    {
+      "class": "net/minecraft/world/entity/ExperienceOrb",
+      "method": "getExperienceValue",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/ai/goal/Goal",
+      "method": "reducedTickDelay",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/ai/gossip/GossipContainer",
+      "method": "mergeValuesForTransfer",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/animal/equine/AbstractHorse",
+      "method": "lambda$static$5",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/animal/equine/AbstractHorse",
+      "method": "lambda$static$4",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/boss/enderdragon/phases/EnderDragonPhase",
+      "method": "getCount",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0"
+    },
+    {
+      "class": "net/minecraft/world/entity/decoration/Mannequin",
+      "method": "lambda$static$4",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/decoration/Mannequin",
+      "method": "lambda$static$0",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/entity/npc/villager/VillagerData",
+      "method": "getMinXpPerLevel",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: solo se admiten descriptores (I...)I; control de flujo: solo se admiten descriptores (I...)I"
+    },
+    {
+      "class": "net/minecraft/world/entity/npc/villager/VillagerData",
+      "method": "getMaxXpPerLevel",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: solo se admiten descriptores (I...)I; control de flujo: solo se admiten descriptores (I...)I"
+    },
+    {
+      "class": "net/minecraft/world/entity/player/Inventory",
+      "method": "getSelectionSize",
+      "descriptor": "()I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/inventory/AbstractContainerMenu",
+      "method": "getQuickcraftType",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/inventory/AbstractContainerMenu",
+      "method": "getQuickcraftHeader",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/inventory/AbstractContainerMenu",
+      "method": "getQuickcraftMask",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/inventory/AbstractMountInventoryMenu",
+      "method": "getInventorySize",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/inventory/AnvilMenu",
+      "method": "calculateIncreasedRepairCost",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0x85 en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0x85 en offset 1"
+    },
+    {
+      "class": "net/minecraft/world/level/ChunkPos",
+      "method": "hash",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/GrassColor",
+      "method": "getDefaultColor",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0x14 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0x14 en offset 0"
+    },
+    {
+      "class": "net/minecraft/world/level/block/CakeBlock",
+      "method": "getOutputSignal",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/block/RedstoneWireBlock",
+      "method": "getColorForPower",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0"
+    },
+    {
+      "class": "net/minecraft/world/level/block/state/properties/RotationSegment",
+      "method": "getMaxSegmentIndex",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0"
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/DataLayer",
+      "method": "getIndex",
+      "descriptor": "(III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/DataLayer",
+      "method": "getNibbleIndex",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/DataLayer",
+      "method": "getByteIndex",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/Strategy",
+      "method": "minimumBitsRequiredForDistinctValues",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: traducción lineal: solo se admiten descriptores (I...)I; control de flujo: solo se admiten descriptores (I...)I; control de flujo: traducción lineal: solo se admiten descriptores (I...)I; control de flujo: solo se admiten descriptores (I...)I"
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/storage/RegionFile",
+      "method": "getTimestamp",
+      "descriptor": "()I",
+      "compiled": false,
+      "error": "Error: traducción lineal: solo se admiten descriptores (I...)I; control de flujo: solo se admiten descriptores (I...)I"
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/storage/RegionFile",
+      "method": "getNumSectors",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/storage/RegionFile",
+      "method": "getSectorNumber",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/chunk/storage/RegionFile",
+      "method": "sizeToSectors",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer",
+      "method": "gridX",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer",
+      "method": "fromGridX",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer",
+      "method": "gridY",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer",
+      "method": "fromGridY",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer",
+      "method": "gridZ",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Aquifer$NoiseBasedAquifer",
+      "method": "fromGridZ",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/Heightmap",
+      "method": "getIndex",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/blending/BlendingData",
+      "method": "getInsideIndex",
+      "descriptor": "(II)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0"
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/blending/BlendingData",
+      "method": "getOutsideIndex",
+      "descriptor": "(II)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0xb2 en offset 0; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 0"
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/blending/BlendingData",
+      "method": "getX",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0xb2 en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 1"
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/blending/BlendingData",
+      "method": "getZ",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: opcode no soportado 0xb2 en offset 1; no se produjo binario; control de flujo: opcode de flujo no soportado 0xb2 en offset 1"
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/blending/BlendingData",
+      "method": "zeroIfNegative",
+      "descriptor": "(I)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/feature/VoidStartPlatformFeature",
+      "method": "checkerboardDistance",
+      "descriptor": "(IIII)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/structure/structures/OceanMonumentPieces$OceanMonumentPiece",
+      "method": "getRoomIndex",
+      "descriptor": "(III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/lighting/ChunkSkyLightSources",
+      "method": "index",
+      "descriptor": "(II)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/material/MapColor",
+      "method": "getColorFromPackedId",
+      "descriptor": "(I)I",
+      "compiled": false,
+      "error": "Error: traducción lineal: solo se admiten descriptores (I...)I; control de flujo: solo se admiten descriptores (I...)I"
+    },
+    {
+      "class": "net/minecraft/world/level/pathfinder/Node",
+      "method": "createHash",
+      "descriptor": "(III)I",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/redstone/ExperimentalRedstoneWireEvaluator",
+      "method": "unpackPower",
+      "descriptor": "(I)I",
+      "compiled": true
+    }
+  ],
+  "limitations": "Compilación Rust exitosa ≠ equivalencia ni clase completa: no valida resultados, inicializadores, excepciones, métodos excluidos ni el arranque del servidor."
+}

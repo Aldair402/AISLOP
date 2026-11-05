@@ -1,0 +1,26 @@
+{
+  "class": "net/minecraft/core/QuartPos",
+  "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
+  "class_sha256": "0821d686ee83185e5af97bbfbf384e768c23be925da4edfece98e9a4bb83b62c",
+  "classes_in_jar": 7762,
+  "methods_with_partial_evidence": 5,
+  "methods_declared": 6,
+  "fields_with_partial_evidence": 4,
+  "fields_declared": 4,
+  "methods_without_evidence": [
+    "<init>()V"
+  ],
+  "fields_without_evidence": [],
+  "evidence_files": {
+    "mc-aot/tests/check-quartpos-class-surface.py": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb",
+    "analysis/quartpos-static-surface.log": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+  },
+  "limitations": [
+    "La comparación usa 515 entradas int por método y cuatro lecturas; no prueba todo el dominio.",
+    "El constructor privado no está ejecutado ni contrastado.",
+    "No demuestra reflexión, identidad Class, entorno ni comportamiento heredado completos.",
+    "El hash de un log identifica el archivo; no prueba su autenticidad, ejecución ni corrección."
+  ],
+  "certified": false,
+  "warning": "Inventario de evidencias parciales, no verifica corrección de resultados ni certifica clases."
+}

@@ -1,0 +1,52 @@
+
+running 58 tests
+..........................................................
+test result: ok. 58 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+
+running 25 tests
+.........................
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s
+
+==> check-collectors-joining-profile
+OK: 81 resultados creación de Collectors.joining, identidad y argumentos null diferidos; CharSequence mutable aborta; sin consumo
+==> check-arraylist-stream-joining
+OK: 162 resultados Java collect(joining) con Unicode/null/estado; map aborta explícitamente
+==> check-optional-or-else-get
+OK: 82 resultados Optional.orElseGet frente a Java, evaluación diferida, null y excepción
+==> check-current-thread-interrupt
+OK: 142 resultados identidad, nombre, interrupción, limpieza, null y lockInterruptibly; renombrado aborta
+==> check-current-thread-id
+Note: /var/tmp/mc-thread-id-r9b_ml_m/ThreadIdProbe.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+OK: 81 ID de hilo actual frente a Java con configuración explícita; null y guardas ausente/incorrecto
+==> check-current-time-millis
+OK: 162 lecturas Java/nativas en la ventana del reloj del host; no se supone monotonía
+==> check-concurrentmap-cast
+OK: 81 resultados cast/instanceof ConcurrentMap, identidad, HashMap y null; objetos proyecto no verificados abortan
+==> check-properties-entryset-empty
+OK: 81 resultados Java entrySet, vistas vivas e iteración vacía; entradas no vacías/modificadas abortan
+==> check-treemap-entry-key
+OK: 81 resultados Java TreeMap Entry.getKey y getValue; modificación estructural aborta
+==> check-lambda-class-adaptation
+OK: 81 resultados lambda Class con adaptación desde Object, null y ClassCastException
+==> check-object-equals-profile
+OK: 81 resultados Object.equals en Class/String/null; otro receptor aborta
+==> check-charsequence-project-class
+OK: 81 resultados de inicialización para clase CharSequence; llamada a implementación de proyecto por interfaz aborta
+==> check-reentrant-locks
+OK: 100 operaciones de locks monohilo; upgrade bloqueante aborta explícitamente
+==> check-jdk-properties
+OK: 12 operaciones Java de propiedades slf4j, identidad y configuración explícita; 4 guardas
+==> check-file-properties
+OK: 120 lecturas de Properties.load y excepciones de archivo comparadas con Java
+==> check-file-properties-fuzz
+OK: 200 archivos aleatorios y 1400 consultas Properties.load comparadas con Java
+==> check-arraylist-stream-max
+OK: 202 resultados Java de ArrayList.stream().max, orden, late-binding, vacío/null y cierre; mutación durante recorrido aborta
+==> check-stream-sorted-profile
+OK: 82 resultados sorted perezoso, null, cierre y orden de validaciones; consumo ordenado no implementado
+==> check-stream-map-profile
+OK: 81 resultados map perezoso, encadenado, null, cierre y estado; consumo transformado no implementado
+==> check-real-log4j-safestream
+OK: 201 resultados del safeStream oficial contra Java con stubs de fixture, filtros, forEach y excepciones; guardas de opt-in, presencia, fuente y hashes; no prueba el logger real

@@ -1,0 +1,10 @@
+[package]
+name = "mc-log4rs-prototype"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+log = "=0.4.28"
+log4rs = { version = "=1.4.0", default-features = false, features = ["file_appender"] }
+anyhow = "=1.0.100"

@@ -1,0 +1,3 @@
+Error: invokevirtual no soportado: java/util/Properties.entrySet()Ljava/util/Set;
+  al compilar org/apache/logging/log4j/util/PropertiesPropertySource.forEach(Lorg/apache/logging/log4j/util/BiConsumer;)V
+compile_exit= 1

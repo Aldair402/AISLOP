@@ -1,0 +1,3 @@
+Note: /var/tmp/mc-lambda-sgd_6m8l/LambdaDemo.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+OK: 140 operaciones de lambdas con y sin capturas, constructores, métodos virtuales, boxing/unboxing y guardas

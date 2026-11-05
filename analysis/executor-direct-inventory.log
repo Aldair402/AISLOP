@@ -1,0 +1,10 @@
+JAR: downloads/server-26.3-inner.jar referencias directas: 367 clases: 97 metodos: 250
+Por propietario:
+  java/util/concurrent/CompletableFuture: 327
+  java/util/concurrent/Executor: 12
+  java/util/concurrent/ExecutorService: 7
+  java/util/concurrent/ForkJoinPool: 1
+  net/minecraft/TracingExecutor: 20
+Llamadas en métodos con al menos un invokedynamic: 270
+El contador invokedynamic incluye también concat y otros bootstraps; no identifica lambda ni su relación con la llamada.
+Solo invocaciones directas en el JAR indicado; no muestra ejecución, despacho por otros tipos, reflexión, bibliotecas ni cobertura real.

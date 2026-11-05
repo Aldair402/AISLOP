@@ -1,0 +1,1 @@
+OK: 1535 resultados; 10 métodos reales y 13 sintéticos coinciden con Java 25; errores por categoría {'NullPointerException': 2, 'ArrayIndexOutOfBoundsException': 498, 'NegativeArraySizeException': 54}; 6 entradas inválidas y límite rechazados

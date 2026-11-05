@@ -1,0 +1,17 @@
+{
+  "classes_scanned": 7762,
+  "candidate_count": 2,
+  "compiled_object_programs": 2,
+  "classes_fully_certified": 0,
+  "results": [
+    {
+      "class": "net/minecraft/world/level/LevelHeightAccessor$1",
+      "compiled": true
+    },
+    {
+      "class": "net/minecraft/world/level/levelgen/BelowZeroRetrogen$1",
+      "compiled": true
+    }
+  ],
+  "limitations": "Filtro de métodos declarados muy limitado. Una compilación exitosa no valida los métodos heredados ni semántica JVM; no es una clase completa certificada."
+}

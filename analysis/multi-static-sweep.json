@@ -1,0 +1,7 @@
+{
+  "compiled_programs_in_audit": 74,
+  "programs_compared": 74,
+  "comparisons": 296,
+  "skipped_java_errors": [],
+  "limitations": "Lee un campo por clase; no verifica todos los campos, métodos, efectos secundarios, excepciones ni clases completas."
+}

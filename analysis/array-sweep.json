@@ -1,0 +1,18 @@
+{
+  "audit_compiled_methods": 15,
+  "compared_methods": 14,
+  "comparisons": 336,
+  "java_errors_compared_by_category": {
+    "NullPointerException": 23,
+    "ArrayIndexOutOfBoundsException": 98
+  },
+  "skipped": [
+    {
+      "class": "net/minecraft/world/item/MapItem",
+      "method": "isBiomeWatery",
+      "descriptor": "([ZII)Z",
+      "reason": "MapItem requiere bootstrap de registros para inicializar la clase; no se hizo en esta prueba."
+    }
+  ],
+  "limitations": "Muestras acotadas; diferencias de inicialización y excepciones no capturables; no certifica clases completas."
+}
