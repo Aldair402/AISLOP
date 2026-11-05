@@ -106,9 +106,24 @@ with tempfile.TemporaryDirectory(prefix='mc-pending-future-') as t:
            'cancel(true) sobre completado devuelve false=40/40']
  if medido!=esperado:raise AssertionError(('oraculo de cancelacion',medido,esperado))
  cancel_results=len(medido)
+ # Nombre canonico (Q-AB-2): MC_AOT_FUTURES=restricted debe bastar por si solo,
+ # sin el alias historico, y dar los mismos resultados que Java.
+ java_run=ok(run([str(jdk/'java'),'-cp',str(d),'Driver',*map(str,values)],capture_output=True)).stdout
+ canonico=env.copy();canonico.pop('MC_AOT_RAYON_COMPLETED_FUTURE',None);canonico['MC_AOT_FUTURES']='restricted'
+ ok(run(compile_cmd(d/'fixture.jar',d/'canonico','run'),capture_output=True,env=canonico))
+ nativo_canonico=ok(run([str(d/'canonico'),*map(str,values)],capture_output=True,env=native_env))
+ if nativo_canonico.stdout!=java_run:raise AssertionError(('canonico',nativo_canonico.stdout[:200],java_run[:200]))
+ # Valores no admitidos se rechazan en vez de activar el perfil por accidente.
+ rechazos=[('apagado','off','requiere MC_AOT_RAYON_COMPLETED_FUTURE'),
+           ('valor-ajeno','completed-only','valor de MC_AOT_FUTURES no soportado')]
+ for etiqueta,valor,mensaje in rechazos:
+  e=env.copy();e.pop('MC_AOT_RAYON_COMPLETED_FUTURE',None);e['MC_AOT_FUTURES']=valor
+  malo=run(compile_cmd(d/'fixture.jar',d/etiqueta,'run'),capture_output=True,env=e)
+  if malo.returncode==0 or mensaje not in malo.stderr or (d/etiqueta).exists():
+   raise AssertionError((etiqueta,malo.returncode,malo.stderr))
  # Opt-in obligatorio: sin la variable no hay traduccion de futuros.
  disabled=env.copy();disabled.pop('MC_AOT_RAYON_COMPLETED_FUTURE')
  bad=run(compile_cmd(d/'fixture.jar',d/'disabled','run'),capture_output=True,env=disabled)
  if bad.returncode==0 or 'requiere MC_AOT_RAYON_COMPLETED_FUTURE' not in bad.stderr or (d/'disabled').exists():
   raise AssertionError(('opt-in',bad.stderr))
- print(f'OK: {total} resultados Java 25/Rayon + {cancel_results} lineas del oraculo de cancelacion; futuro pendiente con isDone/isCancelled/isCompletedExceptionally/getNow antes de completar, complete único (true y luego false), join y getNow después, null completado, publicación en campo final de otra clase y QuartPos oficial; guardas de traduccion (obtrudeValue, completeExceptionally), guardas de ejecucion (join y cancel(false)/cancel(true) con futuro pendiente) y opt-in obligatorio; sin espera bloqueante, sin estado fallido/cancelado ni callbacks')
+ print(f'OK: {total} resultados Java 25/Rayon + {cancel_results} lineas del oraculo de cancelacion; futuro pendiente con isDone/isCancelled/isCompletedExceptionally/getNow antes de completar, complete único (true y luego false), join y getNow después, null completado, publicación en campo final de otra clase y QuartPos oficial; guardas de traduccion (obtrudeValue, completeExceptionally), guardas de ejecucion (join y cancel(false)/cancel(true) con futuro pendiente) opt-in obligatorio con nombre canonico MC_AOT_FUTURES=restricted y alias historico, y valores no admitidos rechazados; sin espera bloqueante, sin estado fallido/cancelado ni callbacks')

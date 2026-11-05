@@ -2,6 +2,8 @@
 
 **Rama:** `trabajo/b-01-contrato-futures` · **Último commit:** `3a341fc` (pusheado a `deploy`)
 **Base:** `documentacion/todo-colaboracion-8fa1893` · **Fecha:** 2026-11-05
+**Ronda 3 de la discusión:** B respondió Q-AB-1 (referencias mutables: opt-in aceptado con orden campos→monitor) y Q-AB-2 (opt-in unificado: `MC_AOT_FUTURES=restricted`), cerró Q-BC-8/9/10 y abrió Q-BA-1 y Q-CB-1. Hilo: `analysis/discussion/threads/a-b.md`, `b-c.md`.
+
 **Identidad:** todos los commits van firmados como `MIlaSoraki <mila.gastelum@autistici.org>`, con el estilo de asunto de `main` (una línea, inglés, imperativo). El trabajo lo ejecuta un agente; queda declarado aquí y en `review-answers-from-b.md`.
 
 **Resumen:** de las ocho tareas de B, **cuatro están cerradas** (B-01, B-02, B-07, B-08), **una tiene su primer
@@ -21,7 +23,7 @@ literal y verificable.
 | **B-04** `get`/`join` y fallos | **Bloqueada por decisión** | oráculo `fjp-handler` + casos `err.*` ya fijan la semántica Java | Representación de `Throwable` acordada con A |
 | **B-05** Composición | **Bloqueada por B-04** | prioridad fijada por rutas comprobadas | `submit(Callable)`/`supplyAsync` necesitan la forma de lambda con valor y el modelo de fallos |
 | **B-06** Factory y handler de `Util` | **Bloqueada, con causa medida** | `analysis/b06-util-factory-blockers.md` (bytecode real) | Decisión de logging (aparcada) y `onTermination(Throwable)` → depende de B-04 |
-| **B-07** Interfaz para A | **Entregada** | `analysis/b-api-for-a.md`, `rayon_b_api.rs` (6 pruebas de frontera) | A debe aceptar las tres decisiones abiertas de su §6 |
+| **B-07** Interfaz para A | **Entregada + opt-in unificado** | `analysis/b-api-for-a.md`, `rayon_b_api.rs` (6 pruebas de frontera) | A debe aceptar las tres decisiones abiertas de su §6 |
 | **B-08** Estrés y regresiones | **Hecha** | `rayon_stress.rs`, 5 pruebas de invariantes con perro guardián | Que C la incorpore a la integral |
 
 ## 2. Qué tiene que hacer C al unificar

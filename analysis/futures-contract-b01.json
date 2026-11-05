@@ -1106,6 +1106,21 @@
       ],
       "owner": "B-03",
       "note": "La bandera mayInterruptIfRunning es inerte: cancel(true) y cancel(false) medidos identicos en 40 rondas cada uno (8 contadores, ver oraculo cancel-pending), porque un CompletableFuture no tiene hilo asociado que interrumpir. Un solo caso en vez de dos que duplicaban la misma medicion (Q-BC-8). El adaptador rechaza ambas banderas con 'cancel de futuro pendiente no soportado', cubierto por la guarda future.pending-cancel."
+    },
+    {
+      "id": "futures.optin-canonical",
+      "operation": "perfil",
+      "status": "guard",
+      "java_semantics": "No aplica: el interruptor es del generador, no una semantica Java.",
+      "guard_message": "valor de MC_AOT_FUTURES no soportado",
+      "tests": [
+        "mc-aot/tests/check-rayon-pending-future.py"
+      ],
+      "logs": [
+        "analysis/check-rayon-pending-future-validation.log"
+      ],
+      "owner": "B-07",
+      "note": "Nombre canonico MC_AOT_FUTURES=restricted (off lo apaga) con el historico MC_AOT_RAYON_COMPLETED_FUTURE=1 como alias una version; un valor ajeno como completed-only se rechaza, que es justo el motivo de no usar ese nombre: desde B-03 el perfil ya no es solo completado. Acuerdo Q-AB-2 de analysis/discussion/threads/a-b.md."
     }
   ],
   "gaps": [
@@ -1128,12 +1143,6 @@
       "owner": "B-01"
     },
     {
-      "id": "gap.two-optins",
-      "description": "MC_AOT_RAYON_COMPLETED_FUTURE y MC_AOT_NUMERIC_COMPLETED_FUTURE son dos interruptores distintos con mensajes distintos para el mismo concepto.",
-      "action": "B-07 debe exponer una sola interfaz; hoy el contrato lo declara como restriccion del adaptador, no de Java.",
-      "owner": "B-07"
-    },
-    {
       "id": "gap.no-java-differential-for-unit-cases",
       "description": "Cuatro propiedades del lifecycle (lazy start, cierre sin mantener vivo, sin fallback al pool comun, una sola identidad de pool) solo tienen prueba unitaria Rust.",
       "action": "B-02/B-08 deben anadir el diferencial Java observable correspondiente o mantenerlas declaradas como propiedades del adaptador.",
@@ -1150,6 +1159,13 @@
       "description": "No hay espera sobre un futuro pendiente (join/get) ni cancelación: reciben guarda de ejecución. Tampoco hay callbacks ni composición.",
       "action": "B-03/B-04 necesitan primero el modelo de excepciones y una forma de espera entre frames acordada con A.",
       "owner": "B-03"
+    },
+    {
+      "id": "gap.two-optins",
+      "description": "Existieron dos interruptores distintos para el mismo concepto (MC_AOT_RAYON_COMPLETED_FUTURE y MC_AOT_NUMERIC_COMPLETED_FUTURE). CERRADO en Q-AB-2: el backend concurrente acepta el nombre canonico MC_AOT_FUTURES=restricted con el alias historico una version.",
+      "action": "Cerrado por B en la rama trabajo/b-01-contrato-futures (commit del opt-in unificado) y acordado con A en analysis/discussion/threads/a-b.md Q-AB-2; A ya implemento su mitad en numeric.rs (futures_optin).",
+      "owner": "B-07",
+      "closed": true
     }
   ]
 }

@@ -78,7 +78,7 @@ Los oráculos corren 40 rondas porque la semántica de hilos y de handler no es 
 | `completedFuture` | 6 | 5 | 1 | — | — | — |
 | `futuro pendiente` | 11 | 4 | 3 | 3 | 1 | — |
 | `fallo de futuro` | 1 | — | 1 | — | — | — |
-| `perfil` | 3 | — | 3 | — | — | — |
+| `perfil` | 4 | — | 4 | — | — | — |
 | `composición` | 5 | — | — | — | — | 5 |
 | `errores` | 4 | — | — | — | 4 | — |
 | `cancelación` | 1 | — | — | — | 1 | — |
@@ -86,7 +86,7 @@ Los oráculos corren 40 rondas porque la semántica de hilos y de handler no es 
 | `interrupción` | 2 | — | — | — | 2 | — |
 | `estrés` | 4 | — | — | 4 | — | — |
 | `frontera A` | 6 | — | — | 6 | — | — |
-| **Total** | **82** | **23** | **19** | **21** | **11** | **8** |
+| **Total** | **83** | **23** | **20** | **21** | **11** | **8** |
 
 ## 6. Detalle de los casos
 
@@ -220,6 +220,12 @@ si el cuerpo no termina en el plazo, el fallo es «posible bloqueo» y no un tes
 | `stress.close-race` | Cada envío se acepta (y termina) o se rechaza; no se pierde ninguna tarea aceptada | 30 rondas con cierre concurrente | `close_race_keeps_every_task_or_rejects_it` | B-08 |
 | `future.pending-completion-race` | Un solo `complete` gana la carrera | 20 × 4 × 50 intentos | `pending_future_completion_race_has_single_winner` | B-08 |
 
+| `gap.two-optins` | **Cerrado** en Q-AB-2: nombre canónico `MC_AOT_FUTURES=restricted` con el alias histórico una versión, `off` lo apaga y un valor ajeno se rechaza | B lo implementó en su rama y A en `numeric.rs`; ver `analysis/discussion/threads/a-b.md` | `B-07` |
+
+El hueco `gap.two-optins` quedó **cerrado** en Q-AB-2: el backend concurrente acepta el nombre canónico
+`MC_AOT_FUTURES=restricted` y el alias histórico durante una versión, y rechaza valores ajenos
+(caso `futures.optin-canonical`).
+
 ### 6.8 Frontera para el frente A (B-07)
 
 Interfaz documentada en [`b-api-for-a.md`](b-api-for-a.md) y verificada por pruebas de frontera.
@@ -287,7 +293,6 @@ MC_AOT_RAYON_ASSUME_NO_INTERRUPT=1                          (interrupción no mo
 | `gap.handler-oracle-not-in-suite` | `check-forkjoin-handler-oracle` existía pero **no** estaba en `run-regressions.sh`: la prueba de handler no corría en la integral | añadida aquí la entrada (y la del verificador); **C debe confirmarla** |
 | `gap.no-explicit-guard-for-task-get` | `ForkJoinTask.get()`/`invoke()` no tienen guarda propia: caen en el rechazo genérico de llamada externa, indistinguible de un error de traducción | B-04: guarda explícita + caso en el oráculo antes de modelar |
 | `gap.oracle-missing-cases` | Los oráculos no cubren `submit(Callable)`, `execute(ForkJoinTask)`, `invoke()`, `commonPool()`, `ManagedBlocker`, interrupción de workers, `toString` del pool, `thenCompose`, `thenAccept`, `handle`, `exceptionally`, `anyOf`, `orTimeout`, `completeAsync`, `cancel(true)` | B-02/B-04/B-05 amplían por subperfil **antes** de implementar |
-| `gap.two-optins` | Dos variables distintas (`MC_AOT_RAYON_COMPLETED_FUTURE`, `MC_AOT_NUMERIC_COMPLETED_FUTURE`) para el mismo concepto, con mensajes distintos | B-07: una sola interfaz para A |
 | `gap.pending-future-waits` | No hay espera sobre un futuro pendiente (`join`/`get`) ni cancelación: reciben guarda de ejecución. Tampoco hay callbacks ni composición | B-03/B-04 necesitan el modelo de excepciones y una espera entre frames acordada con A |
 | `gap.no-guard-for-lifecycle-queries` | `getActiveThreadCount`, `getPoolSize`, `getRunningThreadCount` y `getQueuedSubmissionCount` no tienen guarda ni mensaje propio: caen en el rechazo de carga de clase JDK | B-02 decide si se modelan o se rechazan con mensaje explícito |
 | `gap.no-java-differential-for-unit-cases` | Cuatro propiedades del lifecycle solo tienen prueba unitaria Rust | B-02/B-08: diferencial Java observable o declararlas propiedad del adaptador |

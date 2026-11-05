@@ -8,7 +8,26 @@ use super::{
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
+/// Opt-in unificado de futuros (Q-AB-2). El nombre canonico es
+/// `MC_AOT_FUTURES=restricted`; el historico `MC_AOT_RAYON_COMPLETED_FUTURE=1` sigue
+/// valiendo como alias una version. Un valor desconocido se rechaza en vez de
+/// adivinarse, para que una errata no active el perfil por accidente.
+fn futures_restricted_optin() -> Result<bool> {
+    match std::env::var("MC_AOT_FUTURES") {
+        Ok(v) if v == "restricted" => Ok(true),
+        Ok(v) if v == "off" => Ok(false),
+        Ok(v) => Err(format!(
+            "futuros: valor de MC_AOT_FUTURES no soportado: {v} (admitidos: off, restricted)"
+        )),
+        Err(_) => Ok(
+            std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()
+                == Some(std::ffi::OsStr::new("1")),
+        ),
+    }
+}
+
 fn arg_count(desc: &str) -> Result<usize> {
+    let futures = futures_restricted_optin()?;
     match desc {
         "()I" | "()V" | "()Ljava/util/concurrent/ExecutorService;" => Ok(0),
         "(I)I"
@@ -29,7 +48,7 @@ fn arg_count(desc: &str) -> Result<usize> {
         | "(Ljava/util/concurrent/ForkJoinPool;Ljava/lang/String;)V"
         | "(Ljava/lang/String;Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;" => Ok(2),
         "(Ljava/util/concurrent/ForkJoinPool;Ljava/lang/String;Ljava/lang/String;)V" | "(Ljava/util/concurrent/atomic/AtomicInteger;Ljava/lang/String;Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;" | "(Ljava/lang/String;Ljava/util/concurrent/atomic/AtomicInteger;Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;" => Ok(3),
-        "(Ljava/util/concurrent/CompletableFuture;)V" if std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()==Some(std::ffi::OsStr::new("1")) => Ok(1),
+        "(Ljava/util/concurrent/CompletableFuture;)V" if futures => Ok(1),
         "(ILjava/lang/Runnable;)V" if std::env::var_os("MC_AOT_RAYON_PROJECT_REFERENCES").as_deref()==Some(std::ffi::OsStr::new("1")) => Ok(2),
         _ if std::env::var_os("MC_AOT_RAYON_PROJECT_REFERENCES").as_deref()==Some(std::ffi::OsStr::new("1"))
             && desc.strip_prefix("(Lnet/minecraft/").and_then(|x|x.strip_suffix(";)V"))
@@ -150,7 +169,7 @@ impl Builder<'_> {
         let mut fields = Vec::new();
         for field in meta.fields.iter().filter(|f| f.flags & 8 == 0) {
             let project=self.project_reference(&field.descriptor)?;
-            let future=self.rayon && field.descriptor=="Ljava/util/concurrent/CompletableFuture;" && std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()==Some(std::ffi::OsStr::new("1"));
+            let future=self.rayon && field.descriptor=="Ljava/util/concurrent/CompletableFuture;" && futures_restricted_optin()?;
             if future && field.flags&0x10==0 {return Err(format!("concurrent-int: captura CompletableFuture debe ser final: {owner}.{}",field.name));}
             if project.is_some() && field.flags&0x10==0 {return Err(format!("concurrent-int: captura de referencia debe ser final: {owner}.{}",field.name));}
             if field.descriptor != "I" && project.is_none() && !future && !(tick_task && field.descriptor=="Ljava/lang/Runnable;" && field.flags&0x10!=0)
@@ -1209,7 +1228,7 @@ impl Builder<'_> {
                     let idx = u16::from_be_bytes([take()?, take()?]);
                     let (owner, callee, descriptor) = method_ref(&m.cp, idx)?;
                     if self.rayon && owner=="java/util/concurrent/CompletableFuture" && callee=="completedFuture" && descriptor=="(Ljava/lang/Object;)Ljava/util/concurrent/CompletableFuture;" {
-                        if std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()!=Some(std::ffi::OsStr::new("1")) {return Err("completedFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1".into());}
+                        if !futures_restricted_optin()? {return Err("completedFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1 (o el nombre unificado MC_AOT_FUTURES=restricted)".into());}
                         "let value=match f.pop()?{Value::Ref(v)=>v,_=>return Err(FrameError::Heap(\"completedFuture requiere referencia\"))};let id=heap.completed_future(value)?;f.push(Value::Ref(Some(id)));".into()
                     } else if tracing_unloaded && owner=="com/mojang/jtracy/TracyClient" && callee=="isAvailable" && descriptor=="()Z" {
                         "f.push(Value::Int(0));".into()
@@ -1259,7 +1278,7 @@ impl Builder<'_> {
                     let idx = u16::from_be_bytes([take()?, take()?]);
                     let klass = object::class_name(&m.cp, idx)?;
                     if self.rayon && klass=="java/util/concurrent/CompletableFuture" {
-                        if std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()!=Some(std::ffi::OsStr::new("1")) {return Err("CompletableFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1".into());}
+                        if !futures_restricted_optin()? {return Err("CompletableFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1 (o el nombre unificado MC_AOT_FUTURES=restricted)".into());}
                         format!("let id=heap.allocate_typed({klass:?},vec![])?;f.push(Value::Ref(Some(id)));")
                     } else if self.rayon && klass == "java/util/concurrent/ForkJoinPool" {
                         format!("let id=heap.allocate_typed({klass:?},vec![])?;f.push(Value::Ref(Some(id)));")
@@ -1283,7 +1302,7 @@ impl Builder<'_> {
                     let idx = u16::from_be_bytes([take()?, take()?]);
                     let (klass, field, descriptor) = object::field_ref(&m.cp, idx)?;
                     let project=self.project_reference(descriptor)?;
-                    let future_ref=self.rayon && descriptor=="Ljava/util/concurrent/CompletableFuture;" && std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()==Some(std::ffi::OsStr::new("1"));
+                    let future_ref=self.rayon && descriptor=="Ljava/util/concurrent/CompletableFuture;" && futures_restricted_optin()?;
                     if future_ref && op==0xb5 && (owner!=klass || name!="<init>") {return Err("concurrent-int: escritura de CompletableFuture final fuera del constructor".into());}
                     let task_ref=self.rayon && klass=="net/minecraft/server/TickTask" && descriptor=="Ljava/lang/Runnable;" && std::env::var_os("MC_AOT_RAYON_PROJECT_REFERENCES").as_deref()==Some(std::ffi::OsStr::new("1"));
                     if task_ref && op==0xb5 && (owner!=klass || name!="<init>") {return Err("concurrent-int: escritura de Runnable final fuera del constructor".into());}
@@ -1311,7 +1330,7 @@ impl Builder<'_> {
                     let idx = u16::from_be_bytes([take()?, take()?]);
                     let (klass, callee, descriptor) = method_ref(&m.cp, idx)?;
                     if self.rayon && op==0xb6 && klass=="java/util/concurrent/CompletableFuture" {
-                        if std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()!=Some(std::ffi::OsStr::new("1")) {return Err("CompletableFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1".into());}
+                        if !futures_restricted_optin()? {return Err("CompletableFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1 (o el nombre unificado MC_AOT_FUTURES=restricted)".into());}
                         match (callee,descriptor) {
                             ("get"|"join", "()Ljava/lang/Object;") => "let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;f.push(Value::Ref(heap.completed_future_value(id)?));".into(),
                             ("getNow", "(Ljava/lang/Object;)Ljava/lang/Object;") => "let fallback=match f.pop()?{Value::Ref(v)=>v,_=>return Err(FrameError::Heap(\"getNow requiere referencia\"))};let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;f.push(Value::Ref(heap.future_get_now(id,fallback)?));".into(),
@@ -1416,7 +1435,7 @@ impl Builder<'_> {
                         && callee == "<init>"
                         && descriptor == "()V"
                     {
-                        if std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()!=Some(std::ffi::OsStr::new("1")) {return Err("CompletableFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1".into());}
+                        if !futures_restricted_optin()? {return Err("CompletableFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1 (o el nombre unificado MC_AOT_FUTURES=restricted)".into());}
                         "let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;heap.mark_pending_future(id)?;".into()
                     } else if self.rayon && op==0xb7 && klass=="java/lang/Record" && callee=="<init>" && descriptor=="()V" {
                         "let _this=pop_any_object(f)?;".into()

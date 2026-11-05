@@ -81,7 +81,8 @@ Fuera del perfil: subclases y jerarquías, handlers no nulos, factories Java no 
 
 | Variable | Efecto | Nota para A |
 |---|---|---|
-| `MC_AOT_RAYON_COMPLETED_FUTURE=1` | Habilita el perfil de `CompletableFuture` | Sin ella, el programa **no se genera** |
+| `MC_AOT_FUTURES=restricted` | Habilita el perfil de futuros (completado y pendiente normal) | Nombre canónico desde Q-AB-2; `off` lo apaga y un valor ajeno se rechaza |
+| `MC_AOT_RAYON_COMPLETED_FUTURE=1` | Alias histórico del anterior | Una versión; sin ninguno de los dos el programa **no se genera** |
 | `MC_AOT_NUMERIC_COMPLETED_FUTURE=1` | El mismo concepto en el backend numérico | Dos interruptores para lo mismo: A y B deben unificarlo al integrar |
 | `MC_AOT_RAYON_ASSUME_NO_INTERRUPT=1` | Declara que no se modelan interrupciones | Requisito de las rutas de `TracingExecutor` |
 | `MC_AOT_RAYON_ASSUME_NO_TRACY=1` | Declara Tracy inactivo | No es soporte de Tracy |
@@ -103,7 +104,7 @@ El adaptador no fabrica `Throwable`. Cuando algo no está modelado, devuelve `Fr
 |---|---|---|
 | Representación de `Throwable` | B-03 (fallo de futuro) y B-04 (`get`/`join`) necesitan publicar un fallo como objeto Java | A + B |
 | `commonPool()` | Requiere un pool global con identidad compartida entre procesos. **Recomendación de B:** un único pool Rayon global creado perezosamente en el primer `commonPool()`, paralelismo `max(1, available_parallelism-1)` acotado al perfil 1..255, no cerrado por `shutdown()` de pools de usuario, y con el mismo número de procesadores que use A para `Runtime`/`ActiveProcessorCount` | A |
-| Un solo opt-in de futuros | Hoy hay dos variables con mensajes distintos | A + B (B-07) |
+| ~~Un solo opt-in de futuros~~ | **Cerrado en Q-AB-2:** `MC_AOT_FUTURES=restricted` canónico, alias histórico una versión, valor ajeno rechazado | hecho por B y A |
 | Callbacks de A dentro de monitores | El adaptador no puede detectar reentrancia hacia el backend principal | A |
 
 ## 7. Pruebas de frontera (`mc-aot/tests/rayon_b_api.rs`)
