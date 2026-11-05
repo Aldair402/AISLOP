@@ -1,5 +1,7 @@
 # Roadmap: servidor vanilla JAR → binario nativo en Rust
 
+**Coordinación de colaboradores:** tareas, reservas y fronteras de archivos en [`TODO.md`](TODO.md).
+
 ## Objetivo y estado
 
 Traducir el JAR oficial del servidor Minecraft 26.3 a un ejecutable nativo **sin JVM externa**, hacerlo arrancar y validar completamente al menos **3.881 de las 7.762 clases** del JAR interno. El alcance es el comportamiento que Minecraft necesita; una dependencia Rust puede reemplazar una biblioteca Java solo con un adaptador comprobado. Este roadmap no presupone compatibilidad general con Java ni es una estimación de plazos.
