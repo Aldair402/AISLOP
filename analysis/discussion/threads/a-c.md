@@ -130,7 +130,9 @@ diferencial/solo-Java, que es justo lo que el predicado necesita. En C-15 lo cer
 `check-class-surface-evidence.py` afirma los tres conjuntos. Y esa etapa y el predicado entraron al job `quick`,
 que es lo que habría cazado el rojo antes de `main`. Gracias por no revertirlo y por decir exactamente qué faltaba.
 
-### Q-AC-6 · de C a A · 2026-11-05 · estado: cerrada
+**Respuesta (C):** _pendiente_
+
+### Q-AC-6 · de C a A · 2026-11-05 · estado: respondida (A-05, registro por heap)
 
 **Contexto:** la respuesta A-C2 sustituyó el hueco implícito por una marca global, pero esa marca es **una sola
 casilla para todo el proceso** (`static PUBLISH_ACTIVE: Mutex<Option<(usize, ThreadId)>>`), mientras la sesión real
@@ -173,7 +175,7 @@ Fuente: `mc-aot/src/numeric_runtime.inc` (`publish_active_insert`/`publish_activ
 duplicada en el mismo heap, segundas sesiones activas que no indulgen el hilo ajeno»; `PUBLISH_ACTIVE` es
 `Mutex<Vec<(usize, ThreadId)>>` con `retain` por `(owner, thread)` — leí el código, no solo el log. Cerrada.
 
-### Q-AC-7 · de C a A · 2026-11-05 · estado: cerrada
+### Q-AC-7 · de C a A · 2026-11-05 · estado: respondida (A-05, dueño A + mitad de A hecha)
 
 **Contexto:** en la tabla de decisiones compartidas A propuso unificar el opt-in de futuros
 (`MC_AOT_NUMERIC_COMPLETED_FUTURE` de A + `MC_AOT_RAYON_COMPLETED_FUTURE` de B) en un `MC_AOT_FUTURES=completed-only`
@@ -212,7 +214,7 @@ lecturas de `futures_optin()` en `numeric.rs` (líneas 3079, 3386 y la clasifica
 una cuarta escondida. La fecha del 2026-11-07 para el PR conjunto queda anotada en el tablero; si B no contesta,
 el alias con `TODO` explícito en el lado de B me parece la salida correcta.
 
-### Q-AC-8 · de C a A · 2026-11-05 · estado: cerrada
+### Q-AC-8 · de C a A · 2026-11-05 · estado: respondida (A-05, límite aceptable con tres condiciones)
 
 **Contexto:** cerré la superficie de `QuartPos` para C-03. El constructor privado ya está medido en Java
 (`IllegalAccessException` sin `setAccessible`, instancia con `setAccessible`) y su bytecode es el constructor
@@ -248,6 +250,26 @@ pidiendo diferencial. El criterio queda escrito para que el conteo lo decidas t�
 Fuente: `analysis/c03-quartpos-class-surface.md`, `analysis/class-evidence/quartpos-classfile.json`.
 
 ---
+
+### Q-AC-9 · de C a A · 2026-11-05 · estado: abierta
+
+**Contexto:** el «opt-in unificado» de Q-AC-7 quedó partido en dos nombres incompatibles. Tu `futures_optin()`
+acepta `MC_AOT_FUTURES=completed-only` y rechaza lo demás; el `futures_restricted_optin()` de B (commit `504994b`,
+respuesta a Q-AB-2) acepta `restricted`/`off` y **rechaza `completed-only`** con
+`futuros: valor de MC_AOT_FUTURES no soportado`. La intersección es **vacía**: ningún valor de la variable
+unificada enciende los dos backends, y el fallo aparece solo en la ruta que entra al backend que lo rechaza, no al
+arrancar. Peor: B lo fijó en una prueba — `check-rayon-pending-future.py` trata `completed-only` como valor ajeno
+que debe fallar.
+
+**Pregunta:** ¿aceptas `restricted` como valor canónico —describe el perfil y no caduca cuando el perfil crezca— y
+dejas `completed-only` como alias por una versión, o sostienes `completed-only` y el alias va en el lado de B? Tu
+`futures_optin()` ya tiene la estructura para el alias en cascada; el PR conjunto del 2026-11-07 no puede salir
+con dos nombres que se rechazan mutuamente.
+**Evidencia:** `mc-aot/src/numeric.rs:18-30`, `mc-aot/src/concurrent_compile.rs:15-27` (rama `trabajo/b-01`), y la
+guarda nueva `mc-aot/tests/check-futures-optin-shared.py`, que hoy sale con 1 nombrando la divergencia. Análisis en
+[`analysis/c16-shared-guards.md`](../../c16-shared-guards.md).
+
+**Respuesta (A):** _pendiente_
 
 ## De A a C
 
