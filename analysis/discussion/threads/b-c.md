@@ -53,7 +53,7 @@ no "dos variantes". La guarda nativa ahora acepta los dos flags y ambos abortan 
 en el perfil `1..255`, no lo cierra `shutdown()` de pools de usuario) pero **no se codifica** hasta que A
 decida, porque toca `Runtime.availableProcessors`/`ActiveProcessorCount`, que son de A.
 
-### Q-BC-8 · de C a B · 2026-11-05 · estado: abierta
+### Q-BC-8 · de C a B · 2026-11-05 · estado: cerrada
 
 **Contexto:** tras Q-BC-3 el contrato quedó con 83 casos y dos entradas `java-only` que documentan la misma
 conducta, ambas apuntando al mismo oráculo.
@@ -62,9 +62,15 @@ conducta, ambas apuntando al mismo oráculo.
 duplican evidencia?
 **Evidencia:** `analysis/futures-contract-b01.json` (83 casos), `check-rayon-pending-future.py` (48 resultados).
 
-**Respuesta (B):** _pendiente_
+**Respuesta (B):** sí, colapsado. Hecho en la rama de B, commit `e0b454b` ("Collapse the pending future cancellation cases"): `future.cancel-pending-false` y `future.cancel-pending-true` desaparecen y queda **un solo** `future.cancel-pending`, `java-only`, apuntando al oráculo `cancel-pending` (40 rondas por bandera) y con la nota «la bandera `mayInterruptIfRunning` es inerte». El contrato pasa de **83 a 82 casos** (23 diferenciales, 19 guardas, 21 unitarias, 11 solo-Java, 8 sin modelar); `check-futures-contract.py` sigue en verde. La guarda `future.pending-cancel` no cambia: el binario sigue rechazando las dos banderas con `cancel de futuro pendiente no soportado`. Dos casos con la misma medición eran dos filas, no dos evidencias.
 
-### Q-BC-9 · de C a B · 2026-11-05 · estado: cerrada
+**Nota de C sobre el recuento:** el archivo hoy tiene **83** casos, no 82. `e0b454b` dejó 82 tras colapsar
+(verificado: 23 diferenciales + 19 guardas + 21 unitarias + 11 solo-Java + 8 sin modelar) y `504994b` añadió
+`futures.optin-canonical` como guarda al unificar el nombre, o sea 20 guardas y 83 en total. El desglose de la
+frase es correcto para `e0b454b` y está viejo para el HEAD de la rama. No cambia la conclusión —el colapso se
+hizo— pero un número que no cuadra con el artefacto es justo lo que este foro existe para no dejar pasar.
+
+### Q-BC-9 · de C a B · 2026-11-05 · estado: respondida (fuera del hilo)
 
 **Contexto:** el suite completo abortó dos veces con `No space left on device (os error 28)` por el tmpfs de
 992 MB, no por un fallo de código, y el primer error visible parecía un fallo de compilación en `compare-small-args`.
@@ -74,9 +80,16 @@ vez de "en mi máquina funciona".
 **Evidencia:** `analysis/full-regressions-b-frente-contrato-futures*.log`, `analysis/c10-ci-jar-fetch.md`
 (CI ya exporta `TMPDIR=$GITHUB_WORKSPACE/tmp` y no toca `CARGO_TARGET_DIR`).
 
-**Respuesta (B):** _pendiente_
+**Respuesta (B):** (el texto pegado aquí es el de Q-BC-8, no la respuesta a esta pregunta). La respuesta real está
+en `analysis/review-answers-from-b.md` §7 y `analysis/b-frente-estado.md` §7, y dice: `TMPDIR` **fuera** del tmpfs
+(`$HOME/.cache/tmp`), `JAVA_HOME` al JDK 25, `unset CARGO_TARGET_DIR` — porque `graal-test/audit.py` busca
+`target/release/mc-aot` y aborta si el binario se compiló en otro sitio. Los tres intentos fallidos quedan guardados
+como evidencia y el bueno es `full-regressions-b-frente-contrato-futures-retry3.log`.
 
-### Q-BC-10 · de C a B · 2026-11-05 · estado: abierta
+**Nota de C (2026-11-05):** adopté esa receta en CI: `TMPDIR=$GITHUB_WORKSPACE/tmp` y sin tocar `CARGO_TARGET_DIR`.
+Marcada **respondida (fuera del hilo)**: la respuesta existe y la verifiqué, pero no está donde debe estar.
+
+### Q-BC-10 · de C a B · 2026-11-05 · estado: respondida (log)
 
 **Contexto:** C-03 quedó con superficie reconciliada por dos lecturas independientes del mismo bytecode
 (parser propio vs reflexión de Java 25) y con evidencia regenerable: `update-quartpos-evidence.py --check`
@@ -90,35 +103,35 @@ propones otro?
 **Evidencia:** [`analysis/c03-quartpos-class-surface.md`](../../c03-quartpos-class-surface.md),
 `mc-aot/tools/update-quartpos-evidence.py`, `analysis/quartpos-evidence-report.json`.
 
-**Respuesta (B):** `TMPDIR=$HOME/.cache/tmp` (fuera del tmpfs), `JAVA_HOME` al JDK 25, y **`unset
-CARGO_TARGET_DIR`** — no fijarlo es obligatorio porque `graal-test/audit.py` busca `target/release/mc-aot` y aborta
-si el binario se compiló en otro sitio. Los tres intentos fallidos quedan guardados sin sobrescribir
-(`full-regressions-b-frente-contrato-futures{,retry,retry2}.log`) y el bueno es el `retry3.log`.
+**Respuesta (B):** (mismo pegado que en Q-BC-9). La revisión real del arnés **sí existe**:
+`analysis/b-review-quartpos-evidence.log`, con `classfile-surface.py`, `update-quartpos-evidence.py --check`,
+`check-quartpos-class-surface.py` y `check-class-registry.py` en verde sobre `8d21505`, y con el arnés ejercitado
+tal cual.
 
-**Verificación de C:** adopté esa receta en CI y en el README de discusión. El job de CI ahora exporta `TMPDIR` a
-`$GITHUB_WORKSPACE/tmp` y **no** toca `CARGO_TARGET_DIR` (fue un bug propio: lo había fijado a
-`github.workspace/target` y `check-numeric-bridge-layout.py` lee `mc-aot/target/debug/mc-aot` por ruta). Tu nota
-sobre «el primer síntoma aparece como un fallo de compilación ajeno» es exactamente lo que vi en el run #6 y quedó
-escrito en `analysis/c10-ci-jar-fetch.md`. Cerrada.
+**Nota de C:** gracias, era exactamente lo que pedía. Pero ojo: eso responde «¿corriste el arnés?», no «¿firmas la
+clase?» — la firma es Q-BC-11 y no viene en ese log. Marcada **respondida (log)**.
+
+---
 
 ### Q-BC-11 · de C a B · 2026-11-05 · estado: abierta
 
-**Contexto:** C-15 publica el predicado ejecutable del contador
-(`mc-aot/tools/class-complete-predicate.py` + su prueba), y `QuartPos` queda en `review-required` con tres
-bloqueos: `no-review`, `no-reviewer`, `not-certified`. Es decir, **solo falta que alguien de otro frente firme la
-revisión** para que el contador pase de 0 a 1.
-**Pregunta:** ¿firmas tú esa revisión o la deja A? Si la firmas, necesito de vuelta: (a) que hayas corrido
-`check-quartpos-class-surface.py` y `class-complete-predicate.py` en tu máquina y pegues la salida; (b) qué
-consideras que falta en la evidencia (515 entradas por método con semilla fija, límites de `int`, constructor
-privado solo-Java e inalcanzable); (c) si aceptas que el constructor quede `java-only` con motivo escrito. Sin
-esas tres cosas la clase no cuenta, y prefiero el 0 a un 1 firmado por mí misma.
-**Evidencia:** [`analysis/c15-class-predicate.md`](../../c15-class-predicate.md),
-`mc-aot/tools/class-complete-predicate.py`, `mc-aot/tests/check-class-complete-predicate.py`,
-`analysis/quartpos-evidence-report.json`.
+**Reformulada, porque tu log no responde lo que pregunté.** Tu revisión
+(`analysis/b-review-quartpos-evidence.log`) es del **arnés** —los cuatro comandos en verde sobre `8d21505`— y eso
+es exactamente lo que pedía Q-BC-10, gracias. Pero Q-BC-11 pregunta otra cosa: si **firmas la clase**, no si
+corriste las herramientas. El predicado (`class-complete-predicate.py`, R4) exige de otro frente `review`,
+`reviewer` y `certified: true`; tu log no trae ninguno de los tres, así que `QuartPos` sigue `review-required` y el
+contador sigue en 0. **No la voy a contar como revisión de clase aunque el archivo se llame «review»**, porque
+sería exactamente el atajo que el predicado existe para impedir.
+
+**Pregunta:** ¿firmas? Si sí, necesito (a) `review` + `reviewer: "B"` + `certified: true` en
+`analysis/class-registry.json` para `net/minecraft/core/QuartPos`, (b) la salida de `class-complete-predicate.py`
+en tu máquina **tras** firmar, mostrando `complete` y contador 1, y (c) si aceptas como límite declarado el
+constructor privado `java-only` + inalcanzable sin reflexión, con su motivo escrito. Si prefieres que firme A,
+dilo y se lo pido a él. Lo que no puede pasar es que la clase cuente sin que nadie de fuera la haya mirado.
+**Evidencia:** `mc-aot/tools/class-complete-predicate.py` (R4), `analysis/quartpos-evidence-report.json`,
+`analysis/b-review-quartpos-evidence.log`, [`analysis/c15-class-predicate.md`](../../c15-class-predicate.md).
 
 **Respuesta (B):** _pendiente_
-
----
 
 ## De B a C
 
@@ -158,3 +171,28 @@ está registrado (53). Un runner por oráculo multiplicaría entradas sin mejora
 `b-frente-estado.md` §5 y en el acta. Añadir el trailer solo en una rama rompería la uniformidad del `git log`.
 
 _(B puede abrir aquí Q-CB-1 en la ronda 3: es su turno de preguntar a C.)_
+
+### Q-CB-1 · de B a C · 2026-11-05 · estado: respondida (arreglado en C-16)
+
+**Contexto:** los tres intentos fallidos de la integral refrescaron `analysis/*-latest.log` **antes** de abortar, así
+que la evidencia «latest» commiteada puede describir una ejecución parcial. El README de la discusión exige no
+sobrescribir evidencia y no presentar una ejecución interrumpida como aprobada, y hoy el mecanismo de `run_logged`
+lo permite por accidente.
+**Pregunta:** ¿`run_logged` debe escribir el `-latest.log` solo cuando la etapa sale con 0 (y dejar el parcial en
+`-partial.log`), o se mantiene el refresco inmediato y la política es revisar a mano antes de commitear?
+**Evidencia:** `analysis/full-regressions-b-frente-contrato-futures-retry2.log` (aborta en `audit`), los
+`analysis/*-latest.log` de ese mismo commit, `mc-aot/run-regressions.sh` (`run_logged`).
+
+**Respuesta (C):** **sí, y era un defecto, no una política.** `run_logged` redirigía directamente al
+`-latest.log` antes de saber si la etapa iba a terminar, así que tus tres intentos abortados dejaron
+`analysis/*-latest.log` describiendo ejecuciones a medias — con nombre de «lo último que corrió», que es la peor
+forma de mentir: nadie lo nota, porque el archivo existe y está fresco. Arreglado en C-16
+(`mc-aot/run-regressions.sh`): la etapa escribe en `-partial.log`; si sale con 0, se renombra a `-latest.log`; si
+no, el `-latest.log` anterior **no se toca** y el parcial queda con su nombre. Probado con un fallo deliberado:
+`-latest.log` intacto y `-partial.log` con la salida real; tras el éxito, `-latest.log` actualizado y el parcial
+borrado. De paso: `local status=$?` no captura nada (siempre 0), así que el estado va en una variable aparte.
+
+Queda una consecuencia para ti: los `-latest.log` que hoy están en el repo y describen una ejecución abortada
+siguen con ese nombre. No los toco, porque son evidencia tuya y reescribirlos sería justo lo que estamos
+prohibiendo. Dime cuáles son y los renombro a `-partial.log` en una rama, con la historia en el mensaje del
+commit. **Cerrada.**

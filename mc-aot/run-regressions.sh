@@ -7,9 +7,18 @@ mkdir -p "$ROOT/analysis"
 run_logged() {
   local name="$1"; shift
   echo "==> $name"
-  if ! "$@" >"$ROOT/analysis/$name-latest.log" 2>&1; then
-    tail -n 50 "$ROOT/analysis/$name-latest.log" >&2
-    return 1
+  local out="$ROOT/analysis/$name-latest.log" partial="$ROOT/analysis/$name-partial.log"
+  # `-latest.log` describe una ejecución COMPLETA de la etapa. Si la etapa falla a
+  # mitad, el archivo queda en `-partial.log` y el `-latest.log` anterior no se toca:
+  # así una evidencia commiteada no describe una ejecución interrumpida (Q-CB-1).
+  local status=0
+  if "$@" >"$partial" 2>&1; then
+    mv "$partial" "$out"
+  else
+    status=$?
+    tail -n 50 "$partial" >&2
+    echo "  evidencia parcial en analysis/$name-partial.log; $name-latest.log sin tocar" >&2
+    return "$status"
   fi
 }
 cd "$ROOT"
@@ -33,6 +42,8 @@ run_logged check-classfile-surface python3 mc-aot/tools/classfile-surface.py net
 run_logged check-quartpos-evidence-audit python3 mc-aot/tools/class-surface-evidence.py analysis/class-evidence/quartpos.json
 run_logged check-quartpos-evidence-fresh python3 mc-aot/tools/update-quartpos-evidence.py --check
 run_logged check-class-complete-predicate python3 mc-aot/tests/check-class-complete-predicate.py
+# Puede fallar con exit 1 mientras A y B no coincidan en el valor canónico: eso es señal, no ruido.
+run_logged check-futures-optin-shared python3 mc-aot/tests/check-futures-optin-shared.py
 run_logged check-class-registry python3 mc-aot/tools/check-class-registry.py
 run_logged check-family-partition python3 mc-aot/tools/check-family-partition.py
 run_logged c01-baseline-exists test -f analysis/c01-baseline-2026-11-05.md
