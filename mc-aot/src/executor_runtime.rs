@@ -76,6 +76,33 @@ impl LazyPool {
         self.changed.notify_all();
         Ok(())
     }
+    /// Consulta no bloqueante: Java `isTerminated()` no espera. Se permite
+    /// desde un worker propio porque no espera; no sustituye a awaitTermination.
+    fn is_terminated(&self) -> Result<bool, FrameError> {
+        let state = self
+            .state
+            .lock()
+            .map_err(|_| FrameError::Heap("estado del pool dañado"))?;
+        if state.failed {
+            return Err(FrameError::Heap("no se pudo crear pool"));
+        }
+        if !state.closed {
+            return Ok(false);
+        }
+        if !state.started {
+            return Ok(true);
+        }
+        let handle = state
+            .termination
+            .clone()
+            .ok_or(FrameError::Heap("terminación real requiere Rayon"))?;
+        drop(state);
+        match handle.wait(Duration::ZERO).map_err(FrameError::Heap)? {
+            Some(0) => Ok(true),
+            Some(_) => Err(FrameError::Heap("falló callback worker")),
+            None => Ok(false),
+        }
+    }
     fn await_termination(&self, timeout: Duration) -> Result<bool, FrameError> {
         let deadline = Instant::now()
             .checked_add(timeout)
@@ -274,6 +301,44 @@ impl Executors {
             }
         }
     }
+    /// `isShutdown()`: el pool se cerró, aunque queden tareas. Id desconocido
+    /// es error del adaptador, no `false`.
+    pub fn is_shutdown(&self, id: ObjectId) -> Result<bool, FrameError> {
+        let pools = self
+            .pools
+            .lock()
+            .map_err(|_| FrameError::Heap("registro de pools dañado"))?;
+        if pools.closed.contains_key(&id) {
+            return Ok(true);
+        }
+        if pools.live.contains_key(&id) {
+            return Ok(false);
+        }
+        Err(FrameError::Heap("pool no inicializado"))
+    }
+    /// `isTerminated()`: cerrado y sin trabajos activos. No espera.
+    pub fn is_terminated(&self, id: ObjectId) -> Result<bool, FrameError> {
+        let pool = self.lazy_pool(id)?;
+        pool.is_terminated()
+    }
+    /// `getParallelism()`: el paralelismo configurado, que Java conserva tras
+    /// el cierre. No se infiere del número de hilos vivos de Rayon.
+    pub fn parallelism(&self, id: ObjectId) -> Result<i32, FrameError> {
+        let pool = self.lazy_pool(id)?;
+        Ok(pool.count as i32)
+    }
+    fn lazy_pool(&self, id: ObjectId) -> Result<Arc<LazyPool>, FrameError> {
+        let pools = self
+            .pools
+            .lock()
+            .map_err(|_| FrameError::Heap("registro de pools dañado"))?;
+        pools
+            .live
+            .get(&id)
+            .or_else(|| pools.closed.get(&id))
+            .cloned()
+            .ok_or(FrameError::Heap("pool no inicializado"))
+    }
     pub fn await_termination(&self, id: ObjectId, timeout: Duration) -> Result<bool, FrameError> {
         let pool = {
             let pools = self
@@ -385,6 +450,98 @@ mod tests {
         let state = lazy.state.lock().unwrap();
         assert!(state.closed);
         assert!(state.pool.is_none());
+    }
+    fn pool_object(heap: &SharedHeap) -> ObjectId {
+        heap.allocate_typed("java/util/concurrent/ForkJoinPool", vec![])
+            .unwrap()
+    }
+    #[test]
+    fn pool_queries_reflect_lifecycle() {
+        let heap = SharedHeap::default();
+        let id = pool_object(&heap);
+        let ex = Executors::default();
+        ex.create(id, 3).unwrap();
+        assert!(matches!(ex.is_shutdown(id), Ok(false)));
+        assert!(matches!(ex.is_terminated(id), Ok(false)));
+        assert!(matches!(ex.parallelism(id), Ok(3)));
+        let task = ex.submit(&heap, id, || Ok(Value::Void)).unwrap();
+        ex.join(task).unwrap();
+        assert!(matches!(ex.is_shutdown(id), Ok(false)));
+        ex.shutdown(id).unwrap();
+        assert!(matches!(ex.is_shutdown(id), Ok(true)));
+        // Java conserva getParallelism() tras el cierre.
+        assert!(matches!(ex.parallelism(id), Ok(3)));
+        // Con el scheduler de reserva (el de este crate) no hay hilos que
+        // observar y la terminación real se rechaza, igual que en
+        // awaitTermination; con el adaptador Rayon debe llegar a true.
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
+        loop {
+            match ex.is_terminated(id) {
+                Ok(terminated) => {
+                    if terminated {
+                        break;
+                    }
+                    assert!(
+                        std::time::Instant::now() < deadline,
+                        "el pool no terminó tras shutdown"
+                    );
+                    std::thread::sleep(std::time::Duration::from_millis(1));
+                }
+                Err(FrameError::Heap("terminación real requiere Rayon")) => break,
+                other => panic!("resultado inesperado de is_terminated: {other:?}"),
+            }
+        }
+    }
+    #[test]
+    fn never_started_pool_is_terminated_after_shutdown() {
+        let heap = SharedHeap::default();
+        let id = pool_object(&heap);
+        let ex = Executors::default();
+        ex.create(id, 2).unwrap();
+        assert!(matches!(ex.is_terminated(id), Ok(false)));
+        ex.shutdown(id).unwrap();
+        // Java: un pool que nunca se usó queda terminado al cerrarse.
+        assert!(matches!(ex.is_terminated(id), Ok(true)));
+        assert!(matches!(ex.is_shutdown(id), Ok(true)));
+        assert!(matches!(ex.parallelism(id), Ok(2)));
+    }
+    #[test]
+    fn pool_queries_reject_unknown_objects() {
+        let ex = Executors::default();
+        // Id de otro heap: el registro no lo conoce y debe rechazarlo, no inventar false.
+        let other = SharedHeap::default();
+        let unknown = pool_object(&other);
+        assert!(ex.is_shutdown(unknown).is_err());
+        assert!(ex.is_terminated(unknown).is_err());
+        assert!(ex.parallelism(unknown).is_err());
+    }
+    #[test]
+    fn shutdown_does_not_wait_for_a_running_task() {
+        let heap = SharedHeap::default();
+        let id = pool_object(&heap);
+        let ex = Executors::default();
+        ex.create(id, 1).unwrap();
+        let task = ex
+            .submit(&heap, id, || {
+                std::thread::sleep(std::time::Duration::from_millis(300));
+                Ok(Value::Void)
+            })
+            .unwrap();
+        let started = std::time::Instant::now();
+        ex.shutdown(id).unwrap();
+        // Java: shutdown() no espera a que terminen las tareas en curso.
+        assert!(
+            started.elapsed() < std::time::Duration::from_millis(250),
+            "shutdown bloqueó esperando una tarea en curso"
+        );
+        assert!(matches!(ex.is_shutdown(id), Ok(true)));
+        assert!(
+            !matches!(ex.is_terminated(id), Ok(true)),
+            "isTerminated no puede ser true mientras la tarea corre"
+        );
+        ex.join(task).unwrap();
+        // La tarea terminó después del cierre y el pool sigue cerrado.
+        assert!(matches!(ex.is_shutdown(id), Ok(true)));
     }
     #[test]
     fn completed_future_does_not_keep_shutdown_pool_alive() {

@@ -1168,6 +1168,20 @@ impl Builder<'_> {
                     {
                         terminal = true;
                         format!("let unit=pop_any_object(f)?;let timeout=pop_long(f)?;let pool=pop_object(f,heap,\"java/util/concurrent/ForkJoinPool\")?;let nanos=heap.timeout_nanos(unit,timeout)?;f.pc={pc};return Ok(Step::PoolAwait{{pool,nanos}});")
+                    } else if self.rayon
+                        && klass == "java/util/concurrent/ExecutorService"
+                        && (callee == "isShutdown" || callee == "isTerminated")
+                        && descriptor == "()Z"
+                        && count == 1
+                        && zero == 0
+                    {
+                        terminal = true;
+                        let step = if callee == "isShutdown" {
+                            "PoolIsShutdown"
+                        } else {
+                            "PoolIsTerminated"
+                        };
+                        format!("let pool=pop_object(f,heap,\"java/util/concurrent/ForkJoinPool\")?;f.pc={pc};return Ok(Step::{step}{{pool}});")
                     } else {
                         if !self.rayon
                             || !matches!(
@@ -1245,7 +1259,8 @@ impl Builder<'_> {
                     let idx = u16::from_be_bytes([take()?, take()?]);
                     let klass = object::class_name(&m.cp, idx)?;
                     if self.rayon && klass=="java/util/concurrent/CompletableFuture" {
-                        return Err("CompletableFuture incompleto no soportado".into());
+                        if std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()!=Some(std::ffi::OsStr::new("1")) {return Err("CompletableFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1".into());}
+                        format!("let id=heap.allocate_typed({klass:?},vec![])?;f.push(Value::Ref(Some(id)));")
                     } else if self.rayon && klass == "java/util/concurrent/ForkJoinPool" {
                         format!("let id=heap.allocate_typed({klass:?},vec![])?;f.push(Value::Ref(Some(id)));")
                     } else if self.rayon && klass=="java/util/concurrent/atomic/AtomicInteger" {
@@ -1284,7 +1299,7 @@ impl Builder<'_> {
                     } else if descriptor=="I" {
                         format!("let v=Value::Int(pop_int(f)?);let id=pop_object(f,heap,{klass:?})?;heap.write(id,{slot},v)?;")
                     } else if future_ref {
-                        format!("let v=f.pop()?;match v {{Value::Ref(None)=>{{}},Value::Ref(Some(id))=>{{let _=heap.completed_future_value(id)?;}},_=>return Err(FrameError::Heap(\"CompletableFuture de campo no soportado\"))}};let id=pop_object(f,heap,{klass:?})?;heap.write(id,{slot},v)?;")
+                        format!("let v=f.pop()?;match v {{Value::Ref(None)=>{{}},Value::Ref(Some(id))=>{{heap.future_check(id)?;}},_=>return Err(FrameError::Heap(\"CompletableFuture de campo no soportado\"))}};let id=pop_object(f,heap,{klass:?})?;heap.write(id,{slot},v)?;")
                     } else if task_ref {
                         format!("let v=f.pop()?;match v {{Value::Ref(None)=>{{}},Value::Ref(Some(id))=>{{let _=runnable_method(heap,id)?;}},_=>return Err(FrameError::Heap(\"Runnable de campo no soportado\"))}};let id=pop_object(f,heap,{klass:?})?;heap.write(id,{slot},v)?;")
                     } else {
@@ -1299,11 +1314,11 @@ impl Builder<'_> {
                         if std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()!=Some(std::ffi::OsStr::new("1")) {return Err("CompletableFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1".into());}
                         match (callee,descriptor) {
                             ("get"|"join", "()Ljava/lang/Object;") => "let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;f.push(Value::Ref(heap.completed_future_value(id)?));".into(),
-                            ("getNow", "(Ljava/lang/Object;)Ljava/lang/Object;") => "if !matches!(f.pop()?,Value::Ref(_)){return Err(FrameError::Heap(\"getNow requiere referencia\"));}let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;f.push(Value::Ref(heap.completed_future_value(id)?));".into(),
-                            ("isDone", "()Z") => "let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;let _=heap.completed_future_value(id)?;f.push(Value::Int(1));".into(),
-                            ("isCancelled"|"isCompletedExceptionally", "()Z") => "let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;let _=heap.completed_future_value(id)?;f.push(Value::Int(0));".into(),
-                            ("complete", "(Ljava/lang/Object;)Z") => "if !matches!(f.pop()?,Value::Ref(_)){return Err(FrameError::Heap(\"complete requiere referencia\"));}let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;let _=heap.completed_future_value(id)?;f.push(Value::Int(0));".into(),
-                            ("cancel", "(Z)Z") => "let _=pop_int(f)?;let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;let _=heap.completed_future_value(id)?;f.push(Value::Int(0));".into(),
+                            ("getNow", "(Ljava/lang/Object;)Ljava/lang/Object;") => "let fallback=match f.pop()?{Value::Ref(v)=>v,_=>return Err(FrameError::Heap(\"getNow requiere referencia\"))};let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;f.push(Value::Ref(heap.future_get_now(id,fallback)?));".into(),
+                            ("isDone", "()Z") => "let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;f.push(Value::Int(if heap.future_is_done(id)?{1}else{0}));".into(),
+                            ("isCancelled"|"isCompletedExceptionally", "()Z") => "let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;heap.future_is_normal(id)?;f.push(Value::Int(0));".into(),
+                            ("complete", "(Ljava/lang/Object;)Z") => "let value=match f.pop()?{Value::Ref(v)=>v,_=>return Err(FrameError::Heap(\"complete requiere referencia\"))};let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;f.push(Value::Int(if heap.future_complete(id,value)?{1}else{0}));".into(),
+                            ("cancel", "(Z)Z") => "let _=pop_int(f)?;let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;match heap.future_is_done(id)?{true=>f.push(Value::Int(0)),false=>return Err(FrameError::Heap(\"cancel de futuro pendiente no soportado\"))};".into(),
                             _ => return Err(format!("CompletableFuture: operación no soportada: {callee}{descriptor}")),
                         }
                     } else if self.rayon && op==0xb6 && callee=="setName" && descriptor=="(Ljava/lang/String;)V" && ((name=="newThread" && self.is_factory(&owner)?) || self.factories.values().any(|(create,_,_,_,captures)|*create==id && *captures>0)) && self.is_worker_class(klass)? {
@@ -1365,12 +1380,44 @@ impl Builder<'_> {
                     {
                         terminal = true;
                         format!("let pool=pop_object(f,heap,{klass:?})?;f.pc={pc};return Ok(Step::PoolShutdown{{pool}});")
+                    } else if self.rayon
+                        && klass == "java/util/concurrent/ForkJoinPool"
+                        && op == 0xb6
+                        && callee == "isShutdown"
+                        && descriptor == "()Z"
+                    {
+                        terminal = true;
+                        format!("let pool=pop_object(f,heap,{klass:?})?;f.pc={pc};return Ok(Step::PoolIsShutdown{{pool}});")
+                    } else if self.rayon
+                        && klass == "java/util/concurrent/ForkJoinPool"
+                        && op == 0xb6
+                        && callee == "isTerminated"
+                        && descriptor == "()Z"
+                    {
+                        terminal = true;
+                        format!("let pool=pop_object(f,heap,{klass:?})?;f.pc={pc};return Ok(Step::PoolIsTerminated{{pool}});")
+                    } else if self.rayon
+                        && klass == "java/util/concurrent/ForkJoinPool"
+                        && op == 0xb6
+                        && callee == "getParallelism"
+                        && descriptor == "()I"
+                    {
+                        terminal = true;
+                        format!("let pool=pop_object(f,heap,{klass:?})?;f.pc={pc};return Ok(Step::PoolParallelism{{pool}});")
                     } else if self.rayon && op==0xb7 && klass=="java/util/concurrent/ForkJoinWorkerThread" && callee=="<init>" && descriptor=="(Ljava/util/concurrent/ForkJoinPool;)V" {
                         "let _pool=pop_object(f,heap,\"java/util/concurrent/ForkJoinPool\")?;let _this=pop_any_object(f)?;".into()
                     } else if self.rayon && op==0xb7 && klass=="java/util/concurrent/ForkJoinWorkerThread" && callee=="onStart" && descriptor=="()V" {
                         "let _this=pop_any_object(f)?;".into()
                     } else if self.rayon && op==0xb7 && klass=="java/util/concurrent/ForkJoinWorkerThread" && callee=="onTermination" && descriptor=="(Ljava/lang/Throwable;)V" {
                         "let _cause=f.pop()?;let _this=pop_any_object(f)?;".into()
+                    } else if self.rayon
+                        && klass == "java/util/concurrent/CompletableFuture"
+                        && op == 0xb7
+                        && callee == "<init>"
+                        && descriptor == "()V"
+                    {
+                        if std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()!=Some(std::ffi::OsStr::new("1")) {return Err("CompletableFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1".into());}
+                        "let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;heap.mark_pending_future(id)?;".into()
                     } else if self.rayon && op==0xb7 && klass=="java/lang/Record" && callee=="<init>" && descriptor=="()V" {
                         "let _this=pop_any_object(f)?;".into()
                     } else if op == 0xb7

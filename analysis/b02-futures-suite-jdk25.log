@@ -1,0 +1,35 @@
+# Suite focalizada del frente B (B-01/B-02) — no es la integral
+# fecha: 2026-11-05T16:52:04Z
+# commit: ed7ca91 + cambios B-02 sin commitear
+# rustc 1.99.1 (58cf8f9c3 2026-10-13) | cargo 1.99.1 (5f94df478 2026-08-27)
+# openjdk version "25.0.5" 2026-10-20 LTS
+# bundle: server-26.3.jar sha1 33680f5f... | inner sha256 a362163e...
+
+== check-completable-future-oracle            OK
+OK: 40 rondas Java 25: future null/identidad, complete, get/join excepcional, cancelación, allOf, callbacks, timeout e interrupción; SIN implementación ni comparación nativa
+== check-forkjoin-handler-oracle              OK
+OK: 40 rondas Java 25: handler recibe excepción de execute; submit y supplyAsync conservan fallo sin invocarlo; submit(Callable) envuelve la causa y no invoca el handler; invoke relanza el original o su causa; commonPool estable; contadores de workers dentro del paralelismo; shutdown/terminación/rechazo. Sin backend nativo ni pruebas de excepciones generales.
+== check-futures-contract                     OK
+OK: contrato B-01 coherente con el repositorio: cada diferencial cita un test que esta en la suite, cada guarda existe literalmente en mc-aot/src, cada prueba unitaria existe, los dos oraculos Java estan en la suite y sus lineas observadas coinciden con el codigo, y el documento y el JSON no divergen. NO verifica semantica ni equivalencia con Java: eso solo lo demuestran los diferenciales citados.
+== check-rayon-java-pool-queries              OK
+OK: 24 resultados Java 25/Rayon para isShutdown, isTerminated y getParallelism antes y después de submit, shutdown y awaitTermination, incluidos un pool nunca usado y el despacho por interfaz ExecutorService, con QuartPos oficial; guarda de getActiveThreadCount (rechazo de traducción, sin guarda propia) y sin binario tras el rechazo; backend concurrente aislado, sin ForkJoinPool completo
+== check-rayon-java-forkjoin                  OK
+OK: 78 decisiones y 279 tareas por execute con Runnable de bytecode Java que ejecutan QuartPos.toBlock oficial, incluidos execute por interfaz y joins anidados en un pool de un hilo, sobre Rayon, resultados contrastados con ForkJoinPool Java; join repetido y tras shutdown, y guardas de fallo de tarea, paralelismo, cierre y factory personalizada
+== check-rayon-java-worker-lifecycle          OK
+OK: 312 resultados Java: factory traducida, constructor de worker, onStart/onTermination, tareas QuartPos, AtomicInteger con referencias capturadas, literales/concatenación UTF-16 y factory lambda con String y AtomicInteger capturados en ambos órdenes, setName/getName, shutdown/awaitTermination por interfaz y cierre sin tareas; guardas de factory, override de worker, modo y paralelismo; lambda y constructor sintéticos cotejados instrucción por instrucción con los oficiales
+== check-rayon-forkjoin-profile               OK
+OK: 4.000 trabajos, rechazo, espera acotada, join anidado, fallo y conteos de ciclo de vida de 4 hilos contrastados con ForkJoinPool Java 25; el adaptador no es ForkJoinPool completo
+== check-rayon-completed-future               OK
+OK: 90 resultados Java 25/Rayon; completedFuture normal, get/join/getNow, identidad/null, estados, complete/cancel ya completado, QuartPos oficial y cuatro guardas; backend concurrente aislado, sin future general
+== check-numeric-completed-future             OK
+OK: 90 resultados Java 25/nativo; completedFuture normal monohilo, identidad/null, consultas, complete/cancel ya completado, instanceof/getClass y NPE capturada, QuartPos oficial y cuatro guardas; sin future general ni integración concurrente
+== check-rayon-shared-completed-future        OK
+OK: 20 rondas Java/Rayon, cuatro Runnable capturan el mismo completedFuture normal; join/getNow, monitor estático y guarda de captura final; bytecode sintético, backend aislado
+== check-real-chunk-passthrough-future        OK
+OK: 80 resultados Java/nativo para ChunkStatusTasks.passThrough oficial, completedFuture/get/join/getNow e identidad/null; classfile hash verificado; ChunkAccess, logger y otros colaboradores son stubs, sin integración de mundo
+== check-real-tracing-shutdown                OK
+OK: 48 resultados con TracingExecutor.execute/service/shutdownAndAwait, TracyClient y QuartPos oficiales frente a Java; guardas de interrupción, Tracy desactivado, timeout/shutdownNow y SHA-256
+== check-real-util-worker-guards              OK
+OK: Util$2 oficial y constructor registrados por patrón con llamador artificial; rechazos Tracy sin opt-in, LOGGER no implementado y clase modificada; no se ejecutó worker ni se produjo binario
+== check-real-util-worker-onstart             OK
+OK: 12 resultados con constructor y onStart de Util$2 oficiales, invocados directamente con Tracy desactivado y nombres Unicode/null; no prueba ciclo de vida completo ni logger

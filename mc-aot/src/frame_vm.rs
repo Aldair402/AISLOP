@@ -78,6 +78,15 @@ pub enum Step {
     PoolShutdown {
         pool: ObjectId,
     },
+    PoolIsShutdown {
+        pool: ObjectId,
+    },
+    PoolIsTerminated {
+        pool: ObjectId,
+    },
+    PoolParallelism {
+        pool: ObjectId,
+    },
 }
 pub type NativeStep = fn(&SharedHeap, &mut Frame) -> Result<Step, FrameError>;
 #[derive(Clone)]
@@ -303,6 +312,27 @@ impl Program {
                         .as_ref()
                         .ok_or(FrameError::Heap("adaptador executor no disponible"))?
                         .shutdown(pool)?;
+                }
+                Step::PoolIsShutdown { pool } => {
+                    let closed = executors
+                        .as_ref()
+                        .ok_or(FrameError::Heap("adaptador executor no disponible"))?
+                        .is_shutdown(pool)?;
+                    frame.push(Value::Int(i32::from(closed)));
+                }
+                Step::PoolIsTerminated { pool } => {
+                    let terminated = executors
+                        .as_ref()
+                        .ok_or(FrameError::Heap("adaptador executor no disponible"))?
+                        .is_terminated(pool)?;
+                    frame.push(Value::Int(i32::from(terminated)));
+                }
+                Step::PoolParallelism { pool } => {
+                    let parallelism = executors
+                        .as_ref()
+                        .ok_or(FrameError::Heap("adaptador executor no disponible"))?
+                        .parallelism(pool)?;
+                    frame.push(Value::Int(parallelism));
                 }
                 Step::PoolSubmit { pool, method, args } => {
                     let context = executors
