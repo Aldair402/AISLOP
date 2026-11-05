@@ -347,6 +347,7 @@ sha256 `a362163e…`), además de Rust 1.99.1. Resultado de la última pasada:
 
 | Comprobación | Resultado |
 |---|---|
+| Integral completa (`bash mc-aot/run-regressions.sh`) | **exit 0, 310 etapas** — `analysis/full-regressions-b-frente-contrato-futures-retry3.log` |
 | `cargo test` | 66 del binario + 32 `rayon_await` + 32 `rayon_pool_queries` + 33 `rayon_stress` + 34 `rayon_b_api`, 0 fallos |
 | 15 pruebas focalizadas del frente B | 15 OK; log `analysis/b03-b08-futures-suite-jdk25.log` |
 | `check-rayon-java-pool-queries.py` | 24 resultados Java 25/Rayon + guarda de traducción |
