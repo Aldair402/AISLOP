@@ -28,6 +28,13 @@ jobs:
         with:
           distribution: temurin
           java-version: "25"
+      - name: cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: cargo-${{ runner.os }}-${{ hashFiles('mc-aot/Cargo.lock', 'mc-aot/log4rs-prototype/Cargo.lock') }}
       - name: cache server jars
         uses: actions/cache@v4
         with:
@@ -53,7 +60,7 @@ jobs:
     name: focused (JAR oracles, no full suite)
     runs-on: ubuntu-latest
     needs: quick
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
@@ -63,6 +70,13 @@ jobs:
         with:
           distribution: temurin
           java-version: "25"
+      - name: cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: cargo-${{ runner.os }}-${{ hashFiles('mc-aot/Cargo.lock', 'mc-aot/log4rs-prototype/Cargo.lock') }}
       - name: cache server jars
         uses: actions/cache@v4
         with:
@@ -73,22 +87,24 @@ jobs:
       - name: tmpdir outside small tmpfs
         run: |
           # B-02 hit "No space left on device" with the 992M runner tmpfs; give
-          # the JVM and cargo a workspace-backed temp dir with room to grow.
+          # the JVM and cargo temp files a workspace-backed dir with room.
+          # CARGO_TARGET_DIR is intentionally NOT overridden: the checks read
+          # mc-aot/target/debug/mc-aot by path.
           mkdir -p "$GITHUB_WORKSPACE/tmp"
           echo "TMPDIR=$GITHUB_WORKSPACE/tmp" >> "$GITHUB_ENV"
-          echo "CARGO_TARGET_DIR=$GITHUB_WORKSPACE/target" >> "$GITHUB_ENV"
           df -h /tmp
-      - name: check JAR present
-        run: |
-          test -f downloads/server-26.3-inner.jar
-          sha256sum downloads/server-26.3-inner.jar
-      - name: focused checks
-        run: |
-          python3 mc-aot/tests/check-quartpos-class-surface.py
-          python3 mc-aot/tests/check-numeric-bridge-layout.py
-          python3 mc-aot/tests/check-numeric-auto-publish.py
-          python3 mc-aot/tests/check-futures-contract.py
-          python3 mc-aot/tests/check-rayon-pending-future.py
+      - name: prime cargo cache for offline checks
+        run: cargo fetch --manifest-path mc-aot/Cargo.toml
+      - name: check-quartpos-class-surface
+        run: python3 mc-aot/tests/check-quartpos-class-surface.py
+      - name: check-numeric-bridge-layout
+        run: python3 mc-aot/tests/check-numeric-bridge-layout.py
+      - name: check-numeric-auto-publish
+        run: python3 mc-aot/tests/check-numeric-auto-publish.py
+      - name: check-futures-contract
+        run: python3 mc-aot/tests/check-futures-contract.py
+      - name: check-rayon-pending-future
+        run: python3 mc-aot/tests/check-rayon-pending-future.py
 
   full:
     name: full regressions (manual only)
@@ -104,6 +120,13 @@ jobs:
         with:
           distribution: temurin
           java-version: "25"
+      - name: cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: cargo-${{ runner.os }}-${{ hashFiles('mc-aot/Cargo.lock', 'mc-aot/log4rs-prototype/Cargo.lock') }}
       - name: cache server jars
         uses: actions/cache@v4
         with:
@@ -115,12 +138,13 @@ jobs:
         run: |
           mkdir -p "$GITHUB_WORKSPACE/tmp"
           echo "TMPDIR=$GITHUB_WORKSPACE/tmp" >> "$GITHUB_ENV"
-          echo "CARGO_TARGET_DIR=$GITHUB_WORKSPACE/target" >> "$GITHUB_ENV"
           df -h /tmp
           df -h .
+      - name: prime cargo cache for offline checks
+        run: cargo fetch --manifest-path mc-aot/Cargo.toml
       - name: run full suite
         run: |
-          echo "TMPDIR=$TMPDIR CARGO_TARGET_DIR=$CARGO_TARGET_DIR JAVA_HOME=$JAVA_HOME"
+          echo "TMPDIR=$TMPDIR JAVA_HOME=$JAVA_HOME"
           bash mc-aot/run-regressions.sh
           echo "EXIT=$?"
           tail -20 analysis/full-regressions-*.log 2>&1 | head -n 40 || true

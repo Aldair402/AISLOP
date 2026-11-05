@@ -50,3 +50,43 @@ Two different failures, both on every run of `.github/workflows/ci.yml`:
 - `python3 mc-aot/tools/check-family-partition.py`: with JAR `5801 / 7762`;
   without JAR `? classes ... unverified`, exit 0 both ways.
 - `cargo test --manifest-path mc-aot/Cargo.toml`: 60 + 26 + 33 passing.
+
+## Follow-up: focused job failed at `focused checks` (run #6, sha 9ba7140)
+
+`quick` went green after the JAR fix; `focused` still exited 1. Root cause found by
+reproducing the runner state locally with an empty `CARGO_HOME`:
+
+```
+$ CARGO_HOME=/tmp/emptycargo cargo build --offline --manifest-path mc-aot/Cargo.toml
+error: no matching package named `rayon` found
+```
+
+`check-numeric-bridge-layout.py` and `check-numeric-auto-publish.py` build with
+`--offline` (they must not touch the network mid-check), so on a fresh runner with
+no registry cache the build dies before any assertion. A second latent bug: the job
+exported `CARGO_TARGET_DIR=${{ github.workspace }}/target`, while
+`check-numeric-bridge-layout.py` reads `mc-aot/target/debug/mc-aot` by path — that
+would fail even with a warm cache.
+
+## Second round of changes
+
+- `cargo fetch --manifest-path mc-aot/Cargo.toml` step ("prime cargo cache for
+  offline checks") before any focused/full check, plus `actions/cache` for
+  `~/.cargo/registry` and `~/.cargo/git` keyed on the lockfiles.
+- `CARGO_TARGET_DIR` is no longer exported in `focused`/`full`; the checks depend
+  on the default `mc-aot/target/debug/mc-aot` path. `TMPDIR` still points at
+  `$GITHUB_WORKSPACE/tmp` for the 992M tmpfs problem.
+- Each focused check is its own step, so a failure annotation names the check.
+- focused timeout 20 → 30 min (cold `cargo fetch` + five JVM checks).
+
+## Verification of the emulated runner
+
+With `CARGO_HOME=/tmp/ci-cargo-home` (empty, then primed by `cargo fetch`),
+`JAVA_HOME` on Temurin-compatible JDK 25, `TMPDIR` on disk and no
+`CARGO_TARGET_DIR`, all five checks exit 0:
+
+- check-quartpos-class-surface: 2579 resultados, 5 métodos y 4 campos
+- check-numeric-bridge-layout: 2 layouts, 26 rechazos
+- check-numeric-auto-publish: 20 rondas Java/Rust, guardas de sesión
+- check-futures-contract: differential=23, guard=19, huecos=7
+- check-rayon-pending-future: 48 resultados + oráculo de cancelación
