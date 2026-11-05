@@ -47,8 +47,8 @@ with tempfile.TemporaryDirectory(prefix='mc-completed-future-') as t:
  disabled=env.copy();disabled.pop('MC_AOT_RAYON_COMPLETED_FUTURE')
  bad=run(cmd[:9]+[str(d/'disabled'),'run','(I)I'],capture_output=True,env=disabled)
  assert bad.returncode!=0 and 'requiere MC_AOT_RAYON_COMPLETED_FUTURE' in bad.stderr and not (d/'disabled').exists(),bad.stderr
- cases=[('pending','new CompletableFuture<Object>().isDone()','CompletableFuture incompleto no soportado'),
-        ('obtrude','CompletableFuture.completedFuture((Object)null).obtrudeValue(null)','operación no soportada: obtrudeValue'),
+ # El futuro pendiente ya esta soportado y se verifica en check-rayon-pending-future.py.
+ cases=[('obtrude','CompletableFuture.completedFuture((Object)null).obtrudeValue(null)','operación no soportada: obtrudeValue'),
         ('exception','CompletableFuture.completedFuture((Object)null).completeExceptionally(null)','operación no soportada: completeExceptionally')]
  for label,expr,error in cases:
   c=d/label;c.mkdir();(c/'FutureFixture.java').write_text('package net.minecraft.test;import java.util.concurrent.*;public class FutureFixture {public static int run(int n){'+expr+';return n;}}')

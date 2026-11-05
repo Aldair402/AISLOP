@@ -76,7 +76,7 @@ Los oráculos corren 40 rondas porque la semántica de hilos y de handler no es 
 | `rechazo` | 1 | 1 | — | — | — | — |
 | `worker` | 4 | 2 | 2 | — | — | — |
 | `completedFuture` | 6 | 5 | 1 | — | — | — |
-| `futuro pendiente` | 2 | — | 2 | — | — | — |
+| `futuro pendiente` | 10 | 4 | 3 | 3 | — | — |
 | `fallo de futuro` | 1 | — | 1 | — | — | — |
 | `perfil` | 3 | — | 3 | — | — | — |
 | `composición` | 5 | — | — | — | — | 5 |
@@ -84,7 +84,8 @@ Los oráculos corren 40 rondas porque la semántica de hilos y de handler no es 
 | `cancelación` | 1 | — | — | — | 1 | — |
 | `timeout` | 1 | — | — | — | 1 | — |
 | `interrupción` | 2 | — | — | — | 2 | — |
-| **Total** | **63** | **19** | **18** | **8** | **10** | **8** |
+| `estrés` | 4 | — | — | 4 | — | — |
+| **Total** | **75** | **23** | **19** | **15** | **10** | **8** |
 
 ## 6. Detalle de los casos
 
@@ -172,7 +173,7 @@ programa generado.
 | `future.completed-cells` | `complete`/`cancel` sobre completado devuelven `false` y no cambian el valor | diferencial | `check-rayon-completed-future.py`, `check-numeric-completed-future.py` | B-03 |
 | `future.completed-shared-workers` | Varios workers leen el mismo futuro completado a la vez que el llamador | diferencial | `check-rayon-shared-completed-future.py` | B-03 |
 | `future.completed-real-passthrough` | `ChunkStatusTasks.passThrough` devuelve `completedFuture(chunk)`, admite `null` y conserva identidad | diferencial | `check-real-chunk-passthrough-future.py` (hash de classfile verificado) | B-03 |
-| `future.pending-state` | Pendiente: `isDone()==false`, `getNow(x)==x`, completo único | guarda: `CompletableFuture incompleto no soportado` | oráculo `cf` | B-03 |
+| `future.pending-state` | Pendiente: `isDone()==false`, `getNow(x)==x`, completo único | **diferencial** (B-03) | `check-rayon-pending-future.py` | B-03 |
 | `future.obtrude` | `obtrudeValue`/`obtrudeException` fuerzan el resultado | guarda: `CompletableFuture: operación no soportada` | `check-numeric-completed-future.py` | B-03 |
 | `future.complete-exceptionally` | `completeExceptionally` → `join`/`get` con la misma causa | guarda: `CompletableFuture: operación no soportada` | oráculo `cf` | B-03 |
 | `future.optin-rayon` | La semántica de futuro no depende de variables de entorno | guarda: `completedFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1` | `check-rayon-completed-future.py` | B-03 |
@@ -181,6 +182,41 @@ programa generado.
 | `future.only-completed-heap` | Un `CompletableFuture` Java puede estar en cualquier estado | guarda: `solo completado normal del perfil` | `check-numeric-completed-future.py` | B-03 |
 
 Aquí se ve la frontera exacta del perfil actual: **futuro ya completado normalmente, sin transiciones, y solo si se activa un opt-in distinto por backend**. Todo lo demás (pendiente, fallo, cancelación) está rechazado hoy.
+
+### 6.4bis Futuro pendiente con completado normal (B-03)
+
+Primer subperfil de futuros pendientes: **estado pendiente → completado normal**, sin estado fallido,
+sin cancelación efectiva y sin esperas. Implementado en el backend concurrente; el perfil de
+`completedFuture` se conserva tal cual, y el backend numérico sigue rechazando `new` (`new no soportado`).
+
+| id | Semántica Java | Estado | Evidencia | Tarea |
+|---|---|---|---|---|
+| `future.pending-state` | Recién creado: pendiente, `isDone()==false`, `getNow(x)==x`, completo único | diferencial | `check-rayon-pending-future.py` | B-03 |
+| `future.pending-queries` | `isDone`, `isCancelled`, `isCompletedExceptionally` y `getNow` sin completar | diferencial | `check-rayon-pending-future.py` | B-03 |
+| `future.pending-complete-once` | `complete(v)` true y luego false; valor fijado, incluido `null` | diferencial | `check-rayon-pending-future.py` | B-03 |
+| `future.pending-publication` | Se publica pendiente en un campo final de otra clase y se completa después | diferencial | `check-rayon-pending-future.py` | B-03 |
+| `future.pending-join-blocked` | `join`/`get` de un pendiente esperan en Java | guarda de ejecución: `join de futuro pendiente no soportado` | `check-rayon-pending-future.py` | B-03 |
+| `future.pending-cancel` | `cancel(false)` de un pendiente es efectivo; `get`/`join` lanzan `CancellationException` | guarda de ejecución: `cancel de futuro pendiente no soportado` | `check-rayon-pending-future.py` | B-03 |
+| `future.pending-unit-heap` | Estado pendiente, finalización única y consultas coherentes en el heap | unitaria `pending_future_completes_once_and_reports_state` | `mc-aot/src/concurrent_heap.rs` | B-03 |
+| `future.pending-unit-foreign` | Un objeto que no es futuro o un valor de otro heap no puede completarlo | unitaria `pending_future_rejects_foreign_objects_and_values` | `mc-aot/src/concurrent_heap.rs` | B-03 |
+| `future.pending-completion-race` | Varios `complete` concurrentes: exactamente uno gana | unitaria `pending_future_completion_race_has_single_winner` | `mc-aot/tests/rayon_stress.rs` | B-08 |
+
+Diferencia declarada: publicar un futuro **pendiente** en un campo final es nuevo; antes solo se admitía
+completado. Es lo que hace el código real de Minecraft, pero el campo sigue teniendo que ser `final`
+(guarda `captura CompletableFuture debe ser final`).
+
+### 6.7 Estrés e invariantes (B-08)
+
+Se comparan invariantes, nunca órdenes que Java no garantiza. Cada prueba corre bajo un perro guardián:
+si el cuerpo no termina en el plazo, el fallo es «posible bloqueo» y no un test colgado.
+
+| id | Invariante | Repeticiones | Evidencia | Tarea |
+|---|---|---|---|---|
+| `stress.monitor-alias-rmw` | Monitor reentrante, alias y RMW atómico dan el total exacto | 20 rondas × 4 trabajadores × 500 incrementos | `monitor_alias_and_rmw_repeat` | B-08 |
+| `stress.publication-reads` | Lo publicado antes de liberar a los trabajadores es visible y no se altera | 20 × 4 × 250 lecturas | `publication_then_concurrent_reads_repeat` | B-08 |
+| `stress.completion-races` | `join` concurrente y repetido: todos terminan y el trabajo se hace una vez | 20 rondas × 8 tareas × 3 hilos | `completion_races_repeat` | B-08 |
+| `stress.close-race` | Cada envío se acepta (y termina) o se rechaza; no se pierde ninguna tarea aceptada | 30 rondas con cierre concurrente | `close_race_keeps_every_task_or_rejects_it` | B-08 |
+| `future.pending-completion-race` | Un solo `complete` gana la carrera | 20 × 4 × 50 intentos | `pending_future_completion_race_has_single_winner` | B-08 |
 
 ### 6.5 Composición (lo que pide Minecraft y aún no existe)
 
@@ -221,7 +257,6 @@ awaitTermination desde worker propio no soportado           (autobloqueo)
 shutdownNow no soportado                                    (cancelación/interrupción)
 worker con override run/start no soportado                  (worker)
 campo externo no soportado                                  (Util.LOGGER y compañía)
-CompletableFuture incompleto no soportado                   (futuro pendiente)
 CompletableFuture: operación no soportada                   (obtrudeValue, completeExceptionally…)
 solo completado normal del perfil                           (heap numérico)
 captura CompletableFuture debe ser final                    (publicación)
@@ -237,6 +272,7 @@ MC_AOT_RAYON_ASSUME_NO_INTERRUPT=1                          (interrupción no mo
 | `gap.no-explicit-guard-for-task-get` | `ForkJoinTask.get()`/`invoke()` no tienen guarda propia: caen en el rechazo genérico de llamada externa, indistinguible de un error de traducción | B-04: guarda explícita + caso en el oráculo antes de modelar |
 | `gap.oracle-missing-cases` | Los oráculos no cubren `submit(Callable)`, `execute(ForkJoinTask)`, `invoke()`, `commonPool()`, `ManagedBlocker`, interrupción de workers, `toString` del pool, `thenCompose`, `thenAccept`, `handle`, `exceptionally`, `anyOf`, `orTimeout`, `completeAsync`, `cancel(true)` | B-02/B-04/B-05 amplían por subperfil **antes** de implementar |
 | `gap.two-optins` | Dos variables distintas (`MC_AOT_RAYON_COMPLETED_FUTURE`, `MC_AOT_NUMERIC_COMPLETED_FUTURE`) para el mismo concepto, con mensajes distintos | B-07: una sola interfaz para A |
+| `gap.pending-future-waits` | No hay espera sobre un futuro pendiente (`join`/`get`) ni cancelación: reciben guarda de ejecución. Tampoco hay callbacks ni composición | B-03/B-04 necesitan el modelo de excepciones y una espera entre frames acordada con A |
 | `gap.no-guard-for-lifecycle-queries` | `getActiveThreadCount`, `getPoolSize`, `getRunningThreadCount` y `getQueuedSubmissionCount` no tienen guarda ni mensaje propio: caen en el rechazo de carga de clase JDK | B-02 decide si se modelan o se rechazan con mensaje explícito |
 | `gap.no-java-differential-for-unit-cases` | Cuatro propiedades del lifecycle solo tienen prueba unitaria Rust | B-02/B-08: diferencial Java observable o declararlas propiedad del adaptador |
 
@@ -245,7 +281,7 @@ MC_AOT_RAYON_ASSUME_NO_INTERRUPT=1                          (interrupción no mo
 Estas son las consecuencias operativas del contrato; no sustituyen los criterios de `TODO.md`.
 
 - **B-02 · Lifecycle.** El perfil ya cubierto es: constructor `(I)` y `(I, factory, null, boolean)` restringido, `execute`/`execute` por interfaz, `submit(Runnable)`, `join`, `shutdown` idempotente, `awaitTermination`, rechazo tras cierre. Falta: factory y handler reales, creación gradual de workers, `shutdownNow`, interrupción, `execute(ForkJoinTask)`, `submit(Callable)`. Cada uno entra como subperfil con guarda hasta que tenga diferencial.
-- **B-03 · Futuros pendientes.** Punto de partida exacto: estado pendiente y transiciones únicas, con `future.pending-state` como caso hoy rechazado. No hace falta rediseñar el perfil completado: cinco de los casos `future.completed-identity-null`, `future.completed-queries`, `future.completed-cells`, `future.completed-shared-workers` y `future.completed-real-passthrough` ya son diferenciales.
+- **B-03 · Futuros pendientes.** **Primer subperfil hecho:** pendiente + completado normal, con publicación en campo final y finalización única (48 resultados contra Java 25). Falta: fallo, cancelación efectiva y espera. No hace falta rediseñar el perfil completado: cinco de los casos `future.completed-identity-null`, `future.completed-queries`, `future.completed-cells`, `future.completed-shared-workers` y `future.completed-real-passthrough` ya son diferenciales.
 - **B-04 · `get`/`join` y fallos.** El oráculo `fjp-handler` y `err.*` fijan tres mecanismos distintos (`CompletionException`, `ExecutionException`, relanzado directo). Antes de implementar, hay que decidir con A cómo se representa un `Throwable`; hoy un fallo termina el proceso y eso debe seguir siendo explícito, no convertirse en excepción inventada.
 - **B-05 · Composición.** Orden de prioridad según rutas comprobadas: `supplyAsync` → `thenApply` → `allOf` → `thenApplyAsync` con executor → `thenCompose`. El primero exige el handler/executor de B-06; el último exige ampliar el oráculo.
 - **B-06 · Factory y handler de `Util`.** El bloqueo está caracterizado: `handler personalizado no soportado` y `campo externo no soportado` (`Util.LOGGER`). El contrato de handler (`err.handler-identity`) ya está fijado en Java; lo que falta es logger y `CrashReport`, no semántica.
@@ -258,7 +294,8 @@ Estas son las consecuencias operativas del contrato; no sustituyen los criterios
 - [x] Cada afirmación del contrato verificable por máquina (`check-futures-contract.py`, exit 0).
 - [x] Guardas citadas literalmente desde `mc-aot/src`.
 - [x] Huecos declarados, con tarea responsable y acción.
-- [x] **Catorce pruebas focalizadas ejecutadas** con JDK 25.0.5 y el bundle oficial verificado; log único `analysis/b02-futures-suite-jdk25.log` (14/14 OK) y `cargo test` 64+30+30.
+- [x] **Subperfiles B-03 y B-08 verificados:** futuro pendiente con completado normal (48 resultados Java 25) y cinco pruebas de estrés con invariantes y perro guardián.
+- [x] **Quince pruebas focalizadas ejecutadas** con JDK 25.0.5 y el bundle oficial verificado; log único `analysis/b02-futures-suite-jdk25.log` (14/14 OK) y `cargo test` 64+30+30.
 - [ ] **C integra** `check-forkjoin-handler-oracle`, `check-futures-contract` y `check-rayon-java-pool-queries` en `run-regressions.sh` (líneas preparadas en este PR, sin ejecutar la integral aquí).
 - [ ] Integral completa (`run-regressions.sh`, ~306 etapas) verde, con su log archivado. Aquí solo corrió el subconjunto del frente B.
 - [ ] Revisión cruzada de A (frontera de excepciones y ownership) y de B-02/B-04 (exactitud del perfil).
@@ -291,9 +328,10 @@ sha256 `a362163e…`), además de Rust 1.99.1. Resultado de la última pasada:
 
 | Comprobación | Resultado |
 |---|---|
-| `cargo test` | 64 pruebas del binario + 30 `rayon_await` + 30 `rayon_pool_queries`, 0 fallos |
-| 14 pruebas focalizadas del frente B | 14 OK; log `analysis/b02-futures-suite-jdk25.log` |
+| `cargo test` | 66 del binario + 32 `rayon_await` + 32 `rayon_pool_queries` + 33 `rayon_stress`, 0 fallos |
+| 15 pruebas focalizadas del frente B | 15 OK; log `analysis/b03-b08-futures-suite-jdk25.log` |
 | `check-rayon-java-pool-queries.py` | 24 resultados Java 25/Rayon + guarda de traducción |
+| `check-rayon-pending-future.py` (nuevo) | 48 resultados Java 25/Rayon + 2 guardas de traducción + 2 de ejecución |
 | Integral completa (`run-regressions.sh`) | **no ejecutada aquí**: responsabilidad de C |
 
 Los JAR y el JDK se guardaron fuera del árbol versionado (`/downloads` está en `.gitignore` y en

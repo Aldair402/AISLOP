@@ -45,6 +45,7 @@ run_logged check-real-chunk-passthrough-future python3 mc-aot/tests/check-real-c
 run_logged check-completable-future-oracle python3 mc-aot/tests/check-completable-future-oracle.py
 run_logged check-forkjoin-handler-oracle python3 mc-aot/tests/check-forkjoin-handler-oracle.py
 run_logged check-rayon-java-pool-queries python3 mc-aot/tests/check-rayon-java-pool-queries.py
+run_logged check-rayon-pending-future python3 mc-aot/tests/check-rayon-pending-future.py
 run_logged check-futures-contract python3 mc-aot/tests/check-futures-contract.py
 run_logged check-executor-inventory python3 mc-aot/tests/check-executor-inventory.py
 run_logged check-shared-worker-bytecode python3 mc-aot/tests/check-shared-worker-bytecode.py

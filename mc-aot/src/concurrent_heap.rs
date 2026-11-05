@@ -13,6 +13,14 @@ pub struct ObjectId {
 }
 static NEXT_HEAP: AtomicU64 = AtomicU64::new(1);
 
+/// Estado de un `CompletableFuture` del perfil: pendiente o completado
+/// normalmente. Fallido o cancelado no se modela.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum FutureState {
+    Pending,
+    Completed(Option<ObjectId>),
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Value {
     Int(i32),
@@ -44,8 +52,8 @@ struct Object {
     monitor: Arc<Monitor>,
     string_units: Option<Vec<u16>>,
     worker_name: Option<ObjectId>,
-    // Solo completedFuture normal e inmutable; None no es un future válido.
-    completed_future: Option<Option<ObjectId>>,
+    // None no es un future válido: o pendiente, o completado normalmente.
+    future: Option<FutureState>,
 }
 struct Store {
     id: u64,
@@ -107,7 +115,7 @@ impl SharedHeap {
         }
         if store.objects.len()>=10_000 || store.fields.checked_add(count).map_or(true,|v|v>1_000_000) {return Err("límite de objetos o campos");}
         let id=ObjectId{heap:store.id,index:store.objects.len()};store.fields+=count;
-        store.objects.push(Object{external:Some(object),external_domain:Some(domain),class:Some(class),fields:vec![],monitor:Arc::new(Monitor::default()),string_units:None,worker_name:None,completed_future:None});
+        store.objects.push(Object{external:Some(object),external_domain:Some(domain),class:Some(class),fields:vec![],monitor:Arc::new(Monitor::default()),string_units:None,worker_name:None,future:None});
         store.external_ids.insert(key,id);Ok(id)
     }
     pub fn allocate(&self, fields: Vec<Value>) -> Result<ObjectId, &'static str> {
@@ -152,7 +160,7 @@ impl SharedHeap {
             monitor: Arc::new(Monitor::default()),
             string_units: None,
             worker_name: None,
-            completed_future: None,
+            future: None,
         });
         Ok(id)
     }
@@ -183,7 +191,7 @@ impl SharedHeap {
             monitor: Arc::new(Monitor::default()),
             string_units: Some(units.to_vec()),
             worker_name: None,
-            completed_future: None,
+            future: None,
         });
         store.interned_strings.insert(units.to_vec(), id);
         Ok(id)
@@ -249,7 +257,7 @@ impl SharedHeap {
             monitor: Arc::new(Monitor::default()),
             string_units: Some(result),
             worker_name: None,
-            completed_future: None,
+            future: None,
         });
         Ok(id)
     }
@@ -332,7 +340,7 @@ impl SharedHeap {
             monitor: Arc::new(Monitor::default()),
             string_units: None,
             worker_name: None,
-            completed_future: None,
+            future: None,
         });
         store.default_forkjoin_factory = Some(id);
         Ok(id)
@@ -387,7 +395,7 @@ impl SharedHeap {
             monitor: Arc::new(Monitor::default()),
             string_units: None,
             worker_name: None,
-            completed_future: None,
+            future: None,
         });
         store.time_units[index] = Some(id);
         Ok(id)
@@ -407,14 +415,96 @@ impl SharedHeap {
             external: None, external_domain: None,
             class: Some("java/util/concurrent/CompletableFuture"), fields: vec![],
             monitor: Arc::new(Monitor::default()), string_units: None, worker_name: None,
-            completed_future: Some(value),
+            future: Some(FutureState::Completed(value)),
         });
         Ok(id)
     }
     pub fn completed_future_value(&self, id: ObjectId) -> Result<Option<ObjectId>, &'static str> {
         let store = self.store.lock().map_err(|_| "heap dañado")?;
         let index = store.check(id)?;
-        store.objects[index].completed_future.ok_or("CompletableFuture no completado dentro del perfil")
+        match store.objects[index].future {
+            Some(FutureState::Completed(value)) => Ok(value),
+            Some(FutureState::Pending) => {
+                Err("join de futuro pendiente no soportado")
+            }
+            None => Err("CompletableFuture no completado dentro del perfil"),
+        }
+    }
+    /// `new CompletableFuture()`: objeto ya asignado por `new`, sin estado aún.
+    pub fn mark_pending_future(&self, id: ObjectId) -> Result<(), &'static str> {
+        let mut store = self.store.lock().map_err(|_| "heap dañado")?;
+        let index = store.check(id)?;
+        let object = &mut store.objects[index];
+        if object.external.is_some() {
+            return Err("CompletableFuture externo no soportado");
+        }
+        if object.class != Some("java/util/concurrent/CompletableFuture") {
+            return Err("el objeto no es un CompletableFuture");
+        }
+        if object.future.is_some() {
+            return Err("CompletableFuture ya inicializado");
+        }
+        object.future = Some(FutureState::Pending);
+        Ok(())
+    }
+    /// `complete(v)`: true la primera vez, false si ya estaba completado.
+    /// Un futuro pendiente pasa a completado normal de forma atómica.
+    pub fn future_complete(&self, id: ObjectId, value: Option<ObjectId>) -> Result<bool, &'static str> {
+        let mut store = self.store.lock().map_err(|_| "heap dañado")?;
+        store.check_value(Value::Ref(value))?;
+        let index = store.check(id)?;
+        match store.objects[index].future {
+            Some(FutureState::Pending) => {
+                store.objects[index].future = Some(FutureState::Completed(value));
+                Ok(true)
+            }
+            Some(FutureState::Completed(_)) => Ok(false),
+            None => Err("CompletableFuture no inicializado dentro del perfil"),
+        }
+    }
+    pub fn future_is_done(&self, id: ObjectId) -> Result<bool, &'static str> {
+        let store = self.store.lock().map_err(|_| "heap dañado")?;
+        let index = store.check(id)?;
+        match store.objects[index].future {
+            Some(FutureState::Completed(_)) => Ok(true),
+            Some(FutureState::Pending) => Ok(false),
+            None => Err("CompletableFuture no inicializado dentro del perfil"),
+        }
+    }
+    /// `getNow(x)`: el valor si está completado, `x` si sigue pendiente.
+    pub fn future_get_now(
+        &self,
+        id: ObjectId,
+        default: Option<ObjectId>,
+    ) -> Result<Option<ObjectId>, &'static str> {
+        let store = self.store.lock().map_err(|_| "heap dañado")?;
+        let index = store.check(id)?;
+        match store.objects[index].future {
+            Some(FutureState::Completed(value)) => Ok(value),
+            Some(FutureState::Pending) => Ok(default),
+            None => Err("CompletableFuture no inicializado dentro del perfil"),
+        }
+    }
+    /// Valida que la referencia es un futuro del perfil, pendiente o completado.
+    /// Se usa al publicar en un campo final antes de completarlo.
+    pub fn future_check(&self, id: ObjectId) -> Result<(), &'static str> {
+        let store = self.store.lock().map_err(|_| "heap dañado")?;
+        let index = store.check(id)?;
+        if store.objects[index].future.is_some() {
+            Ok(())
+        } else {
+            Err("CompletableFuture no inicializado dentro del perfil")
+        }
+    }
+    /// `isCompletedExceptionally()`/`isCancelled()`: en este perfil nunca hay
+    /// estado excepcional; un futuro no inicializado se rechaza.
+    pub fn future_is_normal(&self, id: ObjectId) -> Result<(), &'static str> {
+        let store = self.store.lock().map_err(|_| "heap dañado")?;
+        let index = store.check(id)?;
+        match store.objects[index].future {
+            Some(_) => Ok(()),
+            None => Err("CompletableFuture no inicializado dentro del perfil"),
+        }
     }
     pub fn class_of(&self, id: ObjectId) -> Result<Option<&'static str>, &'static str> {
         let store = self.store.lock().map_err(|_| "heap dañado")?;
@@ -570,6 +660,50 @@ impl Drop for LocalMonitorGuard {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn pending_future_completes_once_and_reports_state() {
+        let heap = SharedHeap::default();
+        let value = heap.intern_string(&[b'v' as u16]).unwrap();
+        let id = heap
+            .allocate_typed("java/util/concurrent/CompletableFuture", vec![])
+            .unwrap();
+        // Sin <init> no hay estado: se rechaza en vez de suponer pendiente.
+        assert!(heap.future_is_done(id).is_err());
+        assert!(heap.completed_future_value(id).is_err());
+        heap.mark_pending_future(id).unwrap();
+        assert!(heap.mark_pending_future(id).is_err(), "doble inicialización");
+        assert_eq!(heap.future_is_done(id), Ok(false));
+        assert_eq!(heap.future_get_now(id, None), Ok(None));
+        assert_eq!(
+            heap.completed_future_value(id),
+            Err("join de futuro pendiente no soportado")
+        );
+        assert_eq!(heap.future_complete(id, Some(value)), Ok(true));
+        assert_eq!(heap.future_complete(id, None), Ok(false), "finalización única");
+        assert_eq!(heap.future_is_done(id), Ok(true));
+        assert_eq!(heap.completed_future_value(id), Ok(Some(value)));
+        assert_eq!(heap.future_get_now(id, None), Ok(Some(value)));
+        assert!(heap.future_check(id).is_ok());
+        // Un completado de verdad no admite otra escritura.
+        assert_eq!(heap.future_complete(id, Some(value)), Ok(false));
+    }
+    #[test]
+    fn pending_future_rejects_foreign_objects_and_values() {
+        let heap = SharedHeap::default();
+        let other = SharedHeap::default();
+        let plain = heap.allocate(vec![Value::Int(1)]).unwrap();
+        assert!(heap.mark_pending_future(plain).is_err(), "objeto que no es futuro");
+        assert!(heap.future_complete(plain, None).is_err());
+        let id = heap
+            .allocate_typed("java/util/concurrent/CompletableFuture", vec![])
+            .unwrap();
+        heap.mark_pending_future(id).unwrap();
+        let foreign = other
+            .allocate_typed("java/lang/Object", vec![])
+            .unwrap();
+        assert!(heap.future_complete(id, Some(foreign)).is_err(), "valor de otro heap");
+        assert_eq!(heap.future_is_done(id), Ok(false));
+    }
     #[test]
     fn completed_future_reference_identity_and_heap_guards() {
         use super::{SharedHeap, Value};

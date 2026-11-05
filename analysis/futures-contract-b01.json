@@ -481,17 +481,19 @@
     {
       "id": "future.pending-state",
       "operation": "futuro pendiente",
-      "status": "guard",
-      "java_semantics": "Un futuro pendiente responde isDone()==false, getNow(x)==x y se completa una sola vez.",
+      "status": "differential",
+      "java_semantics": "Un CompletableFuture recién creado está pendiente: isDone()==false, getNow(x)==x, y se completa una sola vez.",
       "oracles": [
         "cf"
       ],
-      "guard_message": "CompletableFuture incompleto no soportado",
       "logs": [
-        "analysis/check-rayon-completed-future-latest.log"
+        "analysis/b03-b08-futures-suite-jdk25.log"
       ],
       "owner": "B-03",
-      "note": "Rechazo declarado en ambos backends. Es el alcance central de B-03."
+      "note": "Subperfil B-03: pendiente + completado normal en el backend concurrente. El backend numerico sigue rechazando `new` (new no soportado).",
+      "tests": [
+        "mc-aot/tests/check-rayon-pending-future.py"
+      ]
     },
     {
       "id": "future.obtrude",
@@ -874,6 +876,148 @@
       ],
       "owner": "B-02",
       "note": "Invariantes fijados por el oraculo; el nativo no los expone (ver gap.no-guard-for-lifecycle-queries)."
+    },
+    {
+      "id": "future.pending-queries",
+      "operation": "futuro pendiente",
+      "status": "differential",
+      "java_semantics": "Pendiente: isDone()==false, isCancelled()==false, isCompletedExceptionally()==false y getNow(x) devuelve x sin completar el futuro.",
+      "tests": [
+        "mc-aot/tests/check-rayon-pending-future.py"
+      ],
+      "logs": [
+        "analysis/b03-b08-futures-suite-jdk25.log"
+      ],
+      "owner": "B-03",
+      "note": "Consultas sobre el estado pendiente, contrastadas con Java 25."
+    },
+    {
+      "id": "future.pending-complete-once",
+      "operation": "futuro pendiente",
+      "status": "differential",
+      "java_semantics": "complete(v) devuelve true la primera vez y false después; el valor queda fijado y join/getNow lo devuelven, incluido null.",
+      "tests": [
+        "mc-aot/tests/check-rayon-pending-future.py"
+      ],
+      "logs": [
+        "analysis/b03-b08-futures-suite-jdk25.log"
+      ],
+      "owner": "B-03",
+      "note": "Transición única pendiente→completado normal, atómica en el heap compartido."
+    },
+    {
+      "id": "future.pending-publication",
+      "operation": "futuro pendiente",
+      "status": "differential",
+      "java_semantics": "Un futuro pendiente puede publicarse en un campo final de otra clase y completarse después; quien lee el campo ve el mismo objeto.",
+      "tests": [
+        "mc-aot/tests/check-rayon-pending-future.py"
+      ],
+      "logs": [
+        "analysis/b03-b08-futures-suite-jdk25.log"
+      ],
+      "owner": "B-03",
+      "note": "Antes solo se admitían futuros ya completados en campos; ahora se admite pendiente, que es lo que hace el código real de Minecraft."
+    },
+    {
+      "id": "future.pending-join-blocked",
+      "operation": "futuro pendiente",
+      "status": "guard",
+      "java_semantics": "join()/get() de un futuro pendiente esperan hasta que se complete.",
+      "guard_message": "join de futuro pendiente no soportado",
+      "tests": [
+        "mc-aot/tests/check-rayon-pending-future.py"
+      ],
+      "logs": [
+        "analysis/b03-b08-futures-suite-jdk25.log"
+      ],
+      "owner": "B-03",
+      "note": "Guarda de ejecución (el binario aborta con diagnóstico); no hay espera bloqueante ni autoayuda entre frames."
+    },
+    {
+      "id": "future.pending-cancel",
+      "operation": "futuro pendiente",
+      "status": "guard",
+      "java_semantics": "cancel(false) de un pendiente devuelve true y deja isCancelled()==true; get/join lanzan CancellationException.",
+      "guard_message": "cancel de futuro pendiente no soportado",
+      "tests": [
+        "mc-aot/tests/check-rayon-pending-future.py"
+      ],
+      "logs": [
+        "analysis/b03-b08-futures-suite-jdk25.log"
+      ],
+      "owner": "B-03",
+      "note": "Se rechaza en ejecución; cancelar sobre un futuro ya completado sigue devolviendo false, como Java."
+    },
+    {
+      "id": "future.pending-unit-heap",
+      "operation": "futuro pendiente",
+      "status": "unit",
+      "java_semantics": "Estado pendiente, finalización única y consultas coherentes en el heap.",
+      "unit_test": "pending_future_completes_once_and_reports_state",
+      "src": "mc-aot/src/concurrent_heap.rs",
+      "owner": "B-03",
+      "note": "Incluye doble inicialización rechazada y join rechazado antes de completar."
+    },
+    {
+      "id": "future.pending-unit-foreign",
+      "operation": "futuro pendiente",
+      "status": "unit",
+      "java_semantics": "Un objeto que no es futuro o un valor de otro heap no puede completar un futuro.",
+      "unit_test": "pending_future_rejects_foreign_objects_and_values",
+      "src": "mc-aot/src/concurrent_heap.rs",
+      "owner": "B-03",
+      "note": "Guarda de pertenencia a heap, coherente con el contrato de identidad de A."
+    },
+    {
+      "id": "future.pending-completion-race",
+      "operation": "futuro pendiente",
+      "status": "unit",
+      "java_semantics": "Varios complete concurrentes: exactamente uno devuelve true y el valor publicado es el del ganador.",
+      "unit_test": "pending_future_completion_race_has_single_winner",
+      "src": "mc-aot/tests/rayon_stress.rs",
+      "owner": "B-08",
+      "note": "20 rondas × 4 trabajadores × 50 intentos sobre Rayon real."
+    },
+    {
+      "id": "stress.monitor-alias-rmw",
+      "operation": "estrés",
+      "status": "unit",
+      "java_semantics": "Incrementos bajo monitor reentrante y RMW atómico sobre alias dan el total exacto sin importar el orden.",
+      "unit_test": "monitor_alias_and_rmw_repeat",
+      "src": "mc-aot/tests/rayon_stress.rs",
+      "owner": "B-08",
+      "note": "20 rondas × 4 trabajadores × 500 incrementos, con perro guardián anti-bloqueo."
+    },
+    {
+      "id": "stress.publication-reads",
+      "operation": "estrés",
+      "status": "unit",
+      "java_semantics": "Un objeto publicado antes de liberar a los trabajadores es visible y no se altera.",
+      "unit_test": "publication_then_concurrent_reads_repeat",
+      "src": "mc-aot/tests/rayon_stress.rs",
+      "owner": "B-08",
+      "note": "20 rondas × 4 trabajadores × 250 lecturas del alias publicado."
+    },
+    {
+      "id": "stress.completion-races",
+      "operation": "estrés",
+      "status": "unit",
+      "java_semantics": "Varios join concurrentes y repetidos sobre las mismas tareas: todos terminan y el trabajo se ejecuta una sola vez.",
+      "unit_test": "completion_races_repeat",
+      "src": "mc-aot/tests/rayon_stress.rs",
+      "owner": "B-08",
+      "note": "20 rondas × 8 tareas × 3 hilos que hacen join dos veces cada uno."
+    },
+    {
+      "id": "stress.close-race",
+      "operation": "estrés",
+      "status": "unit",
+      "java_semantics": "Carrera entre envíos y cierre: cada intento se acepta (y termina) o se rechaza; nunca se pierde una tarea aceptada.",
+      "unit_test": "close_race_keeps_every_task_or_rejects_it",
+      "src": "mc-aot/tests/rayon_stress.rs",
+      "owner": "B-08",
+      "note": "30 rondas con productor concurrente y cierre desde el llamador; cierre idempotente y sin resurrección."
     }
   ],
   "gaps": [
@@ -912,6 +1056,12 @@
       "description": "getActiveThreadCount/getPoolSize/getRunningThreadCount/getQueuedSubmissionCount no tienen guarda ni mensaje propio: caen en el rechazo de carga de clase JDK, aunque el oraculo ya fija sus invariantes (pool.worker-counters).",
       "action": "B-02 debe decidir si se modelan (necesitan estado interno de workers que Rayon no expone igual) o se rechazan con mensaje explícito; hoy el contrato lo declara rechazo de traducción.",
       "owner": "B-02"
+    },
+    {
+      "id": "gap.pending-future-waits",
+      "description": "No hay espera sobre un futuro pendiente (join/get) ni cancelación: reciben guarda de ejecución. Tampoco hay callbacks ni composición.",
+      "action": "B-03/B-04 necesitan primero el modelo de excepciones y una forma de espera entre frames acordada con A.",
+      "owner": "B-03"
     }
   ]
 }
