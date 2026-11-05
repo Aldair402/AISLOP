@@ -85,7 +85,8 @@ Los oráculos corren 40 rondas porque la semántica de hilos y de handler no es 
 | `timeout` | 1 | — | — | — | 1 | — |
 | `interrupción` | 2 | — | — | — | 2 | — |
 | `estrés` | 4 | — | — | 4 | — | — |
-| **Total** | **75** | **23** | **19** | **15** | **10** | **8** |
+| `frontera A` | 6 | — | — | 6 | — | — |
+| **Total** | **81** | **23** | **19** | **21** | **10** | **8** |
 
 ## 6. Detalle de los casos
 
@@ -218,6 +219,20 @@ si el cuerpo no termina en el plazo, el fallo es «posible bloqueo» y no un tes
 | `stress.close-race` | Cada envío se acepta (y termina) o se rechaza; no se pierde ninguna tarea aceptada | 30 rondas con cierre concurrente | `close_race_keeps_every_task_or_rejects_it` | B-08 |
 | `future.pending-completion-race` | Un solo `complete` gana la carrera | 20 × 4 × 50 intentos | `pending_future_completion_race_has_single_winner` | B-08 |
 
+### 6.8 Frontera para el frente A (B-07)
+
+Interfaz documentada en [`b-api-for-a.md`](b-api-for-a.md) y verificada por pruebas de frontera.
+No amplía el perfil: fija cómo A debe usarlo.
+
+| id | Qué fija | Evidencia |
+|---|---|---|
+| `api.create-bounds` | Paralelismo 1..=255; sin doble registro | `create_accepts_only_the_declared_parallelism` |
+| `api.submit-join-scoped` | Identidad por tarea, `join` idempotente, ids ajenos rechazados | `submit_and_join_are_idempotent_and_scoped` |
+| `api.await-callers-only` | Solo el llamador espera el cierre | `await_termination_is_callers_only` |
+| `api.close-final` | Cierre idempotente y definitivo; paralelismo conservado | `close_is_idempotent_and_final` |
+| `api.publication-to-worker` | Objeto publicado visible y con identidad en la tarea | `pending_future_published_to_a_worker_is_visible` |
+| `api.foreign-heap-ids` | Referencias de otro heap rechazadas | `foreign_heap_references_are_rejected` |
+
 ### 6.5 Composición (lo que pide Minecraft y aún no existe)
 
 | id | Semántica Java | Estado | Tarea |
@@ -282,10 +297,10 @@ Estas son las consecuencias operativas del contrato; no sustituyen los criterios
 
 - **B-02 · Lifecycle.** El perfil ya cubierto es: constructor `(I)` y `(I, factory, null, boolean)` restringido, `execute`/`execute` por interfaz, `submit(Runnable)`, `join`, `shutdown` idempotente, `awaitTermination`, rechazo tras cierre. Falta: factory y handler reales, creación gradual de workers, `shutdownNow`, interrupción, `execute(ForkJoinTask)`, `submit(Callable)`. Cada uno entra como subperfil con guarda hasta que tenga diferencial.
 - **B-03 · Futuros pendientes.** **Primer subperfil hecho:** pendiente + completado normal, con publicación en campo final y finalización única (48 resultados contra Java 25). Falta: fallo, cancelación efectiva y espera. No hace falta rediseñar el perfil completado: cinco de los casos `future.completed-identity-null`, `future.completed-queries`, `future.completed-cells`, `future.completed-shared-workers` y `future.completed-real-passthrough` ya son diferenciales.
-- **B-04 · `get`/`join` y fallos.** El oráculo `fjp-handler` y `err.*` fijan tres mecanismos distintos (`CompletionException`, `ExecutionException`, relanzado directo). Antes de implementar, hay que decidir con A cómo se representa un `Throwable`; hoy un fallo termina el proceso y eso debe seguir siendo explícito, no convertirse en excepción inventada.
+- **B-04 · `get`/`join` y fallos.** **Bloqueada por decisión, no por código:** el oráculo `fjp-handler` y `err.*` fijan tres mecanismos distintos (`CompletionException`, `ExecutionException`, relanzado directo). Antes de implementar, hay que decidir con A cómo se representa un `Throwable`; hoy un fallo termina el proceso y eso debe seguir siendo explícito, no convertirse en excepción inventada.
 - **B-05 · Composición.** Orden de prioridad según rutas comprobadas: `supplyAsync` → `thenApply` → `allOf` → `thenApplyAsync` con executor → `thenCompose`. El primero exige el handler/executor de B-06; el último exige ampliar el oráculo.
-- **B-06 · Factory y handler de `Util`.** El bloqueo está caracterizado: `handler personalizado no soportado` y `campo externo no soportado` (`Util.LOGGER`). El contrato de handler (`err.handler-identity`) ya está fijado en Java; lo que falta es logger y `CrashReport`, no semántica.
-- **B-07 · Interfaz para A.** Debe entregar: crear/enviar/esperar/cerrar, transporte de referencias, y **una** bandera de opt-in, hoy duplicada (`gap.two-optins`).
+- **B-06 · Factory y handler de `Util`.** **Bloqueo caracterizado a nivel de bytecode** en [`b06-util-factory-blockers.md`](b06-util-factory-blockers.md): la factory crea una subclase de `ForkJoinWorkerThread` con `onStart`/`onTermination`, `onStart` llama a Tracy y `onTermination` registra por slf4j (el logging está aparcado). Hallazgo: el `clamp(…, 1, …)` de Minecraft justifica el perfil 1..255 y la rama Guava es inalcanzable. Propuesta en dos pasos (nombrado only; logging después), subordinada a B-04.
+- **B-07 · Interfaz para A.** **Entregada y verificada** en [`b-api-for-a.md`](b-api-for-a.md) con seis pruebas de frontera; queda abierta la unificación del opt-in (`gap.two-optins`) y las tres decisiones de §6 de ese documento.
 - **B-08 · Estrés.** Los invariantes a repetir ya están aislados: `join` repetido, `join` anidado en el mismo pool, finalización única, rechazo tras cierre, cierre que no espera a futuros completados.
 
 ## 10. Criterios de cierre de B-01
@@ -294,6 +309,7 @@ Estas son las consecuencias operativas del contrato; no sustituyen los criterios
 - [x] Cada afirmación del contrato verificable por máquina (`check-futures-contract.py`, exit 0).
 - [x] Guardas citadas literalmente desde `mc-aot/src`.
 - [x] Huecos declarados, con tarea responsable y acción.
+- [x] **B-07 entregada:** interfaz para A en `analysis/b-api-for-a.md` con seis pruebas de frontera.
 - [x] **Subperfiles B-03 y B-08 verificados:** futuro pendiente con completado normal (48 resultados Java 25) y cinco pruebas de estrés con invariantes y perro guardián.
 - [x] **Quince pruebas focalizadas ejecutadas** con JDK 25.0.5 y el bundle oficial verificado; log único `analysis/b02-futures-suite-jdk25.log` (14/14 OK) y `cargo test` 64+30+30.
 - [ ] **C integra** `check-forkjoin-handler-oracle`, `check-futures-contract` y `check-rayon-java-pool-queries` en `run-regressions.sh` (líneas preparadas en este PR, sin ejecutar la integral aquí).
@@ -328,7 +344,7 @@ sha256 `a362163e…`), además de Rust 1.99.1. Resultado de la última pasada:
 
 | Comprobación | Resultado |
 |---|---|
-| `cargo test` | 66 del binario + 32 `rayon_await` + 32 `rayon_pool_queries` + 33 `rayon_stress`, 0 fallos |
+| `cargo test` | 66 del binario + 32 `rayon_await` + 32 `rayon_pool_queries` + 33 `rayon_stress` + 34 `rayon_b_api`, 0 fallos |
 | 15 pruebas focalizadas del frente B | 15 OK; log `analysis/b03-b08-futures-suite-jdk25.log` |
 | `check-rayon-java-pool-queries.py` | 24 resultados Java 25/Rayon + guarda de traducción |
 | `check-rayon-pending-future.py` (nuevo) | 48 resultados Java 25/Rayon + 2 guardas de traducción + 2 de ejecución |

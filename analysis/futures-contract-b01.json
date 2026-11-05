@@ -1018,6 +1018,66 @@
       "src": "mc-aot/tests/rayon_stress.rs",
       "owner": "B-08",
       "note": "30 rondas con productor concurrente y cierre desde el llamador; cierre idempotente y sin resurrección."
+    },
+    {
+      "id": "api.create-bounds",
+      "operation": "frontera A",
+      "status": "unit",
+      "java_semantics": "El paralelismo de un pool está acotado y un pool no se registra dos veces.",
+      "unit_test": "create_accepts_only_the_declared_parallelism",
+      "src": "mc-aot/tests/rayon_b_api.rs",
+      "owner": "B-07",
+      "note": "1..=255 admitido; 0, negativo y 256 rechazados con mensaje literal."
+    },
+    {
+      "id": "api.submit-join-scoped",
+      "operation": "frontera A",
+      "status": "unit",
+      "java_semantics": "Cada tarea tiene identidad propia; join es idempotente y no se puede esperar un objeto que no es tarea.",
+      "unit_test": "submit_and_join_are_idempotent_and_scoped",
+      "src": "mc-aot/tests/rayon_b_api.rs",
+      "owner": "B-07",
+      "note": "join de un id ajeno devuelve 'tarea inexistente'."
+    },
+    {
+      "id": "api.await-callers-only",
+      "operation": "frontera A",
+      "status": "unit",
+      "java_semantics": "Un worker no puede esperar el cierre de su propio pool sin bloquearse.",
+      "unit_test": "await_termination_is_callers_only",
+      "src": "mc-aot/tests/rayon_b_api.rs",
+      "owner": "B-07",
+      "note": "Se rechaza con 'awaitTermination desde worker propio no soportado' en vez de bloquear."
+    },
+    {
+      "id": "api.close-final",
+      "operation": "frontera A",
+      "status": "unit",
+      "java_semantics": "shutdown es idempotente, definitivo y no altera el paralelismo configurado.",
+      "unit_test": "close_is_idempotent_and_final",
+      "src": "mc-aot/tests/rayon_b_api.rs",
+      "owner": "B-07",
+      "note": "Tras el cierre, cualquier envío es error."
+    },
+    {
+      "id": "api.publication-to-worker",
+      "operation": "frontera A",
+      "status": "unit",
+      "java_semantics": "Un objeto publicado en el heap es visible desde la tarea y conserva identidad.",
+      "unit_test": "pending_future_published_to_a_worker_is_visible",
+      "src": "mc-aot/tests/rayon_b_api.rs",
+      "owner": "B-07",
+      "note": "Caso que A-06 necesita: futuro pendiente publicado y completado por un worker."
+    },
+    {
+      "id": "api.foreign-heap-ids",
+      "operation": "frontera A",
+      "status": "unit",
+      "java_semantics": "Una referencia de otro heap no puede usarse como propia.",
+      "unit_test": "foreign_heap_references_are_rejected",
+      "src": "mc-aot/tests/rayon_b_api.rs",
+      "owner": "B-07",
+      "note": "Ids y valores ajenos rechazados en pool y en futuro."
     }
   ],
   "gaps": [
