@@ -71,12 +71,11 @@ Los oráculos corren 20 rondas porque la semántica de hilos y de handler no es 
 | `shutdown` / `awaitTermination` / `shutdownNow` / rechazo | 5 | 3 | 2 | — | — | — |
 | lifecycle solo unitario | 4 | — | — | 4 | — | — |
 | workers | 4 | 2 | 2 | — | — | — |
+| **consultas de lifecycle (B-02)** | **9** | **3** | **2** | **4** | — | — |
 | futuros: `completedFuture`, pendiente, fallo y perfil | 12 | 5 | 7 | — | — | — |
 | composición (`supplyAsync`, callbacks, `allOf`) | 5 | — | — | — | — | 5 |
 | errores, cancelación, timeout, interrupción | 6 | — | — | — | 6 | — |
-| **Total** | **49** | **16** | **16** | **4** | **7** | **6** |
-
-Resumen exacto (lo imprime `check-futures-contract.py --summary`): **49 casos** — diferencial 16, guarda 16, unitaria 4, solo-Java 7, falta 6. Si cambian, cambia el JSON y esta tabla a la vez: el verificador no compara cifras, pero el `.md` y el `.json` deben citarse con los mismos identificadores.
+| **Total** | **58** | **19** | **18** | **8** | **7** | **6** |
 
 ## 6. Detalle de los casos
 
@@ -115,6 +114,29 @@ Nota de frontera: el nativo solo traduce `submit(Runnable)` y `join()`. `execute
 | `pool.single-pool-per-object` | Un `ForkJoinPool` tiene una sola identidad e inicialización | unitaria `racing_first_use_creates_only_one_pool` | `mc-aot/src/executor_runtime.rs` | B-02 |
 
 `pool.reject-after-shutdown` es el ejemplo canónico de por qué este documento existe: la **condición** coincide con Java, el **mecanismo** no (diagnóstico y salida, no `RejectedExecutionException`). Se declara rechazo observado; no se presenta como equivalencia de excepciones.
+
+### 6.2bis Consultas de lifecycle (B-02)
+
+Seis perfiles de consulta no bloqueantes del `ForkJoinPool` restringido, con diferencial Java 25 nuevo
+(`mc-aot/tests/check-rayon-java-pool-queries.py`, 24 resultados) y cuatro pruebas del runtime.
+
+| id | Semántica Java | Estado | Evidencia | Tarea |
+|---|---|---|---|---|
+| `pool.query-is-shutdown` | `isShutdown()` false hasta el cierre, true después, también por la interfaz `ExecutorService`; no implica terminación | diferencial | `check-rayon-java-pool-queries.py` | B-02 |
+| `pool.query-is-terminated` | `isTerminated()` false con trabajo pendiente o pool abierto; true tras cierre sin tareas y en un pool nunca usado; no espera | diferencial | `check-rayon-java-pool-queries.py`, `rayon_pool_queries.rs` | B-02 |
+| `pool.query-parallelism` | `getParallelism()` devuelve el valor configurado y se conserva tras el cierre | diferencial | `check-rayon-java-pool-queries.py` | B-02 |
+| `pool.query-termination-requires-rayon` | Java siempre responde; el adaptador no puede sin hilos que observar | guarda: `terminación real requiere Rayon` | `mc-aot/src/executor_runtime.rs` | B-02 |
+| `pool.query-unsupported-counts` | `getActiveThreadCount`, `getPoolSize`, `getRunningThreadCount`, `getQueuedSubmissionCount` informan del estado interno | guarda: `clase no encontrada en versiones ni bibliotecas` (sin guarda dedicada) | `check-rayon-java-pool-queries.py` | B-02 |
+| `pool.query-unit-crate-path` | Un pool nunca usado queda terminado al cerrarse | unitaria `never_started_pool_is_terminated_after_shutdown` | `mc-aot/src/executor_runtime.rs` | B-02 |
+| `pool.query-real-workers` | Las tres consultas siguen el ciclo real de los trabajadores | unitaria `queries_track_real_worker_lifecycle` | `mc-aot/tests/rayon_pool_queries.rs` | B-02 |
+| `pool.shutdown-non-blocking` | `shutdown()` **no** espera a las tareas en curso; `isTerminated()` es false mientras corren | unitaria `running_task_keeps_pool_not_terminated` | `mc-aot/tests/rayon_pool_queries.rs` | B-02 |
+| `pool.query-foreign-ids` | Una referencia a otro pool no se responde como propia | unitaria `foreign_pool_ids_are_rejected_not_answered` | `mc-aot/tests/rayon_pool_queries.rs` | B-02 |
+
+`pool.shutdown-non-blocking` es una comprobación que faltaba y que ahora está cubierta con tarea de 300 ms:
+el cierre vuelve en menos de 250 ms y la terminación llega después del `join`. En el crate, en cambio,
+`isTerminated()` se rechaza porque el scheduler de reserva no tiene hilos que observar
+(`pool.query-termination-requires-rayon`); el perfil real vive en el adaptador Rayon que se embebe en el
+programa generado.
 
 ### 6.3 Workers
 
@@ -201,6 +223,7 @@ MC_AOT_RAYON_ASSUME_NO_INTERRUPT=1                          (interrupción no mo
 | `gap.no-explicit-guard-for-task-get` | `ForkJoinTask.get()`/`invoke()` no tienen guarda propia: caen en el rechazo genérico de llamada externa, indistinguible de un error de traducción | B-04: guarda explícita + caso en el oráculo antes de modelar |
 | `gap.oracle-missing-cases` | Los oráculos no cubren `submit(Callable)`, `execute(ForkJoinTask)`, `invoke()`, `commonPool()`, `ManagedBlocker`, interrupción de workers, `toString` del pool, `thenCompose`, `thenAccept`, `handle`, `exceptionally`, `anyOf`, `orTimeout`, `completeAsync`, `cancel(true)` | B-02/B-04/B-05 amplían por subperfil **antes** de implementar |
 | `gap.two-optins` | Dos variables distintas (`MC_AOT_RAYON_COMPLETED_FUTURE`, `MC_AOT_NUMERIC_COMPLETED_FUTURE`) para el mismo concepto, con mensajes distintos | B-07: una sola interfaz para A |
+| `gap.no-guard-for-lifecycle-queries` | `getActiveThreadCount`, `getPoolSize`, `getRunningThreadCount` y `getQueuedSubmissionCount` no tienen guarda ni mensaje propio: caen en el rechazo de carga de clase JDK | B-02 decide si se modelan o se rechazan con mensaje explícito |
 | `gap.no-java-differential-for-unit-cases` | Cuatro propiedades del lifecycle solo tienen prueba unitaria Rust | B-02/B-08: diferencial Java observable o declararlas propiedad del adaptador |
 
 ## 9. Entradas para el resto del frente B
@@ -221,8 +244,9 @@ Estas son las consecuencias operativas del contrato; no sustituyen los criterios
 - [x] Cada afirmación del contrato verificable por máquina (`check-futures-contract.py`, exit 0).
 - [x] Guardas citadas literalmente desde `mc-aot/src`.
 - [x] Huecos declarados, con tarea responsable y acción.
-- [ ] **C integra** `check-forkjoin-handler-oracle` y `check-futures-contract` en `run-regressions.sh` (líneas preparadas en este PR, sin ejecutar la integral aquí).
-- [ ] Integral verde en una máquina con JDK 25 + Rust, con el log archivado en `analysis/`.
+- [x] **Catorce pruebas focalizadas ejecutadas** con JDK 25.0.5 y el bundle oficial verificado; log único `analysis/b02-futures-suite-jdk25.log` (14/14 OK) y `cargo test` 64+30+30.
+- [ ] **C integra** `check-forkjoin-handler-oracle`, `check-futures-contract` y `check-rayon-java-pool-queries` en `run-regressions.sh` (líneas preparadas en este PR, sin ejecutar la integral aquí).
+- [ ] Integral completa (`run-regressions.sh`, ~306 etapas) verde, con su log archivado. Aquí solo corrió el subconjunto del frente B.
 - [ ] Revisión cruzada de A (frontera de excepciones y ownership) y de B-02/B-04 (exactitud del perfil).
 
 Mientras falten las tres últimas casillas, B-01 está **en revisión**, no terminada.
@@ -247,15 +271,27 @@ python3 mc-aot/tests/check-real-util-worker-onstart.py
 python3 mc-aot/tests/check-futures-contract.py            # solo Python, sin Java ni cargo
 ```
 
-**Limitación declarada:** el contrato y el verificador se escribieron en un entorno con **JDK 11, sin Rust y sin los JAR de Mojang**. Allí se ejecutó `check-futures-contract.py` (solo Python) con exit 0; **ningún diferencial Java/nativo de los citados se ejecutó en ese entorno**. Las cifras de resultados (78 decisiones, 312 resultados, 48 casos, 20 rondas…) provienen de los logs de `analysis/` y de los mensajes de cada test, no de una ejecución nueva. Correr la integral es responsabilidad de C.
+**Entorno de ejecución de este trabajo:** se provisionó dentro del sandbox Temurin **25.0.5** y el bundle
+oficial del `README.md`, con los dos hashes verificados (`server-26.3.jar` sha1 `33680f5f…`, interno
+sha256 `a362163e…`), además de Rust 1.99.1. Resultado de la última pasada:
+
+| Comprobación | Resultado |
+|---|---|
+| `cargo test` | 64 pruebas del binario + 30 `rayon_await` + 30 `rayon_pool_queries`, 0 fallos |
+| 14 pruebas focalizadas del frente B | 14 OK; log `analysis/b02-futures-suite-jdk25.log` |
+| `check-rayon-java-pool-queries.py` | 24 resultados Java 25/Rayon + guarda de traducción |
+| Integral completa (`run-regressions.sh`) | **no ejecutada aquí**: responsabilidad de C |
+
+Los JAR y el JDK se guardaron fuera del árbol versionado (`/downloads` está en `.gitignore` y en
+`.git/info/exclude`; el JDK vive en la caché del entorno), así que no se sube ningún binario ajeno.
 
 ## 12. Lista de PR para este cambio
 
 - [x] ID/título (B-01), alcance, archivos: `analysis/futures-contract-b01.{md,json}`, `mc-aot/tests/check-futures-contract.py`, dos líneas en `mc-aot/run-regressions.sh`.
-- [x] Comportamiento implementado: **ninguno** en el runtime. No hay cambios en `mc-aot/src`: este PR no habilita nada ni cambia perfiles.
+- [x] Comportamiento implementado (B-02): tres consultas de lifecycle del `ForkJoinPool` restringido (`isShutdown`, `isTerminated`, `getParallelism`) sobre `pools`/`LazyPool`, sin excepciones Java ni esperas bloqueantes; `shutdown()` sigue sin esperar tareas.
 - [x] Lo que se sigue rechazando: la lista completa de §7, sin cambios.
-- [x] Pruebas: `python3 mc-aot/tests/check-futures-contract.py` (exit 0 en el entorno del autor). Diferenciales citados: **no ejecutados aquí** (JDK 11, sin Rust); sus logs previos son la evidencia.
+- [x] Pruebas: `check-futures-contract.py`, `check-rayon-java-pool-queries.py` y las 12 restantes del frente B, ejecutadas aquí con JDK 25.0.5 y Rust 1.99.1; `cargo test` completo en verde. Log archivado: `analysis/b02-futures-suite-jdk25.log`.
 - [x] Casos normales, límites, null/alias y carreras: mapeados en la matriz; los que no los tienen quedan en `gap.*`.
 - [x] Cambios de contrato con otros frentes: `gap.two-optins` y `gap.no-explicit-guard-for-task-get` son decisiones que necesitan a A/B-04; el handler del oráculo necesita a C.
 - [x] Sin JARs, binarios, credenciales ni datos personales en el commit.
-- [ ] Integral: **pendiente**, no ejecutada aquí. No se declara aprobada.
+- [ ] Integral: **pendiente**, no ejecutada aquí (solo el subconjunto del frente B). No se declara aprobada.

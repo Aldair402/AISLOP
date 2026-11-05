@@ -1168,6 +1168,20 @@ impl Builder<'_> {
                     {
                         terminal = true;
                         format!("let unit=pop_any_object(f)?;let timeout=pop_long(f)?;let pool=pop_object(f,heap,\"java/util/concurrent/ForkJoinPool\")?;let nanos=heap.timeout_nanos(unit,timeout)?;f.pc={pc};return Ok(Step::PoolAwait{{pool,nanos}});")
+                    } else if self.rayon
+                        && klass == "java/util/concurrent/ExecutorService"
+                        && (callee == "isShutdown" || callee == "isTerminated")
+                        && descriptor == "()Z"
+                        && count == 1
+                        && zero == 0
+                    {
+                        terminal = true;
+                        let step = if callee == "isShutdown" {
+                            "PoolIsShutdown"
+                        } else {
+                            "PoolIsTerminated"
+                        };
+                        format!("let pool=pop_object(f,heap,\"java/util/concurrent/ForkJoinPool\")?;f.pc={pc};return Ok(Step::{step}{{pool}});")
                     } else {
                         if !self.rayon
                             || !matches!(
@@ -1365,6 +1379,30 @@ impl Builder<'_> {
                     {
                         terminal = true;
                         format!("let pool=pop_object(f,heap,{klass:?})?;f.pc={pc};return Ok(Step::PoolShutdown{{pool}});")
+                    } else if self.rayon
+                        && klass == "java/util/concurrent/ForkJoinPool"
+                        && op == 0xb6
+                        && callee == "isShutdown"
+                        && descriptor == "()Z"
+                    {
+                        terminal = true;
+                        format!("let pool=pop_object(f,heap,{klass:?})?;f.pc={pc};return Ok(Step::PoolIsShutdown{{pool}});")
+                    } else if self.rayon
+                        && klass == "java/util/concurrent/ForkJoinPool"
+                        && op == 0xb6
+                        && callee == "isTerminated"
+                        && descriptor == "()Z"
+                    {
+                        terminal = true;
+                        format!("let pool=pop_object(f,heap,{klass:?})?;f.pc={pc};return Ok(Step::PoolIsTerminated{{pool}});")
+                    } else if self.rayon
+                        && klass == "java/util/concurrent/ForkJoinPool"
+                        && op == 0xb6
+                        && callee == "getParallelism"
+                        && descriptor == "()I"
+                    {
+                        terminal = true;
+                        format!("let pool=pop_object(f,heap,{klass:?})?;f.pc={pc};return Ok(Step::PoolParallelism{{pool}});")
                     } else if self.rayon && op==0xb7 && klass=="java/util/concurrent/ForkJoinWorkerThread" && callee=="<init>" && descriptor=="(Ljava/util/concurrent/ForkJoinPool;)V" {
                         "let _pool=pop_object(f,heap,\"java/util/concurrent/ForkJoinPool\")?;let _this=pop_any_object(f)?;".into()
                     } else if self.rayon && op==0xb7 && klass=="java/util/concurrent/ForkJoinWorkerThread" && callee=="onStart" && descriptor=="()V" {

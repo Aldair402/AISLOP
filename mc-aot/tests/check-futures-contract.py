@@ -5,7 +5,8 @@ No ejecuta Java ni el backend nativo (eso lo hacen los diferenciales que el
 propio contrato cita). Verifica, sobre el repositorio:
 
 1. Que cada caso con diferencial cite un test existente que este en
-   mc-aot/run-regressions.sh.
+   mc-aot/run-regressions.sh (o, si es una prueba Rust de mc-aot/tests/*.rs,
+   que el archivo exista: esas las ejecuta cargo test).
 2. Que cada guarda citada exista literalmente en mc-aot/src.
 3. Que cada prueba unitaria citada exista literalmente en mc-aot/src.
 4. Que los oraculos Java existan, esten en la suite y que cada linea que el
@@ -57,6 +58,11 @@ doc_text = text_of(DOC) if DOC.exists() else ""
 
 src_text = "\n".join(
     text_of(p) for p in sorted(SRC.rglob("*")) if p.is_file() and p.suffix in {".rs", ".inc"}
+)
+# Las pruebas unitarias del frente B viven también en mc-aot/tests/*.rs, que
+# incluyen los módulos del runtime con el adaptador Rayon real.
+src_text += "\n" + "\n".join(
+    text_of(p) for p in sorted((ROOT / "mc-aot/tests").glob("*.rs"))
 )
 
 suite_tests = set(re.findall(r"mc-aot/tests/([A-Za-z0-9._-]+)\.py", suite_text))
@@ -144,8 +150,10 @@ for case in data.get("cases", []):
         path = ROOT / test
         if not path.exists():
             fail(f"{where}: no existe el test {test}")
-        elif path.stem not in suite_tests:
+        elif path.suffix == ".py" and path.stem not in suite_tests:
             fail(f"{where}: {path.stem} no esta en mc-aot/run-regressions.sh")
+        elif path.suffix == ".rs" and "tests/" not in test:
+            fail(f"{where}: {test} no es una prueba de integracion de mc-aot/tests")
 
     for log in case.get("logs") or []:
         if not (ROOT / log).exists():
