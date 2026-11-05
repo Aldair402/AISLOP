@@ -23,6 +23,14 @@ Este documento propone cómo repartir el trabajo entre **al menos tres personas*
 5. Si dos tareas necesitan el mismo archivo o contrato, avisar antes de editarlo. La tabla siguiente asigna una frontera inicial; no es una prohibición permanente ni sustituye la revisión. Para cambios compartidos, hacer primero un PR pequeño de interfaz, acordar orden de integración y actualizar las ramas dependientes.
 6. Al terminar, enlazar el PR, pruebas y limitaciones en la issue; marcar aquí la casilla solo cuando se haya integrado y verificado. Un diagnóstico, un prototipo, un fixture con stubs o un método aislado **no** cierran una tarea que exige integración real.
 
+### Reserva acordada en la conversación
+
+- **Frente A:** lo tomamos el usuario y este agente. Empezamos por A-01 y A-02; no se consideran terminadas hasta cumplir sus criterios y la revisión indicada.
+- **Frente B:** destinado a la persona colaboradora que se incorpore; nombre y reserva de tareas concretas por confirmar. No se presupone que ya esté trabajando ni se modifican sus archivos sin coordinación.
+- **Frente C:** disponible para otra persona colaboradora.
+
+Para evitar reservas invisibles, trasladar estos acuerdos a una issue o tablero del repositorio cuando el equipo lo utilice.
+
 ### Reparto inicial sugerido
 
 | Frente disponible | Responsabilidad inicial | Archivos principales | Primera tarea en paralelo |
