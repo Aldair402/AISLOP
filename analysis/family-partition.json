@@ -1,0 +1,86 @@
+{
+  "schema": "family-partition-v1",
+  "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
+  "jar_classes_total": 7762,
+  "policy": "No overlap between batches. Static reachability != runtime. No percentage distributed without verified classes. See analysis/family-partition.md",
+  "batches": [
+    {
+      "id": "batch-01-primitives-coords",
+      "description": "Primitivas y coordenadas — base para servidores sin estado serializado",
+      "priority": "1 — requerido por Main graph (QuartPos, SectionPos, BlockPos, Vec3, Mth) y por todas las familias",
+      "packages": ["net.minecraft.core.QuartPos", "net.minecraft.core.BlockPos", "net.minecraft.core.SectionPos", "net.minecraft.core.Direction", "com.mojang.math"],
+      "estimated_classes": 267,
+      "classes_sample": ["net.minecraft.core.QuartPos","net.minecraft.core.BlockPos","net.minecraft.core.SectionPos","net.minecraft.core.Vec3","com.mojang.math.Matrix4f"],
+      "dependencies": ["JDK primitives, java.lang.Math"],
+      "responsible": null,
+      "status": "available",
+      "evidence_existing": ["analysis/quartpos-evidence-report.json (5/6 partial)","analysis/audit-small-args.json (47/47 compile)"],
+      "limitations": ["QuartPos not complete — private <init> missing; no batch counted yet"]
+    },
+    {
+      "id": "batch-02-collections-serialization",
+      "description": "Colecciones y serialización — NBT, codecs, streams, Optional",
+      "priority": "2 — bloquea registries y world data",
+      "packages": ["net.minecraft.nbt","net.minecraft.util.datafix"],
+      "estimated_classes": 350,
+      "classes_sample": ["net.minecraft.nbt.CompoundTag","net.minecraft.nbt.ListTag","net.minecraft.nbt.NbtOps"],
+      "dependencies": ["batch-01","java.util collections (partial)"],
+      "responsible": null,
+      "status": "available",
+      "evidence_existing": ["analysis/audit-arrays.json (15/15 arrays)","analysis/completed-future-cargo-test.log"],
+      "limitations": ["No verified collection class; serialization stubs not allowed"]
+    },
+    {
+      "id": "batch-03-registries-resources",
+      "description": "Registries y recursos — Bootstrap, BuiltInRegistries, ResourceKey, tags",
+      "priority": "3 — Main.Bootstrap calls MappedRegistry which is current blocker via Util.makeExecutor",
+      "packages": ["net.minecraft.core.registries","net.minecraft.resources","net.minecraft.tags"],
+      "estimated_classes": 420,
+      "classes_sample": ["net.minecraft.core.MappedRegistry","net.minecraft.core.registries.BuiltInRegistries","net.minecraft.resources.Identifier"],
+      "dependencies": ["batch-01","batch-02"],
+      "responsible": null,
+      "status": "blocked",
+      "blocked_reason": "Util.makeExecutor -> ForkJoinPool not yet implemented (see analysis/main-completed-future-attempt.log)",
+      "evidence_existing": []
+    },
+    {
+      "id": "batch-04-chunks-world",
+      "description": "Chunks y mundo — Level, ChunkAccess, PalettedContainer, heightmaps",
+      "priority": "4 — mayor volumen (4187 classes in net.minecraft.world)",
+      "packages": ["net.minecraft.world.level","net.minecraft.world.phys","net.minecraft.world.level.levelgen"],
+      "estimated_classes": 4187,
+      "classes_sample": ["net.minecraft.world.level.chunk.LevelChunk","net.minecraft.world.level.ChunkStatusTasks"],
+      "dependencies": ["batch-01","batch-02","batch-03"],
+      "responsible": null,
+      "status": "available",
+      "evidence_existing": ["analysis/check-real-chunk-passthrough-future-validation.log (80 cases, stubs)"],
+      "limitations": ["ChunkStatusTasks.passThrough tested with stubs — no world, not certified"]
+    },
+    {
+      "id": "batch-05-network-protocol",
+      "description": "Red y protocolo — packets, serializers, connection, BandwidthDebugMonitor",
+      "priority": "5 — no ejecutado hasta que arranque aislado no abra puertos por defecto (C-07)",
+      "packages": ["net.minecraft.network","net.minecraft.network.protocol"],
+      "estimated_classes": 630,
+      "classes_sample": ["net.minecraft.network.Connection","net.minecraft.network.protocol.PacketType"],
+      "dependencies": ["batch-02","batch-03"],
+      "responsible": null,
+      "status": "available",
+      "evidence_existing": []
+    },
+    {
+      "id": "batch-06-entities-server",
+      "description": "Entidades y lógica del servidor — Entity, ServerLevel, MinecraftServer, commands, advancements",
+      "priority": "6 — culmina en primer ciclo de servidor (D-04) tras batches 01-05",
+      "packages": ["net.minecraft.world.entity","net.minecraft.server","net.minecraft.commands","net.minecraft.advancements"],
+      "estimated_classes": 2008,
+      "classes_sample": ["net.minecraft.server.MinecraftServer","net.minecraft.world.entity.Entity","net.minecraft.commands.Commands"],
+      "dependencies": ["all previous batches","batch-04 world","batch-05 network"],
+      "responsible": null,
+      "status": "available",
+      "evidence_existing": []
+    }
+  ],
+  "uncovered_packages": ["net.minecraft.data","net.minecraft.gametest","net.minecraft.server.packs","net.minecraft.sounds","net.minecraft.stats","net.minecraft.locale","net.minecraft.gizmos","net.minecraft.references","net.minecraft.recipebook"],
+  "verification": "Run python3 mc-aot/tools/check-class-registry.py and python3 mc-aot/tools/check-family-partition.py to ensure no overlap, sums to 7762, and no batch claims progress without verified class."
+}
