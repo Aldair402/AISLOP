@@ -13,6 +13,8 @@
 `analysis/a03-auto-publish.log`: 20 rondas Java/Rust, 20 valores comparados, guardas:
 sesión duplicada rechazada, clase sin layout no compartida (`lookup` falla), cierre de sesión detiene publicaciones nuevas sin romper lo ya publicado, y el proceso hijo que publica desde otro heap termina con código 2 y `publicación: otro heap numérico`.
 
+Integral completa: `analysis/full-regressions-a03.log`, **306 etapas, exit 0**, con `cargo test` 60 + 26. La prueba nueva aún no está añadida a `run-regressions.sh` (lo coordina el frente C).
+
 Diferenciales existentes reejecutados tras el cambio: `a03-graph.log`, `a03-graph-ticktask.log`, `a03-bridge.log`, `a03-completed-future.log`, `a03-layout-guards.log` y `a03-cargo-test.log`.
 
 ## Límites explícitos

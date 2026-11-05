@@ -19,7 +19,7 @@ La meta es que bytecode Java traducido por el backend principal pueda publicar u
 
 1. **Preparación exclusiva:** el llamador posee `&mut Heap`, verifica el classfile y configura la sesión. La conversión de `Array::Obj` a `SharedObj` conserva la instancia, campos y un único monitor; se rechaza convertir un objeto con monitor monohilo adquirido o `LocalObj`.
 2. **Registro:** asociar al dominio y heap correctos cada objeto alcanzable que el perfil admita. La lectura de una referencia cuyo destino aún no esté registrado debe fallar. Para ciclos/autoalias, registrar todos los nodos antes de publicar el grafo; no depender de un recorrido recursivo que se bloquee.
-3. **Publicación:** solo después de verificar y registrar el conjunto necesario, entregar IDs a workers bajo un mecanismo de publicación sincronizado. La generación automática de este paso todavía no existe. Está prohibido compartir `&mut Heap` con varios hilos o suponer que los estáticos y clases ya están unidos.
+3. **Publicación:** solo después de verificar y registrar el conjunto necesario, entregar IDs a workers bajo un mecanismo de publicación sincronizado. Existe un opt-in parcial (A-03, `analysis/a03-auto-publish.md`): `object_new` publica los objetos admitidos al construirlos a través de `PublishSink` y el harness deja de enumerar instancias; la sesión es por hilo y no publica lo que crean los workers. Sigue prohibido compartir `&mut Heap` con varios hilos y suponer que estáticos/clases ya están unidos; estáticos, unión de programas y `SharedHeap` siguen siendo manuales.
 4. **Ejecución:** cada worker usa `SharedHeap`/frames y acceso delegado a los campos/monitor admitidos; el llamador puede usar la ruta numérica con el mismo handle. Si se invoca código o se espera una tarea, no se retiene ningún lock global ni préstamo exclusivo del heap que el worker necesite.
 5. **Cierre:** esperar que las tareas del perfil hayan terminado antes de retirar la sesión. Actualmente el adaptador usa `Weak`: después de cerrar, acceso/entrada fallan; un objeto ya asociado a otro dominio en el mismo `SharedHeap` no se readjunta silenciosamente. GC, reutilización de índices y reapertura segura no están diseñados. No se permite cerrar mientras haya operaciones concurrentes sin definir y probar ese protocolo.
 
@@ -52,7 +52,7 @@ No se unen actualmente estaticos, class objects, arrays, String, colecciones, `C
 
 | Caso | Exigencia del perfil | Evidencia previa / trabajo |
 |---|---|---|
-| Alias, null, dos objetos iguales | Misma identidad solo para el mismo objeto; null estable | Fixture de grafo; ampliar al registro generado |
+| Alias, null, dos objetos iguales | Misma identidad solo para el mismo objeto; null estable | Fixture de grafo y publicación automática (A-03); falta el contrato con B |
 | Heap ajeno, doble sesión y cierre | Rechazo explícito, sin leer o cambiar el objeto | Fixture de grafo; falta protocolo de cierre concurrente |
 | Autoalias y ciclo de referencias | Identidad estable, sin retener locks anidados | Falta demostrar automáticamente todo el grafo |
 | Tipo/final/volatile o hash alterado | Rechazar antes de publicar/generar | A-02; verificar classfile, no solo `V::I` |
