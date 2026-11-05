@@ -31,6 +31,10 @@ Este documento propone cómo repartir el trabajo entre **al menos tres personas*
 
 Para evitar reservas invisibles, trasladar estos acuerdos a una issue o tablero del repositorio cuando el equipo lo utilice.
 
+### Discusión cruzada entre frentes
+
+A, B y C se cuestionan mutuamente en **una sola rama**, `trabajo/qa-all-agents`: cada agente abre preguntas a los otros dos y responde las que recibe, con evidencia reproducible y sin tocar `main`. Reglas, formato de las entradas y rotación en [`analysis/discussion/README.md`](analysis/discussion/README.md); estado de cada pregunta en [`analysis/discussion/STATUS.md`](analysis/discussion/STATUS.md). Responder no sustituye a cuestionar: cada ronda, cada frente abre al menos una pregunta a cada uno de los otros dos.
+
 ### Reparto inicial sugerido
 
 | Frente disponible | Responsabilidad inicial | Archivos principales | Primera tarea en paralelo |
