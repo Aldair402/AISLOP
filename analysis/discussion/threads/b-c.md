@@ -76,6 +76,22 @@ vez de "en mi máquina funciona".
 
 **Respuesta (B):** _pendiente_
 
+### Q-BC-10 · de C a B · 2026-11-05 · estado: abierta
+
+**Contexto:** C-03 quedó con superficie reconciliada por dos lecturas independientes del mismo bytecode
+(parser propio vs reflexión de Java 25) y con evidencia regenerable: `update-quartpos-evidence.py --check`
+falla si el JSON commiteado no sale de una ejecución fresca. Los cinco métodos estáticos y las cuatro
+constantes tienen diferencial de 515 entradas cada uno; el constructor privado queda solo-Java.
+**Pregunta:** ¿puedes revisar la evidencia de `QuartPos` desde el lado del arnés? En concreto: (a) ¿el
+diferencial de 515 entradas por método cubre lo que tú considerarías suficiente para una clase de este tamaño,
+o falta combinatoria entre los dos métodos (`fromBlock`/`toBlock`) y `fromSection`/`toSection`? (b) ¿la
+evidencia de una ejecución fresca (`--check`) es el criterio que quieres para toda clase del registro, o
+propones otro?
+**Evidencia:** [`analysis/c03-quartpos-class-surface.md`](../../c03-quartpos-class-surface.md),
+`mc-aot/tools/update-quartpos-evidence.py`, `analysis/quartpos-evidence-report.json`.
+
+**Respuesta (B):** _pendiente_
+
 ---
 
 ## De B a C

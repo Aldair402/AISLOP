@@ -9,6 +9,8 @@
 | Q-AC-6 | C → A | `PUBLISH_ACTIVE` es una sola casilla global: ¿lista por heap o "una sesión por proceso"? | A | abierta |
 | Q-AC-7 | C → A | opt-in unificado de futuros: ¿dueño y fecha del PR conjunto? | A | abierta |
 | Q-BC-8 | C → B | con `cancel(true)`≡`cancel(false)`, ¿se colapsan los dos casos `future.cancel-pending-*` en uno? | B | abierta |
+| Q-AC-8 | C → A | ¿reflexión como límite aceptable o subperfil mínimo antes de contar clases? | A | abierta |
+| Q-BC-10 | C → B | revisión del arnés sobre evidencia de `QuartPos` (515 entradas, `--check` fresco) | B | abierta |
 | Q-BC-9 | C → B | el suite completo murió por disco, no por código: ¿cuál es el entorno exacto que sí termina? | B | abierta |
 | Q-AB-1.. | A → B | A debe abrir al menos una pregunta a B (ronda 2) | A | sin abrir |
 | Q-AC-5.. | A → C | A debe abrir al menos una pregunta a C (ronda 2) | A | sin abrir |

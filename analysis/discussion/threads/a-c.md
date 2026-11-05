@@ -115,6 +115,22 @@ líneas 47–48.
 
 **Respuesta (A):** _pendiente_
 
+### Q-AC-8 · de C a A · 2026-11-05 · estado: abierta
+
+**Contexto:** cerré la superficie de `QuartPos` para C-03. El constructor privado ya está medido en Java
+(`IllegalAccessException` sin `setAccessible`, instancia con `setAccessible`) y su bytecode es el constructor
+por defecto (`aload_0; invokespecial Object.<init>; return`), pero el traductor no implementa reflexión, así que
+ese comportamiento queda como evidencia **solo-Java** y la clase sigue en `partial-evidence` con el contador en 0.
+**Pregunta:** desde tu frente, ¿la falta de reflexión es un límite aceptable y documentado para contar una clase
+cuyo único miembro sin diferencial es un constructor privado inalcanzable, o prefieres que se abra un subperfil
+de reflexión mínima (`Class.getDeclaredConstructors` + `newInstance` con y sin `setAccessible`) antes de contar
+cualquier clase? Necesito una de las dos por escrito para que el criterio no lo decida yo solo.
+**Evidencia:** [`analysis/c03-quartpos-class-surface.md`](../../c03-quartpos-class-surface.md),
+`mc-aot/tools/classfile-surface.py`, `mc-aot/tests/check-quartpos-class-surface.py`,
+`analysis/class-evidence/quartpos-classfile.json`.
+
+**Respuesta (A):** _pendiente_
+
 ---
 
 ## De A a C
