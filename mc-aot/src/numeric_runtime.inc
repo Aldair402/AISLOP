@@ -912,21 +912,48 @@ pub trait PublishSink: Send + Sync {
     fn admits(&self, class:&'static str) -> bool;
     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
 }
-struct PublishSession { owner:usize, _heap:std::sync::Arc<()>, sink:std::sync::Arc<dyn PublishSink> }
+struct PublishSession { owner:usize, thread:std::thread::ThreadId, _heap:std::sync::Arc<()>, sink:std::sync::Arc<dyn PublishSink> }
 thread_local! { static PUBLISH_SESSION: std::cell::RefCell<Option<PublishSession>> = const { std::cell::RefCell::new(None) }; }
-fn install_publish_session(h:&Heap, sink:std::sync::Arc<dyn PublishSink>) -> std::result::Result<(), &'static str> {
+// Marca global solo para diagnosticar: un hilo sin sesión local que intenta
+// crear objetos del heap con sesión activa en otro hilo no debe publicar en
+// silencio. No comparte el sink ni permite publicar desde workers.
+static PUBLISH_ACTIVE: std::sync::Mutex<Option<(usize,std::thread::ThreadId)>> = std::sync::Mutex::new(None);
+// La sesión dura mientras viva la guarda: un pánico o un retorno temprano del
+// harness la libera y el siguiente uso no hereda un estado a medias. No es Send.
+struct PublishSessionGuard { released:bool, _thread:std::marker::PhantomData<std::rc::Rc<()>> }
+impl PublishSessionGuard {
+    fn release(mut self) {clear_publish_session();self.released=true;}
+}
+impl Drop for PublishSessionGuard {
+    fn drop(&mut self) {if !self.released {clear_publish_session();}}
+}
+fn install_publish_session(h:&Heap, sink:std::sync::Arc<dyn PublishSink>) -> std::result::Result<PublishSessionGuard, &'static str> {
     PUBLISH_SESSION.with(|session| {
         let mut session=session.borrow_mut();
         if session.is_some() {return Err("publicación: sesión ya instalada");}
-        *session=Some(PublishSession{owner:std::sync::Arc::as_ptr(&h.bridge_owner) as usize, _heap:h.bridge_owner.clone(), sink});
-        Ok(())
+        let owner=std::sync::Arc::as_ptr(&h.bridge_owner) as usize;let thread=std::thread::current().id();
+        *session=Some(PublishSession{owner, thread, _heap:h.bridge_owner.clone(), sink});
+        if let Ok(mut active)=PUBLISH_ACTIVE.lock() {*active=Some((owner,thread));}
+        Ok(PublishSessionGuard{released:false, _thread:std::marker::PhantomData})
     })
 }
-fn clear_publish_session() { PUBLISH_SESSION.with(|session| *session.borrow_mut()=None); }
+fn clear_publish_session() {
+    PUBLISH_SESSION.with(|session| *session.borrow_mut()=None);
+    if let Ok(mut active)=PUBLISH_ACTIVE.lock() {*active=None;}
+}
 fn publish_new_object(h:&mut Heap, id:usize, class:&'static str) {
-    let pending=PUBLISH_SESSION.with(|session| session.borrow().as_ref().map(|s|(s.owner,s.sink.clone())));
-    let Some((owner,sink))=pending else {return;};
+    let pending=PUBLISH_SESSION.with(|session| session.borrow().as_ref().map(|s|(s.owner,s.thread,s.sink.clone())));
+    let Some((owner,thread,sink))=pending else {
+        let active=PUBLISH_ACTIVE.lock().ok().and_then(|a|*a);
+        if let Some((session_owner,_))=(active) {
+            if std::sync::Arc::as_ptr(&h.bridge_owner) as usize==session_owner {error("publicación: hilo distinto al de la sesión");}
+        }
+        return;
+    };
     if std::sync::Arc::as_ptr(&h.bridge_owner) as usize!=owner {error("publicación: otro heap numérico");}
+    // Publicar desde otro hilo no está modelado: el objeto no se comparte y el
+    // proceso aborta con diagnóstico; no se fabrica una excepción Java.
+    if std::thread::current().id()!=thread {error("publicación: hilo distinto al de la sesión");}
     if !sink.admits(class) {return;}
     let handle=match share_project_object(h,id) {Ok(handle)=>handle,Err(e)=>error(&format!("publicación: {e}"))};
     if let Err(e)=sink.publish(owner,id,class,&handle) {error(&format!("publicación: {e}"));}
