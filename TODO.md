@@ -23,7 +23,7 @@ las tareas de abajo y en [`analysis/discussion/STATUS.md`](analysis/discussion/S
 |---|---|---|---|
 | **A** | `a10173b` (mergeado en `f8af240`) | Cerró la ronda 2 con código: sesiones de publicación **por heap**, opt-in unificado `MC_AOT_FUTURES`, referencias mutables (A-04) y la integral de 318 etapas. | Espera de B: Q-AB-1 (campos mutables en el backend concurrente) y Q-AB-2 (nombre del opt-in) antes del PR conjunto del 2026-11-07. |
 | **B** | `f8e3b42` | Contrato de futuros de 83 casos y documentación del entorno del suite (`TMPDIR` fuera del tmpfs, sin `CARGO_TARGET_DIR`). | Tiene **cinco preguntas abiertas** (Q-AB-1, Q-AB-2, Q-BC-8, Q-BC-10, Q-BC-11) y le toca abrir preguntas en la ronda 3. |
-| **C** | `3d9599d` | C-01..C-15 cerradas. En C-15 publicó el predicado ejecutable que decide el contador y la prueba que lo ataca; `QuartPos` queda `review-required` y el contador en 0. | Necesita que A o B firmen la revisión de `QuartPos` (Q-BC-11) para pasar de 0 a 1. |
+| **C** | `de84ba6` | C-01..C-17 cerradas. En C-16 encontró que el «opt-in unificado» de A y B no comparte ningún valor y lo puso en una guarda que falla sola. | Necesita que A elija el valor canónico (Q-AC-9) y que alguien firme la revisión de `QuartPos` (Q-BC-11). |
 
 **Lo que B no está haciendo, y conviene decir en voz alta:** no ha tocado `Main`, no ha implementado
 `commonPool()`, ni excepciones Java de tarea, ni `shutdownNow`, ni interrupción. Su rama es contrato +
@@ -115,6 +115,8 @@ Este frente puede avanzar desde el primer día; no necesita esperar a que `Main`
 - [x] **C-13 · Integración de la línea base y de las respuestas de A** — Merges `be5be6d` (C-01) y `21eb75e` (A-03B) a `main` con `cargo test` 66+32+34+32+33, `check-numeric-auto-publish.py`, `check-class-registry.py`, `check-family-partition.py` y `check-futures-contract.py` en verde antes del push. **Estado: terminada** — `main` `26f04ca`.
 - [x] **C-14 · Superficie de `QuartPos` desde el classfile** — Parser de classfile sin JDK, reconciliación contra reflexión de Java 25 y medición del constructor privado; la clase sigue parcial. **Estado: terminada** — [`analysis/c03-quartpos-class-surface.md`](analysis/c03-quartpos-class-surface.md).
 - [x] **C-15 · Predicado ejecutable del contador** — `mc-aot/tools/class-complete-predicate.py` decide el contador con cinco reglas (superficie reconciliada, evidencia por miembro, `java-only` solo si es inalcanzable sin reflexión, revisión de otro frente, contador = veredictos `complete`); `check-class-complete-predicate.py` ataca el predicado con ocho mutaciones y exige el camino honesto. El contador ya no es un número editado a mano. **Estado: terminada** — [`analysis/c15-class-predicate.md`](analysis/c15-class-predicate.md); responde Q-AC-5.
+- [x] **C-16 · Dos defectos que solo se ven con los tres frentes juntos** — `check-futures-optin-shared.py` vigila que A y B compartan **algún** valor de `MC_AOT_FUTURES` (hoy no comparten ninguno: `completed-only` vs `restricted`, intersección vacía) y `run_logged` deja de escribir `-latest.log` cuando la etapa falla: el parcial va a `-partial.log`. **Estado: terminada** — [`analysis/c16-shared-guards.md`](analysis/c16-shared-guards.md); responde Q-CB-1 y abre Q-AC-9.
+- [x] **C-17 · Integración de la ronda 3 del foro** — merge de las respuestas de A y B con las de C, corrigiendo dos respuestas mal ubicadas y un recuento que no cuadraba con el artefacto. **Estado: terminada** — `analysis/discussion/STATUS.md`.
 
 ## 6. Después de las primeras puertas
 
