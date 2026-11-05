@@ -1,1210 +1,1285 @@
 {
-  "contract": "B-01",
-  "title": "Contrato comprobable de ForkJoinPool, workers, lifecycle y futuros",
-  "version": 1,
-  "updated": "2026-11-05",
-  "base_commit": "8fa1893",
-  "branch": "documentacion/todo-colaboracion-8fa1893",
-  "scope": "Contrato de comportamiento, no implementacion. Cada caso declara si su semantica esta solo en el oraculo Java, si tiene diferencial nativo verificado, si el nativo la rechaza con guarda explicita, si solo hay prueba unitaria Rust, o si falta por completo.",
-  "statuses": {
-    "differential": "El caso se compara Java 25 contra el backend nativo en un test del repositorio y ese test esta en la suite.",
-    "guard": "El backend nativo rechaza el caso con un mensaje literal que existe en mc-aot/src. Un rechazo NO es equivalencia.",
-    "unit": "Solo hay prueba unitaria Rust del runtime; no hay comparacion contra Java.",
-    "java-only": "La semantica esta fijada por un oraculo Java y no existe contraparte nativa.",
-    "unsupported": "Ni diferencial ni guarda dedicada: el caso cae en un rechazo generico o no esta modelado. Requiere tarea asignada."
+ "contract": "B-01",
+ "title": "Contrato comprobable de ForkJoinPool, workers, lifecycle y futuros",
+ "version": 1,
+ "updated": "2026-11-05",
+ "base_commit": "8fa1893",
+ "branch": "documentacion/todo-colaboracion-8fa1893",
+ "scope": "Contrato de comportamiento, no implementacion. Cada caso declara si su semantica esta solo en el oraculo Java, si tiene diferencial nativo verificado, si el nativo la rechaza con guarda explicita, si solo hay prueba unitaria Rust, o si falta por completo.",
+ "statuses": {
+  "differential": "El caso se compara Java 25 contra el backend nativo en un test del repositorio y ese test esta en la suite.",
+  "guard": "El backend nativo rechaza el caso con un mensaje literal que existe en mc-aot/src. Un rechazo NO es equivalencia.",
+  "unit": "Solo hay prueba unitaria Rust del runtime; no hay comparacion contra Java.",
+  "java-only": "La semantica esta fijada por un oraculo Java y no existe contraparte nativa.",
+  "unsupported": "Ni diferencial ni guarda dedicada: el caso cae en un rechazo generico o no esta modelado. Requiere tarea asignada."
+ },
+ "oracles": [
+  {
+   "id": "cf",
+   "java": "mc-aot/tests/CompletableFutureOracle.java",
+   "runner": "mc-aot/tests/check-completable-future-oracle.py",
+   "log": "analysis/completable-future-java25-oracle.log",
+   "runs": 40,
+   "observes": [
+    "normal|null|identity|complete-once",
+    "exception|join-completion|get-execution|same-cause",
+    "cancel|join-direct|get-direct",
+    "allOf|wait-all|same-cause|empty-null",
+    "callbacks|completer-thread|explicit-executor|rejection-cause",
+    "timeout|pending",
+    "interrupt|get-throws-cleared|join-returns-preserved"
+   ]
   },
-  "oracles": [
-    {
-      "id": "cf",
-      "java": "mc-aot/tests/CompletableFutureOracle.java",
-      "runner": "mc-aot/tests/check-completable-future-oracle.py",
-      "log": "analysis/completable-future-java25-oracle.log",
-      "runs": 40,
-      "observes": [
-        "normal|null|identity|complete-once",
-        "exception|join-completion|get-execution|same-cause",
-        "cancel|join-direct|get-direct",
-        "allOf|wait-all|same-cause|empty-null",
-        "callbacks|completer-thread|explicit-executor|rejection-cause",
-        "timeout|pending",
-        "interrupt|get-throws-cleared|join-returns-preserved"
-      ]
-    },
-    {
-      "id": "fjp-handler",
-      "java": "mc-aot/tests/ForkJoinHandlerOracle.java",
-      "runner": "mc-aot/tests/check-forkjoin-handler-oracle.py",
-      "log": "analysis/forkjoin-handler-java25-oracle.log",
-      "runs": 40,
-      "observes": [
-        "execute|handler|misma-excepcion",
-        "submit|join-excepcion|get-executionexception|sin-handler",
-        "supplyAsync|causa-identica|sin-handler",
-        "shutdown|terminacion|rechazo",
-        "submitCallable|valor|causa-envuelta|sin-handler",
-        "invoke|original-o-causa|sin-handler",
-        "commonPool|misma-instancia|paralelismo-positivo",
-        "workerCounters|dentro-del-paralelismo|uno-o-mas-tras-uso|cierre"
-      ]
-    },
-    {
-      "id": "cancel-pending",
-      "java": "mc-aot/tests/CompletableFutureCancelOracle.java",
-      "runner": "mc-aot/tests/check-rayon-pending-future.py",
-      "log": "analysis/check-rayon-pending-future-validation.log",
-      "runs": 40,
-      "observes": [
-        "cancel(false)",
-        "cancel(true)",
-        "completeAfterFalse",
-        "getNowCancellation",
-        "cancel(true) sobre completado"
-      ]
-    }
-  ],
-  "cases": [
-    {
-      "id": "exec.runs-runnable",
-      "operation": "execute",
-      "status": "differential",
-      "java_semantics": "ForkJoinPool.execute(Runnable) despacha el Runnable a un worker; el llamador no espera. El Runnable puede lanzar y eso no cambia la firma void.",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-forkjoin.py",
-        "mc-aot/tests/check-real-tracing-shutdown.py"
-      ],
-      "logs": [
-        "analysis/check-rayon-java-forkjoin-latest.log",
-        "analysis/real-tracing-shutdown-validation.log"
-      ],
-      "owner": "B-02",
-      "note": "Cubierto con Runnable de bytecode Java traducido sobre Rayon, incluido despacho por interfaz Executor y TracingExecutor.execute oficial con hash exacto y opt-ins MC_AOT_RAYON_ASSUME_NO_TRACY/NO_INTERRUPT."
-    },
-    {
-      "id": "exec.throws-runs-handler",
-      "operation": "execute",
-      "status": "guard",
-      "java_semantics": "Si el Runnable lanza, ForkJoinPool invoca el UncaughtExceptionHandler del pool con el Throwable original en el hilo worker; execute no propaga.",
-      "oracles": [
-        "fjp-handler"
-      ],
-      "guard_message": "execute Runnable falló; excepciones Java no soportadas",
-      "logs": [
-        "analysis/forkjoin-handler-java25-oracle.log"
-      ],
-      "owner": "B-06",
-      "note": "El nativo termina el proceso con exit 2 y diagnostico en stderr; no fabrica Throwable ni suplanta el handler. Diferencia declarada, no equivalencia."
-    },
-    {
-      "id": "submit.join-value",
-      "operation": "submit",
-      "status": "differential",
-      "java_semantics": "submit(Runnable) devuelve ForkJoinTask; join() espera la terminacion. El resultado de un Runnable es null.",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-forkjoin.py",
-        "mc-aot/tests/check-rayon-java-worker-lifecycle.py"
-      ],
-      "logs": [
-        "analysis/check-rayon-java-forkjoin-latest.log",
-        "analysis/check-rayon-java-worker-lifecycle-latest.log"
-      ],
-      "owner": "B-02",
-      "note": "Solo submit(Runnable); submit(Callable) no esta traducido (ver comp.* y huecos del oraculo)."
-    },
-    {
-      "id": "submit.join-repeat",
-      "operation": "join",
-      "status": "differential",
-      "java_semantics": "join() repetido devuelve el mismo resultado y no relanza el trabajo; join tras shutdown del pool sigue funcionando si la tarea ya existe.",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-forkjoin.py"
-      ],
-      "logs": [
-        "analysis/check-rayon-java-forkjoin-latest.log"
-      ],
-      "owner": "B-02",
-      "note": "El fixture llama f.join() dos veces y el caso early hace shutdown antes de join."
-    },
-    {
-      "id": "submit.join-nested-same-pool",
-      "operation": "join",
-      "status": "differential",
-      "java_semantics": "Un worker puede enviar y esperar una tarea del mismo pool (join anidado) sin autobloqueo.",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-forkjoin.py",
-        "mc-aot/tests/check-rayon-forkjoin-profile.py"
-      ],
-      "logs": [
-        "analysis/check-rayon-java-forkjoin-latest.log",
-        "analysis/check-rayon-forkjoin-profile-latest.log"
-      ],
-      "owner": "B-02",
-      "note": "Resuelto con ayuda activa del trabajador; no demuestra el modelo completo de compensation de ForkJoinPool."
-    },
-    {
-      "id": "submit.throws-join-diagnostic",
-      "operation": "join",
-      "status": "guard",
-      "java_semantics": "join() de una tarea que fallo relanza la excepcion original sin envolverla.",
-      "guard_message": "ejecución concurrent-int",
-      "logs": [
-        "analysis/check-rayon-java-forkjoin-latest.log"
-      ],
-      "owner": "B-04",
-      "note": "El nativo propaga un FrameError que termina el proceso con diagnostico; no se convierte en excepcion Java (regla del roadmap)."
-    },
-    {
-      "id": "submit.get-execution",
-      "operation": "get",
-      "status": "unsupported",
-      "java_semantics": "ForkJoinTask.get() espera y envuelve el fallo en ExecutionException; get(timeout) lanza TimeoutException.",
-      "oracles": [
-        "fjp-handler"
-      ],
-      "owner": "B-04",
-      "note": "No hay soporte ni guarda dedicada: la llamada cae en el rechazo generico de llamada externa. B-04 debe anadir guarda con mensaje propio antes de modelarla."
-    },
-    {
-      "id": "submit.throws-no-handler",
-      "operation": "submit",
-      "status": "java-only",
-      "java_semantics": "submit no invoca el UncaughtExceptionHandler del pool; el fallo se conserva en la tarea y se observa en join/get.",
-      "oracles": [
-        "fjp-handler"
-      ],
-      "logs": [
-        "analysis/forkjoin-handler-java25-oracle.log"
-      ],
-      "owner": "B-04",
-      "note": "Fijado en el oraculo (calls.get()==1 tras execute, submit y supplyAsync). Sin contraparte nativa porque el handler no existe."
-    },
-    {
-      "id": "pool.ctor-parallelism",
-      "operation": "constructor",
-      "status": "differential",
-      "java_semantics": "new ForkJoinPool(int) fija el paralelismo objetivo; valores fuera de rango lanzan IllegalArgumentException y ForkJoinPool rechaza paralelismos absurdos.",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-forkjoin.py"
-      ],
-      "guard_message": "paralelismo fuera del perfil 1..255",
-      "logs": [
-        "analysis/check-rayon-java-forkjoin-latest.log"
-      ],
-      "owner": "B-02",
-      "note": "Perfil 1..255. El limite superior es del adaptador, no de Java: se declara rechazado, no equivalente."
-    },
-    {
-      "id": "pool.ctor-four-args-null-handler",
-      "operation": "constructor",
-      "status": "differential",
-      "java_semantics": "Constructor de cuatro argumentos (paralelismo, factory, handler, asyncMode) con handler null y factory por defecto.",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-worker-lifecycle.py",
-        "mc-aot/tests/check-rayon-java-forkjoin.py"
-      ],
-      "logs": [
-        "analysis/check-rayon-java-worker-lifecycle-latest.log",
-        "analysis/rayon-lifecycle-validation.log"
-      ],
-      "owner": "B-02",
-      "note": "Es el constructor que usa Util.makeExecutor, pero con handler null y factory trivial/por defecto. La ruta real de Minecraft sigue bloqueada."
-    },
-    {
-      "id": "pool.ctor-handler-non-null",
-      "operation": "constructor",
-      "status": "guard",
-      "java_semantics": "El handler del pool recibe la excepcion de execute en el hilo worker; su identidad y el hilo se observan (worker.get() != null).",
-      "oracles": [
-        "fjp-handler"
-      ],
-      "guard_message": "handler personalizado no soportado",
-      "logs": [
-        "analysis/forkjoin-handler-java25-oracle.log"
-      ],
-      "owner": "B-06",
-      "note": "Rechazo en compilacion antes de crear el pool. Es el bloqueo declarado de Util.makeExecutor."
-    },
-    {
-      "id": "pool.ctor-custom-java-factory",
-      "operation": "constructor",
-      "status": "guard",
-      "java_semantics": "Una ForkJoinWorkerThreadFactory arbitraria de Java puede crear workers con estado propio.",
-      "guard_message": "factory Java no trivial",
-      "logs": [
-        "analysis/check-rayon-java-forkjoin-latest.log"
-      ],
-      "owner": "B-02",
-      "note": "Solo se acepta la factory por defecto y un perfil muy restringido (un worker, async=true, capturas String/AtomicInteger)."
-    },
-    {
-      "id": "pool.ctor-custom-factory-profile",
-      "operation": "constructor",
-      "status": "guard",
-      "java_semantics": "El modo async y el numero de workers los decide el constructor, no el adaptador.",
-      "guard_message": "factory personalizada requiere un worker y async=true",
-      "logs": [
-        "analysis/check-rayon-java-worker-lifecycle-latest.log"
-      ],
-      "owner": "B-02",
-      "note": "Los 312 resultados del lifecycle cubren este subperfil; cualquier otra combinacion se rechaza."
-    },
-    {
-      "id": "pool.lazy-start",
-      "operation": "lifecycle",
-      "status": "unit",
-      "java_semantics": "Java crea los workers al construir el pool; el adaptador los crea al primer envio y no arranca nada si el pool nunca se usa.",
-      "unit_test": "constructor_and_unused_shutdown_do_not_start_workers",
-      "src": "mc-aot/src/executor_runtime.rs",
-      "owner": "B-02",
-      "note": "Diferencia conocida y aceptada: la puerta del roadmap pide comportamiento observable, no creacion gradual de hilos. Rayon crea todos sus workers de golpe al primer envio."
-    },
-    {
-      "id": "pool.shutdown-idempotent",
-      "operation": "shutdown",
-      "status": "differential",
-      "java_semantics": "shutdown() es idempotente, no cancela tareas ya enviadas y permite awaitTermination.",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-forkjoin.py"
-      ],
-      "logs": [
-        "analysis/check-rayon-java-forkjoin-latest.log"
-      ],
-      "owner": "B-02",
-      "note": "El fixture llama p.shutdown() dos veces; shutdown por interfaz ExecutorService tambien esta cubierto."
-    },
-    {
-      "id": "pool.await-termination",
-      "operation": "awaitTermination",
-      "status": "differential",
-      "java_semantics": "awaitTermination(timeout, unit) devuelve true si el pool termino, false si vencio el plazo; admite las siete unidades de TimeUnit.",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-worker-lifecycle.py",
-        "mc-aot/tests/check-rayon-forkjoin-profile.py"
-      ],
-      "logs": [
-        "analysis/rayon-await-validation.log",
-        "analysis/check-rayon-java-worker-lifecycle-latest.log"
-      ],
-      "owner": "B-02",
-      "note": "La espera acotada y el rechazo de autoespera desde workers y callbacks estan verificados. Limitacion: la suite integral aprobada es anterior a awaitTermination."
-    },
-    {
-      "id": "pool.await-self",
-      "operation": "awaitTermination",
-      "status": "guard",
-      "java_semantics": "Desde un worker del mismo pool, awaitTermination puede bloquear o agotar el plazo; Java no garantiza progreso.",
-      "guard_message": "awaitTermination desde worker propio no soportado",
-      "owner": "B-02",
-      "note": "Rechazo explicito en lugar de bloqueo silencioso. No se afirma equivalencia con el caso Java."
-    },
-    {
-      "id": "pool.shutdown-now",
-      "operation": "shutdownNow",
-      "status": "guard",
-      "java_semantics": "shutdownNow() cancela tareas pendientes, interrumpe workers y devuelve la lista de tareas no iniciadas.",
-      "tests": [
-        "mc-aot/tests/check-real-tracing-shutdown.py"
-      ],
-      "guard_message": "shutdownNow no soportado",
-      "logs": [
-        "analysis/real-tracing-shutdown-validation.log"
-      ],
-      "owner": "B-02",
-      "note": "Guard verificado por el test de TracingExecutor; no se modela cancelacion ni interrupcion."
-    },
-    {
-      "id": "pool.reject-after-shutdown",
-      "operation": "rechazo",
-      "status": "differential",
-      "java_semantics": "Tras shutdown, execute/submit lanzan RejectedExecutionException.",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-forkjoin.py"
-      ],
-      "guard_message": "pool cerrado",
-      "logs": [
-        "analysis/check-rayon-java-forkjoin-latest.log"
-      ],
-      "owner": "B-02",
-      "note": "La condicion (rechazo) coincide con Java, el mecanismo (diagnostico y salida) no: no se fabrica RejectedExecutionException. Se declara rechazo observado, no equivalencia de excepcion."
-    },
-    {
-      "id": "pool.close-does-not-keep-alive",
-      "operation": "lifecycle",
-      "status": "unit",
-      "java_semantics": "Una tarea o futuro completado no mantiene vivo el pool cerrado.",
-      "unit_test": "completed_future_does_not_keep_shutdown_pool_alive",
-      "src": "mc-aot/src/executor_runtime.rs",
-      "owner": "B-02",
-      "note": "Prueba unitaria Rust del runtime, no diferencial Java."
-    },
-    {
-      "id": "pool.no-global-pool-fallback",
-      "operation": "lifecycle",
-      "status": "unit",
-      "java_semantics": "Ningun fallo de factory puede degradarse silenciosamente al pool comun.",
-      "unit_test": "rejected_hooks_never_fall_back_to_default_pool",
-      "src": "mc-aot/src/executor_runtime.rs",
-      "owner": "B-02",
-      "note": "Regla del proyecto: no sustituir comportamiento ausente por uno ficticio."
-    },
-    {
-      "id": "pool.single-pool-per-object",
-      "operation": "lifecycle",
-      "status": "unit",
-      "java_semantics": "Un objeto ForkJoinPool tiene una sola identidad y una sola inicializacion.",
-      "unit_test": "racing_first_use_creates_only_one_pool",
-      "src": "mc-aot/src/executor_runtime.rs",
-      "owner": "B-02",
-      "note": "Carrera cubierta a nivel Rust; falta el diferencial Java de identidad de pool (ver huecos)."
-    },
-    {
-      "id": "worker.onstart-ontermination",
-      "operation": "worker",
-      "status": "differential",
-      "java_semantics": "onStart se ejecuta una vez al arrancar el worker y onTermination al terminar; su efecto observable (campos String, contadores) es comparable.",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-worker-lifecycle.py",
-        "mc-aot/tests/check-real-util-worker-onstart.py"
-      ],
-      "logs": [
-        "analysis/real-util-worker-onstart.log",
-        "analysis/check-rayon-java-worker-lifecycle-latest.log"
-      ],
-      "owner": "B-02",
-      "note": "Hasta dos campos String capturados, un solo worker, handler null, async=true."
-    },
-    {
-      "id": "worker.name",
-      "operation": "worker",
-      "status": "differential",
-      "java_semantics": "setName/getName del ForkJoinWorkerThread y el nombre de hilo visible son observables.",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-worker-lifecycle.py"
-      ],
-      "logs": [
-        "analysis/rayon-worker-name-validation.log",
-        "analysis/rayon-worker-name-regressions.log"
-      ],
-      "owner": "B-02",
-      "note": "Los nombres no son identicos a los de Java en todos los casos; solo se comparan literales del perfil."
-    },
-    {
-      "id": "worker.override-run-start",
-      "operation": "worker",
-      "status": "guard",
-      "java_semantics": "Un ForkJoinWorkerThread puede sobrescribir run/start y cambiar el bucle del worker.",
-      "guard_message": "worker con override run/start no soportado",
-      "logs": [
-        "analysis/check-rayon-java-worker-lifecycle-latest.log"
-      ],
-      "owner": "B-02",
-      "note": "Rechazo en compilacion."
-    },
-    {
-      "id": "worker.util-logger-pending",
-      "operation": "worker",
-      "status": "guard",
-      "java_semantics": "Util.makeExecutor referencia Util.LOGGER y Util.onThreadException; sin logger no hay factory real.",
-      "tests": [
-        "mc-aot/tests/check-real-util-worker-guards.py"
-      ],
-      "guard_message": "campo externo no soportado",
-      "logs": [
-        "analysis/real-util-worker-guards.log",
-        "analysis/check-real-util-worker-guards-latest.log"
-      ],
-      "owner": "B-06",
-      "note": "Guard que documenta el bloqueo real: Logger no implementado (log4rs aparcado). No se simula."
-    },
-    {
-      "id": "future.completed-identity-null",
-      "operation": "completedFuture",
-      "status": "differential",
-      "java_semantics": "completedFuture(v) crea un futuro ya completado con v; completedFuture(null) devuelve null en join/get/getNow; dos llamadas no son la misma instancia.",
-      "tests": [
-        "mc-aot/tests/check-rayon-completed-future.py",
-        "mc-aot/tests/check-numeric-completed-future.py"
-      ],
-      "logs": [
-        "analysis/check-rayon-completed-future-validation.log",
-        "analysis/check-numeric-completed-future-validation.log"
-      ],
-      "owner": "B-03",
-      "note": "Perfil restringido existente; identificadores de objeto no son identidad Java general."
-    },
-    {
-      "id": "future.completed-queries",
-      "operation": "completedFuture",
-      "status": "differential",
-      "java_semantics": "isDone()==true, isCancelled()==false, isCompletedExceptionally()==false, getNow(x)==valor para un futuro completado normalmente.",
-      "tests": [
-        "mc-aot/tests/check-rayon-completed-future.py",
-        "mc-aot/tests/check-numeric-completed-future.py",
-        "mc-aot/tests/check-real-chunk-passthrough-future.py"
-      ],
-      "logs": [
-        "analysis/check-rayon-completed-future-validation.log",
-        "analysis/check-real-chunk-passthrough-future-validation.log"
-      ],
-      "owner": "B-03",
-      "note": "Incluye instanceof/getClass y NPE capturada del perfil."
-    },
-    {
-      "id": "future.completed-cells",
-      "operation": "completedFuture",
-      "status": "differential",
-      "java_semantics": "complete()/cancel() sobre un futuro ya completado normal devuelven false y no cambian el valor.",
-      "tests": [
-        "mc-aot/tests/check-rayon-completed-future.py",
-        "mc-aot/tests/check-numeric-completed-future.py"
-      ],
-      "logs": [
-        "analysis/check-rayon-completed-future-validation.log",
-        "analysis/check-numeric-completed-future-validation.log"
-      ],
-      "owner": "B-03",
-      "note": "Solo la celda ya completada; no hay transiciones desde pendiente."
-    },
-    {
-      "id": "future.completed-shared-workers",
-      "operation": "completedFuture",
-      "status": "differential",
-      "java_semantics": "Varios workers pueden leer el mismo futuro completado mientras el llamador tambien lo lee.",
-      "tests": [
-        "mc-aot/tests/check-rayon-shared-completed-future.py"
-      ],
-      "logs": [
-        "analysis/check-rayon-shared-completed-future-validation.log"
-      ],
-      "owner": "B-03",
-      "note": "Cuatro Runnable con captura final protegida por monitor estatico; guarda de captura no final."
-    },
-    {
-      "id": "future.completed-real-passthrough",
-      "operation": "completedFuture",
-      "status": "differential",
-      "java_semantics": "ChunkStatusTasks.passThrough devuelve completedFuture(chunk) y admite null; la identidad del ChunkAccess se conserva.",
-      "tests": [
-        "mc-aot/tests/check-real-chunk-passthrough-future.py"
-      ],
-      "logs": [
-        "analysis/check-real-chunk-passthrough-future-validation.log"
-      ],
-      "owner": "B-03",
-      "note": "Clase oficial con hash verificado; colaboradores (ChunkAccess, logger) son stubs: no es integracion de mundo."
-    },
-    {
-      "id": "future.pending-state",
-      "operation": "futuro pendiente",
-      "status": "differential",
-      "java_semantics": "Un CompletableFuture recién creado está pendiente: isDone()==false, getNow(x)==x, y se completa una sola vez.",
-      "oracles": [
-        "cf"
-      ],
-      "logs": [
-        "analysis/b03-b08-futures-suite-jdk25.log"
-      ],
-      "owner": "B-03",
-      "note": "Subperfil B-03: pendiente + completado normal en el backend concurrente. El backend numerico sigue rechazando `new` (new no soportado).",
-      "tests": [
-        "mc-aot/tests/check-rayon-pending-future.py"
-      ]
-    },
-    {
-      "id": "future.obtrude",
-      "operation": "futuro pendiente",
-      "status": "guard",
-      "java_semantics": "obtrudeValue/obtrudeException fuerzan el resultado aunque el futuro este completado.",
-      "guard_message": "CompletableFuture: operación no soportada",
-      "logs": [
-        "analysis/check-numeric-completed-future-latest.log"
-      ],
-      "owner": "B-03",
-      "note": "Mensaje generico por firma no listada; el test lo comprueba con obtrudeValue."
-    },
-    {
-      "id": "future.complete-exceptionally",
-      "operation": "fallo de futuro",
-      "status": "guard",
-      "java_semantics": "completeExceptionally(cause) completa en fallo; join lanza CompletionException con la misma causa y get lanza ExecutionException.",
-      "oracles": [
-        "cf"
-      ],
-      "guard_message": "CompletableFuture: operación no soportada",
-      "logs": [
-        "analysis/completable-future-java25-oracle.log"
-      ],
-      "owner": "B-03",
-      "note": "Incluye el `new CompletableFuture<>()` con completeExceptionally del test; depende del modelo de excepciones acordado con A (B-04)."
-    },
-    {
-      "id": "future.optin-rayon",
-      "operation": "perfil",
-      "status": "guard",
-      "java_semantics": "La semantica de futuro no depende de variables de entorno; es una restriccion del adaptador experimental.",
-      "guard_message": "completedFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1",
-      "logs": [
-        "analysis/check-rayon-completed-future-latest.log"
-      ],
-      "owner": "B-03",
-      "note": "Opt-in obligatorio: sin la variable el programa no se genera. Debe desaparecer al integrar en el backend principal."
-    },
-    {
-      "id": "future.optin-numeric",
-      "operation": "perfil",
-      "status": "guard",
-      "java_semantics": "Igual que future.optin-rayon, para el backend principal monohilo.",
-      "guard_message": "CompletableFuture: requiere MC_AOT_NUMERIC_COMPLETED_FUTURE=1",
-      "logs": [
-        "analysis/check-numeric-completed-future-latest.log"
-      ],
-      "owner": "B-03",
-      "note": "Dos opt-ins distintos hoy; B-07 debe unificarlos en una sola interfaz para A."
-    },
-    {
-      "id": "future.capture-final",
-      "operation": "perfil",
-      "status": "guard",
-      "java_semantics": "Java permite capturar una referencia mutable a un futuro en un campo de clase.",
-      "guard_message": "captura CompletableFuture debe ser final",
-      "logs": [
-        "analysis/check-rayon-shared-completed-future-latest.log"
-      ],
-      "owner": "B-03",
-      "note": "Restriccion del compilador, no de Java; se mantiene hasta que exista publicacion segura acordada con A."
-    },
-    {
-      "id": "future.only-completed-heap",
-      "operation": "completedFuture",
-      "status": "guard",
-      "java_semantics": "Un objeto Java de tipo CompletableFuture puede estar en cualquier estado.",
-      "guard_message": "solo completado normal del perfil",
-      "logs": [
-        "analysis/check-numeric-completed-future-latest.log"
-      ],
-      "owner": "B-03",
-      "note": "El heap numerico solo materializa futuros completados normalmente; guarda en numeric_runtime.inc."
-    },
-    {
-      "id": "comp.supply-async",
-      "operation": "composición",
-      "status": "unsupported",
-      "java_semantics": "supplyAsync(supplier, pool) ejecuta en el pool; el fallo del supplier llega como CompletionException con causa identica y no invoca el handler.",
-      "oracles": [
-        "fjp-handler"
-      ],
-      "logs": [
-        "analysis/forkjoin-handler-java25-oracle.log"
-      ],
-      "owner": "B-05",
-      "note": "No implementado. Es la primera pieza que pide la ruta real de Minecraft (Util.makeExecutor + supplyAsync)."
-    },
-    {
-      "id": "comp.then-apply",
-      "operation": "composición",
-      "status": "unsupported",
-      "java_semantics": "thenApply sin executor ejecuta el callback en el hilo que completa, no en el que registro el callback.",
-      "oracles": [
-        "cf"
-      ],
-      "owner": "B-05",
-      "note": "El oraculo fija el hilo ('future-completer:ok'); el nativo no lo implementa."
-    },
-    {
-      "id": "comp.then-apply-async-executor",
-      "operation": "composición",
-      "status": "unsupported",
-      "java_semantics": "thenApplyAsync(fn, executor) usa el executor indicado una vez; si el executor rechaza, la causa es RejectedExecutionException.",
-      "oracles": [
-        "cf"
-      ],
-      "owner": "B-05",
-      "note": "Requiere ejecutar el executor de usuario, hoy fuera del perfil (solo ForkJoinPool y Executor traducidos)."
-    },
-    {
-      "id": "comp.allof",
-      "operation": "composición",
-      "status": "unsupported",
-      "java_semantics": "allOf espera a todos; si uno falla, el compuesto falla con la misma causa; allOf() vacio devuelve null.",
-      "oracles": [
-        "cf"
-      ],
-      "owner": "B-05",
-      "note": "No implementado."
-    },
-    {
-      "id": "comp.then-compose",
-      "operation": "composición",
-      "status": "unsupported",
-      "java_semantics": "thenCompose aplana un futuro anidado; identidad del futuro interno y propagacion de fallos.",
-      "owner": "B-05",
-      "note": "Ningun oraculo lo cubre todavia: B-05 debe ampliar el oraculo antes de implementar. Hueco declarado."
-    },
-    {
-      "id": "err.handler-identity",
-      "operation": "errores",
-      "status": "java-only",
-      "java_semantics": "El handler recibe el Throwable original (identidad ==) y el hilo worker que fallo.",
-      "oracles": [
-        "fjp-handler"
-      ],
-      "logs": [
-        "analysis/forkjoin-handler-java25-oracle.log"
-      ],
-      "owner": "B-04",
-      "note": "Semantica fijada; la implementacion exige el modelo de excepciones y el logger de Util.onThreadException (B-06)."
-    },
-    {
-      "id": "err.join-vs-get-types",
-      "operation": "errores",
-      "status": "java-only",
-      "java_semantics": "En un futuro fallido: join lanza CompletionException, get lanza ExecutionException, ambos con la causa original. En ForkJoinTask, join relanza la excepcion original sin envolver.",
-      "oracles": [
-        "cf",
-        "fjp-handler"
-      ],
-      "logs": [
-        "analysis/completable-future-java25-oracle.log",
-        "analysis/forkjoin-handler-java25-oracle.log"
-      ],
-      "owner": "B-04",
-      "note": "Tres mecanismos distintos fijados por oraculo; ninguno implementado en nativo."
-    },
-    {
-      "id": "err.cancel-pending",
-      "operation": "cancelación",
-      "status": "java-only",
-      "java_semantics": "cancel(false) de un pendiente lo deja isCancelled()==true y get/join lanzan CancellationException directamente.",
-      "oracles": [
-        "cf"
-      ],
-      "owner": "B-03",
-      "note": "El nativo solo prueba cancel sobre futuros ya completados, que devuelve false."
-    },
-    {
-      "id": "err.timeout-get",
-      "operation": "timeout",
-      "status": "java-only",
-      "java_semantics": "get(timeout, unit) lanza TimeoutException sin completar el futuro; el futuro sigue pendiente.",
-      "oracles": [
-        "cf"
-      ],
-      "owner": "B-04",
-      "note": "Requiere futuro pendiente (B-03) y timeouts reales."
-    },
-    {
-      "id": "err.interrupt-get",
-      "operation": "interrupción",
-      "status": "java-only",
-      "java_semantics": "Interrumpir un hilo bloqueado en get lanza InterruptedException y limpia el flag de interrupcion.",
-      "oracles": [
-        "cf"
-      ],
-      "guard_message": "MC_AOT_RAYON_ASSUME_NO_INTERRUPT",
-      "logs": [
-        "analysis/real-tracing-shutdown-validation.log"
-      ],
-      "owner": "B-04",
-      "note": "El adaptador exige declarar que no hay interrupciones; el oraculo fija lo contrario en Java. Diferencia declarada, no equivalencia."
-    },
-    {
-      "id": "err.join-interrupt",
-      "operation": "interrupción",
-      "status": "java-only",
-      "java_semantics": "join() no lanza InterruptedException: ignora la interrupcion y devuelve el valor conservando el flag.",
-      "oracles": [
-        "cf"
-      ],
-      "owner": "B-04",
-      "note": "Asimetria get/join fijada por oraculo (etiqueta interrupt|get-throws-cleared|join-returns-preserved)."
-    },
-    {
-      "id": "pool.query-is-shutdown",
-      "operation": "lifecycle",
-      "status": "differential",
-      "java_semantics": "isShutdown() es false hasta shutdown() y true después, también invocado por la interfaz ExecutorService; no implica terminación.",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-pool-queries.py"
-      ],
-      "logs": [
-        "analysis/b02-futures-suite-jdk25.log"
-      ],
-      "owner": "B-02",
-      "note": "Implementado en el perfil restringido (Step::PoolIsShutdown sobre el registro de pools). 24 resultados Java 25/Rayon, incluido despacho por interfaz."
-    },
-    {
-      "id": "pool.query-is-terminated",
-      "operation": "lifecycle",
-      "status": "differential",
-      "java_semantics": "isTerminated() es false mientras queda trabajo o el pool sigue abierto; es true tras el cierre sin tareas, y también para un pool que nunca se usó. No espera.",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-pool-queries.py",
-        "mc-aot/tests/rayon_pool_queries.rs"
-      ],
-      "logs": [
-        "analysis/b02-futures-suite-jdk25.log"
-      ],
-      "owner": "B-02",
-      "note": "Consulta no bloqueante; se permite desde un worker porque no espera, a diferencia de awaitTermination. Medido ademas en 40 rondas (ver analysis/review-answers-from-b.md): un pool nunca usado queda isShutdown e isTerminated en true tras shutdown (40/40); un pool usado que se cierra devuelve isTerminated false de inmediato (0/40), y por eso ese caso NO se compara como diferencial: depende de cuando termina el worker, no de una garantia."
-    },
-    {
-      "id": "pool.query-parallelism",
-      "operation": "lifecycle",
-      "status": "differential",
-      "java_semantics": "getParallelism() devuelve el paralelismo configurado y Java lo conserva después del cierre; no depende del número de hilos vivos.",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-pool-queries.py"
-      ],
-      "logs": [
-        "analysis/b02-futures-suite-jdk25.log"
-      ],
-      "owner": "B-02",
-      "note": "Se lee del registro de pools, no de Rayon, porque Rayon crea todos los trabajadores al primer envío."
-    },
-    {
-      "id": "pool.query-termination-requires-rayon",
-      "operation": "lifecycle",
-      "status": "guard",
-      "java_semantics": "Java siempre puede responder isTerminated(); no depende del adaptador.",
-      "guard_message": "terminación real requiere Rayon",
-      "logs": [
-        "analysis/b02-futures-suite-jdk25.log"
-      ],
-      "owner": "B-02",
-      "note": "En el crate (scheduler de reserva) no hay hilos que observar: la consulta se rechaza igual que awaitTermination. El perfil real vive en el adaptador Rayon embebido en el programa generado."
-    },
-    {
-      "id": "pool.query-unsupported-counts",
-      "operation": "lifecycle",
-      "status": "guard",
-      "java_semantics": "getActiveThreadCount, getPoolSize, getRunningThreadCount y getQueuedSubmissionCount informan del estado interno de los workers.",
-      "guard_message": "clase no encontrada en versiones ni bibliotecas",
-      "tests": [
-        "mc-aot/tests/check-rayon-java-pool-queries.py"
-      ],
-      "logs": [
-        "analysis/b02-futures-suite-jdk25.log"
-      ],
-      "owner": "B-02",
-      "note": "Sin guarda dedicada: el método cae en el rechazo de carga de clase JDK. Se documenta como rechazo de traducción, no como equivalencia."
-    },
-    {
-      "id": "pool.query-unit-crate-path",
-      "operation": "lifecycle",
-      "status": "unit",
-      "java_semantics": "Un pool que nunca se usó queda terminado al cerrarse.",
-      "unit_test": "never_started_pool_is_terminated_after_shutdown",
-      "src": "mc-aot/src/executor_runtime.rs",
-      "owner": "B-02",
-      "note": "Prueba del crate con el scheduler de reserva, donde la terminación real no está disponible."
-    },
-    {
-      "id": "pool.query-real-workers",
-      "operation": "lifecycle",
-      "status": "unit",
-      "java_semantics": "isShutdown/isTerminated/getParallelism siguen el ciclo real de los trabajadores Rayon.",
-      "unit_test": "queries_track_real_worker_lifecycle",
-      "src": "mc-aot/tests/rayon_pool_queries.rs",
-      "owner": "B-02",
-      "note": "Integración con adaptador Rayon real: submit, join, cierre y terminación observada."
-    },
-    {
-      "id": "pool.shutdown-non-blocking",
-      "operation": "shutdown",
-      "status": "unit",
-      "java_semantics": "shutdown() no espera a las tareas en curso e isTerminated() es false mientras corren.",
-      "unit_test": "running_task_keeps_pool_not_terminated",
-      "src": "mc-aot/tests/rayon_pool_queries.rs",
-      "owner": "B-02",
-      "note": "Verificado con tarea de 300 ms: el cierre vuelve en menos de 250 ms y la terminación llega después del join."
-    },
-    {
-      "id": "pool.query-foreign-ids",
-      "operation": "lifecycle",
-      "status": "unit",
-      "java_semantics": "Una referencia a otro pool no puede responderse como si fuera propia.",
-      "unit_test": "foreign_pool_ids_are_rejected_not_answered",
-      "src": "mc-aot/tests/rayon_pool_queries.rs",
-      "owner": "B-02",
-      "note": "Ids de otro heap se rechazan en las tres consultas; no se devuelve false por defecto."
-    },
-    {
-      "id": "submit.callable-value",
-      "operation": "submit",
-      "status": "unsupported",
-      "java_semantics": "submit(Callable) devuelve el valor producido; con fallo, get() lanza ExecutionException.",
-      "oracles": [
-        "fjp-handler"
-      ],
-      "owner": "B-04",
-      "note": "No modelado: la llamada cae en el rechazo genérico de traducción. Primer paso: decidir si Callable entra en el perfil o se rechaza con mensaje propio."
-    },
-    {
-      "id": "submit.callable-cause-wrapped",
-      "operation": "errores",
-      "status": "java-only",
-      "java_semantics": "En submit(Callable) el adaptador NO conserva la identidad de la causa: ExecutionException.getCause() es un envoltorio nuevo, y el handler no se invoca.",
-      "oracles": [
-        "fjp-handler"
-      ],
-      "logs": [
-        "analysis/forkjoin-handler-java25-oracle.log"
-      ],
-      "owner": "B-04",
-      "note": "Corrige una suposición previa del contrato: la causa identica solo esta verificada para supplyAsync, no para submit(Callable). Quien implemente B-04 no puede reutilizar el mecanismo de supplyAsync sin comprobarlo."
-    },
-    {
-      "id": "submit.invoke-rethrows",
-      "operation": "errores",
-      "status": "java-only",
-      "java_semantics": "invoke() sobre una tarea que falla relanza la excepcion original o una cuyo cause es la original; el handler no participa.",
-      "oracles": [
-        "fjp-handler"
-      ],
-      "logs": [
-        "analysis/forkjoin-handler-java25-oracle.log"
-      ],
-      "owner": "B-04",
-      "note": "La forma concreta (misma instancia o envoltorio) no es estable entre ejecuciones: el oraculo exige solo que no se pierda la causa."
-    },
-    {
-      "id": "pool.common-pool",
-      "operation": "lifecycle",
-      "status": "unsupported",
-      "java_semantics": "ForkJoinPool.commonPool() devuelve siempre la misma instancia y su paralelismo es >= 1.",
-      "oracles": [
-        "fjp-handler"
-      ],
-      "owner": "B-02",
-      "note": "No modelado: exige un pool global compartido por procesos, fuera del perfil por objeto. Debe rechazarse explicitamente o modelarse con una identidad acordada con A."
-    },
-    {
-      "id": "pool.worker-counters",
-      "operation": "lifecycle",
-      "status": "java-only",
-      "java_semantics": "getPoolSize, getActiveThreadCount, getRunningThreadCount, getQueuedSubmissionCount y getQueuedTaskCount nunca exceden el paralelismo y hay al menos un worker tras usar el pool; no se promete creacion gradual ni valores exactos.",
-      "oracles": [
-        "fjp-handler"
-      ],
-      "logs": [
-        "analysis/forkjoin-handler-java25-oracle.log"
-      ],
-      "owner": "B-02",
-      "note": "Invariantes fijados por el oraculo; el nativo no los expone (ver gap.no-guard-for-lifecycle-queries)."
-    },
-    {
-      "id": "future.pending-queries",
-      "operation": "futuro pendiente",
-      "status": "differential",
-      "java_semantics": "Pendiente: isDone()==false, isCancelled()==false, isCompletedExceptionally()==false y getNow(x) devuelve x sin completar el futuro.",
-      "tests": [
-        "mc-aot/tests/check-rayon-pending-future.py"
-      ],
-      "logs": [
-        "analysis/b03-b08-futures-suite-jdk25.log"
-      ],
-      "owner": "B-03",
-      "note": "Consultas sobre el estado pendiente, contrastadas con Java 25."
-    },
-    {
-      "id": "future.pending-complete-once",
-      "operation": "futuro pendiente",
-      "status": "differential",
-      "java_semantics": "complete(v) devuelve true la primera vez y false después; el valor queda fijado y join/getNow lo devuelven, incluido null.",
-      "tests": [
-        "mc-aot/tests/check-rayon-pending-future.py"
-      ],
-      "logs": [
-        "analysis/b03-b08-futures-suite-jdk25.log"
-      ],
-      "owner": "B-03",
-      "note": "Transición única pendiente→completado normal, atómica en el heap compartido."
-    },
-    {
-      "id": "future.pending-publication",
-      "operation": "futuro pendiente",
-      "status": "differential",
-      "java_semantics": "Un futuro pendiente puede publicarse en un campo final de otra clase y completarse después; quien lee el campo ve el mismo objeto.",
-      "tests": [
-        "mc-aot/tests/check-rayon-pending-future.py"
-      ],
-      "logs": [
-        "analysis/b03-b08-futures-suite-jdk25.log"
-      ],
-      "owner": "B-03",
-      "note": "Antes solo se admitían futuros ya completados en campos; ahora se admite pendiente, que es lo que hace el código real de Minecraft."
-    },
-    {
-      "id": "future.pending-join-blocked",
-      "operation": "futuro pendiente",
-      "status": "guard",
-      "java_semantics": "join()/get() de un futuro pendiente esperan hasta que se complete.",
-      "guard_message": "join de futuro pendiente no soportado",
-      "tests": [
-        "mc-aot/tests/check-rayon-pending-future.py"
-      ],
-      "logs": [
-        "analysis/b03-b08-futures-suite-jdk25.log"
-      ],
-      "owner": "B-03",
-      "note": "Guarda de ejecución (el binario aborta con diagnóstico); no hay espera bloqueante ni autoayuda entre frames."
-    },
-    {
-      "id": "future.pending-cancel",
-      "operation": "futuro pendiente",
-      "status": "guard",
-      "java_semantics": "cancel(false) de un pendiente devuelve true y deja isCancelled()==true; get/join lanzan CancellationException.",
-      "guard_message": "cancel de futuro pendiente no soportado",
-      "tests": [
-        "mc-aot/tests/check-rayon-pending-future.py"
-      ],
-      "logs": [
-        "analysis/b03-b08-futures-suite-jdk25.log"
-      ],
-      "owner": "B-03",
-      "note": "Se rechaza en ejecucion, con las dos banderas (cancel(false) y cancel(true)); cancelar sobre un futuro ya completado sigue devolviendo false, como Java. La semantica Java de cada bandera esta medida en future.cancel-pending-false/true."
-    },
-    {
-      "id": "future.pending-unit-heap",
-      "operation": "futuro pendiente",
-      "status": "unit",
-      "java_semantics": "Estado pendiente, finalización única y consultas coherentes en el heap.",
-      "unit_test": "pending_future_completes_once_and_reports_state",
-      "src": "mc-aot/src/concurrent_heap.rs",
-      "owner": "B-03",
-      "note": "Incluye doble inicialización rechazada y join rechazado antes de completar."
-    },
-    {
-      "id": "future.pending-unit-foreign",
-      "operation": "futuro pendiente",
-      "status": "unit",
-      "java_semantics": "Un objeto que no es futuro o un valor de otro heap no puede completar un futuro.",
-      "unit_test": "pending_future_rejects_foreign_objects_and_values",
-      "src": "mc-aot/src/concurrent_heap.rs",
-      "owner": "B-03",
-      "note": "Guarda de pertenencia a heap, coherente con el contrato de identidad de A."
-    },
-    {
-      "id": "future.pending-completion-race",
-      "operation": "futuro pendiente",
-      "status": "unit",
-      "java_semantics": "Varios complete concurrentes: exactamente uno devuelve true y el valor publicado es el del ganador.",
-      "unit_test": "pending_future_completion_race_has_single_winner",
-      "src": "mc-aot/tests/rayon_stress.rs",
-      "owner": "B-08",
-      "note": "20 rondas × 4 trabajadores × 50 intentos sobre Rayon real."
-    },
-    {
-      "id": "stress.monitor-alias-rmw",
-      "operation": "estrés",
-      "status": "unit",
-      "java_semantics": "Incrementos bajo monitor reentrante y RMW atómico sobre alias dan el total exacto sin importar el orden.",
-      "unit_test": "monitor_alias_and_rmw_repeat",
-      "src": "mc-aot/tests/rayon_stress.rs",
-      "owner": "B-08",
-      "note": "20 rondas × 4 trabajadores × 500 incrementos, con perro guardián anti-bloqueo."
-    },
-    {
-      "id": "stress.publication-reads",
-      "operation": "estrés",
-      "status": "unit",
-      "java_semantics": "Un objeto publicado antes de liberar a los trabajadores es visible y no se altera.",
-      "unit_test": "publication_then_concurrent_reads_repeat",
-      "src": "mc-aot/tests/rayon_stress.rs",
-      "owner": "B-08",
-      "note": "20 rondas × 4 trabajadores × 250 lecturas del alias publicado."
-    },
-    {
-      "id": "stress.completion-races",
-      "operation": "estrés",
-      "status": "unit",
-      "java_semantics": "Varios join concurrentes y repetidos sobre las mismas tareas: todos terminan y el trabajo se ejecuta una sola vez.",
-      "unit_test": "completion_races_repeat",
-      "src": "mc-aot/tests/rayon_stress.rs",
-      "owner": "B-08",
-      "note": "20 rondas × 8 tareas × 3 hilos que hacen join dos veces cada uno."
-    },
-    {
-      "id": "stress.close-race",
-      "operation": "estrés",
-      "status": "unit",
-      "java_semantics": "Carrera entre envíos y cierre: cada intento se acepta (y termina) o se rechaza; nunca se pierde una tarea aceptada.",
-      "unit_test": "close_race_keeps_every_task_or_rejects_it",
-      "src": "mc-aot/tests/rayon_stress.rs",
-      "owner": "B-08",
-      "note": "30 rondas con productor concurrente y cierre desde el llamador; cierre idempotente y sin resurrección."
-    },
-    {
-      "id": "api.create-bounds",
-      "operation": "frontera A",
-      "status": "unit",
-      "java_semantics": "El paralelismo de un pool está acotado y un pool no se registra dos veces.",
-      "unit_test": "create_accepts_only_the_declared_parallelism",
-      "src": "mc-aot/tests/rayon_b_api.rs",
-      "owner": "B-07",
-      "note": "1..=255 admitido; 0, negativo y 256 rechazados con mensaje literal."
-    },
-    {
-      "id": "api.submit-join-scoped",
-      "operation": "frontera A",
-      "status": "unit",
-      "java_semantics": "Cada tarea tiene identidad propia; join es idempotente y no se puede esperar un objeto que no es tarea.",
-      "unit_test": "submit_and_join_are_idempotent_and_scoped",
-      "src": "mc-aot/tests/rayon_b_api.rs",
-      "owner": "B-07",
-      "note": "join de un id ajeno devuelve 'tarea inexistente'."
-    },
-    {
-      "id": "api.await-callers-only",
-      "operation": "frontera A",
-      "status": "unit",
-      "java_semantics": "Un worker no puede esperar el cierre de su propio pool sin bloquearse.",
-      "unit_test": "await_termination_is_callers_only",
-      "src": "mc-aot/tests/rayon_b_api.rs",
-      "owner": "B-07",
-      "note": "Se rechaza con 'awaitTermination desde worker propio no soportado' en vez de bloquear."
-    },
-    {
-      "id": "api.close-final",
-      "operation": "frontera A",
-      "status": "unit",
-      "java_semantics": "shutdown es idempotente, definitivo y no altera el paralelismo configurado.",
-      "unit_test": "close_is_idempotent_and_final",
-      "src": "mc-aot/tests/rayon_b_api.rs",
-      "owner": "B-07",
-      "note": "Tras el cierre, cualquier envío es error."
-    },
-    {
-      "id": "api.publication-to-worker",
-      "operation": "frontera A",
-      "status": "unit",
-      "java_semantics": "Un objeto publicado en el heap es visible desde la tarea y conserva identidad.",
-      "unit_test": "pending_future_published_to_a_worker_is_visible",
-      "src": "mc-aot/tests/rayon_b_api.rs",
-      "owner": "B-07",
-      "note": "Caso que A-06 necesita: futuro pendiente publicado y completado por un worker."
-    },
-    {
-      "id": "api.foreign-heap-ids",
-      "operation": "frontera A",
-      "status": "unit",
-      "java_semantics": "Una referencia de otro heap no puede usarse como propia.",
-      "unit_test": "foreign_heap_references_are_rejected",
-      "src": "mc-aot/tests/rayon_b_api.rs",
-      "owner": "B-07",
-      "note": "Ids y valores ajenos rechazados en pool y en futuro."
-    },
-    {
-      "id": "future.cancel-pending",
-      "operation": "futuro pendiente",
-      "status": "java-only",
-      "java_semantics": "cancel(x) de un futuro pendiente es efectivo con cualquiera de las dos banderas: devuelve true, deja isDone/isCancelled/isCompletedExceptionally en true, hace que get/join/getNow lancen CancellationException y que complete posterior devuelva false. Sobre un futuro ya completado devuelve false.",
-      "oracles": [
-        "cancel-pending"
-      ],
-      "logs": [
-        "analysis/check-rayon-pending-future-validation.log"
-      ],
-      "owner": "B-03",
-      "note": "La bandera mayInterruptIfRunning es inerte: cancel(true) y cancel(false) medidos identicos en 40 rondas cada uno (8 contadores, ver oraculo cancel-pending), porque un CompletableFuture no tiene hilo asociado que interrumpir. Un solo caso en vez de dos que duplicaban la misma medicion (Q-BC-8). El adaptador rechaza ambas banderas con 'cancel de futuro pendiente no soportado', cubierto por la guarda future.pending-cancel."
-    },
-    {
-      "id": "futures.optin-canonical",
-      "operation": "perfil",
-      "status": "guard",
-      "java_semantics": "No aplica: el interruptor es del generador, no una semantica Java.",
-      "guard_message": "valor de MC_AOT_FUTURES no soportado",
-      "tests": [
-        "mc-aot/tests/check-rayon-pending-future.py"
-      ],
-      "logs": [
-        "analysis/check-rayon-pending-future-validation.log"
-      ],
-      "owner": "B-07",
-      "note": "Nombre canonico MC_AOT_FUTURES=restricted (off lo apaga) con el historico MC_AOT_RAYON_COMPLETED_FUTURE=1 como alias una version; un valor ajeno como completed-only se rechaza, que es justo el motivo de no usar ese nombre: desde B-03 el perfil ya no es solo completado. Acuerdo Q-AB-2 de analysis/discussion/threads/a-b.md."
-    },
-    {
-      "id": "mutable.ref-nonfinal",
-      "operation": "referencias mutables",
-      "status": "differential",
-      "java_semantics": "Un campo de referencia no final puede escribirse fuera del constructor y leerse después; el valor observado es el último escrito.",
-      "tests": [
-        "mc-aot/tests/check-rayon-mutable-refs.py"
-      ],
-      "logs": [
-        "analysis/check-rayon-mutable-refs-validation.log"
-      ],
-      "owner": "B-09",
-      "note": "28 valores por fixture contra Java 25, con control de campo final que no cambia con el opt-in. Escritura por el mutex del heap; no se compara orden."
-    },
-    {
-      "id": "mutable.ref-requires-optin",
-      "operation": "referencias mutables",
-      "status": "guard",
-      "java_semantics": "Sin declaracion explicita, el perfil no admite referencias compartidas escribibles.",
-      "guard_message": "concurrent-int: captura de referencia debe ser final",
-      "tests": [
-        "mc-aot/tests/check-rayon-mutable-refs.py"
-      ],
-      "logs": [
-        "analysis/check-rayon-mutable-refs-validation.log"
-      ],
-      "owner": "B-09",
-      "note": "`MC_AOT_RAYON_MUTABLE_REFS=1` es obligatorio; sin el, la traduccion se rechaza antes de generar binario."
-    },
-    {
-      "id": "mutable.ref-relink-stress",
-      "operation": "referencias mutables",
-      "status": "unit",
-      "java_semantics": "Reenlazar bajo monitor desde varios workers no pierde ni duplica nodos y no crea ciclos.",
-      "unit_test": "relink_under_monitor_keeps_the_chain_whole",
-      "src": "mc-aot/tests/rayon_stress.rs",
-      "owner": "B-09",
-      "note": "20 rondas x 4 workers x 100 reenlaces sobre 64 nodos; invariantes exactos, monitor fuera y mutex del heap dentro."
-    }
-  ],
-  "gaps": [
-    {
-      "id": "gap.handler-oracle-not-in-suite",
-      "description": "check-forkjoin-handler-oracle no figuraba en mc-aot/run-regressions.sh.",
-      "action": "Anadida la entrada en run-regressions.sh con check-futures-contract; C debe confirmarla al integrar.",
-      "owner": "C-06"
-    },
-    {
-      "id": "gap.no-explicit-guard-for-task-get",
-      "description": "ForkJoinTask.get()/invoke() no tienen guarda propia: caen en el rechazo generico de llamada externa, sin mensaje que distinga 'no modelado' de 'error de traduccion'.",
-      "action": "B-04 debe anadir guardas explicitas y su caso en el oraculo antes de modelar get/invoke.",
-      "owner": "B-04"
-    },
-    {
-      "id": "gap.oracle-missing-cases",
-      "description": "Los oraculos no cubren: execute(ForkJoinTask), thenCompose, thenAccept, handle, exceptionally, anyOf, orTimeout, completeAsync, cancel(true), ManagedBlocker, interrupcion de workers ni toString del pool. (submit(Callable), invoke(), commonPool() y los contadores de workers ya estan fijados por el oraculo ampliado.)",
-      "action": "Ampliar los oraculos por subperfil antes de implementar cada metodo (B-03/B-04/B-05).",
-      "owner": "B-01"
-    },
-    {
-      "id": "gap.no-java-differential-for-unit-cases",
-      "description": "Cuatro propiedades del lifecycle (lazy start, cierre sin mantener vivo, sin fallback al pool comun, una sola identidad de pool) solo tienen prueba unitaria Rust.",
-      "action": "B-02/B-08 deben anadir el diferencial Java observable correspondiente o mantenerlas declaradas como propiedades del adaptador.",
-      "owner": "B-08"
-    },
-    {
-      "id": "gap.no-guard-for-lifecycle-queries",
-      "description": "getActiveThreadCount/getPoolSize/getRunningThreadCount/getQueuedSubmissionCount no tienen guarda ni mensaje propio: caen en el rechazo de carga de clase JDK, aunque el oraculo ya fija sus invariantes (pool.worker-counters).",
-      "action": "B-02 debe decidir si se modelan (necesitan estado interno de workers que Rayon no expone igual) o se rechazan con mensaje explícito; hoy el contrato lo declara rechazo de traducción.",
-      "owner": "B-02"
-    },
-    {
-      "id": "gap.pending-future-waits",
-      "description": "No hay espera sobre un futuro pendiente (join/get) ni cancelación: reciben guarda de ejecución. Tampoco hay callbacks ni composición.",
-      "action": "B-03/B-04 necesitan primero el modelo de excepciones y una forma de espera entre frames acordada con A.",
-      "owner": "B-03"
-    },
-    {
-      "id": "gap.two-optins",
-      "description": "Existieron dos interruptores distintos para el mismo concepto (MC_AOT_RAYON_COMPLETED_FUTURE y MC_AOT_NUMERIC_COMPLETED_FUTURE). CERRADO en Q-AB-2: el backend concurrente acepta el nombre canonico MC_AOT_FUTURES=restricted con el alias historico una version.",
-      "action": "Cerrado por B en la rama trabajo/b-01-contrato-futures (commit del opt-in unificado) y acordado con A en analysis/discussion/threads/a-b.md Q-AB-2; A ya implemento su mitad en numeric.rs (futures_optin).",
-      "owner": "B-07",
-      "closed": true
-    }
-  ]
+  {
+   "id": "fjp-handler",
+   "java": "mc-aot/tests/ForkJoinHandlerOracle.java",
+   "runner": "mc-aot/tests/check-forkjoin-handler-oracle.py",
+   "log": "analysis/forkjoin-handler-java25-oracle.log",
+   "runs": 40,
+   "observes": [
+    "execute|handler|misma-excepcion",
+    "submit|join-excepcion|get-executionexception|sin-handler",
+    "supplyAsync|causa-identica|sin-handler",
+    "shutdown|terminacion|rechazo",
+    "submitCallable|valor|causa-envuelta|sin-handler",
+    "invoke|original-o-causa|sin-handler",
+    "commonPool|misma-instancia|paralelismo-positivo",
+    "workerCounters|dentro-del-paralelismo|uno-o-mas-tras-uso|cierre"
+   ]
+  },
+  {
+   "id": "cancel-pending",
+   "java": "mc-aot/tests/CompletableFutureCancelOracle.java",
+   "runner": "mc-aot/tests/check-rayon-pending-future.py",
+   "log": "analysis/check-rayon-pending-future-validation.log",
+   "runs": 40,
+   "observes": [
+    "cancel(false)",
+    "cancel(true)",
+    "completeAfterFalse",
+    "getNowCancellation",
+    "cancel(true) sobre completado"
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "id": "exec.runs-runnable",
+   "operation": "execute",
+   "status": "differential",
+   "java_semantics": "ForkJoinPool.execute(Runnable) despacha el Runnable a un worker; el llamador no espera. El Runnable puede lanzar y eso no cambia la firma void.",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-forkjoin.py",
+    "mc-aot/tests/check-real-tracing-shutdown.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-java-forkjoin-latest.log",
+    "analysis/real-tracing-shutdown-validation.log"
+   ],
+   "owner": "B-02",
+   "note": "Cubierto con Runnable de bytecode Java traducido sobre Rayon, incluido despacho por interfaz Executor y TracingExecutor.execute oficial con hash exacto y opt-ins MC_AOT_RAYON_ASSUME_NO_TRACY/NO_INTERRUPT."
+  },
+  {
+   "id": "exec.throws-runs-handler",
+   "operation": "execute",
+   "status": "guard",
+   "java_semantics": "Si el Runnable lanza, ForkJoinPool invoca el UncaughtExceptionHandler del pool con el Throwable original en el hilo worker; execute no propaga.",
+   "oracles": [
+    "fjp-handler"
+   ],
+   "guard_message": "execute Runnable falló; excepciones Java no soportadas",
+   "logs": [
+    "analysis/forkjoin-handler-java25-oracle.log"
+   ],
+   "owner": "B-06",
+   "note": "El nativo termina el proceso con exit 2 y diagnostico en stderr; no fabrica Throwable ni suplanta el handler. Diferencia declarada, no equivalencia."
+  },
+  {
+   "id": "submit.join-value",
+   "operation": "submit",
+   "status": "differential",
+   "java_semantics": "submit(Runnable) devuelve ForkJoinTask; join() espera la terminacion. El resultado de un Runnable es null.",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-forkjoin.py",
+    "mc-aot/tests/check-rayon-java-worker-lifecycle.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-java-forkjoin-latest.log",
+    "analysis/check-rayon-java-worker-lifecycle-latest.log"
+   ],
+   "owner": "B-02",
+   "note": "Solo submit(Runnable); submit(Callable) no esta traducido (ver comp.* y huecos del oraculo)."
+  },
+  {
+   "id": "submit.join-repeat",
+   "operation": "join",
+   "status": "differential",
+   "java_semantics": "join() repetido devuelve el mismo resultado y no relanza el trabajo; join tras shutdown del pool sigue funcionando si la tarea ya existe.",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-forkjoin.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-java-forkjoin-latest.log"
+   ],
+   "owner": "B-02",
+   "note": "El fixture llama f.join() dos veces y el caso early hace shutdown antes de join."
+  },
+  {
+   "id": "submit.join-nested-same-pool",
+   "operation": "join",
+   "status": "differential",
+   "java_semantics": "Un worker puede enviar y esperar una tarea del mismo pool (join anidado) sin autobloqueo.",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-forkjoin.py",
+    "mc-aot/tests/check-rayon-forkjoin-profile.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-java-forkjoin-latest.log",
+    "analysis/check-rayon-forkjoin-profile-latest.log"
+   ],
+   "owner": "B-02",
+   "note": "Resuelto con ayuda activa del trabajador; no demuestra el modelo completo de compensation de ForkJoinPool."
+  },
+  {
+   "id": "submit.throws-join-diagnostic",
+   "operation": "join",
+   "status": "guard",
+   "java_semantics": "join() de una tarea que fallo relanza la excepcion original sin envolverla.",
+   "guard_message": "ejecución concurrent-int",
+   "logs": [
+    "analysis/check-rayon-java-forkjoin-latest.log"
+   ],
+   "owner": "B-04",
+   "note": "El nativo propaga un FrameError que termina el proceso con diagnostico; no se convierte en excepcion Java (regla del roadmap)."
+  },
+  {
+   "id": "submit.get-execution",
+   "operation": "get",
+   "status": "unsupported",
+   "java_semantics": "ForkJoinTask.get() espera y envuelve el fallo en ExecutionException; get(timeout) lanza TimeoutException.",
+   "oracles": [
+    "fjp-handler"
+   ],
+   "owner": "B-04",
+   "note": "No hay soporte ni guarda dedicada: la llamada cae en el rechazo generico de llamada externa. B-04 debe anadir guarda con mensaje propio antes de modelarla."
+  },
+  {
+   "id": "submit.throws-no-handler",
+   "operation": "submit",
+   "status": "java-only",
+   "java_semantics": "submit no invoca el UncaughtExceptionHandler del pool; el fallo se conserva en la tarea y se observa en join/get.",
+   "oracles": [
+    "fjp-handler"
+   ],
+   "logs": [
+    "analysis/forkjoin-handler-java25-oracle.log"
+   ],
+   "owner": "B-04",
+   "note": "Fijado en el oraculo (calls.get()==1 tras execute, submit y supplyAsync). Sin contraparte nativa porque el handler no existe."
+  },
+  {
+   "id": "pool.ctor-parallelism",
+   "operation": "constructor",
+   "status": "differential",
+   "java_semantics": "new ForkJoinPool(int) fija el paralelismo objetivo; valores fuera de rango lanzan IllegalArgumentException y ForkJoinPool rechaza paralelismos absurdos.",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-forkjoin.py"
+   ],
+   "guard_message": "paralelismo fuera del perfil 1..255",
+   "logs": [
+    "analysis/check-rayon-java-forkjoin-latest.log"
+   ],
+   "owner": "B-02",
+   "note": "Perfil 1..255. El limite superior es del adaptador, no de Java: se declara rechazado, no equivalente."
+  },
+  {
+   "id": "pool.ctor-four-args-null-handler",
+   "operation": "constructor",
+   "status": "differential",
+   "java_semantics": "Constructor de cuatro argumentos (paralelismo, factory, handler, asyncMode) con handler null y factory por defecto.",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-worker-lifecycle.py",
+    "mc-aot/tests/check-rayon-java-forkjoin.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-java-worker-lifecycle-latest.log",
+    "analysis/rayon-lifecycle-validation.log"
+   ],
+   "owner": "B-02",
+   "note": "Es el constructor que usa Util.makeExecutor, pero con handler null y factory trivial/por defecto. La ruta real de Minecraft sigue bloqueada."
+  },
+  {
+   "id": "pool.ctor-handler-non-null",
+   "operation": "constructor",
+   "status": "guard",
+   "java_semantics": "El handler del pool recibe la excepcion de execute en el hilo worker; su identidad y el hilo se observan (worker.get() != null).",
+   "oracles": [
+    "fjp-handler"
+   ],
+   "guard_message": "handler personalizado no soportado",
+   "logs": [
+    "analysis/forkjoin-handler-java25-oracle.log"
+   ],
+   "owner": "B-06",
+   "note": "Rechazo en compilacion antes de crear el pool. Es el bloqueo declarado de Util.makeExecutor."
+  },
+  {
+   "id": "pool.ctor-custom-java-factory",
+   "operation": "constructor",
+   "status": "guard",
+   "java_semantics": "Una ForkJoinWorkerThreadFactory arbitraria de Java puede crear workers con estado propio.",
+   "guard_message": "factory Java no trivial",
+   "logs": [
+    "analysis/check-rayon-java-forkjoin-latest.log"
+   ],
+   "owner": "B-02",
+   "note": "Solo se acepta la factory por defecto y un perfil muy restringido (un worker, async=true, capturas String/AtomicInteger)."
+  },
+  {
+   "id": "pool.ctor-custom-factory-profile",
+   "operation": "constructor",
+   "status": "guard",
+   "java_semantics": "El modo async y el numero de workers los decide el constructor, no el adaptador.",
+   "guard_message": "factory personalizada requiere un worker y async=true",
+   "logs": [
+    "analysis/check-rayon-java-worker-lifecycle-latest.log"
+   ],
+   "owner": "B-02",
+   "note": "Los 312 resultados del lifecycle cubren este subperfil; cualquier otra combinacion se rechaza."
+  },
+  {
+   "id": "pool.lazy-start",
+   "operation": "lifecycle",
+   "status": "unit",
+   "java_semantics": "Java crea los workers al construir el pool; el adaptador los crea al primer envio y no arranca nada si el pool nunca se usa.",
+   "unit_test": "constructor_and_unused_shutdown_do_not_start_workers",
+   "src": "mc-aot/src/executor_runtime.rs",
+   "owner": "B-02",
+   "note": "Diferencia conocida y aceptada: la puerta del roadmap pide comportamiento observable, no creacion gradual de hilos. Rayon crea todos sus workers de golpe al primer envio."
+  },
+  {
+   "id": "pool.shutdown-idempotent",
+   "operation": "shutdown",
+   "status": "differential",
+   "java_semantics": "shutdown() es idempotente, no cancela tareas ya enviadas y permite awaitTermination.",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-forkjoin.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-java-forkjoin-latest.log"
+   ],
+   "owner": "B-02",
+   "note": "El fixture llama p.shutdown() dos veces; shutdown por interfaz ExecutorService tambien esta cubierto."
+  },
+  {
+   "id": "pool.await-termination",
+   "operation": "awaitTermination",
+   "status": "differential",
+   "java_semantics": "awaitTermination(timeout, unit) devuelve true si el pool termino, false si vencio el plazo; admite las siete unidades de TimeUnit.",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-worker-lifecycle.py",
+    "mc-aot/tests/check-rayon-forkjoin-profile.py"
+   ],
+   "logs": [
+    "analysis/rayon-await-validation.log",
+    "analysis/check-rayon-java-worker-lifecycle-latest.log"
+   ],
+   "owner": "B-02",
+   "note": "La espera acotada y el rechazo de autoespera desde workers y callbacks estan verificados. Limitacion: la suite integral aprobada es anterior a awaitTermination."
+  },
+  {
+   "id": "pool.await-self",
+   "operation": "awaitTermination",
+   "status": "guard",
+   "java_semantics": "Desde un worker del mismo pool, awaitTermination puede bloquear o agotar el plazo; Java no garantiza progreso.",
+   "guard_message": "awaitTermination desde worker propio no soportado",
+   "owner": "B-02",
+   "note": "Rechazo explicito en lugar de bloqueo silencioso. No se afirma equivalencia con el caso Java."
+  },
+  {
+   "id": "pool.shutdown-now",
+   "operation": "shutdownNow",
+   "status": "guard",
+   "java_semantics": "shutdownNow() cancela tareas pendientes, interrumpe workers y devuelve la lista de tareas no iniciadas.",
+   "tests": [
+    "mc-aot/tests/check-real-tracing-shutdown.py"
+   ],
+   "guard_message": "shutdownNow no soportado",
+   "logs": [
+    "analysis/real-tracing-shutdown-validation.log"
+   ],
+   "owner": "B-02",
+   "note": "Guard verificado por el test de TracingExecutor; no se modela cancelacion ni interrupcion."
+  },
+  {
+   "id": "pool.reject-after-shutdown",
+   "operation": "rechazo",
+   "status": "differential",
+   "java_semantics": "Tras shutdown, execute/submit lanzan RejectedExecutionException.",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-forkjoin.py"
+   ],
+   "guard_message": "pool cerrado",
+   "logs": [
+    "analysis/check-rayon-java-forkjoin-latest.log"
+   ],
+   "owner": "B-02",
+   "note": "La condicion (rechazo) coincide con Java, el mecanismo (diagnostico y salida) no: no se fabrica RejectedExecutionException. Se declara rechazo observado, no equivalencia de excepcion."
+  },
+  {
+   "id": "pool.close-does-not-keep-alive",
+   "operation": "lifecycle",
+   "status": "unit",
+   "java_semantics": "Una tarea o futuro completado no mantiene vivo el pool cerrado.",
+   "unit_test": "completed_future_does_not_keep_shutdown_pool_alive",
+   "src": "mc-aot/src/executor_runtime.rs",
+   "owner": "B-02",
+   "note": "Prueba unitaria Rust del runtime, no diferencial Java."
+  },
+  {
+   "id": "pool.no-global-pool-fallback",
+   "operation": "lifecycle",
+   "status": "unit",
+   "java_semantics": "Ningun fallo de factory puede degradarse silenciosamente al pool comun.",
+   "unit_test": "rejected_hooks_never_fall_back_to_default_pool",
+   "src": "mc-aot/src/executor_runtime.rs",
+   "owner": "B-02",
+   "note": "Regla del proyecto: no sustituir comportamiento ausente por uno ficticio."
+  },
+  {
+   "id": "pool.single-pool-per-object",
+   "operation": "lifecycle",
+   "status": "unit",
+   "java_semantics": "Un objeto ForkJoinPool tiene una sola identidad y una sola inicializacion.",
+   "unit_test": "racing_first_use_creates_only_one_pool",
+   "src": "mc-aot/src/executor_runtime.rs",
+   "owner": "B-02",
+   "note": "Carrera cubierta a nivel Rust; falta el diferencial Java de identidad de pool (ver huecos)."
+  },
+  {
+   "id": "worker.onstart-ontermination",
+   "operation": "worker",
+   "status": "differential",
+   "java_semantics": "onStart se ejecuta una vez al arrancar el worker y onTermination al terminar; su efecto observable (campos String, contadores) es comparable.",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-worker-lifecycle.py",
+    "mc-aot/tests/check-real-util-worker-onstart.py"
+   ],
+   "logs": [
+    "analysis/real-util-worker-onstart.log",
+    "analysis/check-rayon-java-worker-lifecycle-latest.log"
+   ],
+   "owner": "B-02",
+   "note": "Hasta dos campos String capturados, un solo worker, handler null, async=true."
+  },
+  {
+   "id": "worker.name",
+   "operation": "worker",
+   "status": "differential",
+   "java_semantics": "setName/getName del ForkJoinWorkerThread y el nombre de hilo visible son observables.",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-worker-lifecycle.py"
+   ],
+   "logs": [
+    "analysis/rayon-worker-name-validation.log",
+    "analysis/rayon-worker-name-regressions.log"
+   ],
+   "owner": "B-02",
+   "note": "Los nombres no son identicos a los de Java en todos los casos; solo se comparan literales del perfil."
+  },
+  {
+   "id": "worker.override-run-start",
+   "operation": "worker",
+   "status": "guard",
+   "java_semantics": "Un ForkJoinWorkerThread puede sobrescribir run/start y cambiar el bucle del worker.",
+   "guard_message": "worker con override run/start no soportado",
+   "logs": [
+    "analysis/check-rayon-java-worker-lifecycle-latest.log"
+   ],
+   "owner": "B-02",
+   "note": "Rechazo en compilacion."
+  },
+  {
+   "id": "worker.util-logger-pending",
+   "operation": "worker",
+   "status": "guard",
+   "java_semantics": "Util.makeExecutor referencia Util.LOGGER y Util.onThreadException; sin logger no hay factory real.",
+   "tests": [
+    "mc-aot/tests/check-real-util-worker-guards.py"
+   ],
+   "guard_message": "campo externo no soportado",
+   "logs": [
+    "analysis/real-util-worker-guards.log",
+    "analysis/check-real-util-worker-guards-latest.log"
+   ],
+   "owner": "B-06",
+   "note": "Guard que documenta el bloqueo real: Logger no implementado (log4rs aparcado). No se simula."
+  },
+  {
+   "id": "future.completed-identity-null",
+   "operation": "completedFuture",
+   "status": "differential",
+   "java_semantics": "completedFuture(v) crea un futuro ya completado con v; completedFuture(null) devuelve null en join/get/getNow; dos llamadas no son la misma instancia.",
+   "tests": [
+    "mc-aot/tests/check-rayon-completed-future.py",
+    "mc-aot/tests/check-numeric-completed-future.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-completed-future-validation.log",
+    "analysis/check-numeric-completed-future-validation.log"
+   ],
+   "owner": "B-03",
+   "note": "Perfil restringido existente; identificadores de objeto no son identidad Java general."
+  },
+  {
+   "id": "future.completed-queries",
+   "operation": "completedFuture",
+   "status": "differential",
+   "java_semantics": "isDone()==true, isCancelled()==false, isCompletedExceptionally()==false, getNow(x)==valor para un futuro completado normalmente.",
+   "tests": [
+    "mc-aot/tests/check-rayon-completed-future.py",
+    "mc-aot/tests/check-numeric-completed-future.py",
+    "mc-aot/tests/check-real-chunk-passthrough-future.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-completed-future-validation.log",
+    "analysis/check-real-chunk-passthrough-future-validation.log"
+   ],
+   "owner": "B-03",
+   "note": "Incluye instanceof/getClass y NPE capturada del perfil."
+  },
+  {
+   "id": "future.completed-cells",
+   "operation": "completedFuture",
+   "status": "differential",
+   "java_semantics": "complete()/cancel() sobre un futuro ya completado normal devuelven false y no cambian el valor.",
+   "tests": [
+    "mc-aot/tests/check-rayon-completed-future.py",
+    "mc-aot/tests/check-numeric-completed-future.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-completed-future-validation.log",
+    "analysis/check-numeric-completed-future-validation.log"
+   ],
+   "owner": "B-03",
+   "note": "Solo la celda ya completada; no hay transiciones desde pendiente."
+  },
+  {
+   "id": "future.completed-shared-workers",
+   "operation": "completedFuture",
+   "status": "differential",
+   "java_semantics": "Varios workers pueden leer el mismo futuro completado mientras el llamador tambien lo lee.",
+   "tests": [
+    "mc-aot/tests/check-rayon-shared-completed-future.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-shared-completed-future-validation.log"
+   ],
+   "owner": "B-03",
+   "note": "Cuatro Runnable con captura final protegida por monitor estatico; guarda de captura no final."
+  },
+  {
+   "id": "future.completed-real-passthrough",
+   "operation": "completedFuture",
+   "status": "differential",
+   "java_semantics": "ChunkStatusTasks.passThrough devuelve completedFuture(chunk) y admite null; la identidad del ChunkAccess se conserva.",
+   "tests": [
+    "mc-aot/tests/check-real-chunk-passthrough-future.py"
+   ],
+   "logs": [
+    "analysis/check-real-chunk-passthrough-future-validation.log"
+   ],
+   "owner": "B-03",
+   "note": "Clase oficial con hash verificado; colaboradores (ChunkAccess, logger) son stubs: no es integracion de mundo."
+  },
+  {
+   "id": "future.pending-state",
+   "operation": "futuro pendiente",
+   "status": "differential",
+   "java_semantics": "Un CompletableFuture recién creado está pendiente: isDone()==false, getNow(x)==x, y se completa una sola vez.",
+   "oracles": [
+    "cf"
+   ],
+   "logs": [
+    "analysis/b03-b08-futures-suite-jdk25.log"
+   ],
+   "owner": "B-03",
+   "note": "Subperfil B-03: pendiente + completado normal en el backend concurrente. El backend numerico sigue rechazando `new` (new no soportado).",
+   "tests": [
+    "mc-aot/tests/check-rayon-pending-future.py"
+   ]
+  },
+  {
+   "id": "future.obtrude",
+   "operation": "futuro pendiente",
+   "status": "guard",
+   "java_semantics": "obtrudeValue/obtrudeException fuerzan el resultado aunque el futuro este completado.",
+   "guard_message": "CompletableFuture: operación no soportada",
+   "logs": [
+    "analysis/check-numeric-completed-future-latest.log"
+   ],
+   "owner": "B-03",
+   "note": "Mensaje generico por firma no listada; el test lo comprueba con obtrudeValue."
+  },
+  {
+   "id": "future.complete-exceptionally",
+   "operation": "fallo de futuro",
+   "status": "guard",
+   "java_semantics": "completeExceptionally(cause) completa en fallo; join lanza CompletionException con la misma causa y get lanza ExecutionException.",
+   "oracles": [
+    "cf"
+   ],
+   "guard_message": "CompletableFuture: operación no soportada",
+   "logs": [
+    "analysis/completable-future-java25-oracle.log"
+   ],
+   "owner": "B-03",
+   "note": "Incluye el `new CompletableFuture<>()` con completeExceptionally del test; depende del modelo de excepciones acordado con A (B-04)."
+  },
+  {
+   "id": "future.optin-rayon",
+   "operation": "perfil",
+   "status": "guard",
+   "java_semantics": "La semantica de futuro no depende de variables de entorno; es una restriccion del adaptador experimental.",
+   "guard_message": "completedFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1",
+   "logs": [
+    "analysis/check-rayon-completed-future-latest.log"
+   ],
+   "owner": "B-03",
+   "note": "Opt-in obligatorio: sin la variable el programa no se genera. Debe desaparecer al integrar en el backend principal."
+  },
+  {
+   "id": "future.optin-numeric",
+   "operation": "perfil",
+   "status": "guard",
+   "java_semantics": "Igual que future.optin-rayon, para el backend principal monohilo.",
+   "guard_message": "CompletableFuture: requiere MC_AOT_NUMERIC_COMPLETED_FUTURE=1",
+   "logs": [
+    "analysis/check-numeric-completed-future-latest.log"
+   ],
+   "owner": "B-03",
+   "note": "Dos opt-ins distintos hoy; B-07 debe unificarlos en una sola interfaz para A."
+  },
+  {
+   "id": "future.capture-final",
+   "operation": "perfil",
+   "status": "guard",
+   "java_semantics": "Java permite capturar una referencia mutable a un futuro en un campo de clase.",
+   "guard_message": "captura CompletableFuture debe ser final",
+   "logs": [
+    "analysis/check-rayon-shared-completed-future-latest.log"
+   ],
+   "owner": "B-03",
+   "note": "Restriccion del compilador, no de Java; se mantiene hasta que exista publicacion segura acordada con A."
+  },
+  {
+   "id": "future.only-completed-heap",
+   "operation": "completedFuture",
+   "status": "guard",
+   "java_semantics": "Un objeto Java de tipo CompletableFuture puede estar en cualquier estado.",
+   "guard_message": "solo completado normal del perfil",
+   "logs": [
+    "analysis/check-numeric-completed-future-latest.log"
+   ],
+   "owner": "B-03",
+   "note": "El heap numerico solo materializa futuros completados normalmente; guarda en numeric_runtime.inc."
+  },
+  {
+   "id": "comp.supply-async",
+   "operation": "composición",
+   "status": "unsupported",
+   "java_semantics": "supplyAsync(supplier, pool) ejecuta en el pool; el fallo del supplier llega como CompletionException con causa identica y no invoca el handler.",
+   "oracles": [
+    "fjp-handler"
+   ],
+   "logs": [
+    "analysis/forkjoin-handler-java25-oracle.log"
+   ],
+   "owner": "B-05",
+   "note": "No implementado. Es la primera pieza que pide la ruta real de Minecraft (Util.makeExecutor + supplyAsync)."
+  },
+  {
+   "id": "comp.then-apply",
+   "operation": "composición",
+   "status": "unsupported",
+   "java_semantics": "thenApply sin executor ejecuta el callback en el hilo que completa, no en el que registro el callback.",
+   "oracles": [
+    "cf"
+   ],
+   "owner": "B-05",
+   "note": "El oraculo fija el hilo ('future-completer:ok'); el nativo no lo implementa."
+  },
+  {
+   "id": "comp.then-apply-async-executor",
+   "operation": "composición",
+   "status": "unsupported",
+   "java_semantics": "thenApplyAsync(fn, executor) usa el executor indicado una vez; si el executor rechaza, la causa es RejectedExecutionException.",
+   "oracles": [
+    "cf"
+   ],
+   "owner": "B-05",
+   "note": "Requiere ejecutar el executor de usuario, hoy fuera del perfil (solo ForkJoinPool y Executor traducidos)."
+  },
+  {
+   "id": "comp.allof",
+   "operation": "composición",
+   "status": "unsupported",
+   "java_semantics": "allOf espera a todos; si uno falla, el compuesto falla con la misma causa; allOf() vacio devuelve null.",
+   "oracles": [
+    "cf"
+   ],
+   "owner": "B-05",
+   "note": "No implementado."
+  },
+  {
+   "id": "comp.then-compose",
+   "operation": "composición",
+   "status": "unsupported",
+   "java_semantics": "thenCompose aplana un futuro anidado; identidad del futuro interno y propagacion de fallos.",
+   "owner": "B-05",
+   "note": "Ningun oraculo lo cubre todavia: B-05 debe ampliar el oraculo antes de implementar. Hueco declarado."
+  },
+  {
+   "id": "err.handler-identity",
+   "operation": "errores",
+   "status": "java-only",
+   "java_semantics": "El handler recibe el Throwable original (identidad ==) y el hilo worker que fallo.",
+   "oracles": [
+    "fjp-handler"
+   ],
+   "logs": [
+    "analysis/forkjoin-handler-java25-oracle.log"
+   ],
+   "owner": "B-04",
+   "note": "Semantica fijada; la implementacion exige el modelo de excepciones y el logger de Util.onThreadException (B-06)."
+  },
+  {
+   "id": "err.join-vs-get-types",
+   "operation": "errores",
+   "status": "java-only",
+   "java_semantics": "En un futuro fallido: join lanza CompletionException, get lanza ExecutionException, ambos con la causa original. En ForkJoinTask, join relanza la excepcion original sin envolver.",
+   "oracles": [
+    "cf",
+    "fjp-handler"
+   ],
+   "logs": [
+    "analysis/completable-future-java25-oracle.log",
+    "analysis/forkjoin-handler-java25-oracle.log"
+   ],
+   "owner": "B-04",
+   "note": "Tres mecanismos distintos fijados por oraculo; ninguno implementado en nativo."
+  },
+  {
+   "id": "err.cancel-pending",
+   "operation": "cancelación",
+   "status": "java-only",
+   "java_semantics": "cancel(false) de un pendiente lo deja isCancelled()==true y get/join lanzan CancellationException directamente.",
+   "oracles": [
+    "cf"
+   ],
+   "owner": "B-03",
+   "note": "El nativo solo prueba cancel sobre futuros ya completados, que devuelve false."
+  },
+  {
+   "id": "err.timeout-get",
+   "operation": "timeout",
+   "status": "java-only",
+   "java_semantics": "get(timeout, unit) lanza TimeoutException sin completar el futuro; el futuro sigue pendiente.",
+   "oracles": [
+    "cf"
+   ],
+   "owner": "B-04",
+   "note": "Requiere futuro pendiente (B-03) y timeouts reales."
+  },
+  {
+   "id": "err.interrupt-get",
+   "operation": "interrupción",
+   "status": "java-only",
+   "java_semantics": "Interrumpir un hilo bloqueado en get lanza InterruptedException y limpia el flag de interrupcion.",
+   "oracles": [
+    "cf"
+   ],
+   "guard_message": "MC_AOT_RAYON_ASSUME_NO_INTERRUPT",
+   "logs": [
+    "analysis/real-tracing-shutdown-validation.log"
+   ],
+   "owner": "B-04",
+   "note": "El adaptador exige declarar que no hay interrupciones; el oraculo fija lo contrario en Java. Diferencia declarada, no equivalencia."
+  },
+  {
+   "id": "err.join-interrupt",
+   "operation": "interrupción",
+   "status": "java-only",
+   "java_semantics": "join() no lanza InterruptedException: ignora la interrupcion y devuelve el valor conservando el flag.",
+   "oracles": [
+    "cf"
+   ],
+   "owner": "B-04",
+   "note": "Asimetria get/join fijada por oraculo (etiqueta interrupt|get-throws-cleared|join-returns-preserved)."
+  },
+  {
+   "id": "pool.query-is-shutdown",
+   "operation": "lifecycle",
+   "status": "differential",
+   "java_semantics": "isShutdown() es false hasta shutdown() y true después, también invocado por la interfaz ExecutorService; no implica terminación.",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-pool-queries.py"
+   ],
+   "logs": [
+    "analysis/b02-futures-suite-jdk25.log"
+   ],
+   "owner": "B-02",
+   "note": "Implementado en el perfil restringido (Step::PoolIsShutdown sobre el registro de pools). 24 resultados Java 25/Rayon, incluido despacho por interfaz."
+  },
+  {
+   "id": "pool.query-is-terminated",
+   "operation": "lifecycle",
+   "status": "differential",
+   "java_semantics": "isTerminated() es false mientras queda trabajo o el pool sigue abierto; es true tras el cierre sin tareas, y también para un pool que nunca se usó. No espera.",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-pool-queries.py",
+    "mc-aot/tests/rayon_pool_queries.rs"
+   ],
+   "logs": [
+    "analysis/b02-futures-suite-jdk25.log"
+   ],
+   "owner": "B-02",
+   "note": "Consulta no bloqueante; se permite desde un worker porque no espera, a diferencia de awaitTermination. Medido ademas en 40 rondas (ver analysis/review-answers-from-b.md): un pool nunca usado queda isShutdown e isTerminated en true tras shutdown (40/40); un pool usado que se cierra devuelve isTerminated false de inmediato (0/40), y por eso ese caso NO se compara como diferencial: depende de cuando termina el worker, no de una garantia."
+  },
+  {
+   "id": "pool.query-parallelism",
+   "operation": "lifecycle",
+   "status": "differential",
+   "java_semantics": "getParallelism() devuelve el paralelismo configurado y Java lo conserva después del cierre; no depende del número de hilos vivos.",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-pool-queries.py"
+   ],
+   "logs": [
+    "analysis/b02-futures-suite-jdk25.log"
+   ],
+   "owner": "B-02",
+   "note": "Se lee del registro de pools, no de Rayon, porque Rayon crea todos los trabajadores al primer envío."
+  },
+  {
+   "id": "pool.query-termination-requires-rayon",
+   "operation": "lifecycle",
+   "status": "guard",
+   "java_semantics": "Java siempre puede responder isTerminated(); no depende del adaptador.",
+   "guard_message": "terminación real requiere Rayon",
+   "logs": [
+    "analysis/b02-futures-suite-jdk25.log"
+   ],
+   "owner": "B-02",
+   "note": "En el crate (scheduler de reserva) no hay hilos que observar: la consulta se rechaza igual que awaitTermination. El perfil real vive en el adaptador Rayon embebido en el programa generado."
+  },
+  {
+   "id": "pool.query-unsupported-counts",
+   "operation": "lifecycle",
+   "status": "guard",
+   "java_semantics": "getActiveThreadCount, getPoolSize, getRunningThreadCount y getQueuedSubmissionCount informan del estado interno de los workers.",
+   "guard_message": "clase no encontrada en versiones ni bibliotecas",
+   "tests": [
+    "mc-aot/tests/check-rayon-java-pool-queries.py"
+   ],
+   "logs": [
+    "analysis/b02-futures-suite-jdk25.log"
+   ],
+   "owner": "B-02",
+   "note": "Sin guarda dedicada: el método cae en el rechazo de carga de clase JDK. Se documenta como rechazo de traducción, no como equivalencia."
+  },
+  {
+   "id": "pool.query-unit-crate-path",
+   "operation": "lifecycle",
+   "status": "unit",
+   "java_semantics": "Un pool que nunca se usó queda terminado al cerrarse.",
+   "unit_test": "never_started_pool_is_terminated_after_shutdown",
+   "src": "mc-aot/src/executor_runtime.rs",
+   "owner": "B-02",
+   "note": "Prueba del crate con el scheduler de reserva, donde la terminación real no está disponible."
+  },
+  {
+   "id": "pool.query-real-workers",
+   "operation": "lifecycle",
+   "status": "unit",
+   "java_semantics": "isShutdown/isTerminated/getParallelism siguen el ciclo real de los trabajadores Rayon.",
+   "unit_test": "queries_track_real_worker_lifecycle",
+   "src": "mc-aot/tests/rayon_pool_queries.rs",
+   "owner": "B-02",
+   "note": "Integración con adaptador Rayon real: submit, join, cierre y terminación observada."
+  },
+  {
+   "id": "pool.shutdown-non-blocking",
+   "operation": "shutdown",
+   "status": "unit",
+   "java_semantics": "shutdown() no espera a las tareas en curso e isTerminated() es false mientras corren.",
+   "unit_test": "running_task_keeps_pool_not_terminated",
+   "src": "mc-aot/tests/rayon_pool_queries.rs",
+   "owner": "B-02",
+   "note": "Verificado con tarea de 300 ms: el cierre vuelve en menos de 250 ms y la terminación llega después del join."
+  },
+  {
+   "id": "pool.query-foreign-ids",
+   "operation": "lifecycle",
+   "status": "unit",
+   "java_semantics": "Una referencia a otro pool no puede responderse como si fuera propia.",
+   "unit_test": "foreign_pool_ids_are_rejected_not_answered",
+   "src": "mc-aot/tests/rayon_pool_queries.rs",
+   "owner": "B-02",
+   "note": "Ids de otro heap se rechazan en las tres consultas; no se devuelve false por defecto."
+  },
+  {
+   "id": "submit.callable-value",
+   "operation": "submit",
+   "status": "unsupported",
+   "java_semantics": "submit(Callable) devuelve el valor producido; con fallo, get() lanza ExecutionException.",
+   "oracles": [
+    "fjp-handler"
+   ],
+   "owner": "B-04",
+   "note": "No modelado: la llamada cae en el rechazo genérico de traducción. Primer paso: decidir si Callable entra en el perfil o se rechaza con mensaje propio."
+  },
+  {
+   "id": "submit.callable-cause-wrapped",
+   "operation": "errores",
+   "status": "java-only",
+   "java_semantics": "En submit(Callable) el adaptador NO conserva la identidad de la causa: ExecutionException.getCause() es un envoltorio nuevo, y el handler no se invoca.",
+   "oracles": [
+    "fjp-handler"
+   ],
+   "logs": [
+    "analysis/forkjoin-handler-java25-oracle.log"
+   ],
+   "owner": "B-04",
+   "note": "Corrige una suposición previa del contrato: la causa identica solo esta verificada para supplyAsync, no para submit(Callable). Quien implemente B-04 no puede reutilizar el mecanismo de supplyAsync sin comprobarlo."
+  },
+  {
+   "id": "submit.invoke-rethrows",
+   "operation": "errores",
+   "status": "java-only",
+   "java_semantics": "invoke() sobre una tarea que falla relanza la excepcion original o una cuyo cause es la original; el handler no participa.",
+   "oracles": [
+    "fjp-handler"
+   ],
+   "logs": [
+    "analysis/forkjoin-handler-java25-oracle.log"
+   ],
+   "owner": "B-04",
+   "note": "La forma concreta (misma instancia o envoltorio) no es estable entre ejecuciones: el oraculo exige solo que no se pierda la causa."
+  },
+  {
+   "id": "pool.common-pool",
+   "operation": "lifecycle",
+   "status": "unsupported",
+   "java_semantics": "ForkJoinPool.commonPool() devuelve siempre la misma instancia y su paralelismo es >= 1.",
+   "oracles": [
+    "fjp-handler"
+   ],
+   "owner": "B-02",
+   "note": "No modelado: exige un pool global compartido por procesos, fuera del perfil por objeto. Debe rechazarse explicitamente o modelarse con una identidad acordada con A."
+  },
+  {
+   "id": "pool.worker-counters",
+   "operation": "lifecycle",
+   "status": "java-only",
+   "java_semantics": "getPoolSize, getActiveThreadCount, getRunningThreadCount, getQueuedSubmissionCount y getQueuedTaskCount nunca exceden el paralelismo y hay al menos un worker tras usar el pool; no se promete creacion gradual ni valores exactos.",
+   "oracles": [
+    "fjp-handler"
+   ],
+   "logs": [
+    "analysis/forkjoin-handler-java25-oracle.log"
+   ],
+   "owner": "B-02",
+   "note": "Invariantes fijados por el oraculo; el nativo no los expone (ver gap.no-guard-for-lifecycle-queries)."
+  },
+  {
+   "id": "future.pending-queries",
+   "operation": "futuro pendiente",
+   "status": "differential",
+   "java_semantics": "Pendiente: isDone()==false, isCancelled()==false, isCompletedExceptionally()==false y getNow(x) devuelve x sin completar el futuro.",
+   "tests": [
+    "mc-aot/tests/check-rayon-pending-future.py"
+   ],
+   "logs": [
+    "analysis/b03-b08-futures-suite-jdk25.log"
+   ],
+   "owner": "B-03",
+   "note": "Consultas sobre el estado pendiente, contrastadas con Java 25."
+  },
+  {
+   "id": "future.pending-complete-once",
+   "operation": "futuro pendiente",
+   "status": "differential",
+   "java_semantics": "complete(v) devuelve true la primera vez y false después; el valor queda fijado y join/getNow lo devuelven, incluido null.",
+   "tests": [
+    "mc-aot/tests/check-rayon-pending-future.py"
+   ],
+   "logs": [
+    "analysis/b03-b08-futures-suite-jdk25.log"
+   ],
+   "owner": "B-03",
+   "note": "Transición única pendiente→completado normal, atómica en el heap compartido."
+  },
+  {
+   "id": "future.pending-publication",
+   "operation": "futuro pendiente",
+   "status": "differential",
+   "java_semantics": "Un futuro pendiente puede publicarse en un campo final de otra clase y completarse después; quien lee el campo ve el mismo objeto.",
+   "tests": [
+    "mc-aot/tests/check-rayon-pending-future.py"
+   ],
+   "logs": [
+    "analysis/b03-b08-futures-suite-jdk25.log"
+   ],
+   "owner": "B-03",
+   "note": "Antes solo se admitían futuros ya completados en campos; ahora se admite pendiente, que es lo que hace el código real de Minecraft."
+  },
+  {
+   "id": "future.pending-join-blocked",
+   "operation": "futuro pendiente",
+   "status": "guard",
+   "java_semantics": "join()/get() de un futuro pendiente esperan hasta que se complete.",
+   "guard_message": "join de futuro pendiente no soportado",
+   "tests": [
+    "mc-aot/tests/check-rayon-pending-future.py"
+   ],
+   "logs": [
+    "analysis/b03-b08-futures-suite-jdk25.log"
+   ],
+   "owner": "B-03",
+   "note": "Guarda de ejecución (el binario aborta con diagnóstico); no hay espera bloqueante ni autoayuda entre frames."
+  },
+  {
+   "id": "future.pending-cancel",
+   "operation": "futuro pendiente",
+   "status": "guard",
+   "java_semantics": "cancel(false) de un pendiente devuelve true y deja isCancelled()==true; get/join lanzan CancellationException.",
+   "guard_message": "cancel de futuro pendiente no soportado",
+   "tests": [
+    "mc-aot/tests/check-rayon-pending-future.py"
+   ],
+   "logs": [
+    "analysis/b03-b08-futures-suite-jdk25.log"
+   ],
+   "owner": "B-03",
+   "note": "Se rechaza en ejecucion, con las dos banderas (cancel(false) y cancel(true)); cancelar sobre un futuro ya completado sigue devolviendo false, como Java. La semantica Java de cada bandera esta medida en future.cancel-pending-false/true."
+  },
+  {
+   "id": "future.pending-unit-heap",
+   "operation": "futuro pendiente",
+   "status": "unit",
+   "java_semantics": "Estado pendiente, finalización única y consultas coherentes en el heap.",
+   "unit_test": "pending_future_completes_once_and_reports_state",
+   "src": "mc-aot/src/concurrent_heap.rs",
+   "owner": "B-03",
+   "note": "Incluye doble inicialización rechazada y join rechazado antes de completar."
+  },
+  {
+   "id": "future.pending-unit-foreign",
+   "operation": "futuro pendiente",
+   "status": "unit",
+   "java_semantics": "Un objeto que no es futuro o un valor de otro heap no puede completar un futuro.",
+   "unit_test": "pending_future_rejects_foreign_objects_and_values",
+   "src": "mc-aot/src/concurrent_heap.rs",
+   "owner": "B-03",
+   "note": "Guarda de pertenencia a heap, coherente con el contrato de identidad de A."
+  },
+  {
+   "id": "future.pending-completion-race",
+   "operation": "futuro pendiente",
+   "status": "unit",
+   "java_semantics": "Varios complete concurrentes: exactamente uno devuelve true y el valor publicado es el del ganador.",
+   "unit_test": "pending_future_completion_race_has_single_winner",
+   "src": "mc-aot/tests/rayon_stress.rs",
+   "owner": "B-08",
+   "note": "20 rondas × 4 trabajadores × 50 intentos sobre Rayon real."
+  },
+  {
+   "id": "stress.monitor-alias-rmw",
+   "operation": "estrés",
+   "status": "unit",
+   "java_semantics": "Incrementos bajo monitor reentrante y RMW atómico sobre alias dan el total exacto sin importar el orden.",
+   "unit_test": "monitor_alias_and_rmw_repeat",
+   "src": "mc-aot/tests/rayon_stress.rs",
+   "owner": "B-08",
+   "note": "20 rondas × 4 trabajadores × 500 incrementos, con perro guardián anti-bloqueo."
+  },
+  {
+   "id": "stress.publication-reads",
+   "operation": "estrés",
+   "status": "unit",
+   "java_semantics": "Un objeto publicado antes de liberar a los trabajadores es visible y no se altera.",
+   "unit_test": "publication_then_concurrent_reads_repeat",
+   "src": "mc-aot/tests/rayon_stress.rs",
+   "owner": "B-08",
+   "note": "20 rondas × 4 trabajadores × 250 lecturas del alias publicado."
+  },
+  {
+   "id": "stress.completion-races",
+   "operation": "estrés",
+   "status": "unit",
+   "java_semantics": "Varios join concurrentes y repetidos sobre las mismas tareas: todos terminan y el trabajo se ejecuta una sola vez.",
+   "unit_test": "completion_races_repeat",
+   "src": "mc-aot/tests/rayon_stress.rs",
+   "owner": "B-08",
+   "note": "20 rondas × 8 tareas × 3 hilos que hacen join dos veces cada uno."
+  },
+  {
+   "id": "stress.close-race",
+   "operation": "estrés",
+   "status": "unit",
+   "java_semantics": "Carrera entre envíos y cierre: cada intento se acepta (y termina) o se rechaza; nunca se pierde una tarea aceptada.",
+   "unit_test": "close_race_keeps_every_task_or_rejects_it",
+   "src": "mc-aot/tests/rayon_stress.rs",
+   "owner": "B-08",
+   "note": "30 rondas con productor concurrente y cierre desde el llamador; cierre idempotente y sin resurrección."
+  },
+  {
+   "id": "api.create-bounds",
+   "operation": "frontera A",
+   "status": "unit",
+   "java_semantics": "El paralelismo de un pool está acotado y un pool no se registra dos veces.",
+   "unit_test": "create_accepts_only_the_declared_parallelism",
+   "src": "mc-aot/tests/rayon_b_api.rs",
+   "owner": "B-07",
+   "note": "1..=255 admitido; 0, negativo y 256 rechazados con mensaje literal."
+  },
+  {
+   "id": "api.submit-join-scoped",
+   "operation": "frontera A",
+   "status": "unit",
+   "java_semantics": "Cada tarea tiene identidad propia; join es idempotente y no se puede esperar un objeto que no es tarea.",
+   "unit_test": "submit_and_join_are_idempotent_and_scoped",
+   "src": "mc-aot/tests/rayon_b_api.rs",
+   "owner": "B-07",
+   "note": "join de un id ajeno devuelve 'tarea inexistente'."
+  },
+  {
+   "id": "api.await-callers-only",
+   "operation": "frontera A",
+   "status": "unit",
+   "java_semantics": "Un worker no puede esperar el cierre de su propio pool sin bloquearse.",
+   "unit_test": "await_termination_is_callers_only",
+   "src": "mc-aot/tests/rayon_b_api.rs",
+   "owner": "B-07",
+   "note": "Se rechaza con 'awaitTermination desde worker propio no soportado' en vez de bloquear."
+  },
+  {
+   "id": "api.close-final",
+   "operation": "frontera A",
+   "status": "unit",
+   "java_semantics": "shutdown es idempotente, definitivo y no altera el paralelismo configurado.",
+   "unit_test": "close_is_idempotent_and_final",
+   "src": "mc-aot/tests/rayon_b_api.rs",
+   "owner": "B-07",
+   "note": "Tras el cierre, cualquier envío es error."
+  },
+  {
+   "id": "api.publication-to-worker",
+   "operation": "frontera A",
+   "status": "unit",
+   "java_semantics": "Un objeto publicado en el heap es visible desde la tarea y conserva identidad.",
+   "unit_test": "pending_future_published_to_a_worker_is_visible",
+   "src": "mc-aot/tests/rayon_b_api.rs",
+   "owner": "B-07",
+   "note": "Caso que A-06 necesita: futuro pendiente publicado y completado por un worker."
+  },
+  {
+   "id": "api.foreign-heap-ids",
+   "operation": "frontera A",
+   "status": "unit",
+   "java_semantics": "Una referencia de otro heap no puede usarse como propia.",
+   "unit_test": "foreign_heap_references_are_rejected",
+   "src": "mc-aot/tests/rayon_b_api.rs",
+   "owner": "B-07",
+   "note": "Ids y valores ajenos rechazados en pool y en futuro."
+  },
+  {
+   "id": "future.cancel-pending",
+   "operation": "futuro pendiente",
+   "status": "java-only",
+   "java_semantics": "cancel(x) de un futuro pendiente es efectivo con cualquiera de las dos banderas: devuelve true, deja isDone/isCancelled/isCompletedExceptionally en true, hace que get/join/getNow lancen CancellationException y que complete posterior devuelva false. Sobre un futuro ya completado devuelve false.",
+   "oracles": [
+    "cancel-pending"
+   ],
+   "logs": [
+    "analysis/check-rayon-pending-future-validation.log"
+   ],
+   "owner": "B-03",
+   "note": "La bandera mayInterruptIfRunning es inerte: cancel(true) y cancel(false) medidos identicos en 40 rondas cada uno (8 contadores, ver oraculo cancel-pending), porque un CompletableFuture no tiene hilo asociado que interrumpir. Un solo caso en vez de dos que duplicaban la misma medicion (Q-BC-8). El adaptador rechaza ambas banderas con 'cancel de futuro pendiente no soportado', cubierto por la guarda future.pending-cancel."
+  },
+  {
+   "id": "futures.optin-canonical",
+   "operation": "perfil",
+   "status": "guard",
+   "java_semantics": "No aplica: el interruptor es del generador, no una semantica Java.",
+   "guard_message": "valor de MC_AOT_FUTURES no soportado",
+   "tests": [
+    "mc-aot/tests/check-rayon-pending-future.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-pending-future-validation.log"
+   ],
+   "owner": "B-07",
+   "note": "Nombre canonico MC_AOT_FUTURES=restricted (off lo apaga) con el historico MC_AOT_RAYON_COMPLETED_FUTURE=1 como alias una version. Desde Q-AB-3 tambien se acepta completed-only, pero con su significado literal (solo futuros completados, ver futures.completed-only): el valor que se sigue rechazando es cualquier otro, para que una errata no active el perfil por accidente. Acuerdos Q-AB-2 y Q-AB-3 en analysis/discussion/threads/a-b.md."
+  },
+  {
+   "id": "mutable.ref-nonfinal",
+   "operation": "referencias mutables",
+   "status": "differential",
+   "java_semantics": "Un campo de referencia no final puede escribirse fuera del constructor y leerse después; el valor observado es el último escrito.",
+   "tests": [
+    "mc-aot/tests/check-rayon-mutable-refs.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-mutable-refs-validation.log"
+   ],
+   "owner": "B-09",
+   "note": "28 valores por fixture contra Java 25, con control de campo final que no cambia con el opt-in. Escritura por el mutex del heap; no se compara orden."
+  },
+  {
+   "id": "mutable.ref-requires-optin",
+   "operation": "referencias mutables",
+   "status": "guard",
+   "java_semantics": "Sin declaracion explicita, el perfil no admite referencias compartidas escribibles.",
+   "guard_message": "concurrent-int: captura de referencia debe ser final",
+   "tests": [
+    "mc-aot/tests/check-rayon-mutable-refs.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-mutable-refs-validation.log"
+   ],
+   "owner": "B-09",
+   "note": "`MC_AOT_RAYON_MUTABLE_REFS=1` es obligatorio; sin el, la traduccion se rechaza antes de generar binario."
+  },
+  {
+   "id": "mutable.ref-relink-stress",
+   "operation": "referencias mutables",
+   "status": "unit",
+   "java_semantics": "Reenlazar bajo monitor desde varios workers no pierde ni duplica nodos y no crea ciclos.",
+   "unit_test": "relink_under_monitor_keeps_the_chain_whole",
+   "src": "mc-aot/tests/rayon_stress.rs",
+   "owner": "B-09",
+   "note": "20 rondas x 4 workers x 100 reenlaces sobre 64 nodos; invariantes exactos, monitor fuera y mutex del heap dentro."
+  },
+  {
+   "id": "refs.method-returns-reference",
+   "operation": "referencias del proyecto",
+   "status": "differential",
+   "java_semantics": "Un método de una clase del proyecto puede devolver una referencia del proyecto; el llamador la usa igual que un campo leído.",
+   "tests": [
+    "mc-aot/tests/check-rayon-project-ref-returns.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-project-ref-returns-validation.log"
+   ],
+   "owner": "B-10",
+   "note": "32 valores contra Java 25, incluida la lectura encadenada head.step().step() y self() que devuelve this. Era la brecha que B-09 documentó: su fixture leía a.next porque step() no compilaba."
+  },
+  {
+   "id": "refs.mixed-constructor",
+   "operation": "referencias del proyecto",
+   "status": "differential",
+   "java_semantics": "Un constructor puede recibir a la vez un int y una referencia del proyecto; no hay sobrecarga ni despacho en el perfil.",
+   "tests": [
+    "mc-aot/tests/check-rayon-project-ref-returns.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-project-ref-returns-validation.log"
+   ],
+   "owner": "B-10",
+   "note": "Firma (ILnet/minecraft/test/Node;)V, la que el perfil cerrado enumeraba como no soportada."
+  },
+  {
+   "id": "refs.return-exact-class",
+   "operation": "referencias del proyecto",
+   "status": "guard",
+   "java_semantics": "El valor devuelto tiene la clase declarada o es null; otra cosa no es un valor Java válido para esa firma.",
+   "guard_message": "retorno de referencia del proyecto no soportado",
+   "tests": [
+    "mc-aot/tests/check-rayon-project-ref-returns.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-project-ref-returns-validation.log"
+   ],
+   "owner": "B-10",
+   "note": "Comprobación de defensa: desde fuente Java type-safe no se puede disparar (javac no deja devolver un Leaf donde se declara Node), así que no se declara como camino probado; se declara como guarda que existe y se ejerce en verde sobre las clases correctas."
+  },
+  {
+   "id": "refs.without-project-optin",
+   "operation": "referencias del proyecto",
+   "status": "guard",
+   "guard_message": "concurrent-int: firma no soportada",
+   "java_semantics": "No aplica: el perfil del generador no tiene semántica Java.",
+   "tests": [
+    "mc-aot/tests/check-rayon-project-ref-returns.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-project-ref-returns-validation.log"
+   ],
+   "owner": "B-10",
+   "note": "Sin MC_AOT_RAYON_PROJECT_REFERENCES=1 no se traduce nada de esto y no se produce binario; una firma fuera del perfil, como (Ljava/lang/String;)I, sigue rechazándose con el mismo mensaje de antes."
+  },
+  {
+   "id": "futures.completed-only",
+   "operation": "perfil",
+   "status": "guard",
+   "java_semantics": "No aplica: el interruptor es del generador, no una semantica Java.",
+   "guard_message": "MC_AOT_FUTURES=completed-only no lo admite",
+   "tests": [
+    "mc-aot/tests/check-rayon-completed-future.py",
+    "mc-aot/tests/check-rayon-pending-future.py"
+   ],
+   "logs": [
+    "analysis/check-rayon-completed-future-latest.log",
+    "analysis/check-rayon-pending-future-latest.log"
+   ],
+   "owner": "B-07",
+   "note": "Q-AB-3: completed-only es el valor que A ya aceptaba. Aquí se honra su nombre en vez de reinterpretarlo: enciende los futuros completados (90 resultados idénticos a Java) y rechaza crear un futuro pendiente con mensaje explícito. Así los dos backends comparten al menos un valor con el mismo significado y el guardián check-futures-optin-shared.py pasa de PENDIENTE a verde con las dos mitades."
+  }
+ ],
+ "gaps": [
+  {
+   "id": "gap.handler-oracle-not-in-suite",
+   "description": "check-forkjoin-handler-oracle no figuraba en mc-aot/run-regressions.sh.",
+   "action": "Anadida la entrada en run-regressions.sh con check-futures-contract; C debe confirmarla al integrar.",
+   "owner": "C-06"
+  },
+  {
+   "id": "gap.no-explicit-guard-for-task-get",
+   "description": "ForkJoinTask.get()/invoke() no tienen guarda propia: caen en el rechazo generico de llamada externa, sin mensaje que distinga 'no modelado' de 'error de traduccion'.",
+   "action": "B-04 debe anadir guardas explicitas y su caso en el oraculo antes de modelar get/invoke.",
+   "owner": "B-04"
+  },
+  {
+   "id": "gap.oracle-missing-cases",
+   "description": "Los oraculos no cubren: execute(ForkJoinTask), thenCompose, thenAccept, handle, exceptionally, anyOf, orTimeout, completeAsync, cancel(true), ManagedBlocker, interrupcion de workers ni toString del pool. (submit(Callable), invoke(), commonPool() y los contadores de workers ya estan fijados por el oraculo ampliado.)",
+   "action": "Ampliar los oraculos por subperfil antes de implementar cada metodo (B-03/B-04/B-05).",
+   "owner": "B-01"
+  },
+  {
+   "id": "gap.no-java-differential-for-unit-cases",
+   "description": "Cuatro propiedades del lifecycle (lazy start, cierre sin mantener vivo, sin fallback al pool comun, una sola identidad de pool) solo tienen prueba unitaria Rust.",
+   "action": "B-02/B-08 deben anadir el diferencial Java observable correspondiente o mantenerlas declaradas como propiedades del adaptador.",
+   "owner": "B-08"
+  },
+  {
+   "id": "gap.no-guard-for-lifecycle-queries",
+   "description": "getActiveThreadCount/getPoolSize/getRunningThreadCount/getQueuedSubmissionCount no tienen guarda ni mensaje propio: caen en el rechazo de carga de clase JDK, aunque el oraculo ya fija sus invariantes (pool.worker-counters).",
+   "action": "B-02 debe decidir si se modelan (necesitan estado interno de workers que Rayon no expone igual) o se rechazan con mensaje explícito; hoy el contrato lo declara rechazo de traducción.",
+   "owner": "B-02"
+  },
+  {
+   "id": "gap.pending-future-waits",
+   "description": "No hay espera sobre un futuro pendiente (join/get) ni cancelación: reciben guarda de ejecución. Tampoco hay callbacks ni composición.",
+   "action": "B-03/B-04 necesitan primero el modelo de excepciones y una forma de espera entre frames acordada con A.",
+   "owner": "B-03"
+  },
+  {
+   "id": "gap.two-optins",
+   "description": "Existieron dos interruptores distintos para el mismo concepto (MC_AOT_RAYON_COMPLETED_FUTURE y MC_AOT_NUMERIC_COMPLETED_FUTURE). CERRADO en Q-AB-2: el backend concurrente acepta el nombre canonico MC_AOT_FUTURES=restricted con el alias historico una version.",
+   "action": "Cerrado por B en la rama trabajo/b-01-contrato-futures (commit del opt-in unificado) y acordado con A en analysis/discussion/threads/a-b.md Q-AB-2; A ya implemento su mitad en numeric.rs (futures_optin).",
+   "owner": "B-07",
+   "closed": true
+  }
+ ]
 }

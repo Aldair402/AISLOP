@@ -47,6 +47,13 @@ with tempfile.TemporaryDirectory(prefix='mc-completed-future-') as t:
  disabled=env.copy();disabled.pop('MC_AOT_RAYON_COMPLETED_FUTURE')
  bad=run(cmd[:9]+[str(d/'disabled'),'run','(I)I'],capture_output=True,env=disabled)
  assert bad.returncode!=0 and 'requiere MC_AOT_RAYON_COMPLETED_FUTURE' in bad.stderr and not (d/'disabled').exists(),bad.stderr
+ # Q-AB-3: `completed-only` (el valor de A) se honra, no se reinterpreta: este
+ # perfil de futuro completado compila igual solo con ese valor.
+ solo_completado=env.copy();solo_completado.pop('MC_AOT_RAYON_COMPLETED_FUTURE')
+ solo_completado['MC_AOT_FUTURES']='completed-only'
+ ok(run(cmd[:9]+[str(d/'solo-completado'),'run','(I)I'],capture_output=True,env=solo_completado))
+ nativo_solo=ok(run([str(d/'solo-completado'),*map(str,values)],capture_output=True,env=native_env))
+ assert java.stdout==nativo_solo.stdout,('completed-only',java.stdout[:200],nativo_solo.stdout[:200])
  # El futuro pendiente ya esta soportado y se verifica en check-rayon-pending-future.py.
  cases=[('obtrude','CompletableFuture.completedFuture((Object)null).obtrudeValue(null)','operación no soportada: obtrudeValue'),
         ('exception','CompletableFuture.completedFuture((Object)null).completeExceptionally(null)','operación no soportada: completeExceptionally')]
@@ -57,4 +64,4 @@ with tempfile.TemporaryDirectory(prefix='mc-completed-future-') as t:
   cmd_bad=cmd[:7]+[str(c/'bad.jar'),'net/minecraft/test/FutureFixture',str(c/'native'),'run','(I)I']
   bad=run(cmd_bad,capture_output=True,env=env)
   assert bad.returncode!=0 and error in bad.stderr and not (c/'native').exists(),(label,bad.stderr)
- print(f'OK: {len(values)} resultados Java 25/Rayon; completedFuture normal, get/join/getNow, identidad/null, estados, complete/cancel ya completado, QuartPos oficial y cuatro guardas; backend concurrente aislado, sin future general')
+ print(f'OK: {len(values)} resultados Java 25/Rayon con el alias historico y con MC_AOT_FUTURES=completed-only; completedFuture normal, get/join/getNow, identidad/null, estados, complete/cancel ya completado, QuartPos oficial y cuatro guardas; backend concurrente aislado, sin future general')

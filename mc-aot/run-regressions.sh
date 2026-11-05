@@ -47,6 +47,7 @@ run_logged check-forkjoin-handler-oracle python3 mc-aot/tests/check-forkjoin-han
 run_logged check-rayon-java-pool-queries python3 mc-aot/tests/check-rayon-java-pool-queries.py
 run_logged check-rayon-pending-future python3 mc-aot/tests/check-rayon-pending-future.py
 run_logged check-rayon-mutable-refs python3 mc-aot/tests/check-rayon-mutable-refs.py
+run_logged check-rayon-project-ref-returns python3 mc-aot/tests/check-rayon-project-ref-returns.py
 run_logged check-futures-contract python3 mc-aot/tests/check-futures-contract.py
 run_logged check-executor-inventory python3 mc-aot/tests/check-executor-inventory.py
 run_logged check-shared-worker-bytecode python3 mc-aot/tests/check-shared-worker-bytecode.py

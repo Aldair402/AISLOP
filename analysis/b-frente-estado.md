@@ -17,7 +17,7 @@ literal y verificable.
 
 | Tarea | Estado | Evidencia | Qué falta y de quién depende |
 |---|---|---|---|
-| **B-01** Contrato comprobable | **Hecha** (revisión de C pendiente) | `analysis/futures-contract-b01.{md,json}` (83 casos), `check-futures-contract.py`, 3 oráculos a 40 rondas | Que C confirme los tres registros en `run-regressions.sh` |
+| **B-01** Contrato comprobable | **Hecha** (revisión de C pendiente) | `analysis/futures-contract-b01.{md,json}` (91 casos), `check-futures-contract.py`, 3 oráculos a 40 rondas | Que C confirme los tres registros en `run-regressions.sh` |
 | **B-02** Lifecycle y perfil del pool | **Hecha** | `check-rayon-java-pool-queries.py`, `rayon_pool_queries.rs`, `analysis/b02-futures-suite-jdk25.log` | Nada de B; el 4-arg del constructor con factory depende de B-06 |
 | **B-03** Futuros pendientes | **Subperfil 1 hecho** | `check-rayon-pending-future.py` (48 resultados Java 25), 3 pruebas de heap/runtime | Fallo (`completeExceptionally`) y cancelación efectiva: **decisión de A** (modelo de `Throwable`) |
 | **B-04** `get`/`join` y fallos | **Bloqueada por decisión** | oráculo `fjp-handler` + casos `err.*` ya fijan la semántica Java | Representación de `Throwable` acordada con A |
@@ -25,6 +25,7 @@ literal y verificable.
 | **B-06** Factory y handler de `Util` | **Bloqueada, con causa medida** | `analysis/b06-util-factory-blockers.md` (bytecode real) | Decisión de logging (aparcada) y `onTermination(Throwable)` → depende de B-04 |
 | **B-07** Interfaz para A | **Entregada + opt-in unificado** | `analysis/b-api-for-a.md`, `rayon_b_api.rs` (6 pruebas de frontera) | A debe aceptar las tres decisiones abiertas de su §6 |
 | **B-09** Referencias mutables | **Subperfil 1 hecho** (acordado en Q-AB-1) | `check-rayon-mutable-refs.py` (84 resultados Java 25), guarda sin opt-in, `relink_under_monitor_keeps_the_chain_whole` (20×4×100) | Nada de B; A debe confirmar el orden campos→monitor en su lado |
+| **B-10** Referencias como retorno | **Subperfil hecho** (abierto por B tras B-09) | `check-rayon-project-ref-returns.py` (32 resultados Java 25, constructor mixto y lectura encadenada), dos guardas; `MC_AOT_FUTURES=completed-only` honrado en la mitad de Q-AB-3 | A debe aceptar `restricted` como alias en `numeric.rs` para que el canónico valga en los dos backends |
 | **B-08** Estrés y regresiones | **Hecha** | `rayon_stress.rs`, 5 pruebas de invariantes con perro guardián | Que C la incorpore a la integral |
 
 ## 2. Qué tiene que hacer C al unificar
@@ -59,7 +60,7 @@ literal y verificable.
 | Suite focalizada B (15 scripts `.py`, JDK 25) | **15/15 OK** — log `analysis/b03-b08-futures-suite-jdk25.log` |
 | **Integral completa** `bash mc-aot/run-regressions.sh` | **exit 0, 310 etapas**, «Todas las regresiones terminaron correctamente» — `analysis/full-regressions-b-frente-contrato-futures-retry3.log` |
 | `check-futures-contract.py` | exit 0: cada diferencial cita un test de la suite, cada guarda existe literalmente, cada unitaria existe, documento y JSON no divergen |
-| Contrato | 83 casos: 23 diferenciales, 19 guardas, 21 unitarias, 12 solo-Java, 8 sin modelar; 3 oráculos; 7 huecos |
+| Contrato | 91 casos: 26 diferenciales, 24 guardas, 22 unitarias, 11 solo-Java, 8 sin modelar; 3 oráculos; 7 huecos |
 
 ## 5. Lo que este frente **no** afirma
 

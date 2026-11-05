@@ -78,7 +78,7 @@ Los oráculos corren 40 rondas porque la semántica de hilos y de handler no es 
 | `completedFuture` | 6 | 5 | 1 | — | — | — |
 | `futuro pendiente` | 11 | 4 | 3 | 3 | 1 | — |
 | `fallo de futuro` | 1 | — | 1 | — | — | — |
-| `perfil` | 4 | — | 4 | — | — | — |
+| `perfil` | 5 | — | 5 | — | — | — |
 | `composición` | 5 | — | — | — | — | 5 |
 | `errores` | 4 | — | — | — | 4 | — |
 | `cancelación` | 1 | — | — | — | 1 | — |
@@ -87,7 +87,8 @@ Los oráculos corren 40 rondas porque la semántica de hilos y de handler no es 
 | `estrés` | 4 | — | — | 4 | — | — |
 | `frontera A` | 6 | — | — | 6 | — | — |
 | `referencias mutables` | 3 | 1 | 1 | 1 | — | — |
-| **Total** | **86** | **24** | **21** | **22** | **11** | **8** |
+| `referencias del proyecto` | 4 | 2 | 2 | — | — | — |
+| **Total** | **91** | **26** | **24** | **22** | **11** | **8** |
 
 ## 6. Detalle de los casos
 
@@ -255,6 +256,40 @@ destino debe estar publicado y ser de la clase esperada.
 
 **Diferencia declarada:** lo que se garantiza es que la escritura es atómica bajo el mutex del heap y que los
 invariantes probados se cumplen; **no** que se reproduzca el *happens-before* del modelo de memoria de Java.
+
+### 6.10 Referencias del proyecto como valor de retorno (B-10)
+
+Brecha que encontró B-09: su fixture leía `a.next` porque `Node step(){return next;}` se rechazaba con
+`concurrent-int: areturn no soportado`. Bajo `MC_AOT_RAYON_PROJECT_REFERENCES=1` (el mismo opt-in que ya
+materializaba objetos del proyecto) se admiten ahora los métodos que devuelven una referencia del proyecto y los
+constructores de firma mixta (`int` + referencia). El retorno se comprueba contra la clase declarada.
+
+| id | Semántica Java | Estado | Evidencia | Tarea |
+|---|---|---|---|---|
+| `refs.method-returns-reference` | Un método del proyecto devuelve una referencia; el llamador la usa como un campo leído | diferencial | `check-rayon-project-ref-returns.py` (32 valores, incluida `head.step().step()` y `self()`) | B-10 |
+| `refs.mixed-constructor` | Constructor con `int` y referencia a la vez | diferencial | `check-rayon-project-ref-returns.py` (`(ILnet/minecraft/test/Node;)V`) | B-10 |
+| `refs.return-exact-class` | El retorno tiene la clase declarada o es `null` | guarda: `retorno de referencia del proyecto no soportado` | `mc-aot/src/concurrent_compile.rs` | B-10 |
+| `refs.without-project-optin` | Sin opt-in no hay traducción de esto | guarda: `concurrent-int: firma no soportada` | `check-rayon-project-ref-returns.py` | B-10 |
+
+**Diferencia declarada:** `refs.return-exact-class` es defensa, no un camino probado: desde fuente Java type-safe
+`javac` no permite devolver un `Leaf` donde se declara `Node`, así que la rama de rechazo no se puede disparar
+sin bytecode manipulado. Se declara como guarda existente y se ejerce en verde sobre todos los retornos correctos,
+no como cobertura de un error real.
+
+### 6.11 `MC_AOT_FUTURES=completed-only` honra su nombre (Q-AB-3)
+
+A implementó `completed-only`; B implementó `restricted`. La intersección estaba vacía, que es peor que no unificar:
+el operador solo descubre la divergencia en la ruta que cruza el otro backend. B acepta ahora `completed-only` con
+su significado literal —futuros completados sí, futuros pendientes no— y el canónico sigue siendo `restricted`.
+
+| id | Semántica Java | Estado | Evidencia | Tarea |
+|---|---|---|---|---|
+| `futures.completed-only` | No aplica (interruptor del generador); el perfil completado funciona igual y el pendiente se rechaza | guarda: `MC_AOT_FUTURES=completed-only no lo admite` | `check-rayon-completed-future.py` (90 resultados) y `check-rayon-pending-future.py` | B-07 |
+
+El guardián compartido (`check-futures-optin-shared.py`) deja de estar en `PENDIENTE` en cuanto las dos mitades
+están en el mismo árbol: con este cambio y el de A el valor común es `completed-only`. Que A acepte `restricted`
+como alias —para que el canónico también funcione en su backend— sigue siendo decisión de A y está pedido en el hilo
+A-B.
 
 ### 6.5 Composición (lo que pide Minecraft y aún no existe)
 

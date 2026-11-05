@@ -1,0 +1,1 @@
+OK: 32 resultados Java 25/Rayon con métodos del proyecto que devuelven referencia, constructores de firma mixta (int + referencia) y lectura encadenada, comprobando la clase exacta del retorno; más dos guardas (sin MC_AOT_RAYON_PROJECT_REFERENCES se rechaza, y una firma fuera del perfil sigue dando "firma no soportada"); sin reclamo de modelo de memoria, solo valores

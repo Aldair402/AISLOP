@@ -85,6 +85,24 @@ A partir de B-09 el backend concurrente admite **campos de referencia no `final`
 invariantes probados se cumplen (20 rondas × 4 workers × 100 reenlaces sobre 64 nodos, sin nodos perdidos ni ciclos).
 No se garantiza el *happens-before* del modelo de memoria de Java.
 
+### 2.4 Referencias del proyecto como valor de retorno (B-10)
+
+Bajo el mismo `MC_AOT_RAYON_PROJECT_REFERENCES=1` que ya materializaba objetos del proyecto, el backend
+concurrente admite métodos del proyecto que devuelven una referencia (`Node step(){return next;}`) y constructores
+de firma mixta (`(ILnet/minecraft/...;)V`). Reglas:
+
+1. **Tipo declarado exacto:** el `areturn` comprueba la clase del valor devuelto; `null` se admite como en Java,
+   otra clase no. Sin despacho de subclases.
+2. **Sin opt-in no hay traducción:** los dos caminos siguen rechazándose (`concurrent-int: firma no soportada`,
+   `concurrent-int: areturn no soportado`) y no se produce binario.
+3. **El opt-in no es «acepta todo»:** una firma fuera del perfil sigue rechazándose con el mismo mensaje que antes.
+4. **La comprobación de clase es defensa, no cobertura:** desde fuente Java type-safe no se puede disparar; no la
+   cuentes como un error probado.
+
+Para A: esto elimina la nota de bloqueo de A-04 («el compilador del backend concurrente rechaza cualquier campo no
+`final`»). La referencia mutua sigue necesitando `MC_AOT_RAYON_MUTABLE_REFS=1` (§2.3); lo que se abre aquí es el
+valor de retorno, no la escritura.
+
 ## 3. Clases y operaciones admitidas hoy
 
 `java/util/concurrent/ForkJoinPool` (constructor de 1 y de 4 argumentos con handler `null`), `ForkJoinTask`
@@ -104,6 +122,7 @@ Fuera del perfil: subclases y jerarquías, handlers no nulos, factories Java no 
 |---|---|---|
 | `MC_AOT_RAYON_MUTABLE_REFS=1` | Admite campos de referencia no `final` (B-09) | Sin él se mantiene el rechazo; ver §2.3 |
 | `MC_AOT_FUTURES=restricted` | Habilita el perfil de futuros (completado y pendiente normal) | Nombre canónico desde Q-AB-2; `off` lo apaga y un valor ajeno se rechaza |
+| `MC_AOT_FUTURES=completed-only` | Habilita futuros completados y **rechaza** crear uno pendiente | El valor que A ya aceptaba (Q-AB-3); se honra su nombre, no se reinterpreta. El canónico sigue siendo `restricted` |
 | `MC_AOT_RAYON_COMPLETED_FUTURE=1` | Alias histórico del anterior | Una versión; sin ninguno de los dos el programa **no se genera** |
 | `MC_AOT_NUMERIC_COMPLETED_FUTURE=1` | El mismo concepto en el backend numérico | Dos interruptores para lo mismo: A y B deben unificarlo al integrar |
 | `MC_AOT_RAYON_ASSUME_NO_INTERRUPT=1` | Declara que no se modelan interrupciones | Requisito de las rutas de `TracingExecutor` |

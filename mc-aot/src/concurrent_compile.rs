@@ -23,16 +23,77 @@ fn mutable_refs_optin() -> bool {
 
 fn futures_restricted_optin() -> Result<bool> {
     match std::env::var("MC_AOT_FUTURES") {
-        Ok(v) if v == "restricted" => Ok(true),
+        Ok(v) if v == "restricted" || v == "completed-only" => Ok(true),
         Ok(v) if v == "off" => Ok(false),
         Ok(v) => Err(format!(
-            "futuros: valor de MC_AOT_FUTURES no soportado: {v} (admitidos: off, restricted)"
+            "futuros: valor de MC_AOT_FUTURES no soportado: {v} (admitidos: off, restricted, completed-only)"
         )),
         Err(_) => Ok(
             std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()
                 == Some(std::ffi::OsStr::new("1")),
         ),
     }
+}
+
+/// `completed-only` es el valor que A ya aceptaba (Q-AB-3). Aqui se honra su
+/// nombre en vez de reinterpretarlo: enciende el perfil de futuros pero no el de
+/// futuros pendientes, que siguen necesitando `restricted`. Asi los dos backends
+/// comparten al menos un valor con el mismo significado, no solo el mismo texto.
+fn futures_pending_optin() -> Result<bool> {
+    match std::env::var("MC_AOT_FUTURES") {
+        Ok(v) if v == "restricted" => Ok(true),
+        Ok(v) if v == "completed-only" || v == "off" => Ok(false),
+        Ok(v) => Err(format!(
+            "futuros: valor de MC_AOT_FUTURES no soportado: {v} (admitidos: off, restricted, completed-only)"
+        )),
+        Err(_) => Ok(
+            std::env::var_os("MC_AOT_RAYON_COMPLETED_FUTURE").as_deref()
+                == Some(std::ffi::OsStr::new("1")),
+        ),
+    }
+}
+
+fn project_references_optin() -> bool {
+    std::env::var_os("MC_AOT_RAYON_PROJECT_REFERENCES").as_deref()
+        == Some(std::ffi::OsStr::new("1"))
+}
+
+/// `Lnet/minecraft/...;` simple: sin arrays, sin genéricos anidados.
+fn project_ref_type(descriptor: &str) -> Option<&str> {
+    let klass = descriptor.strip_prefix('L')?.strip_suffix(';')?;
+    (klass.starts_with("net/minecraft/")
+        && !klass.chars().any(|c| matches!(c, ';' | '[' | '(' | ')')))
+    .then_some(klass)
+}
+
+/// Descriptor con parámetros `I` y referencias del proyecto, y retorno `V`, `I`
+/// o referencia del proyecto. Bajo `MC_AOT_RAYON_PROJECT_REFERENCES=1` admite
+/// las firmas que el perfil cerrado no enumeraba (constructores mixtos,
+/// métodos que devuelven una referencia).
+fn project_args(desc: &str) -> Result<usize> {
+    let unsupported = || format!("concurrent-int: firma no soportada: {desc}");
+    let (mut rest, ret) = desc
+        .strip_prefix('(')
+        .and_then(|r| r.split_once(')'))
+        .ok_or_else(unsupported)?;
+    if !(ret == "V" || ret == "I" || project_ref_type(ret).is_some()) {
+        return Err(unsupported());
+    }
+    let mut count = 0usize;
+    while !rest.is_empty() {
+        if let Some(tail) = rest.strip_prefix('I') {
+            rest = tail;
+        } else {
+            let end = rest.find(';').ok_or_else(unsupported)?;
+            let (tipo, tail) = rest.split_at(end + 1);
+            if project_ref_type(tipo).is_none() {
+                return Err(unsupported());
+            }
+            rest = tail;
+        }
+        count += 1;
+    }
+    Ok(count)
 }
 
 fn arg_count(desc: &str) -> Result<usize> {
@@ -62,6 +123,7 @@ fn arg_count(desc: &str) -> Result<usize> {
         _ if std::env::var_os("MC_AOT_RAYON_PROJECT_REFERENCES").as_deref()==Some(std::ffi::OsStr::new("1"))
             && desc.strip_prefix("(Lnet/minecraft/").and_then(|x|x.strip_suffix(";)V"))
                 .is_some_and(|name|!name.is_empty() && !name.chars().any(|c|matches!(c,';'|'['|'('|')'))) => Ok(1),
+        _ if project_references_optin() => project_args(desc),
         _ => Err(format!("concurrent-int: firma no soportada: {desc}")),
     }
 }
@@ -1460,6 +1522,7 @@ impl Builder<'_> {
                         && descriptor == "()V"
                     {
                         if !futures_restricted_optin()? {return Err("CompletableFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1 (o el nombre unificado MC_AOT_FUTURES=restricted)".into());}
+                        if !futures_pending_optin()? {return Err("futuro pendiente: MC_AOT_FUTURES=completed-only no lo admite (usa restricted)".into());}
                         "let id=pop_object(f,heap,\"java/util/concurrent/CompletableFuture\")?;heap.mark_pending_future(id)?;".into()
                     } else if self.rayon && op==0xb7 && klass=="java/lang/Record" && callee=="<init>" && descriptor=="()V" {
                         "let _this=pop_any_object(f)?;".into()
@@ -1482,9 +1545,15 @@ impl Builder<'_> {
                 }
                 0xb0 => {
                     let executor_return=self.rayon && desc=="()Ljava/util/concurrent/ExecutorService;";
-                    if desc!="(Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;" && !(tracing_unloaded && desc=="(Ljava/lang/Runnable;)Ljava/lang/Runnable;") && !executor_return && !(self.rayon && matches!(desc.as_str(),"(Ljava/lang/String;Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;"|"(Ljava/util/concurrent/atomic/AtomicInteger;Ljava/lang/String;Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;"|"(Ljava/lang/String;Ljava/util/concurrent/atomic/AtomicInteger;Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;")) {return Err("concurrent-int: areturn no soportado".into())}
+                    let project_return=self.rayon
+                        && project_references_optin()
+                        && desc.rsplit_once(')').and_then(|(_,ret)|project_ref_type(ret)).is_some();
+                    if desc!="(Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;" && !(tracing_unloaded && desc=="(Ljava/lang/Runnable;)Ljava/lang/Runnable;") && !executor_return && !project_return && !(self.rayon && matches!(desc.as_str(),"(Ljava/lang/String;Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;"|"(Ljava/util/concurrent/atomic/AtomicInteger;Ljava/lang/String;Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;"|"(Ljava/lang/String;Ljava/util/concurrent/atomic/AtomicInteger;Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;")) {return Err("concurrent-int: areturn no soportado".into())}
                     terminal = true;
-                    if executor_return {
+                    if project_return {
+                        let esperada=desc.rsplit_once(')').and_then(|(_,ret)|project_ref_type(ret)).unwrap_or_default().to_string();
+                        format!("let v=f.pop()?;match v {{Value::Ref(None)=>{{}},Value::Ref(Some(id)) if heap.class_of(id)?==Some({esperada:?})=>{{}},_=>return Err(FrameError::Heap(\"retorno de referencia del proyecto no soportado\"))}};return Ok(Step::Return(v));")
+                    } else if executor_return {
                         "let v=f.pop()?;match v {Value::Ref(None)=>{},Value::Ref(Some(id)) if heap.class_of(id)?==Some(\"java/util/concurrent/ForkJoinPool\")=>{},_=>return Err(FrameError::Heap(\"retorno ExecutorService no soportado\"))};return Ok(Step::Return(v));".into()
                     } else {
                         "let v=f.pop()?;if !matches!(v,Value::Ref(_)){return Err(FrameError::Heap(\"retorno no referencia\"));}return Ok(Step::Return(v));".into()

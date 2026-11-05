@@ -1,1 +1,1 @@
-OK: 90 resultados Java 25/Rayon; completedFuture normal, get/join/getNow, identidad/null, estados, complete/cancel ya completado, QuartPos oficial y cuatro guardas; backend concurrente aislado, sin future general
+OK: 90 resultados Java 25/Rayon con el alias historico y con MC_AOT_FUTURES=completed-only; completedFuture normal, get/join/getNow, identidad/null, estados, complete/cancel ya completado, QuartPos oficial y cuatro guardas; backend concurrente aislado, sin future general
