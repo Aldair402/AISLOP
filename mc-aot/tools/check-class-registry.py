@@ -12,6 +12,11 @@ def sha(p: pathlib.Path) -> str:
             h.update(c)
     return h.hexdigest()
 
+# The JAR is a third-party download (gitignored), so a fresh clone and CI may
+# not have it. Without it we can still validate the registry schema, statuses,
+# counts and evidence files, but class-level hashes stay unverified.
+jar_present = jar_path.is_file()
+
 def err(m): raise ValueError(m)
 
 data = json.loads(reg_path.read_text())
@@ -19,13 +24,18 @@ if data.get("schema") != "class-registry-v1": err("schema must be class-registry
 if not re.fullmatch(r"[0-9a-f]{64}", data.get("jar_sha256","")): err("jar_sha256 invalid")
 if data["jar_classes_total"] != 7762: err("jar_classes_total must be 7762")
 if not isinstance(data["count_complete"], int) or data["count_complete"] < 0: err("count_complete invalid")
-if sha(jar_path) != data["jar_sha256"]: err(f"JAR hash mismatch: expected {data['jar_sha256']} got {sha(jar_path)}")
-# Verify jar has 7762 classes
-with zipfile.ZipFile(jar_path) as z:
-    names = [i.filename for i in z.infolist() if i.filename.endswith(".class")]
-    if len(names) != 7762: err(f"JAR class count {len(names)} != 7762")
-    jar_names = set(names)
-    jar_hashes = {n: hashlib.sha256(z.read(n)).hexdigest() for n in names}
+jar_hashes = None
+if jar_present:
+    if sha(jar_path) != data["jar_sha256"]: err(f"JAR hash mismatch: expected {data['jar_sha256']} got {sha(jar_path)}")
+    # Verify jar has 7762 classes
+    with zipfile.ZipFile(jar_path) as z:
+        names = [i.filename for i in z.infolist() if i.filename.endswith(".class")]
+        if len(names) != 7762: err(f"JAR class count {len(names)} != 7762")
+        jar_names = set(names)
+        jar_hashes = {n: hashlib.sha256(z.read(n)).hexdigest() for n in names}
+else:
+    print("WARN: downloads/server-26.3-inner.jar not present — structural checks only, "
+          "class hashes unverified (run README download steps to verify)", file=sys.stderr)
 
 allowed_status = {"inventoried","partial-evidence","pending-review","complete"}
 seen = set()
@@ -40,7 +50,7 @@ for entry in data.get("classes", []):
     if entry["status"] not in allowed_status: err(f"invalid status {entry['status']}")
     if entry["jar_sha256"] != data["jar_sha256"]: err(f"class {cls} jar_sha256 mismatch")
     if not re.fullmatch(r"[0-9a-f]{64}", entry["class_sha256"]): err(f"invalid class_sha256 for {cls}")
-    if jar_hashes.get(cls+".class") != entry["class_sha256"]: err(f"class hash mismatch for {cls}")
+    if jar_hashes is not None and jar_hashes.get(cls+".class") != entry["class_sha256"]: err(f"class hash mismatch for {cls}")
     surf = entry["surface"]
     for k in ("methods_declared","fields_declared","methods_with_evidence","fields_with_evidence"):
         if not isinstance(surf[k], int): err(f"surface int missing for {cls}")
@@ -86,5 +96,6 @@ for entry in data["classes"]:
                 if sha(p) != ev["sha256"]:
                     err(f"manifest evidence hash mismatch {ev['path']}")
 
-print(f"OK: registry valid — {len(data['classes'])} tracked, count_complete={data['count_complete']} (0 until review), JAR {data['jar_sha256'][:8]}..., 7762 classes verified")
+mode = "7762 classes verified against JAR" if jar_present else "JAR absent, hashes unverified"
+print(f"OK: registry valid — {len(data['classes'])} tracked, count_complete={data['count_complete']} (0 until review), JAR {data['jar_sha256'][:8]}..., {mode}")
 print(f"  statuses: {', '.join(e['class']+':'+e['status'] for e in data['classes'])}")
