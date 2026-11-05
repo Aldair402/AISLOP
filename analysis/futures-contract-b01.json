@@ -1094,10 +1094,10 @@
       "note": "Ids y valores ajenos rechazados en pool y en futuro."
     },
     {
-      "id": "future.cancel-pending-false",
+      "id": "future.cancel-pending",
       "operation": "futuro pendiente",
       "status": "java-only",
-      "java_semantics": "cancel(false) de un futuro pendiente devuelve true, deja isDone/isCancelled/isCompletedExceptionally en true, hace que get/join/getNow lancen CancellationException y que complete posterior devuelva false.",
+      "java_semantics": "cancel(x) de un futuro pendiente es efectivo con cualquiera de las dos banderas: devuelve true, deja isDone/isCancelled/isCompletedExceptionally en true, hace que get/join/getNow lancen CancellationException y que complete posterior devuelva false. Sobre un futuro ya completado devuelve false.",
       "oracles": [
         "cancel-pending"
       ],
@@ -1105,21 +1105,7 @@
         "analysis/check-rayon-pending-future-validation.log"
       ],
       "owner": "B-03",
-      "note": "Medido, 40 rondas. Con la bandera opuesta el resultado es identico: mayInterruptIfRunning no distingue nada porque el futuro no tiene hilo asociado. El adaptador rechaza ambas con 'cancel de futuro pendiente no soportado'."
-    },
-    {
-      "id": "future.cancel-pending-true",
-      "operation": "futuro pendiente",
-      "status": "java-only",
-      "java_semantics": "cancel(true) de un futuro pendiente devuelve true, deja isDone/isCancelled/isCompletedExceptionally en true, hace que get/join/getNow lancen CancellationException y que complete posterior devuelva false.",
-      "oracles": [
-        "cancel-pending"
-      ],
-      "logs": [
-        "analysis/check-rayon-pending-future-validation.log"
-      ],
-      "owner": "B-03",
-      "note": "Medido, 40 rondas. Con la bandera opuesta el resultado es identico: mayInterruptIfRunning no distingue nada porque el futuro no tiene hilo asociado. El adaptador rechaza ambas con 'cancel de futuro pendiente no soportado'."
+      "note": "La bandera mayInterruptIfRunning es inerte: cancel(true) y cancel(false) medidos identicos en 40 rondas cada uno (8 contadores, ver oraculo cancel-pending), porque un CompletableFuture no tiene hilo asociado que interrumpir. Un solo caso en vez de dos que duplicaban la misma medicion (Q-BC-8). El adaptador rechaza ambas banderas con 'cancel de futuro pendiente no soportado', cubierto por la guarda future.pending-cancel."
     }
   ],
   "gaps": [

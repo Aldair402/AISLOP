@@ -76,7 +76,7 @@ Los oráculos corren 40 rondas porque la semántica de hilos y de handler no es 
 | `rechazo` | 1 | 1 | — | — | — | — |
 | `worker` | 4 | 2 | 2 | — | — | — |
 | `completedFuture` | 6 | 5 | 1 | — | — | — |
-| `futuro pendiente` | 12 | 4 | 3 | 3 | 2 | — |
+| `futuro pendiente` | 11 | 4 | 3 | 3 | 1 | — |
 | `fallo de futuro` | 1 | — | 1 | — | — | — |
 | `perfil` | 3 | — | 3 | — | — | — |
 | `composición` | 5 | — | — | — | — | 5 |
@@ -86,7 +86,7 @@ Los oráculos corren 40 rondas porque la semántica de hilos y de handler no es 
 | `interrupción` | 2 | — | — | — | 2 | — |
 | `estrés` | 4 | — | — | 4 | — | — |
 | `frontera A` | 6 | — | — | 6 | — | — |
-| **Total** | **83** | **23** | **19** | **21** | **12** | **8** |
+| **Total** | **82** | **23** | **19** | **21** | **11** | **8** |
 
 ## 6. Detalle de los casos
 
@@ -198,8 +198,7 @@ sin cancelación efectiva y sin esperas. Implementado en el backend concurrente;
 | `future.pending-publication` | Se publica pendiente en un campo final de otra clase y se completa después | diferencial | `check-rayon-pending-future.py` | B-03 |
 | `future.pending-join-blocked` | `join`/`get` de un pendiente esperan en Java | guarda de ejecución: `join de futuro pendiente no soportado` | `check-rayon-pending-future.py` | B-03 |
 | `future.pending-cancel` | `cancel(false)`/`cancel(true)` de un pendiente son efectivos; `get`/`join` lanzan `CancellationException` | guarda de ejecución con ambas banderas: `cancel de futuro pendiente no soportado` | `check-rayon-pending-future.py` | B-03 |
-| `future.cancel-pending-false` | `cancel(false)`: `true`, `isCancelled`, `get`/`join`/`getNow` con `CancellationException`, `complete` posterior `false` | solo-Java medido (oráculo `cancel-pending`, 40 rondas) | `CompletableFutureCancelOracle.java` | B-03 |
-| `future.cancel-pending-true` | `cancel(true)` idéntico al anterior: `mayInterruptIfRunning` no distingue nada | solo-Java medido (oráculo `cancel-pending`, 40 rondas) | `CompletableFutureCancelOracle.java` | B-03 |
+| `future.cancel-pending` | `cancel(true)` y `cancel(false)` son indistinguibles: `true`, `isCancelled`, `get`/`join`/`getNow` con `CancellationException`, `complete` posterior `false`; sobre completado, `false` | solo-Java medido (oráculo `cancel-pending`, 40 rondas por bandera) | `CompletableFutureCancelOracle.java` | B-03 |
 | `future.pending-unit-heap` | Estado pendiente, finalización única y consultas coherentes en el heap | unitaria `pending_future_completes_once_and_reports_state` | `mc-aot/src/concurrent_heap.rs` | B-03 |
 | `future.pending-unit-foreign` | Un objeto que no es futuro o un valor de otro heap no puede completarlo | unitaria `pending_future_rejects_foreign_objects_and_values` | `mc-aot/src/concurrent_heap.rs` | B-03 |
 | `future.pending-completion-race` | Varios `complete` concurrentes: exactamente uno gana | unitaria `pending_future_completion_race_has_single_winner` | `mc-aot/tests/rayon_stress.rs` | B-08 |
@@ -311,7 +310,8 @@ Estas son las consecuencias operativas del contrato; no sustituyen los criterios
 - [x] Cada afirmación del contrato verificable por máquina (`check-futures-contract.py`, exit 0).
 - [x] Guardas citadas literalmente desde `mc-aot/src`.
 - [x] Huecos declarados, con tarea responsable y acción.
-- [x] **82 → 83 casos con tercer oráculo:** cancelación de pendiente medida en `CompletableFutureCancelOracle.java` (40 rondas por bandera).
+- [x] **Caso de cancelación colapsado (Q-BC-8):** un solo `future.cancel-pending` con la medición de las dos banderas.
+- [x] **83 casos con tercer oráculo:** cancelación de pendiente medida en `CompletableFutureCancelOracle.java` (40 rondas por bandera).
 - [x] **B-07 entregada:** interfaz para A en `analysis/b-api-for-a.md` con seis pruebas de frontera.
 - [x] **Subperfiles B-03 y B-08 verificados:** futuro pendiente con completado normal (48 resultados Java 25) y cinco pruebas de estrés con invariantes y perro guardián.
 - [x] **Quince pruebas focalizadas ejecutadas** con JDK 25.0.5 y el bundle oficial verificado; log único `analysis/b02-futures-suite-jdk25.log` (14/14 OK) y `cargo test` 64+30+30.
