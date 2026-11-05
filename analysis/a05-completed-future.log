@@ -1,0 +1,1 @@
+OK: 90 resultados Java 25/nativo; completedFuture normal monohilo, identidad/null, consultas, complete/cancel ya completado, instanceof/getClass y NPE capturada, QuartPos oficial, cuatro guardas y el opt-in unificado `MC_AOT_FUTURES=completed-only` con el nombre viejo como alias y valor desconocido rechazado; sin future general ni integración concurrente

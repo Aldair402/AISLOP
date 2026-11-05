@@ -31,7 +31,16 @@ with tempfile.TemporaryDirectory(prefix='mc-numeric-completed-future-') as t:
  assert java.stdout==native.stdout,(java.stdout,native.stdout,native.stderr)
  disabled=env.copy();disabled.pop('MC_AOT_NUMERIC_COMPLETED_FUTURE')
  bad=run(cmd[:9]+[str(d/'disabled'),'run','(I)I'],capture_output=True,env=disabled)
- assert bad.returncode!=0 and 'requiere MC_AOT_NUMERIC_COMPLETED_FUTURE' in bad.stderr and not (d/'disabled').exists(),bad.stderr
+ assert bad.returncode!=0 and 'requiere MC_AOT_FUTURES=completed-only' in bad.stderr and not (d/'disabled').exists(),bad.stderr
+ # Q-AC-7: el nombre unificado basta por sí solo y da el mismo binario observable.
+ unified=disabled.copy();unified['MC_AOT_FUTURES']='completed-only'
+ ok(run(cmd[:9]+[str(d/'unified'),'run','(I)I'],capture_output=True,env=unified))
+ native_unified=ok(run([str(d/'unified'),*[v for n in values for v in ('0',str(n))]],capture_output=True,env=native_env))
+ assert native_unified.stdout==java.stdout,(native_unified.stdout,java.stdout)
+ # Un valor desconocido se rechaza, no se ignora en silencio.
+ bogus=disabled.copy();bogus['MC_AOT_FUTURES']='completed'
+ bad=run(cmd[:9]+[str(d/'bogus'),'run','(I)I'],capture_output=True,env=bogus)
+ assert bad.returncode!=0 and 'MC_AOT_FUTURES: valor no soportado: completed' in bad.stderr and not (d/'bogus').exists(),bad.stderr
  cases=[('pending','new CompletableFuture<Object>().isDone()','new no soportado: java/util/concurrent/CompletableFuture'),
         ('obtrude','CompletableFuture.completedFuture((Object)null).obtrudeValue(null)','operación no soportada: obtrudeValue'),
         ('exception','CompletableFuture.completedFuture((Object)null).completeExceptionally(null)','operación no soportada: completeExceptionally')]
@@ -41,4 +50,4 @@ with tempfile.TemporaryDirectory(prefix='mc-numeric-completed-future-') as t:
   ok(run([str(jdk/'jar'),'cf',str(c/'bad.jar'),'-C',str(c),'net'],capture_output=True))
   bad=run(cmd[:7]+[str(c/'bad.jar'),'net/minecraft/test/FutureFixture',str(c/'native'),'run','(I)I'],capture_output=True,env=env)
   assert bad.returncode!=0 and error in bad.stderr and not (c/'native').exists(),(label,bad.stderr)
- print(f'OK: {len(values)} resultados Java 25/nativo; completedFuture normal monohilo, identidad/null, consultas, complete/cancel ya completado, instanceof/getClass y NPE capturada, QuartPos oficial y cuatro guardas; sin future general ni integración concurrente')
+ print(f'OK: {len(values)} resultados Java 25/nativo; completedFuture normal monohilo, identidad/null, consultas, complete/cancel ya completado, instanceof/getClass y NPE capturada, QuartPos oficial, cuatro guardas y el opt-in unificado `MC_AOT_FUTURES=completed-only` con el nombre viejo como alias y valor desconocido rechazado; sin future general ni integración concurrente')

@@ -11,6 +11,25 @@ struct Sig {
     ret: char,
 }
 // Minúsculas: arrays primitivos; T: String; t: String[].
+// Opt-in de futuros completados. Nombre unificado `MC_AOT_FUTURES=completed-only`
+// (Q-AC-7) con `MC_AOT_NUMERIC_COMPLETED_FUTURE=1` conservado como alias por una
+// versión. Un valor desconocido en el nombre nuevo se rechaza: no se ignora en
+// silencio ni se adivina la intención.
+fn futures_optin() -> Result<bool> {
+    static CACHE: std::sync::OnceLock<std::result::Result<bool, String>> = std::sync::OnceLock::new();
+    CACHE
+        .get_or_init(|| match std::env::var_os("MC_AOT_FUTURES") {
+            Some(value) if value == std::ffi::OsStr::new("completed-only") => Ok(true),
+            Some(value) if value.is_empty() => Ok(numeric_completed_future_alias()),
+            Some(value) => Err(format!("MC_AOT_FUTURES: valor no soportado: {}", value.to_string_lossy())),
+            None => Ok(numeric_completed_future_alias()),
+        })
+        .clone()
+}
+fn numeric_completed_future_alias() -> bool {
+    std::env::var_os("MC_AOT_NUMERIC_COMPLETED_FUTURE").as_deref() == Some(std::ffi::OsStr::new("1"))
+}
+
 fn is_ref(t: char) -> bool {
     matches!(
         t,
@@ -3057,7 +3076,7 @@ impl NumericCompiler<'_> {
                     let idx=u16::from_be_bytes([read()?,read()?]);let (owner,name,desc)=method_ref(&m.cp,idx)?;
                     match (owner,name,desc) {
                         ("java/util/concurrent/CompletableFuture",_,_) if self.multi_classes.is_some()=>{
-                            if std::env::var_os("MC_AOT_NUMERIC_COMPLETED_FUTURE").as_deref()!=Some(std::ffi::OsStr::new("1")){return Err("CompletableFuture: requiere MC_AOT_NUMERIC_COMPLETED_FUTURE=1".into());}
+                            if !futures_optin()? {return Err("CompletableFuture: requiere MC_AOT_FUTURES=completed-only o MC_AOT_NUMERIC_COMPLETED_FUTURE=1".into());}
                             match (name,desc) {
                                 ("get"|"join","()Ljava/lang/Object;")=>"let r=pop_r(&mut stack);stack.push(V::R(completed_future_value(heap,r)));".into(),
                                 ("getNow","(Ljava/lang/Object;)Ljava/lang/Object;")=>"let _fallback=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(completed_future_value(heap,r)));".into(),
@@ -3364,7 +3383,7 @@ impl NumericCompiler<'_> {
                         ("org/apache/logging/log4j/util/OsgiServiceLocator","loadServices","(Ljava/lang/Class;Ljava/lang/Class;Lorg/apache/logging/log4j/Logger;)Ljava/util/stream/Stream;") if self.multi_classes.is_some() && start==55 && self.active.last().is_some_and(|k| k=="org/apache/logging/log4j/util/ServiceLoaderUtil.safeStream(Ljava/lang/Class;Ljava/util/ServiceLoader;Lorg/apache/logging/log4j/Logger;)Ljava/util/stream/Stream;")=>{self.verify_log4j_absent_osgi()?;"{ error(\"Log4j OSGi: rama inalcanzable ejecutada\"); None }".into()},
                         ("java/util/stream/Stream","concat","(Ljava/util/stream/Stream;Ljava/util/stream/Stream;)Ljava/util/stream/Stream;") if self.multi_classes.is_some() && start==58 && self.active.last().is_some_and(|k| k=="org/apache/logging/log4j/util/ServiceLoaderUtil.safeStream(Ljava/lang/Class;Ljava/util/ServiceLoader;Lorg/apache/logging/log4j/Logger;)Ljava/util/stream/Stream;")=>{self.verify_log4j_absent_osgi()?;"{ error(\"Log4j OSGi: rama inalcanzable ejecutada\"); None }".into()},
                         ("java/util/concurrent/CompletableFuture","completedFuture","(Ljava/lang/Object;)Ljava/util/concurrent/CompletableFuture;") if self.multi_classes.is_some()=>{
-                            if std::env::var_os("MC_AOT_NUMERIC_COMPLETED_FUTURE").as_deref()!=Some(std::ffi::OsStr::new("1")){return Err("completedFuture: requiere MC_AOT_NUMERIC_COMPLETED_FUTURE=1".into());}
+                            if !futures_optin()? {return Err("completedFuture: requiere MC_AOT_FUTURES=completed-only o MC_AOT_NUMERIC_COMPLETED_FUTURE=1".into());}
                             "Some(completed_future_new(heap,x0))".into()
                         },
                         ("java/util/concurrent/ConcurrentHashMap","newKeySet","()Ljava/util/concurrent/ConcurrentHashMap$KeySetView;") if self.multi_classes.is_some()=>"Some(concurrent_keyset_new(heap))".into(),
@@ -3673,7 +3692,7 @@ impl NumericCompiler<'_> {
                         self.verify_project_cast_target(name)?;
                         format!("project_instance(heap,r,{name:?},PROJECT_INTERFACES)")
                     } else {
-                        let kind=match name {"java/lang/String"=>"s","java/io/PrintStream" if self.multi_classes.is_some()=>"printstream","java/lang/ClassLoader" if self.multi_classes.is_some()=>"classloader","java/lang/Class" if self.multi_classes.is_some()=>"class","java/util/Optional" if self.multi_classes.is_some()=>"optional","java/util/concurrent/CompletableFuture" if self.multi_classes.is_some() && std::env::var_os("MC_AOT_NUMERIC_COMPLETED_FUTURE").as_deref()==Some(std::ffi::OsStr::new("1"))=>"completedfuture","java/net/URI" if self.multi_classes.is_some()=>"uri","java/lang/StackWalker$StackFrame" if self.multi_classes.is_some()=>"stackframe","java/util/stream/Stream" if self.multi_classes.is_some()=>"stream","java/util/Map" if self.multi_classes.is_some()=>"map","java/util/concurrent/ConcurrentMap" if self.multi_classes.is_some()=>"concurrentmap","java/util/List" if self.multi_classes.is_some()=>"list","java/lang/Number" if self.multi_classes.is_some()=>"number","java/lang/StringBuilder" if self.multi_classes.is_some()=>"builder","java/io/Reader" if self.multi_classes.is_some()=>"reader","java/io/InputStream" if self.multi_classes.is_some()=>"inputstream","java/lang/Integer" if self.multi_classes.is_some()=>"integer","java/lang/Boolean" if self.multi_classes.is_some()=>"boolean","java/lang/Long" if self.multi_classes.is_some()=>"long","java/lang/Short" if self.multi_classes.is_some()=>"short","java/lang/Character" if self.multi_classes.is_some()=>"character","java/lang/Double" if self.multi_classes.is_some()=>"double","java/lang/Float" if self.multi_classes.is_some()=>"float","java/lang/Byte" if self.multi_classes.is_some()=>"byte","[Ljava/lang/String;"=>"t","java/lang/Object"=>"o","java/net/URL" if self.multi_classes.is_some()=>"U","[Ljava/lang/Object;" if self.multi_classes.is_some()=>"A","[Ljava/lang/Class;" if self.multi_classes.is_some()=>"C",_=>return Err(format!("checkcast/instanceof no soportado: {name}"))};
+                        let kind=match name {"java/lang/String"=>"s","java/io/PrintStream" if self.multi_classes.is_some()=>"printstream","java/lang/ClassLoader" if self.multi_classes.is_some()=>"classloader","java/lang/Class" if self.multi_classes.is_some()=>"class","java/util/Optional" if self.multi_classes.is_some()=>"optional","java/util/concurrent/CompletableFuture" if self.multi_classes.is_some() && futures_optin().ok()==Some(true)=>"completedfuture","java/net/URI" if self.multi_classes.is_some()=>"uri","java/lang/StackWalker$StackFrame" if self.multi_classes.is_some()=>"stackframe","java/util/stream/Stream" if self.multi_classes.is_some()=>"stream","java/util/Map" if self.multi_classes.is_some()=>"map","java/util/concurrent/ConcurrentMap" if self.multi_classes.is_some()=>"concurrentmap","java/util/List" if self.multi_classes.is_some()=>"list","java/lang/Number" if self.multi_classes.is_some()=>"number","java/lang/StringBuilder" if self.multi_classes.is_some()=>"builder","java/io/Reader" if self.multi_classes.is_some()=>"reader","java/io/InputStream" if self.multi_classes.is_some()=>"inputstream","java/lang/Integer" if self.multi_classes.is_some()=>"integer","java/lang/Boolean" if self.multi_classes.is_some()=>"boolean","java/lang/Long" if self.multi_classes.is_some()=>"long","java/lang/Short" if self.multi_classes.is_some()=>"short","java/lang/Character" if self.multi_classes.is_some()=>"character","java/lang/Double" if self.multi_classes.is_some()=>"double","java/lang/Float" if self.multi_classes.is_some()=>"float","java/lang/Byte" if self.multi_classes.is_some()=>"byte","[Ljava/lang/String;"=>"t","java/lang/Object"=>"o","java/net/URL" if self.multi_classes.is_some()=>"U","[Ljava/lang/Object;" if self.multi_classes.is_some()=>"A","[Ljava/lang/Class;" if self.multi_classes.is_some()=>"C",_=>return Err(format!("checkcast/instanceof no soportado: {name}"))};
                         format!("builtin_instance(heap,r,{kind:?})")
                     };
                     if op==0xc0 {format!("let r=pop_r(&mut stack);if r.is_some()&&!{pred} {{raise(\"ClassCastException\",\"\");}}stack.push(V::R(r));")}

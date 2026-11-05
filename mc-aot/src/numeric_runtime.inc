@@ -914,40 +914,51 @@ pub trait PublishSink: Send + Sync {
 }
 struct PublishSession { owner:usize, thread:std::thread::ThreadId, _heap:std::sync::Arc<()>, sink:std::sync::Arc<dyn PublishSink> }
 thread_local! { static PUBLISH_SESSION: std::cell::RefCell<Option<PublishSession>> = const { std::cell::RefCell::new(None) }; }
-// Marca global solo para diagnosticar: un hilo sin sesión local que intenta
-// crear objetos del heap con sesión activa en otro hilo no debe publicar en
-// silencio. No comparte el sink ni permite publicar desde workers.
-static PUBLISH_ACTIVE: std::sync::Mutex<Option<(usize,std::thread::ThreadId)>> = std::sync::Mutex::new(None);
+// Registro global de sesiones activas, una entrada por heap numérico. Solo sirve
+// para diagnosticar: un hilo sin sesión local que intenta crear objetos de un
+// heap con sesión activa en otro hilo no debe publicar en silencio. No comparte
+// el sink, no permite publicar desde workers y admite varias sesiones a la vez
+// mientras sean de heaps distintos.
+static PUBLISH_ACTIVE: std::sync::Mutex<Vec<(usize,std::thread::ThreadId)>> = std::sync::Mutex::new(Vec::new());
+fn publish_active_insert(owner:usize, thread:std::thread::ThreadId) -> std::result::Result<(), &'static str> {
+    let mut active=PUBLISH_ACTIVE.lock().map_err(|_|"publicación: registro dañado")?;
+    if active.iter().any(|(other,_)|*other==owner) {return Err("publicación: sesión ya activa para este heap");}
+    active.push((owner,thread));Ok(())
+}
+fn publish_active_remove(owner:usize, thread:std::thread::ThreadId) {
+    if let Ok(mut active)=PUBLISH_ACTIVE.lock() {active.retain(|(o,t)|!( *o==owner && *t==thread));}
+}
+fn publish_active_owner_of(owner:usize) -> Option<std::thread::ThreadId> {
+    PUBLISH_ACTIVE.lock().ok()?.iter().find(|(o,_)|*o==owner).map(|(_,t)|*t)
+}
 // La sesión dura mientras viva la guarda: un pánico o un retorno temprano del
 // harness la libera y el siguiente uso no hereda un estado a medias. No es Send.
-struct PublishSessionGuard { released:bool, _thread:std::marker::PhantomData<std::rc::Rc<()>> }
+struct PublishSessionGuard { owner:usize, thread:std::thread::ThreadId, released:bool, _thread:std::marker::PhantomData<std::rc::Rc<()>> }
 impl PublishSessionGuard {
     fn release(mut self) {clear_publish_session();self.released=true;}
 }
 impl Drop for PublishSessionGuard {
-    fn drop(&mut self) {if !self.released {clear_publish_session();}}
+    fn drop(&mut self) {if !self.released {clear_publish_session();publish_active_remove(self.owner,self.thread);}}
 }
 fn install_publish_session(h:&Heap, sink:std::sync::Arc<dyn PublishSink>) -> std::result::Result<PublishSessionGuard, &'static str> {
     PUBLISH_SESSION.with(|session| {
         let mut session=session.borrow_mut();
         if session.is_some() {return Err("publicación: sesión ya instalada");}
         let owner=std::sync::Arc::as_ptr(&h.bridge_owner) as usize;let thread=std::thread::current().id();
+        publish_active_insert(owner,thread)?;
         *session=Some(PublishSession{owner, thread, _heap:h.bridge_owner.clone(), sink});
-        if let Ok(mut active)=PUBLISH_ACTIVE.lock() {*active=Some((owner,thread));}
-        Ok(PublishSessionGuard{released:false, _thread:std::marker::PhantomData})
+        Ok(PublishSessionGuard{owner, thread, released:false, _thread:std::marker::PhantomData})
     })
 }
 fn clear_publish_session() {
-    PUBLISH_SESSION.with(|session| *session.borrow_mut()=None);
-    if let Ok(mut active)=PUBLISH_ACTIVE.lock() {*active=None;}
+    let removed=PUBLISH_SESSION.with(|session| session.borrow_mut().take());
+    if let Some(session)=removed {publish_active_remove(session.owner,session.thread);}
 }
 fn publish_new_object(h:&mut Heap, id:usize, class:&'static str) {
     let pending=PUBLISH_SESSION.with(|session| session.borrow().as_ref().map(|s|(s.owner,s.thread,s.sink.clone())));
     let Some((owner,thread,sink))=pending else {
-        let active=PUBLISH_ACTIVE.lock().ok().and_then(|a|*a);
-        if let Some((session_owner,_))=(active) {
-            if std::sync::Arc::as_ptr(&h.bridge_owner) as usize==session_owner {error("publicación: hilo distinto al de la sesión");}
-        }
+        let heap_owner=std::sync::Arc::as_ptr(&h.bridge_owner) as usize;
+        if publish_active_owner_of(heap_owner).is_some() {error("publicación: hilo distinto al de la sesión");}
         return;
     };
     if std::sync::Arc::as_ptr(&h.bridge_owner) as usize!=owner {error("publicación: otro heap numérico");}

@@ -87,14 +87,42 @@ harness=r'''
   let bridge=NumericGraphBridge::install(&numeric,&heap,&LAYOUT_LIST).unwrap();
   drop(bridge);
  }
+ #[test] fn sessions_on_different_heaps_coexist(){
+  let first=Heap::default();let shared=SharedHeap::default();
+  let second=Heap::default();let other_shared=SharedHeap::default();
+  // El registro es por heap: dos sesiones en hilos distintos conviven y una
+  // segunda sesión sobre el mismo heap se rechaza con diagnóstico propio.
+  let gate=std::sync::Barrier::new(3);
+  std::thread::scope(|scope|{
+   let a=scope.spawn(||{let _bridge=NumericGraphBridge::install(&first,&shared,&LAYOUT_LIST).unwrap();gate.wait();});
+   let b=scope.spawn(||{let _bridge=NumericGraphBridge::install(&second,&other_shared,&LAYOUT_LIST).unwrap();gate.wait();});
+   gate.wait();
+   assert_eq!(NumericGraphBridge::install(&first,&shared,&LAYOUT_LIST).err(),Some("publicación: sesión ya activa para este heap"));
+   a.join().unwrap();b.join().unwrap();
+  });
+  // Cerradas esas sesiones el mismo heap admite una nueva, y publica.
+  let mut numeric=Heap::default();let heap=SharedHeap::default();
+  let bridge=NumericGraphBridge::install(&numeric,&heap,&LAYOUT_LIST).unwrap();
+  let id=object_new(&mut numeric,"net/minecraft/test/Node",vec![V::I(5),V::R(None)],false);
+  assert!(matches!(numeric.arrays[id],Array::SharedObj(..)));
+  assert!(bridge.lookup(id).is_ok());
+  drop(bridge);clear_publish_session();
+ }
  #[test] fn publishing_from_a_different_thread_is_fatal(){
   if std::env::var("MC_AOT_PUBLISH_THREAD_GUARD").is_ok() {
    let numeric=Heap::default();let heap=SharedHeap::default();
    let _bridge=NumericGraphBridge::install(&numeric,&heap,&LAYOUT_LIST).unwrap();
+   // Otra sesión viva en otro hilo y otro heap: no debe comprar indulgencia.
+   let (ready_tx,ready_rx)=std::sync::mpsc::channel();let (hold_tx,hold_rx)=std::sync::mpsc::channel::<()>();
+   std::thread::spawn(move||{let other=Heap::default();let other_heap=SharedHeap::default();
+    let _bridge=NumericGraphBridge::install(&other,&other_heap,&LAYOUT_LIST).unwrap();
+    ready_tx.send(()).unwrap();let _=hold_rx.recv();});
+   ready_rx.recv().unwrap();
    let owner=std::sync::Arc::new(std::sync::Mutex::new((numeric,0)));
    let handle=owner.clone();
    std::thread::spawn(move||{let mut guard=handle.lock().unwrap();let mut heap=std::mem::take(&mut guard.0);
     object_new(&mut heap,"net/minecraft/test/Node",vec![V::I(2),V::R(None)],false);}).join().unwrap();
+   drop(hold_tx);
    panic!("la publicación desde otro hilo no abortó");
   }
   let exe=std::env::current_exe().unwrap();
@@ -175,4 +203,4 @@ with tempfile.TemporaryDirectory(prefix='mc-auto-publish-') as td:
   expected=((2147483600+(2000+2*n)*4+2**31)%2**32)-2**31
   assert java.stdout.splitlines()==[str(expected)],(n,java.stdout,expected)
   assert value==expected,(n,value,expected)
- print(f'OK: 20 rondas Java y Rust; publicación automática desde object_new del bytecode numérico, {len(values)} valores comparados, guardas de sesión duplicada, clase fuera del perfil, referencia final nula, liberación tras pánico y cierre, aborto por heap ajeno y por hilo distinto, cuatro tareas ForkJoinPool en Rayon con QuartPos oficial y ejecución sin Java en PATH; harness opt-in, no Main')
+ print(f'OK: 20 rondas Java y Rust; publicación automática desde object_new del bytecode numérico, {len(values)} valores comparados, guardas de sesión duplicada, clase fuera del perfil, referencia final nula, liberación tras pánico y cierre, aborto por heap ajeno y por hilo distinto, cuatro tareas ForkJoinPool en Rayon, sesiones independientes por heap y rechazo de sesión duplicada en el mismo heap, segundas sesiones activas que no indulgen el hilo ajeno, con QuartPos oficial y ejecución sin Java en PATH; harness opt-in, no Main')
