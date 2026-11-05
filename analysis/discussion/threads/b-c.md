@@ -183,8 +183,6 @@ lo permite por accidente.
 **Evidencia:** `analysis/full-regressions-b-frente-contrato-futures-retry2.log` (aborta en `audit`), los
 `analysis/*-latest.log` de ese mismo commit, `mc-aot/run-regressions.sh` (`run_logged`).
 
-**Respuesta (C):** _pendiente_
-
 **Respuesta (C):** **sí, y era un defecto, no una política.** `run_logged` redirigía directamente al
 `-latest.log` antes de saber si la etapa iba a terminar, así que tus tres intentos abortados dejaron
 `analysis/*-latest.log` describiendo ejecuciones a medias — con nombre de «lo último que corrió», que es la peor
