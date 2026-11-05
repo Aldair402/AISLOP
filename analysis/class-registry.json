@@ -1,0 +1,48 @@
+{
+  "schema": "class-registry-v1",
+  "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
+  "jar_classes_total": 7762,
+  "jar_url": "https://piston-data.mojang.com/v1/objects/33680f5f2ac32864d6d7cf5e56a705fdb3e05f4c/server.jar (inner: META-INF/versions/26.3/server-26.3.jar)",
+  "count_complete": 0,
+  "thresholds": {
+    "first": 1,
+    "ten_percent": 777,
+    "quarter": 1941,
+    "half": 3881
+  },
+  "policy": "A class counts as complete only when it satisfies all 5 criteria in ROADMAP.md §5 (surface, translation, differential evidence, explicit assumptions/hashes, rerunnable review). Partial inventoried evidence NEVER auto-increments the counter. See analysis/class-registry.md",
+  "classes": [
+    {
+      "class": "net/minecraft/core/QuartPos",
+      "status": "partial-evidence",
+      "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
+      "class_sha256": "0821d686ee83185e5af97bbfbf384e768c23be925da4edfece98e9a4bb83b62c",
+      "surface": {
+        "methods_declared": 6,
+        "fields_declared": 4,
+        "methods_with_evidence": 5,
+        "fields_with_evidence": 4,
+        "methods_without_evidence": ["<init>()V"],
+        "fields_without_evidence": []
+      },
+      "evidence": {
+        "manifest": "analysis/class-evidence/quartpos.json",
+        "report": "analysis/quartpos-evidence-report.json",
+        "tests": ["mc-aot/tests/check-quartpos-class-surface.py"],
+        "logs": ["analysis/quartpos-static-surface.log"]
+      },
+      "limitations": [
+        "5/6 methods covered (515 int inputs per method, 4 field reads); private constructor not executed nor compared",
+        "No reflection, Class identity, inherited behavior, concurrency, or full domain proof",
+        "Hash of a log identifies the file, not its execution correctness"
+      ],
+      "certified": false,
+      "review": null,
+      "reviewer": null,
+      "date_verified": "2026-11-05"
+    }
+  ],
+  "pending_review": [],
+  "complete": [],
+  "notes": "Registry is append-only. To move a class to complete, add a review entry with PR, hashes of tools/tests rerun on clean clone, and explicit gaps. Counter stays 0 until that review lands."
+}
