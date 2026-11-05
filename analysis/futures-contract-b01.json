@@ -46,6 +46,20 @@
         "commonPool|misma-instancia|paralelismo-positivo",
         "workerCounters|dentro-del-paralelismo|uno-o-mas-tras-uso|cierre"
       ]
+    },
+    {
+      "id": "cancel-pending",
+      "java": "mc-aot/tests/CompletableFutureCancelOracle.java",
+      "runner": "mc-aot/tests/check-rayon-pending-future.py",
+      "log": "analysis/check-rayon-pending-future-validation.log",
+      "runs": 40,
+      "observes": [
+        "cancel(false)",
+        "cancel(true)",
+        "completeAfterFalse",
+        "getNowCancellation",
+        "cancel(true) sobre completado"
+      ]
     }
   ],
   "cases": [
@@ -730,7 +744,7 @@
         "analysis/b02-futures-suite-jdk25.log"
       ],
       "owner": "B-02",
-      "note": "Consulta no bloqueante; se permite desde un worker porque no espera, a diferencia de awaitTermination."
+      "note": "Consulta no bloqueante; se permite desde un worker porque no espera, a diferencia de awaitTermination. Medido ademas en 40 rondas (ver analysis/review-answers-from-b.md): un pool nunca usado queda isShutdown e isTerminated en true tras shutdown (40/40); un pool usado que se cierra devuelve isTerminated false de inmediato (0/40), y por eso ese caso NO se compara como diferencial: depende de cuando termina el worker, no de una garantia."
     },
     {
       "id": "pool.query-parallelism",
@@ -947,7 +961,7 @@
         "analysis/b03-b08-futures-suite-jdk25.log"
       ],
       "owner": "B-03",
-      "note": "Se rechaza en ejecución; cancelar sobre un futuro ya completado sigue devolviendo false, como Java."
+      "note": "Se rechaza en ejecucion, con las dos banderas (cancel(false) y cancel(true)); cancelar sobre un futuro ya completado sigue devolviendo false, como Java. La semantica Java de cada bandera esta medida en future.cancel-pending-false/true."
     },
     {
       "id": "future.pending-unit-heap",
@@ -1078,6 +1092,34 @@
       "src": "mc-aot/tests/rayon_b_api.rs",
       "owner": "B-07",
       "note": "Ids y valores ajenos rechazados en pool y en futuro."
+    },
+    {
+      "id": "future.cancel-pending-false",
+      "operation": "futuro pendiente",
+      "status": "java-only",
+      "java_semantics": "cancel(false) de un futuro pendiente devuelve true, deja isDone/isCancelled/isCompletedExceptionally en true, hace que get/join/getNow lancen CancellationException y que complete posterior devuelva false.",
+      "oracles": [
+        "cancel-pending"
+      ],
+      "logs": [
+        "analysis/check-rayon-pending-future-validation.log"
+      ],
+      "owner": "B-03",
+      "note": "Medido, 40 rondas. Con la bandera opuesta el resultado es identico: mayInterruptIfRunning no distingue nada porque el futuro no tiene hilo asociado. El adaptador rechaza ambas con 'cancel de futuro pendiente no soportado'."
+    },
+    {
+      "id": "future.cancel-pending-true",
+      "operation": "futuro pendiente",
+      "status": "java-only",
+      "java_semantics": "cancel(true) de un futuro pendiente devuelve true, deja isDone/isCancelled/isCompletedExceptionally en true, hace que get/join/getNow lancen CancellationException y que complete posterior devuelva false.",
+      "oracles": [
+        "cancel-pending"
+      ],
+      "logs": [
+        "analysis/check-rayon-pending-future-validation.log"
+      ],
+      "owner": "B-03",
+      "note": "Medido, 40 rondas. Con la bandera opuesta el resultado es identico: mayInterruptIfRunning no distingue nada porque el futuro no tiene hilo asociado. El adaptador rechaza ambas con 'cancel de futuro pendiente no soportado'."
     }
   ],
   "gaps": [

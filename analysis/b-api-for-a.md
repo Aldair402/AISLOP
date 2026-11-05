@@ -102,7 +102,7 @@ El adaptador no fabrica `Throwable`. Cuando algo no está modelado, devuelve `Fr
 | Tema | Por qué bloquea | Quién decide |
 |---|---|---|
 | Representación de `Throwable` | B-03 (fallo de futuro) y B-04 (`get`/`join`) necesitan publicar un fallo como objeto Java | A + B |
-| `commonPool()` | Requiere un pool global con identidad compartida entre procesos | A |
+| `commonPool()` | Requiere un pool global con identidad compartida entre procesos. **Recomendación de B:** un único pool Rayon global creado perezosamente en el primer `commonPool()`, paralelismo `max(1, available_parallelism-1)` acotado al perfil 1..255, no cerrado por `shutdown()` de pools de usuario, y con el mismo número de procesadores que use A para `Runtime`/`ActiveProcessorCount` | A |
 | Un solo opt-in de futuros | Hoy hay dos variables con mensajes distintos | A + B (B-07) |
 | Callbacks de A dentro de monitores | El adaptador no puede detectar reentrancia hacia el backend principal | A |
 

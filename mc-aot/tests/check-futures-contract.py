@@ -241,7 +241,7 @@ if errors:
 
 print(
     "OK: contrato B-01 coherente con el repositorio: cada diferencial cita un test que esta en la suite, "
-    "cada guarda existe literalmente en mc-aot/src, cada prueba unitaria existe, los dos oraculos Java estan "
-    "en la suite y sus lineas observadas coinciden con el codigo, y el documento y el JSON no divergen. "
+    "cada guarda existe literalmente en mc-aot/src, cada prueba unitaria existe, cada oraculo Java esta "
+    "en la suite y sus lineas observadas coinciden con su codigo y su runner, y el documento y el JSON no divergen. "
     "NO verifica semantica ni equivalencia con Java: eso solo lo demuestran los diferenciales citados."
 )

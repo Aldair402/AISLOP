@@ -2,6 +2,8 @@
 
 **Rama:** `trabajo/b-01-contrato-futures` · **Último commit:** `3a341fc` (pusheado a `deploy`)
 **Base:** `documentacion/todo-colaboracion-8fa1893` · **Fecha:** 2026-11-05
+**Identidad:** todos los commits van firmados como `MIlaSoraki <mila.gastelum@autistici.org>`, con el estilo de asunto de `main` (una línea, inglés, imperativo). El trabajo lo ejecuta un agente; queda declarado aquí y en `review-answers-from-b.md`.
+
 **Resumen:** de las ocho tareas de B, **cuatro están cerradas** (B-01, B-02, B-07, B-08), **una tiene su primer
 subperfil funcionando** (B-03) y **tres están bloqueadas por decisiones que no son de B** (B-04, B-05, B-06).
 Ninguna tarea se ha cerrado con supuestos disfrazados: lo que no se puede modelar hoy se rechaza con un mensaje
@@ -13,7 +15,7 @@ literal y verificable.
 
 | Tarea | Estado | Evidencia | Qué falta y de quién depende |
 |---|---|---|---|
-| **B-01** Contrato comprobable | **Hecha** (revisión de C pendiente) | `analysis/futures-contract-b01.{md,json}` (81 casos), `check-futures-contract.py`, 2 oráculos a 40 rondas | Que C confirme los tres registros en `run-regressions.sh` |
+| **B-01** Contrato comprobable | **Hecha** (revisión de C pendiente) | `analysis/futures-contract-b01.{md,json}` (83 casos), `check-futures-contract.py`, 3 oráculos a 40 rondas | Que C confirme los tres registros en `run-regressions.sh` |
 | **B-02** Lifecycle y perfil del pool | **Hecha** | `check-rayon-java-pool-queries.py`, `rayon_pool_queries.rs`, `analysis/b02-futures-suite-jdk25.log` | Nada de B; el 4-arg del constructor con factory depende de B-06 |
 | **B-03** Futuros pendientes | **Subperfil 1 hecho** | `check-rayon-pending-future.py` (48 resultados Java 25), 3 pruebas de heap/runtime | Fallo (`completeExceptionally`) y cancelación efectiva: **decisión de A** (modelo de `Throwable`) |
 | **B-04** `get`/`join` y fallos | **Bloqueada por decisión** | oráculo `fjp-handler` + casos `err.*` ya fijan la semántica Java | Representación de `Throwable` acordada con A |
@@ -53,7 +55,7 @@ literal y verificable.
 | `cargo test` (5 binarios) | **66 + 32 + 34 + 32 + 33 = 197 pruebas, 0 fallos** |
 | Suite focalizada B (15 scripts `.py`, JDK 25) | **15/15 OK** — log `analysis/b03-b08-futures-suite-jdk25.log` |
 | `check-futures-contract.py` | exit 0: cada diferencial cita un test de la suite, cada guarda existe literalmente, cada unitaria existe, documento y JSON no divergen |
-| Contrato | 81 casos: 23 diferenciales, 19 guardas, 21 unitarias, 10 solo-Java, 8 sin modelar; 2 oráculos; 7 huecos |
+| Contrato | 83 casos: 23 diferenciales, 19 guardas, 21 unitarias, 12 solo-Java, 8 sin modelar; 3 oráculos; 7 huecos |
 
 ## 5. Lo que este frente **no** afirma
 

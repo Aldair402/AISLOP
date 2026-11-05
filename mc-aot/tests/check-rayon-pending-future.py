@@ -84,7 +84,8 @@ with tempfile.TemporaryDirectory(prefix='mc-pending-future-') as t:
  # Guardas de ejecucion: se traducen, pero el binario aborta con diagnostico porque
  # esperar un futuro pendiente o cancelarlo no esta modelado.
  runtime_guardas=[('join-pendiente','Object o=new CompletableFuture<Object>().join();return n+(o==null?1:0);','join de futuro pendiente no soportado'),
-                  ('cancel-pendiente','if(new CompletableFuture<Object>().cancel(false))return n+1;return n;','cancel de futuro pendiente no soportado')]
+                  ('cancel-pendiente-false','if(new CompletableFuture<Object>().cancel(false))return n+1;return n;','cancel de futuro pendiente no soportado'),
+                  ('cancel-pendiente-true','if(new CompletableFuture<Object>().cancel(true))return n+1;return n;','cancel de futuro pendiente no soportado')]
  for label,expr,error in runtime_guardas:
   c=d/label;c.mkdir();(c/'PendingFixture.java').write_text('package net.minecraft.test;import java.util.concurrent.*;public class PendingFixture {public static int run(int n){'+expr+'}}')
   ok(run([str(jdk/'javac'),'-d',str(c),str(c/'PendingFixture.java')],capture_output=True))
@@ -94,9 +95,20 @@ with tempfile.TemporaryDirectory(prefix='mc-pending-future-') as t:
   ejecutado=run([str(c/'native'),'7'],capture_output=True,env=native_env)
   if ejecutado.returncode==0 or error not in ejecutado.stderr:
    raise AssertionError((label,ejecutado.returncode,ejecutado.stderr))
+ # Oracion de cancelacion: se compila el oraculo real del repo (no una copia
+ # incrustada) y se comparan sus lineas con lo medido en este JDK.
+ opath=pathlib.Path(__file__).with_name('CompletableFutureCancelOracle.java')
+ (d/'CompletableFutureCancelOracle.java').write_bytes(opath.read_bytes())
+ ok(run([str(jdk/'javac'),'-d',str(d),str(d/'CompletableFutureCancelOracle.java')],capture_output=True))
+ medido=ok(run([str(jdk/'java'),'-cp',str(d),'CompletableFutureCancelOracle'],capture_output=True)).stdout.strip().splitlines()
+ esperado=['cancel(false): cancelTrue=40/40 isDone=40/40 isCancelled=40/40 isCompletedExceptionally=40/40 getCancellation=40/40 joinCancellation=40/40 getNowCancellation=40/40 completeAfterFalse=40/40',
+           'cancel(true): cancelTrue=40/40 isDone=40/40 isCancelled=40/40 isCompletedExceptionally=40/40 getCancellation=40/40 joinCancellation=40/40 getNowCancellation=40/40 completeAfterFalse=40/40',
+           'cancel(true) sobre completado devuelve false=40/40']
+ if medido!=esperado:raise AssertionError(('oraculo de cancelacion',medido,esperado))
+ cancel_results=len(medido)
  # Opt-in obligatorio: sin la variable no hay traduccion de futuros.
  disabled=env.copy();disabled.pop('MC_AOT_RAYON_COMPLETED_FUTURE')
  bad=run(compile_cmd(d/'fixture.jar',d/'disabled','run'),capture_output=True,env=disabled)
  if bad.returncode==0 or 'requiere MC_AOT_RAYON_COMPLETED_FUTURE' not in bad.stderr or (d/'disabled').exists():
   raise AssertionError(('opt-in',bad.stderr))
- print(f'OK: {total} resultados Java 25/Rayon; futuro pendiente con isDone/isCancelled/isCompletedExceptionally/getNow antes de completar, complete único (true y luego false), join y getNow después, null completado, publicación en campo final de otra clase y QuartPos oficial; guardas de traduccion (obtrudeValue, completeExceptionally), guardas de ejecucion (join y cancel con futuro pendiente) y opt-in obligatorio; sin espera bloqueante, sin estado fallido/cancelado ni callbacks')
+ print(f'OK: {total} resultados Java 25/Rayon + {cancel_results} lineas del oraculo de cancelacion; futuro pendiente con isDone/isCancelled/isCompletedExceptionally/getNow antes de completar, complete único (true y luego false), join y getNow después, null completado, publicación en campo final de otra clase y QuartPos oficial; guardas de traduccion (obtrudeValue, completeExceptionally), guardas de ejecucion (join y cancel(false)/cancel(true) con futuro pendiente) y opt-in obligatorio; sin espera bloqueante, sin estado fallido/cancelado ni callbacks')
