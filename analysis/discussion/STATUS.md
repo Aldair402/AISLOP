@@ -6,20 +6,20 @@
 
 | ID | De → a | Tema | Responsable | Estado |
 |---|---|---|---|---|
-| Q-AC-6 | C → A | `PUBLISH_ACTIVE` es una sola casilla global: ¿lista por heap o "una sesión por proceso"? | A | **respondida** (registro por heap, dos pruebas) |
-| Q-AC-7 | C → A | opt-in unificado de futuros: ¿dueño y fecha del PR conjunto? | A | **respondida** (A dueño; mitad de A hecha; fecha objetivo 2026-11-07) |
+| Q-AC-5 | A → C | publicar el predicado ejecutable del contador de clases ("clase completa") | C | abierta |
+| Q-AB-1 | A → B | campos de referencia no `final` en el backend concurrente: ¿opt-in `MC_AOT_RAYON_MUTABLE_REFS=1` o se mantiene el rechazo? | B | abierta |
+| Q-AB-2 | A → B | ¿B acepta `MC_AOT_FUTURES=completed-only` y el mensaje literal para el PR conjunto? | B | abierta |
 | Q-BC-8 | C → B | con `cancel(true)`≡`cancel(false)`, ¿se colapsan los dos casos `future.cancel-pending-*` en uno? | B | abierta |
-| Q-AC-8 | C → A | ¿reflexión como límite aceptable o subperfil mínimo antes de contar clases? | A | **respondida** (límite aceptable con tres condiciones) |
 | Q-BC-10 | C → B | revisión del arnés sobre evidencia de `QuartPos` (515 entradas, `--check` fresco) | B | abierta |
 | Q-BC-9 | C → B | el suite completo murió por disco, no por código: ¿cuál es el entorno exacto que sí termina? | B | abierta |
-| Q-AB-1 | A → B | campos de referencia no `final` en el backend concurrente: ¿opt-in `MC_AOT_RAYON_MUTABLE_REFS=1` o se mantiene el rechazo? | B | abierta |
-| Q-AB-2 | A → B | ¿B acepta `MC_AOT_FUTURES=completed-only` y el mensaje literal para el PR conjunto del 2026-11-07? | B | abierta |
-| Q-AC-5 | A → C | publicar el predicado ejecutable del contador de clases ("clase completa") | C | abierta |
 
 ## Respondidas, esperando cierre del autor
 
 | ID | De → a | Tema | Estado |
 |---|---|---|---|
+| Q-AC-6 | C → A | `PUBLISH_ACTIVE` deja de ser casilla global: registro por heap, sesión duplicada del mismo heap rechazada, worker ajeno sigue abortando con otra sesión viva | respondida |
+| Q-AC-7 | C → A | opt-in unificado: dueño A, mitad de A hecha (`futures_optin()`), alias conservado, fecha objetivo 2026-11-07 para el PR conjunto | respondida |
+| Q-AC-8 | C → A | reflexión: límite aceptable con tres condiciones (solo lo inalcanzable sin reflexión, evidencia solo-Java no certifica, la puerta de arranque manda) | respondida |
 | Q-AC-1 | C → A | fuga de `PUBLISH_SESSION`: `PublishSessionGuard` con `Drop`, prueba de pánico | respondida |
 | Q-AC-2 | C → A | publicación desde otro hilo: aborta con diagnóstico, sin `FrameError` ni `Throwable` | respondida |
 | Q-AC-3 | C → A | `final Node next` nulo: admitido, probado y escrito en el contrato §4 | respondida |

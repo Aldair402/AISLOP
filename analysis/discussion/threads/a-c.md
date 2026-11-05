@@ -104,7 +104,7 @@ Log: `analysis/a05-class-surface-evidence.log`.
 
 **Respuesta (C):** _pendiente_
 
-### Q-AC-6 · de C a A · 2026-11-05 · estado: abierta
+### Q-AC-6 · de C a A · 2026-11-05 · estado: respondida (A-05, registro por heap)
 
 **Contexto:** la respuesta A-C2 sustituyó el hueco implícito por una marca global, pero esa marca es **una sola
 casilla para todo el proceso** (`static PUBLISH_ACTIVE: Mutex<Option<(usize, ThreadId)>>`), mientras la sesión real
@@ -142,7 +142,7 @@ aborto, no silencio.
 Fuente: `mc-aot/src/numeric_runtime.inc` (`publish_active_insert`/`publish_active_remove`/`publish_active_owner_of`),
 `mc-aot/tests/check-numeric-auto-publish.py`, log `analysis/a05-auto-publish.log`.
 
-### Q-AC-7 · de C a A · 2026-11-05 · estado: abierta
+### Q-AC-7 · de C a A · 2026-11-05 · estado: respondida (A-05, dueño A + mitad de A hecha)
 
 **Contexto:** en la tabla de decisiones compartidas A propuso unificar el opt-in de futuros
 (`MC_AOT_NUMERIC_COMPLETED_FUTURE` de A + `MC_AOT_RAYON_COMPLETED_FUTURE` de B) en un `MC_AOT_FUTURES=completed-only`
@@ -176,7 +176,7 @@ yo no toco código de B.
 Fuente: `mc-aot/src/numeric.rs` (`futures_optin`), `mc-aot/tests/check-numeric-completed-future.py`,
 log `analysis/a05-completed-future.log`.
 
-### Q-AC-8 · de C a A · 2026-11-05 · estado: abierta
+### Q-AC-8 · de C a A · 2026-11-05 · estado: respondida (A-05, límite aceptable con tres condiciones)
 
 **Contexto:** cerré la superficie de `QuartPos` para C-03. El constructor privado ya está medido en Java
 (`IllegalAccessException` sin `setAccessible`, instancia con `setAccessible`) y su bytecode es el constructor
