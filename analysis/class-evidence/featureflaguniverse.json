@@ -1,0 +1,88 @@
+{
+  "schema": "partial-surface-v1",
+  "members_classification": {
+    "<init>(Ljava/lang/String;)V": "differential",
+    "toString()Ljava/lang/String;": "differential",
+    "id:Ljava/lang/String;": "differential"
+  },
+  "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
+  "class": "net/minecraft/world/flag/FeatureFlagUniverse",
+  "class_sha256": "61e490913ad43b3f0137a8fd3f310856ef8b06c32051cbc80bc3bfb7c211e2c0",
+  "members": [
+    {
+      "kind": "method",
+      "name": "<init>",
+      "descriptor": "(Ljava/lang/String;)V",
+      "evidence": [
+        {
+          "path": "mc-aot/tests/check-featureflaguniverse-class-surface.py",
+          "sha256": "4612403e1614800a87b97948c6a0cda6b4045e5cf6b26843441f5f84d4e2febf"
+        },
+        {
+          "path": "mc-aot/tools/classfile-surface.py",
+          "sha256": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c"
+        },
+        {
+          "path": "analysis/featureflaguniverse-static-surface.log",
+          "sha256": "f99045f4c21b0cd988fa39eda1776371dcd91bf3edebc3fff60df43ba8ec2ee7"
+        },
+        {
+          "path": "analysis/class-evidence/featureflaguniverse-classfile.json",
+          "sha256": "f7d1f687b932e9c2f6ef1ff94ed51baeebd33118446190135209a89e7ec2e1b5"
+        }
+      ]
+    },
+    {
+      "kind": "method",
+      "name": "toString",
+      "descriptor": "()Ljava/lang/String;",
+      "evidence": [
+        {
+          "path": "mc-aot/tests/check-featureflaguniverse-class-surface.py",
+          "sha256": "4612403e1614800a87b97948c6a0cda6b4045e5cf6b26843441f5f84d4e2febf"
+        },
+        {
+          "path": "mc-aot/tools/classfile-surface.py",
+          "sha256": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c"
+        },
+        {
+          "path": "analysis/featureflaguniverse-static-surface.log",
+          "sha256": "f99045f4c21b0cd988fa39eda1776371dcd91bf3edebc3fff60df43ba8ec2ee7"
+        },
+        {
+          "path": "analysis/class-evidence/featureflaguniverse-classfile.json",
+          "sha256": "f7d1f687b932e9c2f6ef1ff94ed51baeebd33118446190135209a89e7ec2e1b5"
+        }
+      ]
+    },
+    {
+      "kind": "field",
+      "name": "id",
+      "descriptor": "Ljava/lang/String;",
+      "evidence": [
+        {
+          "path": "mc-aot/tests/check-featureflaguniverse-class-surface.py",
+          "sha256": "4612403e1614800a87b97948c6a0cda6b4045e5cf6b26843441f5f84d4e2febf"
+        },
+        {
+          "path": "mc-aot/tools/classfile-surface.py",
+          "sha256": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c"
+        },
+        {
+          "path": "analysis/featureflaguniverse-static-surface.log",
+          "sha256": "f99045f4c21b0cd988fa39eda1776371dcd91bf3edebc3fff60df43ba8ec2ee7"
+        },
+        {
+          "path": "analysis/class-evidence/featureflaguniverse-classfile.json",
+          "sha256": "f7d1f687b932e9c2f6ef1ff94ed51baeebd33118446190135209a89e7ec2e1b5"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "El diferencial cubre 96 argumentos por operación (longitudes 0..64, unicode, pares sustitutos fuera del BMP, controles, comillas y null) contra Java 25; no cubre cadenas arbitrarias ni el dominio completo de String.",
+    "El efecto del constructor y del campo se observa a través de toString() de la propia clase: si toString tradujera mal, la operación de campo fallaría también. Está declarado como dependencia cruzada, no como evidencia separada.",
+    "No se mide identidad de la clase en el heap nativo más allá de getClass()==FeatureFlagUniverse.class, ni igualdad/hash de instancias: la clase no declara equals ni hashCode, así que hereda los de Object y esa parte no es de esta clase.",
+    "El arnés expone un único punto de entrada estático (run(I)I); no se ejercita el uso de la clase como valor de retorno de otro método traducido ni su publicación entre hilos."
+  ]
+}

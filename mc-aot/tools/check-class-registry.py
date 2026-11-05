@@ -85,16 +85,31 @@ if data["count_complete"] != len(data.get("complete", [])):
 if data["count_complete"] != 0 and not complete_entries:
     err("non-zero count without complete entries")
 
-# Verify evidence sha256 for QuartPos manifest files via existing tool
+# Verify evidence sha256 for every tracked class, not just the first one: a
+# manifest whose hashes drifted is evidence nobody can re-check.
 for entry in data["classes"]:
     manifest = entry["evidence"].get("manifest")
-    if manifest and manifest == "analysis/class-evidence/quartpos.json":
-        mdata = json.loads((root / manifest).read_text())
-        for item in mdata.get("members", []):
-            for ev in item.get("evidence", []):
-                p = root / ev["path"]
-                if sha(p) != ev["sha256"]:
-                    err(f"manifest evidence hash mismatch {ev['path']}")
+    if not manifest:
+        continue
+    path = root / manifest
+    if not path.is_file():
+        err(f"manifest missing {manifest}")
+    mdata = json.loads(path.read_text())
+    if mdata.get("class") != entry["class"]:
+        err(f"manifest {manifest} describes {mdata.get('class')}, not {entry['class']}")
+    if mdata.get("class_sha256") != entry["class_sha256"]:
+        err(f"manifest {manifest} class hash mismatch")
+    seen = 0
+    for item in mdata.get("members", []):
+        for ev in item.get("evidence", []):
+            p = root / ev["path"]
+            if not p.is_file():
+                err(f"evidence file missing {ev['path']}")
+            if sha(p) != ev["sha256"]:
+                err(f"manifest evidence hash mismatch {ev['path']}")
+            seen += 1
+    if not seen:
+        err(f"manifest {manifest} declares no evidence")
 
 mode = "7762 classes verified against JAR" if jar_present else "JAR absent, hashes unverified"
 print(f"OK: registry valid — {len(data['classes'])} tracked, count_complete={data['count_complete']} (0 until review), JAR {data['jar_sha256'][:8]}..., {mode}")

@@ -1,0 +1,63 @@
+{
+  "class": "net/minecraft/world/flag/FeatureFlagUniverse",
+  "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
+  "class_sha256": "61e490913ad43b3f0137a8fd3f310856ef8b06c32051cbc80bc3bfb7c211e2c0",
+  "methods_declared": 2,
+  "methods_with_partial_evidence": 2,
+  "methods_differential": 2,
+  "methods_java_only": 0,
+  "fields_declared": 1,
+  "fields_with_partial_evidence": 1,
+  "differential_members": [
+    {
+      "member": "<init>(Ljava/lang/String;)V",
+      "cases": 96
+    },
+    {
+      "member": "toString()Ljava/lang/String;",
+      "cases": 96
+    },
+    {
+      "member": "id:Ljava/lang/String;",
+      "cases": 96
+    }
+  ],
+  "java_only_members": [],
+  "unreachable_java_only": [],
+  "reflection_gap_members": [],
+  "results": 288,
+  "cross_dependencies": [
+    "El efecto de <init>(Ljava/lang/String;)V y del campo id:Ljava/lang/String; se observa a través de toString()Ljava/lang/String; de la propia clase: no hay accesor y no se inventa uno."
+  ],
+  "classfile_surface": {
+    "flags": [
+      "public",
+      "super"
+    ],
+    "super_class": "java/lang/Object",
+    "interfaces": [],
+    "has_init": true,
+    "has_clinit": false,
+    "declared_methods": [
+      "<init>(Ljava/lang/String;)V",
+      "toString()Ljava/lang/String;"
+    ],
+    "declared_fields": [
+      "id:Ljava/lang/String;"
+    ]
+  },
+  "evidence_files": {
+    "mc-aot/tests/check-featureflaguniverse-class-surface.py": "4612403e1614800a87b97948c6a0cda6b4045e5cf6b26843441f5f84d4e2febf",
+    "mc-aot/tools/classfile-surface.py": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c",
+    "analysis/featureflaguniverse-static-surface.log": "f99045f4c21b0cd988fa39eda1776371dcd91bf3edebc3fff60df43ba8ec2ee7",
+    "analysis/class-evidence/featureflaguniverse-classfile.json": "f7d1f687b932e9c2f6ef1ff94ed51baeebd33118446190135209a89e7ec2e1b5"
+  },
+  "limitations": [
+    "El diferencial cubre 96 argumentos por operación (longitudes 0..64, unicode, pares sustitutos fuera del BMP, controles, comillas y null) contra Java 25; no cubre cadenas arbitrarias ni el dominio completo de String.",
+    "El efecto del constructor y del campo se observa a través de toString() de la propia clase: si toString tradujera mal, la operación de campo fallaría también. Está declarado como dependencia cruzada, no como evidencia separada.",
+    "No se mide identidad de la clase en el heap nativo más allá de getClass()==FeatureFlagUniverse.class, ni igualdad/hash de instancias: la clase no declara equals ni hashCode, así que hereda los de Object y esa parte no es de esta clase.",
+    "El arnés expone un único punto de entrada estático (run(I)I); no se ejercita el uso de la clase como valor de retorno de otro método traducido ni su publicación entre hilos."
+  ],
+  "certified": false,
+  "warning": "Inventario de evidencias parciales: no certifica la clase ni incrementa el contador."
+}

@@ -1,0 +1,40 @@
+{
+  "class": "net/minecraft/world/flag/FeatureFlagUniverse",
+  "class_sha256": "61e490913ad43b3f0137a8fd3f310856ef8b06c32051cbc80bc3bfb7c211e2c0",
+  "fields": [
+    {
+      "descriptor": "Ljava/lang/String;",
+      "flags": [
+        "private",
+        "final"
+      ],
+      "name": "id"
+    }
+  ],
+  "flags": [
+    "public",
+    "super"
+  ],
+  "has_clinit": false,
+  "has_init": true,
+  "interfaces": [],
+  "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
+  "methods": [
+    {
+      "descriptor": "(Ljava/lang/String;)V",
+      "flags": [
+        "public"
+      ],
+      "name": "<init>"
+    },
+    {
+      "descriptor": "()Ljava/lang/String;",
+      "flags": [
+        "public"
+      ],
+      "name": "toString"
+    }
+  ],
+  "schema": "classfile-surface-v1",
+  "super_class": "java/lang/Object"
+}

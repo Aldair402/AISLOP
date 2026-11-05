@@ -42,6 +42,11 @@ run_logged check-classfile-surface python3 mc-aot/tools/classfile-surface.py net
 run_logged check-quartpos-evidence-audit python3 mc-aot/tools/class-surface-evidence.py analysis/class-evidence/quartpos.json
 run_logged check-quartpos-evidence-fresh python3 mc-aot/tools/update-quartpos-evidence.py --check
 run_logged check-class-complete-predicate python3 mc-aot/tests/check-class-complete-predicate.py
+# Segunda clase del registro: superficie, diferencial y frescura de su evidencia.
+run_logged check-featureflaguniverse-class-surface python3 mc-aot/tests/check-featureflaguniverse-class-surface.py
+run_logged check-featureflaguniverse-evidence-audit python3 mc-aot/tools/class-surface-evidence.py analysis/class-evidence/featureflaguniverse.json
+run_logged check-featureflaguniverse-evidence-fresh python3 mc-aot/tools/update-class-evidence.py --spec analysis/class-specs/featureflaguniverse.json --check
+run_logged check-update-class-evidence python3 mc-aot/tests/check-update-class-evidence.py
 # Puede fallar con exit 1 mientras A y B no coincidan en el valor canónico: eso es señal, no ruido.
 run_logged check-futures-optin-shared python3 mc-aot/tests/check-futures-optin-shared.py
 run_logged check-class-registry python3 mc-aot/tools/check-class-registry.py
