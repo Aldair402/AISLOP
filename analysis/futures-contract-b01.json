@@ -19,7 +19,7 @@
       "java": "mc-aot/tests/CompletableFutureOracle.java",
       "runner": "mc-aot/tests/check-completable-future-oracle.py",
       "log": "analysis/completable-future-java25-oracle.log",
-      "runs": 20,
+      "runs": 40,
       "observes": [
         "normal|null|identity|complete-once",
         "exception|join-completion|get-execution|same-cause",
@@ -35,12 +35,16 @@
       "java": "mc-aot/tests/ForkJoinHandlerOracle.java",
       "runner": "mc-aot/tests/check-forkjoin-handler-oracle.py",
       "log": "analysis/forkjoin-handler-java25-oracle.log",
-      "runs": 20,
+      "runs": 40,
       "observes": [
         "execute|handler|misma-excepcion",
         "submit|join-excepcion|get-executionexception|sin-handler",
         "supplyAsync|causa-identica|sin-handler",
-        "shutdown|terminacion|rechazo"
+        "shutdown|terminacion|rechazo",
+        "submitCallable|valor|causa-envuelta|sin-handler",
+        "invoke|original-o-causa|sin-handler",
+        "commonPool|misma-instancia|paralelismo-positivo",
+        "workerCounters|dentro-del-paralelismo|uno-o-mas-tras-uso|cierre"
       ]
     }
   ],
@@ -806,6 +810,70 @@
       "src": "mc-aot/tests/rayon_pool_queries.rs",
       "owner": "B-02",
       "note": "Ids de otro heap se rechazan en las tres consultas; no se devuelve false por defecto."
+    },
+    {
+      "id": "submit.callable-value",
+      "operation": "submit",
+      "status": "unsupported",
+      "java_semantics": "submit(Callable) devuelve el valor producido; con fallo, get() lanza ExecutionException.",
+      "oracles": [
+        "fjp-handler"
+      ],
+      "owner": "B-04",
+      "note": "No modelado: la llamada cae en el rechazo genérico de traducción. Primer paso: decidir si Callable entra en el perfil o se rechaza con mensaje propio."
+    },
+    {
+      "id": "submit.callable-cause-wrapped",
+      "operation": "errores",
+      "status": "java-only",
+      "java_semantics": "En submit(Callable) el adaptador NO conserva la identidad de la causa: ExecutionException.getCause() es un envoltorio nuevo, y el handler no se invoca.",
+      "oracles": [
+        "fjp-handler"
+      ],
+      "logs": [
+        "analysis/forkjoin-handler-java25-oracle.log"
+      ],
+      "owner": "B-04",
+      "note": "Corrige una suposición previa del contrato: la causa identica solo esta verificada para supplyAsync, no para submit(Callable). Quien implemente B-04 no puede reutilizar el mecanismo de supplyAsync sin comprobarlo."
+    },
+    {
+      "id": "submit.invoke-rethrows",
+      "operation": "errores",
+      "status": "java-only",
+      "java_semantics": "invoke() sobre una tarea que falla relanza la excepcion original o una cuyo cause es la original; el handler no participa.",
+      "oracles": [
+        "fjp-handler"
+      ],
+      "logs": [
+        "analysis/forkjoin-handler-java25-oracle.log"
+      ],
+      "owner": "B-04",
+      "note": "La forma concreta (misma instancia o envoltorio) no es estable entre ejecuciones: el oraculo exige solo que no se pierda la causa."
+    },
+    {
+      "id": "pool.common-pool",
+      "operation": "lifecycle",
+      "status": "unsupported",
+      "java_semantics": "ForkJoinPool.commonPool() devuelve siempre la misma instancia y su paralelismo es >= 1.",
+      "oracles": [
+        "fjp-handler"
+      ],
+      "owner": "B-02",
+      "note": "No modelado: exige un pool global compartido por procesos, fuera del perfil por objeto. Debe rechazarse explicitamente o modelarse con una identidad acordada con A."
+    },
+    {
+      "id": "pool.worker-counters",
+      "operation": "lifecycle",
+      "status": "java-only",
+      "java_semantics": "getPoolSize, getActiveThreadCount, getRunningThreadCount, getQueuedSubmissionCount y getQueuedTaskCount nunca exceden el paralelismo y hay al menos un worker tras usar el pool; no se promete creacion gradual ni valores exactos.",
+      "oracles": [
+        "fjp-handler"
+      ],
+      "logs": [
+        "analysis/forkjoin-handler-java25-oracle.log"
+      ],
+      "owner": "B-02",
+      "note": "Invariantes fijados por el oraculo; el nativo no los expone (ver gap.no-guard-for-lifecycle-queries)."
     }
   ],
   "gaps": [
@@ -823,8 +891,8 @@
     },
     {
       "id": "gap.oracle-missing-cases",
-      "description": "Los oraculos no cubren: submit(Callable), execute(ForkJoinTask), invoke(), ForkJoinPool.commonPool(), ManagedBlocker, interrupcion de workers, toString del pool, thenCompose, thenAccept, handle, exceptionally, anyOf, orTimeout, completeAsync, Future.cancel con mayInterruptIfRunning.",
-      "action": "Ampliar ForkJoinHandlerOracle/CompletableFutureOracle por subperfil antes de implementar cada metodo (B-02/B-04/B-05).",
+      "description": "Los oraculos no cubren: execute(ForkJoinTask), thenCompose, thenAccept, handle, exceptionally, anyOf, orTimeout, completeAsync, cancel(true), ManagedBlocker, interrupcion de workers ni toString del pool. (submit(Callable), invoke(), commonPool() y los contadores de workers ya estan fijados por el oraculo ampliado.)",
+      "action": "Ampliar los oraculos por subperfil antes de implementar cada metodo (B-03/B-04/B-05).",
       "owner": "B-01"
     },
     {
@@ -841,7 +909,7 @@
     },
     {
       "id": "gap.no-guard-for-lifecycle-queries",
-      "description": "getActiveThreadCount/getPoolSize/getRunningThreadCount/getQueuedSubmissionCount no tienen guarda ni mensaje propio: caen en el rechazo de carga de clase JDK.",
+      "description": "getActiveThreadCount/getPoolSize/getRunningThreadCount/getQueuedSubmissionCount no tienen guarda ni mensaje propio: caen en el rechazo de carga de clase JDK, aunque el oraculo ya fija sus invariantes (pool.worker-counters).",
       "action": "B-02 debe decidir si se modelan (necesitan estado interno de workers que Rayon no expone igual) o se rechazan con mensaje explícito; hoy el contrato lo declara rechazo de traducción.",
       "owner": "B-02"
     }

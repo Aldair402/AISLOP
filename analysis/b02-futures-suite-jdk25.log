@@ -1,14 +1,14 @@
 # Suite focalizada del frente B (B-01/B-02) — no es la integral
-# fecha: 2026-11-05T16:44:38Z
-# commit base: 7ddab1f (+ cambios sin commitear de B-02)
+# fecha: 2026-11-05T16:52:04Z
+# commit: ed7ca91 + cambios B-02 sin commitear
 # rustc 1.99.1 (58cf8f9c3 2026-10-13) | cargo 1.99.1 (5f94df478 2026-08-27)
 # openjdk version "25.0.5" 2026-10-20 LTS
 # bundle: server-26.3.jar sha1 33680f5f... | inner sha256 a362163e...
 
 == check-completable-future-oracle            OK
-OK: 20 rondas Java 25: future null/identidad, complete, get/join excepcional, cancelación, allOf, callbacks, timeout e interrupción; SIN implementación ni comparación nativa
+OK: 40 rondas Java 25: future null/identidad, complete, get/join excepcional, cancelación, allOf, callbacks, timeout e interrupción; SIN implementación ni comparación nativa
 == check-forkjoin-handler-oracle              OK
-OK: 20 rondas Java 25: handler recibe excepción de execute; submit y supplyAsync conservan fallo sin invocarlo; shutdown/terminación/rechazo. Sin backend nativo ni pruebas de excepciones generales.
+OK: 40 rondas Java 25: handler recibe excepción de execute; submit y supplyAsync conservan fallo sin invocarlo; submit(Callable) envuelve la causa y no invoca el handler; invoke relanza el original o su causa; commonPool estable; contadores de workers dentro del paralelismo; shutdown/terminación/rechazo. Sin backend nativo ni pruebas de excepciones generales.
 == check-futures-contract                     OK
 OK: contrato B-01 coherente con el repositorio: cada diferencial cita un test que esta en la suite, cada guarda existe literalmente en mc-aot/src, cada prueba unitaria existe, los dos oraculos Java estan en la suite y sus lineas observadas coinciden con el codigo, y el documento y el JSON no divergen. NO verifica semantica ni equivalencia con Java: eso solo lo demuestran los diferenciales citados.
 == check-rayon-java-pool-queries              OK

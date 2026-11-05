@@ -12,7 +12,7 @@ interrupt|get-throws-cleared|join-returns-preserved
 '''
 with tempfile.TemporaryDirectory(prefix='mc-completablefuture-oracle-') as t:
  subprocess.run([str(jdk/'javac'),'-d',t,str(root/'tests/CompletableFutureOracle.java')],check=True,capture_output=True,timeout=60)
- for i in range(20):
+ for i in range(40):
   result=subprocess.run([str(jdk/'java'),'-cp',t,'CompletableFutureOracle'],capture_output=True,text=True,timeout=20)
   if result.returncode or result.stdout!=expected:raise AssertionError((i,result.returncode,result.stdout,result.stderr))
- print('OK: 20 rondas Java 25: future null/identidad, complete, get/join excepcional, cancelación, allOf, callbacks, timeout e interrupción; SIN implementación ni comparación nativa')
+ print('OK: 40 rondas Java 25: future null/identidad, complete, get/join excepcional, cancelación, allOf, callbacks, timeout e interrupción; SIN implementación ni comparación nativa')

@@ -43,12 +43,12 @@ Lo que **no** verifica: la semántica. Eso solo lo demuestran los diferenciales 
 
 | id | Oráculo | Runner | Suite | Rondas | Qué fija |
 |---|---|---|---|---|---|
-| `cf` | `mc-aot/tests/CompletableFutureOracle.java` | `check-completable-future-oracle.py` | sí | 20 | Identidad/null, `complete` único, fallo (`join` → `CompletionException`, `get` → `ExecutionException` con la **misma** causa), cancelación de pendiente, `allOf`, hilos y executor de callbacks, `TimeoutException`, interrupción de `get` vs `join` |
-| `fjp-handler` | `mc-aot/tests/ForkJoinHandlerOracle.java` | `check-forkjoin-handler-oracle.py` | **añadido en este PR, pendiente de C** | 20 | El handler recibe la excepción de `execute` con identidad de `Throwable` y de hilo; `submit` y `supplyAsync` **no** lo invocan; `shutdown` + `awaitTermination` + rechazo |
+| `cf` | `mc-aot/tests/CompletableFutureOracle.java` | `check-completable-future-oracle.py` | sí | 40 | Identidad/null, `complete` único, fallo (`join` → `CompletionException`, `get` → `ExecutionException` con la **misma** causa), cancelación de pendiente, `allOf`, hilos y executor de callbacks, `TimeoutException`, interrupción de `get` vs `join` |
+| `fjp-handler` | `mc-aot/tests/ForkJoinHandlerOracle.java` | `check-forkjoin-handler-oracle.py` | **añadido en este PR, pendiente de C** | 40 | El handler recibe la excepción de `execute` con identidad de `Throwable` y de hilo; `submit`, `submit(Callable)` y `supplyAsync` **no** lo invocan; `submit(Callable)` **envuelve** la causa; `invoke()` relanza la original o su causa; `commonPool()` estable; contadores de workers dentro del paralelismo; `shutdown` + `awaitTermination` + rechazo |
 
 Evidencia de los oráculos: `analysis/completable-future-java25-oracle.log` y `analysis/forkjoin-handler-java25-oracle.log`.
 
-Los oráculos corren 20 rondas porque la semántica de hilos y de handler no es determinista en una sola pasada; se comparan invariantes, no orden de ejecución.
+Los oráculos corren 40 rondas porque la semántica de hilos y de handler no es determinista en una sola pasada; se comparan invariantes, no orden de ejecución. Algunas formas concretas varían entre rondas (por ejemplo `invoke()` rellanzando la instancia original o un envoltorio), así que las aserciones exigen solo lo estable.
 
 ## 4. Estados del contrato
 
@@ -62,20 +62,29 @@ Los oráculos corren 20 rondas porque la semántica de hilos y de handler no es 
 
 ## 5. Matriz por operación
 
-| Grupo | Casos | Diferencial | Guarda | Unitaria | Solo Java | Falta |
+| Operación | Casos | Diferencial | Guarda | Unitaria | Solo Java | Falta |
 |---|---|---|---|---|---|---|
 | `execute` | 2 | 1 | 1 | — | — | — |
-| `submit` / `join` | 5 | 3 | 1 | — | 1 | 1 |
+| `submit` | 3 | 1 | — | — | 1 | 1 |
+| `join` | 3 | 2 | 1 | — | — | — |
 | `get` | 1 | — | — | — | — | 1 |
-| constructor de pool | 5 | 2 | 3 | — | — | — |
-| `shutdown` / `awaitTermination` / `shutdownNow` / rechazo | 5 | 3 | 2 | — | — | — |
-| lifecycle solo unitario | 4 | — | — | 4 | — | — |
-| workers | 4 | 2 | 2 | — | — | — |
-| **consultas de lifecycle (B-02)** | **9** | **3** | **2** | **4** | — | — |
-| futuros: `completedFuture`, pendiente, fallo y perfil | 12 | 5 | 7 | — | — | — |
-| composición (`supplyAsync`, callbacks, `allOf`) | 5 | — | — | — | — | 5 |
-| errores, cancelación, timeout, interrupción | 6 | — | — | — | 6 | — |
-| **Total** | **58** | **19** | **18** | **8** | **7** | **6** |
+| `constructor` | 5 | 2 | 3 | — | — | — |
+| `lifecycle` | 14 | 3 | 2 | 7 | 1 | 1 |
+| `shutdown` | 2 | 1 | — | 1 | — | — |
+| `awaitTermination` | 2 | 1 | 1 | — | — | — |
+| `shutdownNow` | 1 | — | 1 | — | — | — |
+| `rechazo` | 1 | 1 | — | — | — | — |
+| `worker` | 4 | 2 | 2 | — | — | — |
+| `completedFuture` | 6 | 5 | 1 | — | — | — |
+| `futuro pendiente` | 2 | — | 2 | — | — | — |
+| `fallo de futuro` | 1 | — | 1 | — | — | — |
+| `perfil` | 3 | — | 3 | — | — | — |
+| `composición` | 5 | — | — | — | — | 5 |
+| `errores` | 4 | — | — | — | 4 | — |
+| `cancelación` | 1 | — | — | — | 1 | — |
+| `timeout` | 1 | — | — | — | 1 | — |
+| `interrupción` | 2 | — | — | — | 2 | — |
+| **Total** | **63** | **19** | **18** | **8** | **10** | **8** |
 
 ## 6. Detalle de los casos
 
@@ -91,6 +100,9 @@ Los oráculos corren 20 rondas porque la semántica de hilos y de handler no es 
 | `submit.throws-join-diagnostic` | `join()` de una tarea fallida relanza la excepción original sin envolver | guarda: `ejecución concurrent-int` (diagnóstico y exit 2) | `check-rayon-java-forkjoin.py` | B-04 |
 | `submit.get-execution` | `ForkJoinTask.get()` envuelve en `ExecutionException`; `get(timeout)` da `TimeoutException` | **falta** | oráculo `fjp-handler` | B-04 |
 | `submit.throws-no-handler` | `submit` **no** invoca el handler: el fallo se observa en `join`/`get` | solo-Java | oráculo `fjp-handler` | B-04 |
+| `submit.callable-value` | `submit(Callable)` devuelve el valor; con fallo, `get()` lanza `ExecutionException` | **falta** | oráculo `fjp-handler` | B-04 |
+| `submit.callable-cause-wrapped` | En `submit(Callable)` la causa **no** conserva identidad: `getCause()` es un envoltorio nuevo, y el handler no se invoca | solo-Java | oráculo `fjp-handler` | B-04 |
+| `submit.invoke-rethrows` | `invoke()` relanza la original o una cuyo `cause` es la original; el handler no participa | solo-Java | oráculo `fjp-handler` | B-04 |
 
 Nota de frontera: el nativo solo traduce `submit(Runnable)` y `join()`. `execute` con excepción **termina el proceso** con diagnóstico en vez de llamar a un handler que no existe.
 
@@ -131,6 +143,8 @@ Seis perfiles de consulta no bloqueantes del `ForkJoinPool` restringido, con dif
 | `pool.query-real-workers` | Las tres consultas siguen el ciclo real de los trabajadores | unitaria `queries_track_real_worker_lifecycle` | `mc-aot/tests/rayon_pool_queries.rs` | B-02 |
 | `pool.shutdown-non-blocking` | `shutdown()` **no** espera a las tareas en curso; `isTerminated()` es false mientras corren | unitaria `running_task_keeps_pool_not_terminated` | `mc-aot/tests/rayon_pool_queries.rs` | B-02 |
 | `pool.query-foreign-ids` | Una referencia a otro pool no se responde como propia | unitaria `foreign_pool_ids_are_rejected_not_answered` | `mc-aot/tests/rayon_pool_queries.rs` | B-02 |
+| `pool.common-pool` | `commonPool()` devuelve siempre la misma instancia con paralelismo ≥ 1 | **falta** (exige pool global; hoy sin guarda) | oráculo `fjp-handler` | B-02 |
+| `pool.worker-counters` | Los contadores de workers no exceden el paralelismo y hay al menos uno tras usarlo | solo-Java | oráculo `fjp-handler` | B-02 |
 
 `pool.shutdown-non-blocking` es una comprobación que faltaba y que ahora está cubierta con tarea de 300 ms:
 el cierre vuelve en menos de 250 ms y la terminación llega después del `join`. En el crate, en cambio,
