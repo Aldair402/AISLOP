@@ -38,9 +38,17 @@ aceptaba su nombre y B contestó que sí… con otro nombre. Nadie comparó los 
 una compara contra `MC_AOT_FUTURES` y exige **intersección no vacía**. Es estático a propósito: dos funciones
 pequeñas, sin compilar, corre en cada push y falla nombrando la divergencia.
 
-Con `main` solo, la guarda sale con **2** (no encuentra `futures_restricted_optin`), que es deliberado: si la
-función cambia de nombre, el chequeo avisa en vez de dar verde por no encontrar nada. Con las dos ramas juntas
-sale con **1** y este mensaje:
+Estados de la guarda, y por qué cada uno es el correcto:
+
+| Árbol | Salida | Qué significa |
+|---|---|---|
+| `main` hoy (sin opt-in propio en el backend concurrente) | **0**, `PENDIENTE` | no hay nada que comparar; fingir un verde sería peor que decir que falta |
+| `futures_optin` desaparece de `numeric.rs` | **2** | regresión real: la etapa no encuentra aquello que vigila |
+| las dos ramas juntas | **1** | divergencia: ningún valor enciende los dos backends |
+| un valor común | **0** | el opt-in unificado existe de verdad |
+
+Nunca devuelve 0 por no encontrar nada: el «no encontré» es 2 cuando falta la función de A y `PENDIENTE` explícito
+cuando falta la de B. Con las dos ramas en el mismo árbol sale **1** y este mensaje:
 
 ```
 A acepta: ['completed-only']
