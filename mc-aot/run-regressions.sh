@@ -43,6 +43,8 @@ run_logged check-rayon-shared-completed-future python3 mc-aot/tests/check-rayon-
 run_logged check-numeric-completed-future python3 mc-aot/tests/check-numeric-completed-future.py
 run_logged check-real-chunk-passthrough-future python3 mc-aot/tests/check-real-chunk-passthrough-future.py
 run_logged check-completable-future-oracle python3 mc-aot/tests/check-completable-future-oracle.py
+run_logged check-forkjoin-handler-oracle python3 mc-aot/tests/check-forkjoin-handler-oracle.py
+run_logged check-futures-contract python3 mc-aot/tests/check-futures-contract.py
 run_logged check-executor-inventory python3 mc-aot/tests/check-executor-inventory.py
 run_logged check-shared-worker-bytecode python3 mc-aot/tests/check-shared-worker-bytecode.py
 run_logged check-real-util4-shared-worker python3 mc-aot/tests/check-real-util4-shared-worker.py
