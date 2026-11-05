@@ -825,7 +825,11 @@ fn enum_ordinal(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);h.enum_values
 fn enum_name(h:&Heap,r:Option<usize>)->Option<usize>{let id=array_id(h,r);h.enum_values.get(&id).expect("enum no inicializado").0}
 fn object_new(h:&mut Heap,class:&'static str,fields:Vec<V>,local:bool)->usize {
     if h.arrays.len()>=10000 || h.elements.checked_add(fields.len()).map_or(true,|v|v>1_000_000){error("Límite experimental de heap excedido");}
-    let id=h.arrays.len();h.elements+=fields.len();h.arrays.push(if local {Array::LocalObj(class,fields,None)}else{Array::Obj(class,fields)});id
+    let id=h.arrays.len();h.elements+=fields.len();h.arrays.push(if local {Array::LocalObj(class,fields,None)}else{Array::Obj(class,fields)});
+    // Solo objetos ordinarios: un LocalObj o un objeto ya compartido no se
+    // registran aquí. Sin sesión instalada no se comparte nada.
+    if !local {publish_new_object(h,id,class);}
+    id
 }
 fn object_id(h:&Heap,r:Option<usize>,class:&str)->usize {
     let id=array_id(h,r);match &h.arrays[id] {Array::Obj(actual,_)|Array::SharedObj(actual,_)|Array::LocalObj(actual,_,_) if project_subtype(h,actual,class)=>id,_=>panic!("despacho de objeto no soportado")}
@@ -898,6 +902,34 @@ fn shared_object_reference(h:&mut Heap,owner:&NumericObjectHandle,slot:usize)->R
         match fields.get(slot){Some(V::R(id))=>*id,Some(_)=>return Err("campo no referencia"),None=>return Err("campo inexistente")}
     };
     match target{None=>Ok(None),Some(id)=>share_project_object(h,id).map(Some)}
+}
+
+// Publicación automática experimental (frontera A-03). El runtime numérico no
+// conoce SharedHeap: un sink instalado por el harness decide qué clases admite y
+// recibe el handle del objeto en el momento en que `object_new` lo crea. No une
+// estáticos, clases ni excepciones Java, y no conecta Main.
+pub trait PublishSink: Send + Sync {
+    fn admits(&self, class:&'static str) -> bool;
+    fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+}
+struct PublishSession { owner:usize, _heap:std::sync::Arc<()>, sink:std::sync::Arc<dyn PublishSink> }
+thread_local! { static PUBLISH_SESSION: std::cell::RefCell<Option<PublishSession>> = const { std::cell::RefCell::new(None) }; }
+fn install_publish_session(h:&Heap, sink:std::sync::Arc<dyn PublishSink>) -> std::result::Result<(), &'static str> {
+    PUBLISH_SESSION.with(|session| {
+        let mut session=session.borrow_mut();
+        if session.is_some() {return Err("publicación: sesión ya instalada");}
+        *session=Some(PublishSession{owner:std::sync::Arc::as_ptr(&h.bridge_owner) as usize, _heap:h.bridge_owner.clone(), sink});
+        Ok(())
+    })
+}
+fn clear_publish_session() { PUBLISH_SESSION.with(|session| *session.borrow_mut()=None); }
+fn publish_new_object(h:&mut Heap, id:usize, class:&'static str) {
+    let pending=PUBLISH_SESSION.with(|session| session.borrow().as_ref().map(|s|(s.owner,s.sink.clone())));
+    let Some((owner,sink))=pending else {return;};
+    if std::sync::Arc::as_ptr(&h.bridge_owner) as usize!=owner {error("publicación: otro heap numérico");}
+    if !sink.admits(class) {return;}
+    let handle=match share_project_object(h,id) {Ok(handle)=>handle,Err(e)=>error(&format!("publicación: {e}"))};
+    if let Err(e)=sink.publish(owner,id,class,&handle) {error(&format!("publicación: {e}"));}
 }
 
 // Formas válidas de dup_x1, dup_x2, dup2_x1 y dup2_x2 según categoría JVM.
