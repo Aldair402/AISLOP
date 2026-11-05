@@ -17,6 +17,8 @@ son preguntas hechas:
 | Errores de heap | forma final de `FrameError::Heap` | cómo se traduce a `RejectedExecutionException` sin inventar `Throwable` |
 | Carreras de ownership | tabla de carreras ownership/shutdown | tabla de estados de `FutureState` frente a publicación automática |
 | Publicación automática | A-03: qué queda manual (estáticos, unión de programas, `SharedHeap`) | qué objetos de B pasan por `object_new` y cuáles no |
+| Opt-in de futuros | propone `MC_AOT_FUTURES=completed-only` con los nombres viejos como alias por una versión | debe aceptar el nombre y el alias antes de que se escriba el PR |
+| `PUBLISH_ACTIVE` global | con dos puentes en dos hilos la marca se sobrescribe (ver Q-AC-6) | si B abre un segundo puente, el diagnóstico se pierde |
 
 ---
 
