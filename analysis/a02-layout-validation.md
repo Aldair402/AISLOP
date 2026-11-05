@@ -14,6 +14,12 @@
 - `analysis/a02-generated-graph.log` y `analysis/a02-generated-graph-ticktask.log`: 20 rondas Java/Rust, 23 pruebas del crate concatenado, cuatro tareas `ForkJoinPool` en Rayon, `QuartPos` oficial, ejecución sin Java en `PATH`. El registro de objetos, publicación, unión de outputs y scheduling siguen siendo harness manual.
 - `analysis/a02-vanilla-scan.log`: de 687 clases candidatas del índice estático (`final`? filtro previo por superclase/interfaces/campos), **0** aceptadas por el perfil. Es esperado: casi todas tienen estáticos o no son `final`; no existe todavía un objeto vanilla válido para el grafo, y este barrido no certifica nada.
 
+## Regresión
+
+`analysis/full-regressions-a02.log`: **306 etapas, exit 0**, incluidos los dos diferenciales de grafo con layout generado; `cargo test` 60 unitarias y 26 de integración. La prueba `check-numeric-bridge-layout.py` aún no está en `run-regressions.sh` (lo integra el frente C). No certifica clases ni arranque.
+
+Nota de entorno: la primera ejecución de la integral falló en `sweep-long` porque `TMPDIR` por defecto era un `tmpfs` de ~1 GB casi lleno; con `TMPDIR=/var/tmp` terminó correctamente. No era un fallo del código, y se descartó ese intento.
+
 ## Comandos
 
 ```sh

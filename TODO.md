@@ -11,7 +11,7 @@ Este documento propone cómo repartir el trabajo entre **al menos tres personas*
 - **No hay servidor nativo arrancable.** El probe de `Main` se detiene al compilar `new ForkJoinPool` en `Util.makeExecutor`: [`analysis/main-completed-future-attempt.log`](analysis/main-completed-future-attempt.log).
 - Existen dos backends experimentales y puentes opt-in, pero su composición, registro y publicación son manuales en las pruebas; no están conectados automáticamente a `Main`.
 - `completedFuture` está limitado a futuros ya completados normalmente. No hay implementación general de futuros pendientes, composición, cancelación o excepciones.
-- Última integral aprobada en esa base: **306 etapas**, exit 0; [`analysis/full-regressions-completed-future.log`](analysis/full-regressions-completed-future.log). Una suite nueva no cuenta como aprobada hasta terminar correctamente.
+- Última integral aprobada: **306 etapas**, exit 0; [`analysis/full-regressions-a02.log`](analysis/full-regressions-a02.log) (incluye los diferenciales de grafo con layout generado). Una suite nueva no cuenta como aprobada hasta terminar correctamente.
 - **`log4rs` está aparcado** por decisión del proyecto. El logging sigue siendo necesario para un arranque real: no sustituirlo por silencios o stubs en una ruta que se declare funcional. Los stubs sí se pueden usar en pruebas aisladas si se identifican.
 
 ## 2. Cómo tomar trabajo sin duplicarlo
