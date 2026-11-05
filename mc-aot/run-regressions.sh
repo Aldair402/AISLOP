@@ -29,6 +29,9 @@ run_logged check-real-util-worker-guards python3 mc-aot/tests/check-real-util-wo
 run_logged check-real-util-worker-onstart python3 mc-aot/tests/check-real-util-worker-onstart.py
 run_logged check-quartpos-class-surface python3 mc-aot/tests/check-quartpos-class-surface.py
 run_logged check-class-surface-evidence python3 mc-aot/tests/check-class-surface-evidence.py
+run_logged check-class-registry python3 mc-aot/tools/check-class-registry.py
+run_logged check-family-partition python3 mc-aot/tools/check-family-partition.py
+run_logged c01-baseline-exists test -f analysis/c01-baseline-2026-11-05.md
 run_logged check-enum-valueof-profile python3 mc-aot/tests/check-enum-valueof-profile.py
 run_logged check-enum-valueof-cache python3 mc-aot/tests/check-enum-valueof-cache.py
 run_logged check-real-minecraft-enum-valueof python3 mc-aot/tests/check-real-minecraft-enum-valueof.py
