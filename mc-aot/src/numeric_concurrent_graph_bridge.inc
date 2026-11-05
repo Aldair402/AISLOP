@@ -1,12 +1,14 @@
 // Experimento interno: referencias entre objetos numéricos registrados en un
 // SharedHeap. Layouts facilitados por el harness DESPUÉS de verificar classfiles.
 // No hay registro automático, GC, subtipos, arrays, String ni clases compartidas.
-#[derive(Clone,Copy,PartialEq,Eq)] enum NumericGraphSlot { Int, Ref(&'static str) }
+// Ref: campo final, solo lectura. MutRef: campo no final, escribible desde el
+// backend concurrente bajo el mutex de campos; el destino debe estar publicado.
+#[derive(Clone,Copy,PartialEq,Eq)] enum NumericGraphSlot { Int, Ref(&'static str), MutRef(&'static str) }
 #[derive(Clone,Copy)] struct NumericGraphLayout { class:&'static str, fields:&'static [NumericGraphSlot] }
 // La etiqueta interna V::I cubre int/byte/char/short/boolean: el layout debe
 // venir de un classfile verificado, no de la variante del heap.
 fn graph_layout_matches(fields:&[V],layout:&NumericGraphLayout)->bool {
-    fields.len()==layout.fields.len() && fields.iter().zip(layout.fields).all(|(v,k)|matches!((v,k),(V::I(_),NumericGraphSlot::Int)|(V::R(_),NumericGraphSlot::Ref(_))))
+    fields.len()==layout.fields.len() && fields.iter().zip(layout.fields).all(|(v,k)|matches!((v,k),(V::I(_),NumericGraphSlot::Int)|(V::R(_),NumericGraphSlot::Ref(_))|(V::R(_),NumericGraphSlot::MutRef(_))))
 }
 #[derive(Default)] struct NumericGraphMap {
     forward:std::collections::HashMap<usize,(concurrent_heap::ObjectId,&'static NumericGraphLayout)>,
@@ -30,8 +32,8 @@ impl concurrent_heap::ExternalObject for NumericGraphObject {
         let value={let fields=self.handle.fields.lock().map_err(|_|"objeto compartido dañado")?;*fields.get(slot).ok_or("campo inexistente")?};
         match (kind,value) {
             (NumericGraphSlot::Int,V::I(v))=>Ok(concurrent_heap::ExternalValue::Int(v)),
-            (NumericGraphSlot::Ref(_),V::R(None))=>Ok(concurrent_heap::ExternalValue::Ref(None)),
-            (NumericGraphSlot::Ref(expected),V::R(Some(id)))=>{
+            (NumericGraphSlot::Ref(_),V::R(None))|(NumericGraphSlot::MutRef(_),V::R(None))=>Ok(concurrent_heap::ExternalValue::Ref(None)),
+            (NumericGraphSlot::Ref(expected),V::R(Some(id)))|(NumericGraphSlot::MutRef(expected),V::R(Some(id)))=>{
                 let map=state.map.lock().map_err(|_|"grafo: mapa dañado")?;
                 match map.forward.get(&id){Some((target,layout)) if layout.class==expected=>Ok(concurrent_heap::ExternalValue::Ref(Some(*target))),_=>Err("grafo: destino no registrado o incompatible")}
             }
@@ -39,11 +41,17 @@ impl concurrent_heap::ExternalObject for NumericGraphObject {
         }
     }
     fn write(&self,slot:usize,value:concurrent_heap::ExternalValue)->Result<(),&'static str> {
-        let _state=self.state.upgrade().ok_or("grafo: sesión cerrada")?;
+        let alive=self.state.upgrade().ok_or("grafo: sesión cerrada")?;
         let kind=*self.layout.fields.get(slot).ok_or("campo inexistente")?;
         let value=match (kind,value) {
             (NumericGraphSlot::Int,concurrent_heap::ExternalValue::Int(v))=>V::I(v),
             (NumericGraphSlot::Ref(_),_)=>return Err("grafo: escritura de referencia no soportada"),
+            (NumericGraphSlot::MutRef(_),concurrent_heap::ExternalValue::Ref(None))=>V::R(None),
+            (NumericGraphSlot::MutRef(expected),concurrent_heap::ExternalValue::Ref(Some(target)))=>{
+                // Solo destinos ya publicados en esta sesión y de la clase esperada.
+                let map=alive.map.lock().map_err(|_|"grafo: mapa dañado")?;
+                match map.backward.get(&target){Some((index,c)) if *c==expected=>V::R(Some(*index)),_=>return Err("grafo: destino no registrado o incompatible")}
+            }
             _=>return Err("grafo: tipo de campo incompatible")
         };
         let mut fields=self.handle.fields.lock().map_err(|_|"objeto compartido dañado")?;

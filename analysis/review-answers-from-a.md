@@ -43,6 +43,58 @@ No las cierro solo: son decisiones compartidas y quedan en estado **propuesta de
 | Un solo opt-in de futuros | De acuerdo en unificar, pero **no** unilateralmente: `MC_AOT_NUMERIC_COMPLETED_FUTURE` vive en el backend que mantiene A y `MC_AOT_RAYON_COMPLETED_FUTURE` en el de B. Propongo PR conjunto con un nombre nuevo (`MC_AOT_FUTURES=completed-only`) y conservar los antiguos como alias documentados una versión. | requiere PR conjunto |
 | Callbacks de A dentro de monitores | Declaro el estado actual: la publicación de A-03 se dispara en `object_new`, sin que el runtime retenga ningún monitor del heap (los constructores Java no pueden ser `synchronized`; el `<clinit>` usa el estado de inicialización del backend numérico, monohilo). No hay callbacks de A invocados desde dentro de un monitor de B, y el adaptador no puede detectarlo: si B-06 introduce callbacks, la declaración debe ir en su PR. | declaración de A |
 
+## Añadido después: bloqueo nuevo para B (A-04)
+
+Al abrir el subperfil de referencias mutables (`analysis/a04-mutable-refs.md`), el backend concurrente rechaza cualquier campo no `final` de clase de proyecto (`concurrent_compile.rs`, mensaje `concurrent-int: captura de referencia debe ser final`). Hoy la escritura de referencias funciona desde el adaptador y desde el bytecode numérico, pero **no** desde bytecode concurrente. Decisión de A: no tocar ese archivo; queda como propuesta para B, con opt-in explícito y su propio diferencial.
+
+## A-C6 — `PUBLISH_ACTIVE` deja de ser una casilla global (ronda 2)
+
+La revisión de C era correcta: con dos sesiones en dos hilos y dos heaps, la casilla global se sobrescribía y un
+worker del primer heap caía en el `return` silencioso en vez de abortar con diagnóstico.
+
+Corregido en `mc-aot/src/numeric_runtime.inc`: `PUBLISH_ACTIVE` es ahora
+`static Mutex<Vec<(usize, ThreadId)>>`, un registro **por heap** (el `owner` es el puntero del `bridge_owner`), con
+`publish_active_insert` / `publish_active_remove` / `publish_active_owner_of`. Consecuencias probadas:
+
+| Caso | Comportamiento | Prueba |
+|---|---|---|
+| Dos sesiones, hilos y heaps distintos | conviven | `sessions_on_different_heaps_coexist` |
+| Segunda sesión sobre el **mismo** heap desde otro hilo | `publicación: sesión ya activa para este heap` | ídem |
+| Mismo hilo, segunda sesión | `publicación: sesión ya instalada` (sin cambios) | `bytecode_allocations_are_published_automatically` |
+| Publicar desde un hilo sin sesión de ese heap, **aunque otro heap tenga sesión** | aborta con `publicación: hilo distinto al de la sesión`, exit 2 | `publishing_from_a_different_thread_is_fatal` (proceso hijo) |
+| Cerrar una sesión | borra solo su entrada (`retain` por `(owner, thread)`) | las dos pruebas anteriores |
+
+No se declaró "una sesión por proceso": el servidor real necesitará varios puentes y un límite falso habría
+trasladado el problema a B. Sigue vigente **una sesión por hilo y por heap**.
+
+## A-C7 — Opt-in unificado de futuros: dueño A, mitad de A hecha
+
+`mc-aot/src/numeric.rs` gana `futures_optin()`: `MC_AOT_FUTURES=completed-only` enciende el perfil,
+`MC_AOT_NUMERIC_COMPLETED_FUTURE=1` sigue valiendo como alias por una versión y un valor desconocido se rechaza
+(`MC_AOT_FUTURES: valor no soportado: <valor>`), sin generar binario. Los tres puntos que consultaban la variable
+(dos guardas y la clasificación de `checkcast/instanceof`) pasan por la función. Mensaje de guarda:
+`CompletableFuture: requiere MC_AOT_NUMERIC_COMPLETED_FUTURE=1 (o el nombre unificado MC_AOT_FUTURES=completed-only)`.
+
+`check-numeric-completed-future.py` (ampliado) comprueba además: binario generado **solo** con el nombre nuevo,
+90 resultados idénticos a Java 25, y rechazo del valor desconocido. Log: `analysis/a05-completed-future.log`.
+
+Pendiente de B: el mismo `futures_optin()` en `mc-aot/src/concurrent_compile.rs` (7 lecturas de
+`MC_AOT_RAYON_COMPLETED_FUTURE`) y el mensaje literal con `MC_AOT_RAYON_COMPLETED_FUTURE`. Dueño del PR conjunto:
+**A**, rama `trabajo/a-06-opt-in-futuros`, **fecha objetivo 2026-11-07**; si B no confirma (`Q-AB-2`), el PR sale
+con el alias de A y un `TODO` explícito en el lado de B.
+
+## A-C8 — Reflexión: límite aceptable, con tres condiciones
+
+No se abre subperfil de reflexión ahora. Regla escrita:
+
+1. Solo puede excluirse de una clase lo **inalcanzable sin reflexión**. Un miembro que el programa real invoca por
+   reflexión no es inalcanzable: la clase queda en `partial-evidence` con motivo `reflection-gap`.
+2. La evidencia **solo-Java** se etiqueta como tal y no certifica: el constructor privado de `QuartPos` sigue en
+   `java-only`, `certified: false`.
+3. La puerta de arranque manda sobre el contador: `Main` sigue bloqueado en `new ForkJoinPool` y ninguna clase con
+   `reflection-gap` puede desbloquearlo. Si `Main` necesita reflexión real, entonces se abre el subperfil mínimo
+   (`getDeclaredConstructors` + `newInstance` con y sin `setAccessible`) con su diferencial propio.
+
 ## Qué NO cambia con estas respuestas
 
 - Sin publicación de estáticos, clases, arrays, `String`, subtipos ni escritura de referencias.
@@ -60,4 +112,5 @@ python3 mc-aot/tests/check-numeric-concurrent-bridge.py
 cargo test --offline --manifest-path mc-aot/Cargo.toml
 ```
 
-Logs: `analysis/a03b-*.log` y la integral `analysis/full-regressions-a03b.log` (**306 etapas, exit 0**; `cargo test` 60 + 26).
+Logs: `analysis/a0*.log` y las integrales `analysis/full-regressions-a03b.log` / `analysis/full-regressions-a05.log`
+(**306 etapas, exit 0**; `cargo test` 66 + 32 + 34 + 32 + 33).

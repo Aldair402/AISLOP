@@ -7,7 +7,12 @@ def run(path):return subprocess.run(['python3',str(tool),str(path)],capture_outp
 p=run(manifest)
 if p.returncode:raise RuntimeError(p.stderr)
 r=json.loads(p.stdout)
-if (r['classes_in_jar'],r['methods_declared'],r['methods_with_partial_evidence'],r['fields_declared'],r['fields_with_partial_evidence'],r['certified'],r['methods_without_evidence'])!=(7762,6,5,4,4,False,['<init>()V']):raise AssertionError(r)
+# El manifiesto ya declara evidencia para `<init>` (la medición de reflexión en Java del
+# constructor privado), así que la superficie queda sin miembros sin evidencia declarada.
+# Ojo: el inventario NO distingue evidencia diferencial de evidencia solo-Java; por eso
+# `certified` sigue en False y el conteo de clases no puede salir de este archivo
+# (ver Q-AC-5 en analysis/discussion/threads/a-c.md).
+if (r['classes_in_jar'],r['methods_declared'],r['methods_with_partial_evidence'],r['fields_declared'],r['fields_with_partial_evidence'],r['certified'],r['methods_without_evidence'])!=(7762,6,6,4,4,False,[]):raise AssertionError(r)
 with tempfile.TemporaryDirectory(prefix='mc-evidence-guard-') as t:
  d=pathlib.Path(t)
  def reject(label,mutate,expected):
@@ -21,4 +26,4 @@ with tempfile.TemporaryDirectory(prefix='mc-evidence-guard-') as t:
  reject('duplicate',lambda m:m['members'].append(copy.deepcopy(m['members'][0])),'duplicado en manifiesto')
  reject('unknown',lambda m:m['members'][0].update(name='inexistente'),'miembro no declarado')
  reject('certify',lambda m:m.update(certified=True),'no se permiten afirmaciones de certificación')
- print('OK: QuartPos inventariado 5/6 métodos y 4/4 campos con evidencia parcial; ocho alteraciones rechazadas; no certifica clases')
+ print('OK: QuartPos inventariado 6/6 métodos y 4/4 campos con evidencia parcial declarada (incluye el constructor privado, medido solo en Java); ocho alteraciones rechazadas; no certifica clases ni distingue evidencia diferencial de solo-Java')

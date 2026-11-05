@@ -29,7 +29,7 @@ def header(text, name):
     return matches[0]
 
 
-def verify(jar, root, compiler, expected_jar_sha256):
+def verify(jar, root, compiler, expected_jar_sha256, allow_mutable_refs=False):
     jar = pathlib.Path(jar)
     compiler = pathlib.Path(compiler)
     if not NAME.fullmatch(root):
@@ -115,11 +115,11 @@ def verify(jar, root, compiler, expected_jar_sha256):
                     fields.append({'name': field, 'descriptor': desc, 'kind': 'int'})
                 elif desc.startswith('L') and desc.endswith(';'):
                     target = desc[1:-1]
-                    if not flag & 0x10:
+                    if not flag & 0x10 and not allow_mutable_refs:
                         raise ValueError('referencia no final: ' + klass)
                     if not NAME.fullmatch(target):
                         raise ValueError('referencia fuera del perfil: ' + klass)
-                    fields.append({'name': field, 'descriptor': desc, 'kind': 'ref', 'target': target})
+                    fields.append({'name': field, 'descriptor': desc, 'kind': 'ref' if flag & 0x10 else 'mutref', 'target': target})
                     if target not in classes and target not in pending:
                         pending.append(target)
                 else:
@@ -137,8 +137,12 @@ def rust_layouts(result):
     for i, item in enumerate(result['classes']):
         slots = []
         for field in item['fields']:
-            slots.append('NumericGraphSlot::Int' if field['kind'] == 'int'
-                         else 'NumericGraphSlot::Ref(' + json.dumps(field['target'], ensure_ascii=True) + ')')
+            if field['kind'] == 'int':
+                slots.append('NumericGraphSlot::Int')
+            elif field['kind'] == 'ref':
+                slots.append('NumericGraphSlot::Ref(' + json.dumps(field['target'], ensure_ascii=True) + ')')
+            else:
+                slots.append('NumericGraphSlot::MutRef(' + json.dumps(field['target'], ensure_ascii=True) + ')')
         lines.append('static LAYOUT_' + str(i) + ':NumericGraphLayout=NumericGraphLayout{class:'
                      + json.dumps(item['class'], ensure_ascii=True) + ',fields:&[' + ','.join(slots) + ']};')
     return '\n'.join(lines)
@@ -151,8 +155,10 @@ def main():
     parser.add_argument('--compiler', required=True, type=pathlib.Path)
     parser.add_argument('--jar-sha256', required=True)
     parser.add_argument('--format', choices=['json', 'rust'], default='json')
+    # Opt-in: un campo de referencia no final es escribible y debe probarse aparte.
+    parser.add_argument('--allow-mutable-refs', action='store_true')
     args = parser.parse_args()
-    result = verify(args.jar, args.root, args.compiler, args.jar_sha256)
+    result = verify(args.jar, args.root, args.compiler, args.jar_sha256, args.allow_mutable_refs)
     print(rust_layouts(result) if args.format == 'rust' else json.dumps(result, ensure_ascii=False, indent=2))
 
 

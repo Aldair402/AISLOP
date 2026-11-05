@@ -21,6 +21,7 @@ final class Valid { int x; final Target link; Valid(Target t) { link=t; } }
 final class Target { int y; final Valid link; Target(Valid v) { link=v; } }
 final class Empty {}
 final class Reverse { final Reverse link=null; int value; }
+final class MutableRef2 { MutableRef2 link=null; int value; }
 class NonFinal { int x; }
 interface Interface {}
 interface Tag {}
@@ -79,6 +80,17 @@ with tempfile.TemporaryDirectory(prefix='mc-bridge-layout-') as tmp:
     reverse=verify(jar, 'net/minecraft/layouttest/Reverse', compiler, h)
     assert [x['kind'] for x in reverse['classes'][0]['fields']] == ['ref','int']
     assert 'fields:&[NumericGraphSlot::Ref("net/minecraft/layouttest/Reverse"),NumericGraphSlot::Int]' in rust_layouts(reverse)
+    try:
+        verify(jar, 'net/minecraft/layouttest/MutableRef2', compiler, h)
+    except ValueError as e:
+        assert 'referencia no final' in str(e), e
+    else:
+        raise AssertionError('aceptó referencia mutable sin opt-in')
+    mutable=verify(jar, 'net/minecraft/layouttest/MutableRef2', compiler, h, True)
+    assert [x['kind'] for x in mutable['classes'][0]['fields']]==['mutref','int']
+    assert 'NumericGraphSlot::MutRef("net/minecraft/layouttest/MutableRef2")' in rust_layouts(mutable)
+    rejected_mutable=verify(jar, 'net/minecraft/layouttest/MutableRef', compiler, h, True)
+    assert [x['kind'] for x in rejected_mutable['classes'][0]['fields']]==['mutref']
     cases={
         'NonFinal':'clase debe ser final', 'Interface':'clase debe ser final',
         'HasInterface':'interfaces no soportadas', 'Child':'superclase incompatible', 'StaticField':'estáticos',
@@ -86,7 +98,7 @@ with tempfile.TemporaryDirectory(prefix='mc-bridge-layout-') as tmp:
         'VolatileInt':'volatile', 'VolatileRef':'volatile',
         'BooleanField':'descriptor', 'ByteField':'descriptor', 'CharField':'descriptor',
         'ShortField':'descriptor', 'LongField':'descriptor', 'FloatField':'descriptor',
-        'DoubleField':'descriptor', 'MutableRef':'referencia no final',
+        'DoubleField':'descriptor',
         'ArrayRef':'descriptor', 'StringRef':'referencia fuera', 'InvalidTarget':'clase debe ser final',
     }
     for name, reason in cases.items():
@@ -116,4 +128,4 @@ with tempfile.TemporaryDirectory(prefix='mc-bridge-layout-') as tmp:
     assert 'numeric-graph-layout-v1' in cli.stdout
     bad=subprocess.run(command[:-1]+['0'*64], text=True, capture_output=True)
     assert bad.returncode != 0 and not bad.stdout and 'hash del JAR' in bad.stderr
-    print(f'OK: 2 layouts cíclicos, layout vacío y orden inverso; {len(cases)+6} rechazos; classfiles javac sintéticos; no Main')
+    print(f'OK: 2 layouts cíclicos, layout vacío, orden inverso y referencia mutable opt-in; {len(cases)+6} rechazos; classfiles javac sintéticos; no Main')
