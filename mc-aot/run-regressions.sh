@@ -29,6 +29,9 @@ run_logged check-real-util-worker-guards python3 mc-aot/tests/check-real-util-wo
 run_logged check-real-util-worker-onstart python3 mc-aot/tests/check-real-util-worker-onstart.py
 run_logged check-quartpos-class-surface python3 mc-aot/tests/check-quartpos-class-surface.py
 run_logged check-class-surface-evidence python3 mc-aot/tests/check-class-surface-evidence.py
+run_logged check-classfile-surface python3 mc-aot/tools/classfile-surface.py net.minecraft.core.QuartPos --registry analysis/class-registry.json
+run_logged check-quartpos-evidence-audit python3 mc-aot/tools/class-surface-evidence.py analysis/class-evidence/quartpos.json
+run_logged check-quartpos-evidence-fresh python3 mc-aot/tools/update-quartpos-evidence.py --check
 run_logged check-class-registry python3 mc-aot/tools/check-class-registry.py
 run_logged check-family-partition python3 mc-aot/tools/check-family-partition.py
 run_logged c01-baseline-exists test -f analysis/c01-baseline-2026-11-05.md

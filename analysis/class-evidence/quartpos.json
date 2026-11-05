@@ -11,11 +11,19 @@
       "evidence": [
         {
           "path": "mc-aot/tests/check-quartpos-class-surface.py",
-          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+          "sha256": "0b5ea43b38dd594e773fbb2079e6770e718ca9a69230f3bb594f15cb58805879"
+        },
+        {
+          "path": "mc-aot/tools/classfile-surface.py",
+          "sha256": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c"
         },
         {
           "path": "analysis/quartpos-static-surface.log",
-          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+          "sha256": "9568c831efd662082c1104e59a703da0da03435a4d53384c1a6b5542c69249d6"
+        },
+        {
+          "path": "analysis/class-evidence/quartpos-classfile.json",
+          "sha256": "5db417fb59f1142bf98d6a1e8307756a1bf197640abfb7f4e6085a9f49afc25b"
         }
       ]
     },
@@ -26,11 +34,19 @@
       "evidence": [
         {
           "path": "mc-aot/tests/check-quartpos-class-surface.py",
-          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+          "sha256": "0b5ea43b38dd594e773fbb2079e6770e718ca9a69230f3bb594f15cb58805879"
+        },
+        {
+          "path": "mc-aot/tools/classfile-surface.py",
+          "sha256": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c"
         },
         {
           "path": "analysis/quartpos-static-surface.log",
-          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+          "sha256": "9568c831efd662082c1104e59a703da0da03435a4d53384c1a6b5542c69249d6"
+        },
+        {
+          "path": "analysis/class-evidence/quartpos-classfile.json",
+          "sha256": "5db417fb59f1142bf98d6a1e8307756a1bf197640abfb7f4e6085a9f49afc25b"
         }
       ]
     },
@@ -41,11 +57,19 @@
       "evidence": [
         {
           "path": "mc-aot/tests/check-quartpos-class-surface.py",
-          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+          "sha256": "0b5ea43b38dd594e773fbb2079e6770e718ca9a69230f3bb594f15cb58805879"
+        },
+        {
+          "path": "mc-aot/tools/classfile-surface.py",
+          "sha256": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c"
         },
         {
           "path": "analysis/quartpos-static-surface.log",
-          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+          "sha256": "9568c831efd662082c1104e59a703da0da03435a4d53384c1a6b5542c69249d6"
+        },
+        {
+          "path": "analysis/class-evidence/quartpos-classfile.json",
+          "sha256": "5db417fb59f1142bf98d6a1e8307756a1bf197640abfb7f4e6085a9f49afc25b"
         }
       ]
     },
@@ -56,11 +80,19 @@
       "evidence": [
         {
           "path": "mc-aot/tests/check-quartpos-class-surface.py",
-          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+          "sha256": "0b5ea43b38dd594e773fbb2079e6770e718ca9a69230f3bb594f15cb58805879"
+        },
+        {
+          "path": "mc-aot/tools/classfile-surface.py",
+          "sha256": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c"
         },
         {
           "path": "analysis/quartpos-static-surface.log",
-          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+          "sha256": "9568c831efd662082c1104e59a703da0da03435a4d53384c1a6b5542c69249d6"
+        },
+        {
+          "path": "analysis/class-evidence/quartpos-classfile.json",
+          "sha256": "5db417fb59f1142bf98d6a1e8307756a1bf197640abfb7f4e6085a9f49afc25b"
         }
       ]
     },
@@ -71,11 +103,42 @@
       "evidence": [
         {
           "path": "mc-aot/tests/check-quartpos-class-surface.py",
-          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+          "sha256": "0b5ea43b38dd594e773fbb2079e6770e718ca9a69230f3bb594f15cb58805879"
+        },
+        {
+          "path": "mc-aot/tools/classfile-surface.py",
+          "sha256": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c"
         },
         {
           "path": "analysis/quartpos-static-surface.log",
-          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+          "sha256": "9568c831efd662082c1104e59a703da0da03435a4d53384c1a6b5542c69249d6"
+        },
+        {
+          "path": "analysis/class-evidence/quartpos-classfile.json",
+          "sha256": "5db417fb59f1142bf98d6a1e8307756a1bf197640abfb7f4e6085a9f49afc25b"
+        }
+      ]
+    },
+    {
+      "kind": "method",
+      "name": "<init>",
+      "descriptor": "()V",
+      "evidence": [
+        {
+          "path": "mc-aot/tests/check-quartpos-class-surface.py",
+          "sha256": "0b5ea43b38dd594e773fbb2079e6770e718ca9a69230f3bb594f15cb58805879"
+        },
+        {
+          "path": "mc-aot/tools/classfile-surface.py",
+          "sha256": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c"
+        },
+        {
+          "path": "analysis/quartpos-static-surface.log",
+          "sha256": "9568c831efd662082c1104e59a703da0da03435a4d53384c1a6b5542c69249d6"
+        },
+        {
+          "path": "analysis/class-evidence/quartpos-classfile.json",
+          "sha256": "5db417fb59f1142bf98d6a1e8307756a1bf197640abfb7f4e6085a9f49afc25b"
         }
       ]
     },
@@ -86,11 +149,19 @@
       "evidence": [
         {
           "path": "mc-aot/tests/check-quartpos-class-surface.py",
-          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+          "sha256": "0b5ea43b38dd594e773fbb2079e6770e718ca9a69230f3bb594f15cb58805879"
+        },
+        {
+          "path": "mc-aot/tools/classfile-surface.py",
+          "sha256": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c"
         },
         {
           "path": "analysis/quartpos-static-surface.log",
-          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+          "sha256": "9568c831efd662082c1104e59a703da0da03435a4d53384c1a6b5542c69249d6"
+        },
+        {
+          "path": "analysis/class-evidence/quartpos-classfile.json",
+          "sha256": "5db417fb59f1142bf98d6a1e8307756a1bf197640abfb7f4e6085a9f49afc25b"
         }
       ]
     },
@@ -101,11 +172,19 @@
       "evidence": [
         {
           "path": "mc-aot/tests/check-quartpos-class-surface.py",
-          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+          "sha256": "0b5ea43b38dd594e773fbb2079e6770e718ca9a69230f3bb594f15cb58805879"
+        },
+        {
+          "path": "mc-aot/tools/classfile-surface.py",
+          "sha256": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c"
         },
         {
           "path": "analysis/quartpos-static-surface.log",
-          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+          "sha256": "9568c831efd662082c1104e59a703da0da03435a4d53384c1a6b5542c69249d6"
+        },
+        {
+          "path": "analysis/class-evidence/quartpos-classfile.json",
+          "sha256": "5db417fb59f1142bf98d6a1e8307756a1bf197640abfb7f4e6085a9f49afc25b"
         }
       ]
     },
@@ -116,11 +195,19 @@
       "evidence": [
         {
           "path": "mc-aot/tests/check-quartpos-class-surface.py",
-          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+          "sha256": "0b5ea43b38dd594e773fbb2079e6770e718ca9a69230f3bb594f15cb58805879"
+        },
+        {
+          "path": "mc-aot/tools/classfile-surface.py",
+          "sha256": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c"
         },
         {
           "path": "analysis/quartpos-static-surface.log",
-          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+          "sha256": "9568c831efd662082c1104e59a703da0da03435a4d53384c1a6b5542c69249d6"
+        },
+        {
+          "path": "analysis/class-evidence/quartpos-classfile.json",
+          "sha256": "5db417fb59f1142bf98d6a1e8307756a1bf197640abfb7f4e6085a9f49afc25b"
         }
       ]
     },
@@ -131,19 +218,26 @@
       "evidence": [
         {
           "path": "mc-aot/tests/check-quartpos-class-surface.py",
-          "sha256": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb"
+          "sha256": "0b5ea43b38dd594e773fbb2079e6770e718ca9a69230f3bb594f15cb58805879"
+        },
+        {
+          "path": "mc-aot/tools/classfile-surface.py",
+          "sha256": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c"
         },
         {
           "path": "analysis/quartpos-static-surface.log",
-          "sha256": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+          "sha256": "9568c831efd662082c1104e59a703da0da03435a4d53384c1a6b5542c69249d6"
+        },
+        {
+          "path": "analysis/class-evidence/quartpos-classfile.json",
+          "sha256": "5db417fb59f1142bf98d6a1e8307756a1bf197640abfb7f4e6085a9f49afc25b"
         }
       ]
     }
   ],
   "limitations": [
-    "La comparación usa 515 entradas int por método y cuatro lecturas; no prueba todo el dominio.",
-    "El constructor privado no está ejecutado ni contrastado.",
-    "No demuestra reflexión, identidad Class, entorno ni comportamiento heredado completos.",
-    "El hash de un log identifica el archivo; no prueba su autenticidad, ejecución ni corrección."
+    "La comparación de los cinco métodos usa 515 entradas int por método y cuatro lecturas de campo; no prueba todo el dominio, solo límites de int, vecindad y 500 valores aleatorios con semilla fija.",
+    "El constructor privado se mide por reflexión en Java (IllegalAccessException sin setAccessible, instancia con setAccessible) y su bytecode es el constructor por defecto; el traductor no implementa reflexión, así que no hay contraste nativo equivalente y no puede contar como diferencial.",
+    "La superficie se reconcilia con el classfile y con la reflexión (flags, superclase, interfaces, campos, constructores), pero no se verifica comportamiento heredado de Object ni identidad de la clase en nativo."
   ]
 }

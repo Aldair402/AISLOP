@@ -3,24 +3,50 @@
   "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
   "class_sha256": "0821d686ee83185e5af97bbfbf384e768c23be925da4edfece98e9a4bb83b62c",
   "classes_in_jar": 7762,
-  "methods_with_partial_evidence": 5,
   "methods_declared": 6,
-  "fields_with_partial_evidence": 4,
+  "methods_with_partial_evidence": 6,
+  "methods_differential": 5,
+  "methods_java_only": 1,
   "fields_declared": 4,
-  "methods_without_evidence": [
-    "<init>()V"
-  ],
+  "fields_with_partial_evidence": 4,
+  "methods_without_evidence": [],
   "fields_without_evidence": [],
+  "classfile_surface": {
+    "flags": [
+      "public",
+      "final",
+      "super"
+    ],
+    "super_class": "java/lang/Object",
+    "interfaces": [],
+    "has_init": true,
+    "has_clinit": false,
+    "declared_methods": [
+      "<init>()V",
+      "fromBlock(I)I",
+      "quartLocal(I)I",
+      "toBlock(I)I",
+      "fromSection(I)I",
+      "toSection(I)I"
+    ],
+    "declared_fields": [
+      "BITS:I",
+      "SIZE:I",
+      "MASK:I",
+      "SECTION_TO_QUARTS_BITS:I"
+    ]
+  },
   "evidence_files": {
-    "mc-aot/tests/check-quartpos-class-surface.py": "f929121207670f2eeed744b1bb4cbc2b02abd69a820e55865dbe4850b87f25cb",
-    "analysis/quartpos-static-surface.log": "af6a0d5b1ebf5707187d77924336a0e3d746087971a56497486dad18121ea230"
+    "mc-aot/tests/check-quartpos-class-surface.py": "0b5ea43b38dd594e773fbb2079e6770e718ca9a69230f3bb594f15cb58805879",
+    "mc-aot/tools/classfile-surface.py": "fe117900d1d0466f51f92f930d6bbd2c52ddea2f378abba949c897ecddc1833c",
+    "analysis/quartpos-static-surface.log": "9568c831efd662082c1104e59a703da0da03435a4d53384c1a6b5542c69249d6",
+    "analysis/class-evidence/quartpos-classfile.json": "5db417fb59f1142bf98d6a1e8307756a1bf197640abfb7f4e6085a9f49afc25b"
   },
   "limitations": [
-    "La comparación usa 515 entradas int por método y cuatro lecturas; no prueba todo el dominio.",
-    "El constructor privado no está ejecutado ni contrastado.",
-    "No demuestra reflexión, identidad Class, entorno ni comportamiento heredado completos.",
-    "El hash de un log identifica el archivo; no prueba su autenticidad, ejecución ni corrección."
+    "La comparación de los cinco métodos usa 515 entradas int por método y cuatro lecturas de campo; no prueba todo el dominio, solo límites de int, vecindad y 500 valores aleatorios con semilla fija.",
+    "El constructor privado se mide por reflexión en Java (IllegalAccessException sin setAccessible, instancia con setAccessible) y su bytecode es el constructor por defecto; el traductor no implementa reflexión, así que no hay contraste nativo equivalente y no puede contar como diferencial.",
+    "La superficie se reconcilia con el classfile y con la reflexión (flags, superclase, interfaces, campos, constructores), pero no se verifica comportamiento heredado de Object ni identidad de la clase en nativo."
   ],
   "certified": false,
-  "warning": "Inventario de evidencias parciales, no verifica corrección de resultados ni certifica clases."
+  "warning": "Inventario de evidencias parciales: no certifica la clase ni incrementa el contador."
 }
