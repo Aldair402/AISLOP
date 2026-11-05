@@ -2,6 +2,8 @@
 """Puente aislado opt-in: dos backends, mismo objeto y monitor, FJP Java traducido."""
 import hashlib,json,os,pathlib,re,subprocess,sys,tempfile,zipfile
 root=pathlib.Path(__file__).resolve().parents[1];project=root.parent;jdk=pathlib.Path(os.environ['JAVA_HOME'])/'bin'
+sys.path.insert(0,str(root/'tools'))
+from numeric_bridge_layout import verify,rust_layouts
 if sys.argv[1:] not in ([],['--ticktask']):raise SystemExit('uso: check-numeric-concurrent-graph.py [--ticktask]')
 ticktask=sys.argv[1:]==['--ticktask']
 source='''package net.minecraft.test;
@@ -21,26 +23,34 @@ driver='''package net.minecraft.test;import java.util.concurrent.CountDownLatch;
 harness=r'''
 #[cfg(test)] mod graph_tests {
  use super::*;use std::sync::Barrier;
- static LAYOUT:NumericGraphLayout=NumericGraphLayout{class:"net/minecraft/test/Node",fields:&[NumericGraphSlot::Int,NumericGraphSlot::Ref("net/minecraft/test/Node")]};
+ LAYOUT_DECL
  static WRONG:NumericGraphLayout=NumericGraphLayout{class:"net/minecraft/test/Node",fields:&[NumericGraphSlot::Int,NumericGraphSlot::Int]};
  #[test] fn graph_traversal_between_backends(){
   for round in 0..20 {
    let mut numeric=Heap::default();numeric.interfaces=PROJECT_INTERFACES;INIT_FIELDS;init_class_0(&mut numeric);
    let child=match numeric.fields[0]{V::R(Some(id))=>id,_=>panic!("sin child")};let root=match numeric.fields[1]{V::R(Some(id))=>id,_=>panic!("sin root")};
    let heap=SharedHeap::default();let bridge=NumericGraphBridge::new(&numeric,&heap);
-   let root_id=bridge.attach(&mut numeric,root,&LAYOUT).unwrap();assert_eq!(bridge.attach(&mut numeric,root,&LAYOUT),Ok(root_id));
+   let root_id=bridge.attach(&mut numeric,root,&LAYOUT_0).unwrap();assert_eq!(bridge.attach(&mut numeric,root,&LAYOUT_0),Ok(root_id));
    assert_eq!(heap.read(root_id,1),Err("grafo: destino no registrado o incompatible"));
-   let child_id=bridge.attach(&mut numeric,child,&LAYOUT).unwrap();assert_eq!(heap.read(root_id,1),Ok(Value::Ref(Some(child_id))));
+   let child_id=bridge.attach(&mut numeric,child,&LAYOUT_0).unwrap();assert_eq!(heap.read(root_id,1),Ok(Value::Ref(Some(child_id))));
    assert_eq!(heap.read(child_id,1),Ok(Value::Ref(None)));assert_eq!(heap.read(root_id,0),Ok(Value::Int(2147483600)));
    assert_eq!(heap.write(root_id,1,Value::Ref(None)),Err("grafo: escritura de referencia no soportada"));
    assert!(bridge.attach(&mut numeric,root,&WRONG).is_err());
-   let mut foreign=Heap::default();let foreign_id=object_new(&mut foreign,"net/minecraft/test/Node",vec![V::I(5),V::R(None)],false);assert_eq!(bridge.attach(&mut foreign,foreign_id,&LAYOUT),Err("grafo: otro heap numérico"));
+   let mut foreign=Heap::default();let foreign_id=object_new(&mut foreign,"net/minecraft/test/Node",vec![V::I(5),V::R(None)],false);assert_eq!(bridge.attach(&mut foreign,foreign_id,&LAYOUT_0),Err("grafo: otro heap numérico"));
    let other=SharedHeap::default();assert!(other.read(root_id,0).is_err());
-   let broken=object_new(&mut numeric,"net/minecraft/test/Node",vec![V::I(0),V::R(Some(99999))],false);let broken_id=bridge.attach(&mut numeric,broken,&LAYOUT).unwrap();assert_eq!(heap.read(broken_id,1),Err("grafo: destino no registrado o incompatible"));
-   let invalid=object_new(&mut numeric,"net/minecraft/test/Node",vec![V::R(None),V::R(None)],false);assert_eq!(bridge.attach(&mut numeric,invalid,&LAYOUT),Err("grafo: layout incompatible"));assert!(matches!(numeric.arrays[invalid],Array::Obj(_,_)));
+   let broken=object_new(&mut numeric,"net/minecraft/test/Node",vec![V::I(0),V::R(Some(99999))],false);let broken_id=bridge.attach(&mut numeric,broken,&LAYOUT_0).unwrap();assert_eq!(heap.read(broken_id,1),Err("grafo: destino no registrado o incompatible"));
+   let invalid=object_new(&mut numeric,"net/minecraft/test/Node",vec![V::R(None),V::R(None)],false);assert_eq!(bridge.attach(&mut numeric,invalid,&LAYOUT_0),Err("grafo: layout incompatible"));assert!(matches!(numeric.arrays[invalid],Array::Obj(_,_)));
    let alien=other.allocate(vec![]).unwrap();assert!(heap.write(root_id,1,Value::Ref(Some(alien))).is_err());
-   let another=NumericGraphBridge::new(&numeric,&heap);assert_eq!(another.attach(&mut numeric,root,&LAYOUT),Err("identidad externa incompatible"));
-   if round==0 { // Incluso un adaptador interno defectuoso no puede devolver IDs ajenos.
+   let another=NumericGraphBridge::new(&numeric,&heap);assert_eq!(another.attach(&mut numeric,root,&LAYOUT_0),Err("identidad externa incompatible"));
+   if round==0 {
+    // Autoalias y ciclo: crear y registrar todos los nodos antes de publicarlos.
+    let self_index=numeric.arrays.len();let self_obj=object_new(&mut numeric,"net/minecraft/test/Node",vec![V::I(7),V::R(Some(self_index))],false);
+    let self_shared=bridge.attach(&mut numeric,self_obj,&LAYOUT_0).unwrap();assert_eq!(heap.read(self_shared,1),Ok(Value::Ref(Some(self_shared))));
+    let first_index=numeric.arrays.len();let first=object_new(&mut numeric,"net/minecraft/test/Node",vec![V::I(8),V::R(Some(first_index+1))],false);
+    let second=object_new(&mut numeric,"net/minecraft/test/Node",vec![V::I(9),V::R(Some(first_index))],false);
+    let a=bridge.attach(&mut numeric,first,&LAYOUT_0).unwrap();let b=bridge.attach(&mut numeric,second,&LAYOUT_0).unwrap();
+    assert_eq!(heap.read(a,1),Ok(Value::Ref(Some(b))));assert_eq!(heap.read(b,1),Ok(Value::Ref(Some(a))));
+    // Incluso un adaptador interno defectuoso no puede devolver IDs ajenos.
     struct Bad(concurrent_heap::ObjectId);impl concurrent_heap::ExternalObject for Bad {
       fn identity_key(&self)->usize{usize::MAX} fn domain_key(&self)->usize{usize::MAX} fn class(&self)->&'static str{"net/minecraft/test/Bad"}
       fn field_count(&self)->Result<usize,&'static str>{Ok(1)} fn read(&self,_:usize)->Result<concurrent_heap::ExternalValue,&'static str>{Ok(concurrent_heap::ExternalValue::Ref(Some(self.0)))}
@@ -78,18 +88,18 @@ with tempfile.TemporaryDirectory(prefix='mc-two-runtime-bridge-') as td:
   for name,digest in classes:
    b=z.read(name);assert hashlib.sha256(b).hexdigest()==digest;p=d/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b)
  run([str(jdk/'jar'),'cf',str(d/'fixture.jar'),'-C',str(d),'net'])
- # Verifica layout real antes de crear el puente: V::I también representa
- # byte/char/short/boolean y no basta para reconocer un campo int.
- cellbytes=(d/'net/minecraft/test/Node.class').read_bytes();cellhash=hashlib.sha256(cellbytes).hexdigest()
+ # Genera el layout desde classfiles validados del mismo JAR que se traduce.
+ # Es solo un harness: sigue registrando objetos y publicando workers a mano.
+ fixture=d/'fixture.jar';jarhash=hashlib.sha256(fixture.read_bytes()).hexdigest()
  base=['cargo','run','--quiet','--offline','--manifest-path',str(root/'Cargo.toml'),'--']
  env=os.environ.copy();env['MC_AOT_RAYON_PROJECT_REFERENCES']='1'
- inspect=run(base+['inspect',str(d/'fixture.jar'),'net/minecraft/test/Node'],capture_output=True,env=env).stdout
- assert 'Clase: net/minecraft/test/Node\nSuperclase: java/lang/Object' in inspect and re.search(r'^Interfaces: *$',inspect,re.M) and '<clinit>()V' not in inspect and re.search(r'^Flags: 0x[0-9a-f]+$',inspect,re.M)
- flags=int(re.search(r'^Flags: 0x([0-9a-f]+)$',inspect,re.M).group(1),16);assert flags&0x10 and not flags&0x600
- fields=inspect.split('Campos (',1)[1].split('\n\n',1)[0];assert re.findall(r'^  0x([0-9a-f]{4}) (\S+) (\S+)$',fields,re.M)==[('0000','value','I'),('0010','next','Lnet/minecraft/test/Node;')],fields
- run(base+['multi-static-demo',str(d/'fixture.jar'),'net/minecraft/test/Owner',str(d/'numeric'),'tick','(I)I','read','(I)I'],capture_output=True,env=env)
- run(base+['concurrent-rayon-int-demo',str(d/'fixture.jar'),'net/minecraft/test/Concurrent',str(d/'concurrent'),'run','(I)I'],capture_output=True,env=env)
- assert hashlib.sha256((d/'net/minecraft/test/Node.class').read_bytes()).hexdigest()==cellhash
+ run(['cargo','build','--offline','--manifest-path',str(root/'Cargo.toml')],capture_output=True,env=env)
+ layout=verify(fixture,'net/minecraft/test/Node',root/'target/debug/mc-aot',jarhash)
+ assert len(layout['classes'])==1
+ assert [(f['name'],f['descriptor']) for f in layout['classes'][0]['fields']]==[('value','I'),('next','Lnet/minecraft/test/Node;')]
+ run(base+['multi-static-demo',str(fixture),'net/minecraft/test/Owner',str(d/'numeric'),'tick','(I)I','read','(I)I'],capture_output=True,env=env)
+ run(base+['concurrent-rayon-int-demo',str(fixture),'net/minecraft/test/Concurrent',str(d/'concurrent'),'run','(I)I'],capture_output=True,env=env)
+ assert hashlib.sha256(fixture.read_bytes()).hexdigest()==jarhash
  a=(d/'numeric.rs').read_text();b=(d/'concurrent.rs').read_text()
  names=re.findall(r'println!\("\{\}",(numeric_\d+)\(&mut heap, a0\)\)',a);assert len(names)==2,names
  init=re.search(r'heap.fields=vec!\[(.*?)\];heap.init_states=vec!\[0;(\d+)\];',a);assert init
@@ -98,7 +108,7 @@ with tempfile.TemporaryDirectory(prefix='mc-two-runtime-bridge-') as td:
  assert 'let statics=heap.allocate(vec![Value::Ref(None)]).unwrap()' in b
  a=a.replace('fn main(){run_java(main_inner);}','fn numeric_original_main(){run_java(main_inner);}',1)
  b=b.replace('#![allow(dead_code,unused_variables,unused_mut)]','',1).replace('fn main(){let args:Vec<String>','fn concurrent_original_main(){let args:Vec<String>',1)
- h=harness.replace('INIT_FIELDS',f'numeric.fields=vec![{init.group(1)}];numeric.init_states=vec![0;{init.group(2)}]').replace('METHODS',specs.group(1)).replace('SYNCHRONIZED',specs.group(2)).replace('LAYOUTS',specs.group(3)).replace('TICK(',names[0]+'(').replace('READ(',names[1]+'(')
+ h=harness.replace('LAYOUT_DECL',rust_layouts(layout)).replace('INIT_FIELDS',f'numeric.fields=vec![{init.group(1)}];numeric.init_states=vec![0;{init.group(2)}]').replace('METHODS',specs.group(1)).replace('SYNCHRONIZED',specs.group(2)).replace('LAYOUTS',specs.group(3)).replace('TICK(',names[0]+'(').replace('READ(',names[1]+'(')
  crate=d/'crate';(crate/'src').mkdir(parents=True);(crate/'Cargo.toml').write_text('[package]\nname="numeric-concurrent-bridge-test"\nversion="0.1.0"\nedition="2021"\n[dependencies]\nrayon="=1.11.0"\n');(crate/'Cargo.lock').write_bytes((root/'Cargo.lock').read_bytes());(crate/'src/main.rs').write_text(a+'\n'+b+'\n'+(root/'src/numeric_concurrent_graph_bridge.inc').read_text()+'\n'+h)
  env['CARGO_TARGET_DIR']=str(pathlib.Path(os.environ.get('TMPDIR','/var/tmp'))/'mc-aot-bridge-target')
  build=run(['cargo','test','--offline','--no-run','--message-format=json','--manifest-path',str(crate/'Cargo.toml')],env=env,capture_output=True,timeout=240)
@@ -110,4 +120,4 @@ with tempfile.TemporaryDirectory(prefix='mc-two-runtime-bridge-') as td:
   java=run([str(jdk/'java'),'-cp',str(d),'net.minecraft.test.Driver',str(n)],capture_output=True,timeout=30)
   expected=((2147483600+(2000+2*n)*4+2**31)%2**32)-2**31
   assert java.stdout==f'{expected}\n',(java.stdout,expected)
- print(f'OK: 20 rondas Java y Rust; dos backends traducidos, navegación de referencia final entre dos objetos y monitor compartido; cuatro tareas ForkJoinPool Java en Rayon, {"TickTask y " if ticktask else ""}QuartPos oficial, alias y guardas de identidad, registro y tipo, ejecución sin Java en PATH; harness externo opt-in, no Main')
+ print(f'OK: 20 rondas Java y Rust; dos backends traducidos, navegación de referencia final entre dos objetos y monitor compartido; cuatro tareas ForkJoinPool Java en Rayon, {"TickTask y " if ticktask else ""}QuartPos oficial, alias y guardas de identidad, registro y tipo, ejecución sin Java en PATH; layout generado de classfile; harness externo opt-in, no Main')

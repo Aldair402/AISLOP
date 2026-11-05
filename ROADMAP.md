@@ -1,5 +1,7 @@
 # Roadmap: servidor vanilla JAR → binario nativo en Rust
 
+**Coordinación de colaboradores:** tareas, reservas y fronteras de archivos en [`TODO.md`](TODO.md).
+
 ## Objetivo y estado
 
 Traducir el JAR oficial del servidor Minecraft 26.3 a un ejecutable nativo **sin JVM externa**, hacerlo arrancar y validar completamente al menos **3.881 de las 7.762 clases** del JAR interno. El alcance es el comportamiento que Minecraft necesita; una dependencia Rust puede reemplazar una biblioteca Java solo con un adaptador comprobado. Este roadmap no presupone compatibilidad general con Java ni es una estimación de plazos.
@@ -112,7 +114,7 @@ Una búsqueda estructural de llamadas directas en el JAR interno encontró 367 i
 ## Próximas acciones concretas
 
 1. Validar el inventario parcial y sus guardas: `python3 mc-aot/tests/check-class-surface-evidence.py`. No contar `QuartPos` aún.
-2. Ampliar el experimento opt-in del backend principal: automatizar y validar por classfile la selección del layout y la publicación entre ambos backends; permitir navegación segura desde workers y compartir demás tipos con identidad y pertenencia verificadas; unificar estáticos e inicialización antes de conectar tareas Java a Rayon desde Main. El modo de tarea Java solo cubre un patrón exacto, no traduce el pool Java ni comparte estáticos; ver `analysis/heap-bridge-design.md` y el diseño de monitores en `analysis/next-numeric-shared-monitor.md`.
+2. Ampliar el experimento opt-in del backend principal: automatizar y validar por classfile la selección del layout y la publicación entre ambos backends (el layout del harness de grafo ya se genera con `mc-aot/tools/numeric_bridge_layout.py`, ver `analysis/a02-layout-validation.md`; un opt-in nuevo publica automáticamente los objetos admitidos que crea el bytecode numérico mediante `PublishSink`, ver `analysis/a03-auto-publish.md`, pero el `SharedHeap`, la unión de programas y la publicación de estáticos siguen siendo manuales); permitir navegación segura desde workers y compartir demás tipos con identidad y pertenencia verificadas; unificar estáticos e inicialización antes de conectar tareas Java a Rayon desde Main. El modo de tarea Java solo cubre un patrón exacto, no traduce el pool Java ni comparte estáticos; ver `analysis/heap-bridge-design.md` y el diseño de monitores en `analysis/next-numeric-shared-monitor.md`.
 3. Extender el probe del worker oficial más allá de `onStart`, sin ignorar `Util.LOGGER`, y determinar qué parte exige el logger antes de que una tarea real pueda ejecutarse. No activar Tracy silenciosamente.
 4. Repetir la suite integral cuando se modifique el runtime. La última integral completa y las pruebas focalizadas se distinguen siempre en este archivo.
 
