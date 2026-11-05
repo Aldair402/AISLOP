@@ -103,3 +103,14 @@ bash mc-aot/run-regressions.sh                          # integral; necesita JAV
 ```
 
 Logs de esta ronda: `analysis/a05-*.log` y la integral `analysis/full-regressions-a05.log`.
+
+## 8. Verificación
+
+```
+analysis/full-regressions-a05.log: 318 etapas, EXIT_STATUS=0
+  (306 en A-04; las 12 nuevas vienen de main 8d21505: C-01..C-14 y el contrato B-01)
+cargo test: 66 + 32 + 34 + 32 + 33
+check-numeric-auto-publish.py: 3 ejecuciones seguidas en verde (la prueba de barrera se corrigió)
+```
+
+A-04 fue rebasado sobre `main` `8d21505` (`1c8ae82`, `1016ff8`) y vuelve a estar verificado sobre el `main` nuevo.

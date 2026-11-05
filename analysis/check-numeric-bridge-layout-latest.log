@@ -1,2 +1,2 @@
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
 OK: 2 layouts cíclicos, layout vacío, orden inverso y referencia mutable opt-in; 25 rechazos; classfiles javac sintéticos; no Main

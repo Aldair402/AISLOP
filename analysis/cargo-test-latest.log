@@ -1,16 +1,17 @@
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+   Compiling mc-aot v0.1.0 (/home/user/minecraft-rust/mc-aot)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.15s
      Running unittests src/main.rs (mc-aot/target/debug/deps/mc_aot-51efef3da96e59a0)
 
 running 66 tests
-test bytecode::tests::rejects_branch_to_operand ... ok
 test bytecode::tests::rejects_truncated_and_reserved ... ok
+test bytecode::tests::rejects_branch_to_operand ... ok
 test bytecode::tests::validates_branches ... ok
 test bytecode::tests::validates_exception_boundaries ... ok
-test bytecode::tests::validates_lookupswitch ... ok
 test bytecode::tests::validates_tableswitch ... ok
+test bytecode::tests::validates_lookupswitch ... ok
 test class_init::tests::failure_is_sticky_and_wakes_waiters ... ok
-test class_init::tests::rust_panic_does_not_leave_class_initializing ... ok
 test class_init::tests::one_initializer_and_reentrant_owner ... ok
+test class_init::tests::rust_panic_does_not_leave_class_initializing ... ok
 test concurrent_classes::tests::initialized_statics_are_published_to_waiting_workers ... ok
 test concurrent_heap::tests::completed_future_reference_identity_and_heap_guards ... ok
 test concurrent_heap::tests::concat_string_int_returns_fresh_utf16_value_and_handles_null ... ok
@@ -22,13 +23,13 @@ test concurrent_heap::tests::time_unit_wait_conversion_is_saturating_and_interne
 test concurrent_heap::tests::workers_share_reentrant_monitor_and_fields ... ok
 test concurrent_heap::tests::workers_update_shared_fields_via_cas_and_wrapping_add ... ok
 test concurrent_heap::tests::interned_utf16_strings_share_identity_and_preserve_unpaired_surrogates ... ok
+test executor_runtime::tests::completed_future_does_not_keep_shutdown_pool_alive ... ok
 test executor_runtime::tests::constructor_and_unused_shutdown_do_not_start_workers ... ok
 test executor_runtime::tests::never_started_pool_is_terminated_after_shutdown ... ok
-test executor_runtime::tests::pool_queries_reflect_lifecycle ... ok
 test executor_runtime::tests::pool_queries_reject_unknown_objects ... ok
-test executor_runtime::tests::racing_first_use_creates_only_one_pool ... ok
+test executor_runtime::tests::pool_queries_reflect_lifecycle ... ok
 test executor_runtime::tests::rejected_hooks_never_fall_back_to_default_pool ... ok
-test executor_runtime::tests::completed_future_does_not_keep_shutdown_pool_alive ... ok
+test executor_runtime::tests::racing_first_use_creates_only_one_pool ... ok
 test flow::tests::rejects_fall_off ... ok
 test flow::tests::rejects_jump_into_operand ... ok
 test flow::tests::rejects_negative_switch_target ... ok
@@ -84,12 +85,12 @@ test await_and_shutdown_race_without_start ... ok
 test concurrent_heap::tests::pending_future_completes_once_and_reports_state ... ok
 test concurrent_heap::tests::pending_future_rejects_foreign_objects_and_values ... ok
 test concurrent_heap::tests::time_unit_wait_conversion_is_saturating_and_interned ... ok
-test concurrent_heap::tests::interned_utf16_strings_share_identity_and_preserve_unpaired_surrogates ... ok
+test concurrent_heap::tests::workers_share_reentrant_monitor_and_fields ... ok
 test concurrent_heap::tests::workers_update_shared_fields_via_cas_and_wrapping_add ... ok
+test concurrent_heap::tests::interned_utf16_strings_share_identity_and_preserve_unpaired_surrogates ... ok
 test executor_runtime::tests::completed_future_does_not_keep_shutdown_pool_alive ... ok
 test executor_runtime::tests::constructor_and_unused_shutdown_do_not_start_workers ... ok
 test executor_runtime::tests::never_started_pool_is_terminated_after_shutdown ... ok
-test concurrent_heap::tests::workers_share_reentrant_monitor_and_fields ... ok
 test executor_runtime::tests::pool_queries_reject_unknown_objects ... ok
 test executor_runtime::tests::racing_first_use_creates_only_one_pool ... ok
 test executor_runtime::tests::rejected_hooks_never_fall_back_to_default_pool ... ok
@@ -122,12 +123,12 @@ test concurrent_heap::tests::pending_future_completes_once_and_reports_state ...
 test concurrent_heap::tests::pending_future_rejects_foreign_objects_and_values ... ok
 test concurrent_heap::tests::time_unit_wait_conversion_is_saturating_and_interned ... ok
 test concurrent_heap::tests::workers_share_reentrant_monitor_and_fields ... ok
-test concurrent_heap::tests::interned_utf16_strings_share_identity_and_preserve_unpaired_surrogates ... ok
 test concurrent_heap::tests::workers_update_shared_fields_via_cas_and_wrapping_add ... ok
 test create_accepts_only_the_declared_parallelism ... ok
+test concurrent_heap::tests::interned_utf16_strings_share_identity_and_preserve_unpaired_surrogates ... ok
+test executor_runtime::tests::completed_future_does_not_keep_shutdown_pool_alive ... ok
 test executor_runtime::tests::constructor_and_unused_shutdown_do_not_start_workers ... ok
 test executor_runtime::tests::never_started_pool_is_terminated_after_shutdown ... ok
-test executor_runtime::tests::completed_future_does_not_keep_shutdown_pool_alive ... ok
 test executor_runtime::tests::pool_queries_reject_unknown_objects ... ok
 test executor_runtime::tests::racing_first_use_creates_only_one_pool ... ok
 test executor_runtime::tests::rejected_hooks_never_fall_back_to_default_pool ... ok
@@ -154,21 +155,21 @@ test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fin
 running 32 tests
 test concurrent_heap::tests::completed_future_reference_identity_and_heap_guards ... ok
 test concurrent_heap::tests::concat_string_int_returns_fresh_utf16_value_and_handles_null ... ok
-test concurrent_heap::tests::atomic_increment_returns_unique_values_under_contention_and_wraps ... ok
 test concurrent_heap::tests::default_factory_identity_is_shared_across_threads ... ok
+test concurrent_heap::tests::atomic_increment_returns_unique_values_under_contention_and_wraps ... ok
 test concurrent_heap::tests::pending_future_completes_once_and_reports_state ... ok
 test concurrent_heap::tests::pending_future_rejects_foreign_objects_and_values ... ok
 test concurrent_heap::tests::time_unit_wait_conversion_is_saturating_and_interned ... ok
 test concurrent_heap::tests::workers_share_reentrant_monitor_and_fields ... ok
 test concurrent_heap::tests::workers_update_shared_fields_via_cas_and_wrapping_add ... ok
-test executor_runtime::tests::completed_future_does_not_keep_shutdown_pool_alive ... ok
+test concurrent_heap::tests::interned_utf16_strings_share_identity_and_preserve_unpaired_surrogates ... ok
 test executor_runtime::tests::constructor_and_unused_shutdown_do_not_start_workers ... ok
 test executor_runtime::tests::never_started_pool_is_terminated_after_shutdown ... ok
-test executor_runtime::tests::pool_queries_reflect_lifecycle ... ok
+test executor_runtime::tests::completed_future_does_not_keep_shutdown_pool_alive ... ok
 test executor_runtime::tests::pool_queries_reject_unknown_objects ... ok
 test executor_runtime::tests::racing_first_use_creates_only_one_pool ... ok
 test executor_runtime::tests::rejected_hooks_never_fall_back_to_default_pool ... ok
-test concurrent_heap::tests::interned_utf16_strings_share_identity_and_preserve_unpaired_surrogates ... ok
+test executor_runtime::tests::pool_queries_reflect_lifecycle ... ok
 test foreign_pool_ids_are_rejected_not_answered ... ok
 test frame_vm::tests::synchronized_frame_releases_monitor_on_step_error ... ok
 test frame_vm::tests::worker_frames_share_heap_without_sharing_operand_stacks ... ok
@@ -185,26 +186,26 @@ test scheduler::tests::weak_helper_does_not_keep_closed_pool_alive ... ok
 test unused_pool_terminates_immediately_after_shutdown ... ok
 test scheduler::tests::shutdown_timeout_rejection_and_panic ... ok
 
-test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.34s
+test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.33s
 
      Running tests/rayon_stress.rs (mc-aot/target/debug/deps/rayon_stress-86ac06d5b4c772c0)
 
 running 33 tests
 test close_race_keeps_every_task_or_rejects_it ... ok
-test concurrent_heap::tests::atomic_increment_returns_unique_values_under_contention_and_wraps ... ok
+test completion_races_repeat ... ok
 test concurrent_heap::tests::completed_future_reference_identity_and_heap_guards ... ok
 test concurrent_heap::tests::concat_string_int_returns_fresh_utf16_value_and_handles_null ... ok
-test completion_races_repeat ... ok
 test concurrent_heap::tests::default_factory_identity_is_shared_across_threads ... ok
+test concurrent_heap::tests::atomic_increment_returns_unique_values_under_contention_and_wraps ... ok
 test concurrent_heap::tests::pending_future_completes_once_and_reports_state ... ok
 test concurrent_heap::tests::pending_future_rejects_foreign_objects_and_values ... ok
 test concurrent_heap::tests::time_unit_wait_conversion_is_saturating_and_interned ... ok
 test concurrent_heap::tests::workers_share_reentrant_monitor_and_fields ... ok
 test concurrent_heap::tests::workers_update_shared_fields_via_cas_and_wrapping_add ... ok
 test concurrent_heap::tests::interned_utf16_strings_share_identity_and_preserve_unpaired_surrogates ... ok
-test executor_runtime::tests::completed_future_does_not_keep_shutdown_pool_alive ... ok
 test executor_runtime::tests::constructor_and_unused_shutdown_do_not_start_workers ... ok
 test executor_runtime::tests::never_started_pool_is_terminated_after_shutdown ... ok
+test executor_runtime::tests::completed_future_does_not_keep_shutdown_pool_alive ... ok
 test executor_runtime::tests::pool_queries_reject_unknown_objects ... ok
 test executor_runtime::tests::racing_first_use_creates_only_one_pool ... ok
 test executor_runtime::tests::rejected_hooks_never_fall_back_to_default_pool ... ok
@@ -224,5 +225,5 @@ test scheduler::tests::shutdown_timeout_rejection_and_panic ... ok
 test scheduler::tests::weak_helper_does_not_keep_closed_pool_alive ... ok
 test executor_runtime::tests::shutdown_does_not_wait_for_a_running_task ... ok
 
-test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.32s
+test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.33s
 
