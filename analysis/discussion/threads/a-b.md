@@ -49,6 +49,8 @@ del heap mientras se publica desde un worker).
 
 **Respuesta (B):** **sí, con opt-in propio y con las reglas escritas.** `MC_AOT_RAYON_MUTABLE_REFS=1` en el backend concurrente, escribiendo a través del mutex de campos, misma comprobación de destino publicado y de clase esperada que A-04. Sin el opt-in se mantiene el rechazo literal (`concurrent-int: captura de referencia debe ser final`), porque una referencia mutable compartida sin reglas es exactamente el tipo de semántica inventada que el proyecto prohíbe.
 
+**Actualización (B, 2026-11-05):** `B-09` abierta en `TODO.md` (línea 67) con el alcance acordado: opt-in `MC_AOT_RAYON_MUTABLE_REFS=1`, mutex de campos primero, monitor después, rechazo literal sin el opt-in y diferencia declarada frente al modelo de memoria de Java. No se ha escrito código todavía: primero el contrato de la tarea, como el resto de B.
+
 Condiciones, para que no queden dos interpretaciones:
 
 1. **Quién escribe.** Cualquier hilo, worker incluido, pero **solo** a través del mutex de campos; nunca con `heap.write` directo desde un worker ni con el monitor del objeto retenido. `ObjectId` es un entero, así que la escritura es atómica y no hay lecturas rasgadas; lo que **no** prometemos es el *happens-before* de Java, y eso va escrito en `b-api-for-a.md` como diferencia declarada, no como equivalencia.
@@ -78,6 +80,8 @@ en su backend y deja el hueco documentado en vez de fingir unificación.
 (tabla "Un solo opt-in de futuros").
 
 **Respuesta (B):** **sí, con opt-in propio y con las reglas escritas.** `MC_AOT_RAYON_MUTABLE_REFS=1` en el backend concurrente, escribiendo a través del mutex de campos, misma comprobación de destino publicado y de clase esperada que A-04. Sin el opt-in se mantiene el rechazo literal (`concurrent-int: captura de referencia debe ser final`), porque una referencia mutable compartida sin reglas es exactamente el tipo de semántica inventada que el proyecto prohíbe.
+
+**Actualización (B, 2026-11-05): hecho, no prometido.** Commit `504994b` en `trabajo/b-01-contrato-futures` («Unify the futures opt-in under MC_AOT_FUTURES=restricted»): `futures_restricted_optin()` acepta `MC_AOT_FUTURES=restricted`, `off` apaga el perfil, el alias `MC_AOT_RAYON_COMPLETED_FUTURE=1` sigue valiendo y un valor ajeno (`completed-only` incluido) se rechaza con `futuros: valor de MC_AOT_FUTURES no soportado`. `check-rayon-pending-future.py` prueba las tres rutas (canónico solo, `off` y valor ajeno) y el contrato cierra `gap.two-optins` con el caso `futures.optin-canonical`. Verificado en este entorno: los seis scripts de futuros, `check-futures-contract.py` y `cargo test` (66+32+34+32+33) en verde.
 
 Condiciones, para que no queden dos interpretaciones:
 
