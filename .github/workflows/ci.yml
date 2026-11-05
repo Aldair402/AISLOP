@@ -29,14 +29,14 @@ jobs:
           distribution: temurin
           java-version: "25"
       - name: cache cargo registry
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
           key: cargo-${{ runner.os }}-${{ hashFiles('mc-aot/Cargo.lock', 'mc-aot/log4rs-prototype/Cargo.lock') }}
       - name: cache server jars
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: downloads
           key: server-jars-26.3-${{ env.INNER_JAR_SHA256 }}
@@ -71,14 +71,14 @@ jobs:
           distribution: temurin
           java-version: "25"
       - name: cache cargo registry
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
           key: cargo-${{ runner.os }}-${{ hashFiles('mc-aot/Cargo.lock', 'mc-aot/log4rs-prototype/Cargo.lock') }}
       - name: cache server jars
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: downloads
           key: server-jars-26.3-${{ env.INNER_JAR_SHA256 }}
@@ -121,14 +121,14 @@ jobs:
           distribution: temurin
           java-version: "25"
       - name: cache cargo registry
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
           key: cargo-${{ runner.os }}-${{ hashFiles('mc-aot/Cargo.lock', 'mc-aot/log4rs-prototype/Cargo.lock') }}
       - name: cache server jars
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: downloads
           key: server-jars-26.3-${{ env.INNER_JAR_SHA256 }}
@@ -151,7 +151,7 @@ jobs:
           echo "etapas: $(grep -c '^==> ' analysis/full-regressions-*.log | head -1)"
       - name: upload log artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: full-regressions-log
           path: analysis/full-regressions-*.log
