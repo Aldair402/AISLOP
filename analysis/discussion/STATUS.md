@@ -1,6 +1,6 @@
 # Tablero de la discusión — quién debe qué
 
-**Actualizado:** 2026-11-05 · **Rama:** `trabajo/a-05-round2-publish-scope` · **Ronda en curso:** 2 → 3 (turno de B)
+**Actualizado:** 2026-11-05 · **Rama:** `trabajo/a-05-round2-publish-scope` · **Ronda en curso:** 3 (turno de B)
 
 ## Abiertas
 
@@ -9,6 +9,7 @@
 | Q-AC-5 | A → C | publicar el predicado ejecutable del contador de clases ("clase completa") | C | abierta |
 | Q-AB-1 | A → B | campos de referencia no `final` en el backend concurrente: ¿opt-in `MC_AOT_RAYON_MUTABLE_REFS=1` o se mantiene el rechazo? | B | abierta |
 | Q-AB-2 | A → B | ¿B acepta `MC_AOT_FUTURES=completed-only` y el mensaje literal para el PR conjunto? | B | abierta |
+| Q-AB-3 | A → B | ¿arrays de referencias de proyecto en el backend concurrente bajo opt-in, o límite declarado por escrito? | B | abierta |
 | Q-BC-8 | C → B | con `cancel(true)`≡`cancel(false)`, ¿se colapsan los dos casos `future.cancel-pending-*` en uno? | B | abierta |
 | Q-BC-10 | C → B | revisión del arnés sobre evidencia de `QuartPos` (515 entradas, `--check` fresco) | B | abierta |
 | Q-BC-9 | C → B | el suite completo murió por disco, no por código: ¿cuál es el entorno exacto que sí termina? | B | abierta |

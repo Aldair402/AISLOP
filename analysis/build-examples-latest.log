@@ -61,546 +61,930 @@ Rust generado: /home/user/minecraft-rust/mc-aot/examples/varint-continuation.rs
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/identifier-path-char
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/identifier-path-char.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/section-x-long.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/section-x-long.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/section-x-long.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/section-x-long.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/section-x-long.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/section-x-long.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/section-x-long
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/section-x-long.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/section-y-long.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/section-y-long.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/section-y-long.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/section-y-long.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/section-y-long.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/section-y-long.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/section-y-long
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/section-y-long.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/section-z-long.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/section-z-long.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/section-z-long.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/section-z-long.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/section-z-long.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/section-z-long.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/section-z-long
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/section-z-long.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/section-pack-long.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/section-pack-long.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/section-pack-long.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/section-pack-long.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/section-pack-long.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/section-pack-long.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/section-pack-long
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/section-pack-long.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/section-offset-long.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/section-offset-long.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/section-offset-long.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/section-offset-long.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/section-offset-long.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/section-offset-long.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/section-offset-long
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/section-offset-long.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/chunk-pack-long.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-pack-long.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/chunk-pack-long.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-pack-long.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-pack-long.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-pack-long.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/chunk-pack-long
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/chunk-pack-long.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/chunk-x-long.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-x-long.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/chunk-x-long.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-x-long.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-x-long.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-x-long.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/chunk-x-long
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/chunk-x-long.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/chunk-z-long.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-z-long.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/chunk-z-long.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-z-long.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-z-long.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-z-long.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/chunk-z-long
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/chunk-z-long.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/chunk-from-section-long.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-from-section-long.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/chunk-from-section-long.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-from-section-long.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-from-section-long.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-from-section-long.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/chunk-from-section-long
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/chunk-from-section-long.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/chunk-within-distance.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-within-distance.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/chunk-within-distance.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-within-distance.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-within-distance.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/chunk-within-distance.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/chunk-within-distance
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/chunk-within-distance.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/png-bounds.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/png-bounds.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/png-bounds.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/png-bounds.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/png-bounds.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/png-bounds.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/png-bounds
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/png-bounds.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/time-wrap-long.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/time-wrap-long.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/time-wrap-long.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/time-wrap-long.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/time-wrap-long.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/time-wrap-long.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/time-wrap-long
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/time-wrap-long.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-int.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-int.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-int.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-int.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-int.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-int.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/array-empty-int
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/array-empty-int.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-long.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-long.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-long.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-long.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-long.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-long.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/array-empty-long
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/array-empty-long.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-byte.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-byte.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-byte.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-byte.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-byte.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-byte.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/array-empty-byte
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/array-empty-byte.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-char.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-char.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-char.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-char.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-char.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-char.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/array-empty-char
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/array-empty-char.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-short.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-short.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-short.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-short.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-short.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-short.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/array-empty-short
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/array-empty-short.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-boolean.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-boolean.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-boolean.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-boolean.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-boolean.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/array-empty-boolean.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/array-empty-boolean
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/array-empty-boolean.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-little.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-little.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-little.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-little.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-little.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-little.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/rcon-int-little
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/rcon-int-little.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-little-auto.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-little-auto.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-little-auto.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-little-auto.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-little-auto.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-little-auto.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/rcon-int-little-auto
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/rcon-int-little-auto.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-big.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-big.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-big.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-big.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-big.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-int-big.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/rcon-int-big
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/rcon-int-big.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/old-biome-array.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/old-biome-array.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/old-biome-array.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/old-biome-array.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/old-biome-array.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/old-biome-array.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/old-biome-array
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/old-biome-array.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/map-water-array.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/map-water-array.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/map-water-array.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/map-water-array.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/map-water-array.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/map-water-array.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/map-water-array
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/map-water-array.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/biome-static-init.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/biome-static-init.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/biome-static-init.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/biome-static-init.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/biome-static-init.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/biome-static-init.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/biome-static-init
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/biome-static-init.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/identifier-valid-path.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/identifier-valid-path.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/identifier-valid-path.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/identifier-valid-path.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/identifier-valid-path.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/identifier-valid-path.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/identifier-valid-path
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/identifier-valid-path.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/identifier-valid-namespace.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/identifier-valid-namespace.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/identifier-valid-namespace.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/identifier-valid-namespace.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/identifier-valid-namespace.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/identifier-valid-namespace.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/identifier-valid-namespace
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/identifier-valid-namespace.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/recipe-first-nonempty.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/recipe-first-nonempty.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/recipe-first-nonempty.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/recipe-first-nonempty.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/recipe-first-nonempty.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/recipe-first-nonempty.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/recipe-first-nonempty
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/recipe-first-nonempty.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/recipe-last-nonempty.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/recipe-last-nonempty.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/recipe-last-nonempty.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/recipe-last-nonempty.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/recipe-last-nonempty.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/recipe-last-nonempty.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/recipe-last-nonempty
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/recipe-last-nonempty.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/light-neighbor-count.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/light-neighbor-count.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/light-neighbor-count.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/light-neighbor-count.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/light-neighbor-count.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/light-neighbor-count.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/light-neighbor-count
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/light-neighbor-count.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/biome-multi-static.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/biome-multi-static.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/biome-multi-static.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/biome-multi-static.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/biome-multi-static.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/biome-multi-static.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/biome-multi-static
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/biome-multi-static.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/rcon-hex-static.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-hex-static.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/rcon-hex-static.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-hex-static.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-hex-static.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/rcon-hex-static.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/rcon-hex-static
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/rcon-hex-static.rs
 warning: type `NumericObjectHandle` is more private than the item `PublishSink::publish`
-   --> /home/user/minecraft-rust/mc-aot/examples/dry-foliage-static.rs:915:5
+   --> /home/user/minecraft-rust/mc-aot/examples/dry-foliage-static.rs:961:5
     |
-915 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+961 |     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish` is reachable at visibility `pub`
     |
 note: but type `NumericObjectHandle` is only usable at visibility `pub(crate)`
-   --> /home/user/minecraft-rust/mc-aot/examples/dry-foliage-static.rs:868:18
+   --> /home/user/minecraft-rust/mc-aot/examples/dry-foliage-static.rs:892:18
     |
-868 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
+892 | #[derive(Clone)] struct NumericObjectHandle { fields:std::sync::Arc<std::sync::Mutex<Vec<V>>>, monitor:std::sync::Arc<SharedMonitor> }
     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: `#[warn(private_interfaces)]` on by default
 
-warning: 1 warning emitted
+warning: type `NumericArrayHandle` is more private than the item `PublishSink::publish_array`
+   --> /home/user/minecraft-rust/mc-aot/examples/dry-foliage-static.rs:965:5
+    |
+965 |     fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method `PublishSink::publish_array` is reachable at visibility `pub`
+    |
+note: but type `NumericArrayHandle` is only usable at visibility `pub(crate)`
+   --> /home/user/minecraft-rust/mc-aot/examples/dry-foliage-static.rs:911:18
+    |
+911 | #[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<Sha...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
 
 Binario nativo: /home/user/minecraft-rust/mc-aot/examples/dry-foliage-static
 Rust generado: /home/user/minecraft-rust/mc-aot/examples/dry-foliage-static.rs

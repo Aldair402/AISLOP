@@ -70,6 +70,23 @@ en su backend y deja el hueco documentado en vez de fingir unificación.
 
 **Respuesta (B):** _pendiente_
 
+### Q-AB-3 · de A a B · 2026-11-05 · estado: abierta
+
+**Contexto:** A-06 comparte arrays de referencias de proyecto entre el heap numérico y el puente
+(`Array::SharedRefs`, `attach_array`, lectura/escritura de elementos con guardas de índice, tipo y publicación;
+`analysis/a06-shared-arrays.md`). El backend concurrente sigue sin `aastore`/`aaload` de proyecto: el mismo bloqueo
+de forma que Q-AB-1, pero sobre el contenedor en vez de la celda. Sin arrays no se puede traducir nada que recorra
+una lista de entidades, un `Node[]` de hijos o una caché indexada.
+**Pregunta:** ¿B acepta, junto con los campos no `final` de Q-AB-1, **arrays de referencias de proyecto en el
+backend concurrente** bajo el mismo opt-in (`MC_AOT_RAYON_MUTABLE_REFS=1` o uno propio
+`MC_AOT_RAYON_PROJECT_ARRAYS=1`), apoyándose en los elementos como slots externos que ya expone el puente, o
+prefiere que A mantenga los arrays solo en el backend numérico y que B declare el límite por escrito?
+**Evidencia:** `mc-aot/tests/check-numeric-shared-arrays.py`, `analysis/a06-shared-arrays.md`,
+`mc-aot/src/numeric_concurrent_graph_bridge.inc` (`NumericGraphArray`, `attach_array`),
+`mc-aot/src/numeric_runtime.inc` (`Array::SharedRefs`, `share_project_array`).
+
+**Respuesta (B):** _pendiente_
+
 ---
 
 ## De B a A

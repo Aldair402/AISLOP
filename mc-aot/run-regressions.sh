@@ -46,6 +46,7 @@ run_logged check-numeric-concurrent-graph python3 mc-aot/tests/check-numeric-con
 run_logged check-numeric-concurrent-graph-ticktask python3 mc-aot/tests/check-numeric-concurrent-graph.py --ticktask
 run_logged check-numeric-bridge-layout python3 mc-aot/tests/check-numeric-bridge-layout.py
 run_logged check-numeric-auto-publish python3 mc-aot/tests/check-numeric-auto-publish.py
+run_logged check-numeric-shared-arrays python3 mc-aot/tests/check-numeric-shared-arrays.py
 run_logged check-rayon-completed-future python3 mc-aot/tests/check-rayon-completed-future.py
 run_logged check-rayon-shared-completed-future python3 mc-aot/tests/check-rayon-shared-completed-future.py
 run_logged check-numeric-completed-future python3 mc-aot/tests/check-numeric-completed-future.py

@@ -281,9 +281,9 @@ fn floor_mod_i(a:i32,b:i32)->i32 {let r=rem_i(a,b);if r!=0 && (a^b)<0 {r.wrappin
 fn floor_div_l(a:i64,b:i64)->i64 {let q=div_l(a,b);let r=rem_l(a,b);if r!=0 && (a^b)<0 {q.wrapping_sub(1)} else {q}}
 fn floor_mod_l(a:i64,b:i64)->i64 {let r=rem_l(a,b);if r!=0 && (a^b)<0 {r.wrapping_add(b)} else {r}}
 
-enum Array { Z(Vec<bool>), B(Vec<i8>), C(Vec<u16>), S(Vec<i16>), I(Vec<i32>), J(Vec<i64>), F(Vec<f32>), D(Vec<f64>), Strings(Vec<Option<usize>>), Str(Vec<u16>), Boolean(bool), Integer(i32), Long(i64), Byte(i8), Short(i16), Character(u16), Float(f32), Double(f64), StackOption, TimeUnit(u8), StackWalker(bool), StackWalkStream(Vec<&'static str>,usize,bool,usize,bool), StackStage(usize,bool,u8,usize), StackFrame(&'static str,bool), Duration(i64,i32), CompletedFuture(Option<usize>), AtomicRef(Option<usize>), AtomicLong(i64), AtomicInteger(i32), ReentrantLock(i32), ReadWriteLock(i32,i32,Option<usize>,Option<usize>), ReadLock(usize), WriteLock(usize), CurrentProcess, CurrentThread(bool,usize), RuntimeSingleton, RuntimePermission(Option<usize>), WeakLoader(Option<usize>), Collector(usize,usize,usize), JoinCollector(Option<usize>,Option<usize>,Option<usize>), Comparing(usize), BaseModule, BootLayer, JfrModule, Lambda(usize,&'static str,Vec<V>), IdentityFunction, IsoInstantFormatter, RootLocale, Path(String,Option<usize>), File(Option<String>,Option<usize>), CrashDateFormatter, Optional(Option<usize>), Pattern(usize,i32), Matcher(usize,usize,Option<(usize,usize,Option<(usize,usize)>)>), Uuid([u8;16]), Date(i64), Zoned(i64,i32), Instant(i64,i32), ResourceStream(&'static [u8],usize,bool), ByteInput(Option<usize>,usize,usize,usize), FileInput(Option<std::fs::File>), FileOutput(Option<std::fs::File>), Uri(usize), Properties(std::collections::HashMap<Vec<u16>,usize>), PropertiesEntries(usize), PropertiesEmptyIter(usize), Utf8Charset, Reader(Option<usize>,Option<Vec<u16>>,usize,bool), Builder(Vec<u16>), Stdout, Stderr, Exception(&'static str,&'static str,Option<usize>), Obj(&'static str,Vec<V>), SharedObj(&'static str,NumericObjectHandle), LocalObj(&'static str,Vec<V>,Option<usize>), Map(Vec<(usize,usize)>,usize,bool), HashMap(Vec<(Option<usize>,Option<usize>)>), IdentityMap(Vec<(Option<usize>,Option<usize>)>), IdentitySet(usize), LinkedMap(Vec<(Option<usize>,Option<usize>)>,i32), LinkedIter(usize,Vec<Option<usize>>,usize,i32), TreeMap(Vec<(usize,Option<usize>)>,i32), TreeEntries(usize), TreeEntry(usize,usize,i32), TreeIter(usize,Vec<usize>,usize,i32,bool), EmptyMap, EnumSet(Vec<usize>), EnumSetIter(Vec<usize>,usize), EmptyList, EmptySet, ImmutableList(Vec<Option<usize>>), EmptyIterator, MapValues(usize), Queue(std::collections::VecDeque<usize>), ConcurrentQueue(std::collections::VecDeque<usize>), Deque(std::collections::VecDeque<usize>), Local(Option<usize>), SuppliedLocal(usize,Option<Option<usize>>), Class(&'static str), List(Vec<Option<usize>>,i32), ArraysList(usize), ArraysListIter(usize,usize), Set(Vec<Option<usize>>,i32), HashSet(Vec<Option<usize>>,i32), KeySet(Vec<Option<usize>>,i32), AppLoader, PlatformLoader, Refs(u8,Vec<Option<usize>>), ProjectRefs(&'static str,Vec<Option<usize>>), Constructor(&'static str), ReflectMethod(usize), Service(&'static str,&'static [&'static str],usize,Vec<usize>), ServiceIter(usize,usize), LazyStream(usize,bool,Option<usize>,bool), SortedStream(usize,bool,usize), MappedStream(usize,bool,usize), StreamSink(Vec<usize>,usize), ListIter(usize,usize,i32), SetIter(usize,Vec<Option<usize>>,usize,i32), EmptyEnumeration }
+enum Array { Z(Vec<bool>), B(Vec<i8>), C(Vec<u16>), S(Vec<i16>), I(Vec<i32>), J(Vec<i64>), F(Vec<f32>), D(Vec<f64>), Strings(Vec<Option<usize>>), Str(Vec<u16>), Boolean(bool), Integer(i32), Long(i64), Byte(i8), Short(i16), Character(u16), Float(f32), Double(f64), StackOption, TimeUnit(u8), StackWalker(bool), StackWalkStream(Vec<&'static str>,usize,bool,usize,bool), StackStage(usize,bool,u8,usize), StackFrame(&'static str,bool), Duration(i64,i32), CompletedFuture(Option<usize>), AtomicRef(Option<usize>), AtomicLong(i64), AtomicInteger(i32), ReentrantLock(i32), ReadWriteLock(i32,i32,Option<usize>,Option<usize>), ReadLock(usize), WriteLock(usize), CurrentProcess, CurrentThread(bool,usize), RuntimeSingleton, RuntimePermission(Option<usize>), WeakLoader(Option<usize>), Collector(usize,usize,usize), JoinCollector(Option<usize>,Option<usize>,Option<usize>), Comparing(usize), BaseModule, BootLayer, JfrModule, Lambda(usize,&'static str,Vec<V>), IdentityFunction, IsoInstantFormatter, RootLocale, Path(String,Option<usize>), File(Option<String>,Option<usize>), CrashDateFormatter, Optional(Option<usize>), Pattern(usize,i32), Matcher(usize,usize,Option<(usize,usize,Option<(usize,usize)>)>), Uuid([u8;16]), Date(i64), Zoned(i64,i32), Instant(i64,i32), ResourceStream(&'static [u8],usize,bool), ByteInput(Option<usize>,usize,usize,usize), FileInput(Option<std::fs::File>), FileOutput(Option<std::fs::File>), Uri(usize), Properties(std::collections::HashMap<Vec<u16>,usize>), PropertiesEntries(usize), PropertiesEmptyIter(usize), Utf8Charset, Reader(Option<usize>,Option<Vec<u16>>,usize,bool), Builder(Vec<u16>), Stdout, Stderr, Exception(&'static str,&'static str,Option<usize>), Obj(&'static str,Vec<V>), SharedObj(&'static str,NumericObjectHandle), LocalObj(&'static str,Vec<V>,Option<usize>), Map(Vec<(usize,usize)>,usize,bool), HashMap(Vec<(Option<usize>,Option<usize>)>), IdentityMap(Vec<(Option<usize>,Option<usize>)>), IdentitySet(usize), LinkedMap(Vec<(Option<usize>,Option<usize>)>,i32), LinkedIter(usize,Vec<Option<usize>>,usize,i32), TreeMap(Vec<(usize,Option<usize>)>,i32), TreeEntries(usize), TreeEntry(usize,usize,i32), TreeIter(usize,Vec<usize>,usize,i32,bool), EmptyMap, EnumSet(Vec<usize>), EnumSetIter(Vec<usize>,usize), EmptyList, EmptySet, ImmutableList(Vec<Option<usize>>), EmptyIterator, MapValues(usize), Queue(std::collections::VecDeque<usize>), ConcurrentQueue(std::collections::VecDeque<usize>), Deque(std::collections::VecDeque<usize>), Local(Option<usize>), SuppliedLocal(usize,Option<Option<usize>>), Class(&'static str), List(Vec<Option<usize>>,i32), ArraysList(usize), ArraysListIter(usize,usize), Set(Vec<Option<usize>>,i32), HashSet(Vec<Option<usize>>,i32), KeySet(Vec<Option<usize>>,i32), AppLoader, PlatformLoader, Refs(u8,Vec<Option<usize>>), ProjectRefs(&'static str,Vec<Option<usize>>), SharedRefs(&'static str,NumericArrayHandle), Constructor(&'static str), ReflectMethod(usize), Service(&'static str,&'static [&'static str],usize,Vec<usize>), ServiceIter(usize,usize), LazyStream(usize,bool,Option<usize>,bool), SortedStream(usize,bool,usize), MappedStream(usize,bool,usize), StreamSink(Vec<usize>,usize), ListIter(usize,usize,i32), SetIter(usize,Vec<Option<usize>>,usize,i32), EmptyEnumeration }
 impl Array {
-    fn len(&self)->usize {match self {Self::Z(v)=>v.len(),Self::B(v)=>v.len(),Self::C(v)=>v.len(),Self::S(v)=>v.len(),Self::I(v)=>v.len(),Self::J(v)=>v.len(),Self::F(v)=>v.len(),Self::D(v)=>v.len(),Self::Strings(v)=>v.len(),Self::Refs(_,v)=>v.len(),Self::ProjectRefs(_,v)=>v.len(),_=>panic!("se esperaba array")}}
+    fn len(&self)->usize {match self {Self::Z(v)=>v.len(),Self::B(v)=>v.len(),Self::C(v)=>v.len(),Self::S(v)=>v.len(),Self::I(v)=>v.len(),Self::J(v)=>v.len(),Self::F(v)=>v.len(),Self::D(v)=>v.len(),Self::Strings(v)=>v.len(),Self::Refs(_,v)=>v.len(),Self::ProjectRefs(_,v)=>v.len(),Self::SharedRefs(_,a)=>a.slots.lock().map(|s|s.len()).unwrap_or(0),_=>panic!("se esperaba array")}}
 }
 #[derive(Default)] struct Heap { bridge_owner:std::sync::Arc<()>, arrays:Vec<Array>, elements:usize, fields:Vec<V>, interfaces:&'static [(&'static str,&'static str)], init_states:Vec<u8>, intern:std::collections::HashMap<Vec<u16>,usize>, stdout:Option<usize>, stderr:Option<usize>, properties:Option<std::collections::HashMap<Vec<u16>,usize>>, classes:std::collections::HashMap<&'static str,usize>, simple_names:std::collections::HashMap<&'static str,usize>, monitors:std::collections::HashMap<usize,usize>, app_loader:Option<usize>, platform_loader:Option<usize>, context_loader:Option<Option<usize>>, time_units:[Option<usize>;7], enum_values:std::collections::HashMap<usize,(Option<usize>,i32)>, enum_directories:std::collections::HashMap<&'static str,Vec<(usize,usize)>>, causes:std::collections::HashMap<usize,usize>, suppressed:std::collections::HashMap<usize,Vec<usize>>, map_views:std::collections::HashMap<usize,usize>, booleans:[Option<usize>;2], parents:std::collections::HashMap<&'static str,&'static str>, exception_messages:std::collections::HashMap<usize,Option<usize>>, uri_syntax:std::collections::HashMap<usize,(usize,usize,i32)>, uri_schemes:std::collections::HashMap<usize,usize>, uri_paths:std::collections::HashMap<usize,usize>, stack_option:Option<usize>, default_stack_walker:Option<usize>, duration_zero:Option<usize>, integers:std::collections::HashMap<i32,usize>, longs:std::collections::HashMap<i64,usize>, bytes:std::collections::HashMap<i8,usize>, shorts:std::collections::HashMap<i16,usize>, characters:std::collections::HashMap<u16,usize>, tree_entry_views:std::collections::HashMap<usize,usize>, active_maps:Vec<usize>, identity_function:Option<usize>, iso_instant:Option<usize>, root_locale:Option<usize>, builder_caps:std::collections::HashMap<usize,(i32,bool)>, optional_empty:Option<usize>, utf8_charset:Option<usize>, empty_map:Option<usize>, empty_list:Option<usize>, empty_set:Option<usize>, immutable_empty:Option<usize>, empty_iterator:Option<usize>, current_process:Option<usize>, runtime_singleton:Option<usize>, line_separator:Option<usize>, base_module:Option<usize>, boot_layer:Option<usize>, jfr_module:Option<usize>, lambdas:std::collections::HashMap<usize,usize>, spliterators:std::collections::HashMap<usize,(i64,i32)>, walk_scopes:Vec<bool> }
 fn error(label:&str)->! { eprintln!("{label}");std::process::exit(2) }
@@ -322,7 +322,11 @@ fn array_new(h:&mut Heap, kind:u8, n:i32)->usize {
 fn project_array_new(h:&mut Heap,class:&'static str,n:i32)->usize {
     if n<0 {raise("NegativeArraySizeException","");}let n=n as usize;
     if h.arrays.len()>=10000||h.elements.checked_add(n).map_or(true,|v|v>1_000_000){error("Límite experimental de arrays excedido");}
-    let id=h.arrays.len();h.elements+=n;h.arrays.push(Array::ProjectRefs(class,vec![None;n]));id
+    let id=h.arrays.len();h.elements+=n;h.arrays.push(Array::ProjectRefs(class,vec![None;n]));
+    // Igual que object_new: con sesión instalada el array de proyecto se
+    // comparte al construirse, sin que el harness lo registre a mano.
+    if class.starts_with("net/minecraft/") {publish_new_array(h,id,class);}
+    id
 }
 fn ref_array_copy_of(h:&mut Heap,r:Option<usize>,n:i32)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::Strings(_)|Array::Refs(_,_)|Array::ProjectRefs(_,_)){error("Arrays.copyOf: fuente no es array de referencias");}if n<0{let msg=new_string(h,n.to_string().encode_utf16().collect());let ex=new_exception(h,"NegativeArraySizeException");init_exception(h,Some(ex),"NegativeArraySizeException",Some(msg));throw_ref(h,Some(ex));}let n=n as usize;if h.arrays.len()>=10000||h.elements.checked_add(n).map_or(true,|v|v>1_000_000){error("Arrays.copyOf: límite experimental de arrays excedido");}let a=match &h.arrays[id]{Array::Strings(v)=>{let mut out=v[..v.len().min(n)].to_vec();out.resize(n,None);Array::Strings(out)},Array::Refs(k,v)=>{let mut out=v[..v.len().min(n)].to_vec();out.resize(n,None);Array::Refs(*k,out)},Array::ProjectRefs(c,v)=>{let mut out=v[..v.len().min(n)].to_vec();out.resize(n,None);Array::ProjectRefs(c,out)},_=>unreachable!()};let out=h.arrays.len();h.arrays.push(a);h.elements+=n;out}
 fn ref_array_clone(h:&mut Heap,r:Option<usize>)->usize {
@@ -386,11 +390,11 @@ fn files_write_string(h:&mut Heap,path:Option<usize>,text:Option<usize>,options:
 fn primitive_array_instance(h:&Heap,r:Option<usize>,name:&str)->bool{matches!((name,r.and_then(|id|h.arrays.get(id))),("[F",Some(Array::F(_)))|("[D",Some(Array::D(_)))|("[I",Some(Array::I(_)))|("[J",Some(Array::J(_)))|("[Z",Some(Array::Z(_)))|("[B",Some(Array::B(_)))|("[C",Some(Array::C(_)))|("[S",Some(Array::S(_))))}
 fn charsequence_instance(h:&Heap,r:Option<usize>,interfaces:&[(&str,&str)])->bool{match r.and_then(|id|h.arrays.get(id)){Some(Array::Str(_)|Array::Builder(_))=>true,Some(Array::Obj(_,_)|Array::SharedObj(_,_)|Array::LocalObj(_,_,_)|Array::Exception(_,_,_))=>project_instance(h,r,"java/lang/CharSequence",interfaces),_=>false}}
 fn charsequence_array_instance(h:&Heap,r:Option<usize>)->bool{match r.and_then(|id|h.arrays.get(id)){Some(Array::Strings(_))=>true,Some(Array::ProjectRefs("java/lang/CharSequence",_))=>true,Some(Array::ProjectRefs(actual,_)) if !actual.starts_with("java/")&&!actual.starts_with("javax/")=>error("cast covariante CharSequence[] no verificado"),_=>false}}
-fn project_array_instance(h:&Heap,r:Option<usize>,class:&str)->bool{matches!(r.and_then(|id|h.arrays.get(id)),Some(Array::ProjectRefs(actual,_)) if *actual==class)}
+fn project_array_instance(h:&Heap,r:Option<usize>,class:&str)->bool{matches!(r.and_then(|id|h.arrays.get(id)),Some(Array::ProjectRefs(actual,_)|Array::SharedRefs(actual,_)) if *actual==class)}
 fn array_id(h:&Heap,r:Option<usize>)->usize {let id=r.unwrap_or_else(||raise("NullPointerException",""));if id>=h.arrays.len(){panic!("referencia inválida");}id}
 fn index(i:i32,n:usize)->usize {if i<0 || i as usize>=n {raise("ArrayIndexOutOfBoundsException","");}i as usize}
 fn array_len(h:&Heap,r:Option<usize>)->i32 {h.arrays[array_id(h,r)].len() as i32}
-fn reflect_array_length(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match &h.arrays[id]{Array::Z(_)|Array::B(_)|Array::C(_)|Array::S(_)|Array::I(_)|Array::J(_)|Array::F(_)|Array::D(_)|Array::Strings(_)|Array::Refs(_,_)|Array::ProjectRefs(_,_)=>h.arrays[id].len() as i32,_=>raise("IllegalArgumentException","")}}
+fn reflect_array_length(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match &h.arrays[id]{Array::Z(_)|Array::B(_)|Array::C(_)|Array::S(_)|Array::I(_)|Array::J(_)|Array::F(_)|Array::D(_)|Array::Strings(_)|Array::Refs(_,_)|Array::ProjectRefs(_,_)|Array::SharedRefs(_,_)=>h.arrays[id].len() as i32,_=>raise("IllegalArgumentException","")}}
 // Copia temporal para respetar solapamiento; las referencias incompatibles
 // fallan en el primer elemento, conservando las escrituras anteriores.
 fn array_sort_char(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);match &mut h.arrays[id]{Array::C(v)=>v.sort_unstable(),_=>error("Arrays.sort: char[] concreto no soportado")}}
@@ -404,7 +408,13 @@ fn system_arraycopy(h:&mut Heap,src:Option<usize>,sp:i32,dst:Option<usize>,dp:i3
     let values=(0..n).map(|i|array_load(h,Some(a),sp+i,load)).collect::<Vec<_>>();for (i,v) in values.into_iter().enumerate(){array_store(h,Some(b),dp+i as i32,v,store);}
 }
 fn array_load(h:&Heap,r:Option<usize>,i:i32,op:u8)->V {
-    let a=&h.arrays[array_id(h,r)];let i=index(i,a.len());
+    let a=&h.arrays[array_id(h,r)];
+    if let Array::SharedRefs(_,handle)=a {
+        if op!=0x32{panic!("tipo de array incompatible para carga");}
+        let len=handle.len().unwrap_or_else(|e|error(e));let i=index(i,len);
+        return V::R(handle.read(i).unwrap_or_else(|e|error(e)));
+    }
+    let i=index(i,a.len());
     match (a,op) {
         (Array::I(v),0x2e)=>V::I(v[i]), (Array::J(v),0x2f)=>V::L(v[i]),(Array::F(v),0x30)=>V::F(v[i]),(Array::D(v),0x31)=>V::D(v[i]), (Array::Strings(v),0x32)=>V::R(v[i]), (Array::Refs(_,v),0x32)=>V::R(v[i]),(Array::ProjectRefs(_,v),0x32)=>V::R(v[i]),
         (Array::B(v),0x33)=>V::I(v[i] as i32), (Array::Z(v),0x33)=>V::I(i32::from(v[i])),
@@ -413,7 +423,21 @@ fn array_load(h:&Heap,r:Option<usize>,i:i32,op:u8)->V {
     }
 }
 fn array_store(h:&mut Heap,r:Option<usize>,i:i32,val:V,op:u8) {
-    let id=array_id(h,r);let i=index(i,h.arrays[id].len());
+    let id=array_id(h,r);
+    if matches!(h.arrays[id],Array::SharedRefs(_,_)) {
+        if op!=0x53{panic!("tipo de array incompatible para escritura");}
+        let (len,handle)=match &h.arrays[id]{Array::SharedRefs(_,handle)=>(handle.len().unwrap_or_else(|e|error(e)),handle.clone()),_=>unreachable!()};
+        let i=index(i,len);
+        if let V::R(Some(value_id))=val {
+            let value=h.arrays.get(value_id).unwrap_or_else(||error("referencia inválida"));
+            let compatible=match &h.arrays[id]{Array::SharedRefs(element,_)=>project_instance(h,Some(value_id),element,h.interfaces),_=>unreachable!()};
+            if !compatible {raise("ArrayStoreException","");}
+        }
+        let slot=match val{V::R(x)=>x,_=>panic!("tipo de array incompatible para escritura")};
+        handle.write(i,slot).unwrap_or_else(|e|error(e));
+        return;
+    }
+    let i=index(i,h.arrays[id].len());
     if op==0x53 {if let V::R(Some(value_id))=val {
         let value=h.arrays.get(value_id).expect("referencia inválida");
         let compatible=match &h.arrays[id] {Array::Strings(_)=>matches!(value,Array::Str(_)),Array::Refs(13,_)=>true,Array::Refs(14,_)=>matches!(value,Array::Class(_)),Array::ProjectRefs("java/lang/Integer",_)=>matches!(value,Array::Integer(_)),Array::ProjectRefs("java/lang/Boolean",_)=>matches!(value,Array::Boolean(_)),Array::ProjectRefs("java/lang/Character",_)=>matches!(value,Array::Character(_)),Array::ProjectRefs("java/lang/Long",_)=>matches!(value,Array::Long(_)),Array::ProjectRefs("java/lang/Byte",_)=>matches!(value,Array::Byte(_)),Array::ProjectRefs("java/lang/Float",_)=>matches!(value,Array::Float(_)),Array::ProjectRefs("java/lang/ClassLoader",_)=>matches!(value,Array::AppLoader|Array::PlatformLoader),Array::ProjectRefs("java/lang/CharSequence",_)=>match value{Array::Str(_)|Array::Builder(_)=>true,Array::Obj(_,_)|Array::SharedObj(_,_)|Array::LocalObj(_,_,_)=>error("CharSequence[]: tipo proyecto no verificado"),_=>false},Array::ProjectRefs(class,_)=>project_instance(h,Some(value_id),class,h.interfaces),_=>false};
@@ -878,6 +902,19 @@ impl NumericObjectHandle {
     fn enter_monitor(&self)->Result<NumericMonitorGuard,&'static str>{self.monitor.enter()?;Ok(NumericMonitorGuard{monitor:self.monitor.clone(),not_send:std::marker::PhantomData})}
     fn same_object(&self,other:&Self)->bool{std::sync::Arc::ptr_eq(&self.fields,&other.fields)}
 }
+// A-06: array de referencias de proyecto cuyos elementos se comparten entre el
+// heap numérico y el concurrente. Los elementos siguen siendo índices del heap
+// numérico; el puente los traduce a ObjectId y exige que el destino esté
+// publicado. El array es mutable: escribir un elemento no crea ni copia objetos.
+#[derive(Clone)] struct NumericArrayHandle { slots:std::sync::Arc<std::sync::Mutex<Vec<Option<usize>>>>, monitor:std::sync::Arc<SharedMonitor> }
+impl NumericArrayHandle {
+    fn same_array(&self,other:&Self)->bool {std::sync::Arc::ptr_eq(&self.slots,&other.slots)}
+    fn len(&self)->Result<usize,&'static str>{Ok(self.slots.lock().map_err(|_|"array compartido dañado")?.len())}
+    fn read(&self,index:usize)->Result<Option<usize>,&'static str>{let s=self.slots.lock().map_err(|_|"array compartido dañado")?;s.get(index).copied().ok_or("índice fuera de rango")}
+    fn write(&self,index:usize,value:Option<usize>)->Result<(),&'static str>{let mut s=self.slots.lock().map_err(|_|"array compartido dañado")?;let slot=s.get_mut(index).ok_or("índice fuera de rango")?;*slot=value;Ok(())}
+    fn enter_monitor(&self)->Result<NumericMonitorGuard,&'static str>{self.monitor.enter()?;Ok(NumericMonitorGuard{monitor:self.monitor.clone(),not_send:std::marker::PhantomData})}
+}
+
 fn share_project_object(h:&mut Heap,id:usize)->Result<NumericObjectHandle,&'static str>{
     if h.monitors.get(&id).copied().unwrap_or(0)>0{return Err("monitor monohilo adquirido");}
     let item=h.arrays.get_mut(id).ok_or("referencia inválida")?;
@@ -885,6 +922,15 @@ fn share_project_object(h:&mut Heap,id:usize)->Result<NumericObjectHandle,&'stat
         Array::SharedObj(_,handle)=>Ok(handle.clone()),
         Array::Obj(class,fields)=>{let class=*class;let handle=NumericObjectHandle{fields:std::sync::Arc::new(std::sync::Mutex::new(std::mem::take(fields))),monitor:std::sync::Arc::new(SharedMonitor::default())};*item=Array::SharedObj(class,handle.clone());Ok(handle)},
         _=>Err("solo objetos de proyecto ordinarios"),
+    }
+}
+fn share_project_array(h:&mut Heap,id:usize)->Result<NumericArrayHandle,&'static str>{
+    if h.monitors.get(&id).copied().unwrap_or(0)>0{return Err("monitor monohilo adquirido");}
+    let item=h.arrays.get_mut(id).ok_or("referencia inválida")?;
+    match item {
+        Array::SharedRefs(_,handle)=>Ok(handle.clone()),
+        Array::ProjectRefs(class,slots)=>{let handle=NumericArrayHandle{slots:std::sync::Arc::new(std::sync::Mutex::new(std::mem::take(slots))),monitor:std::sync::Arc::new(SharedMonitor::default())};*item=Array::SharedRefs(*class,handle.clone());Ok(handle)},
+        _=>Err("solo arrays de referencias de proyecto"),
     }
 }
 // Las referencias crudas son índices locales al heap; no se transfieren a otro.
@@ -911,6 +957,12 @@ fn shared_object_reference(h:&mut Heap,owner:&NumericObjectHandle,slot:usize)->R
 pub trait PublishSink: Send + Sync {
     fn admits(&self, class:&'static str) -> bool;
     fn publish(&self, owner:usize, index:usize, class:&'static str, handle:&NumericObjectHandle) -> std::result::Result<(), &'static str>;
+    // A-06: arrays de referencias de proyecto. Por defecto no se admiten, así que
+    // un sink que no los implemente se comporta como antes de este subperfil.
+    fn admits_array(&self, _element:&'static str) -> bool {false}
+    fn publish_array(&self, _owner:usize, _index:usize, _element:&'static str, _handle:&NumericArrayHandle) -> std::result::Result<(), &'static str> {
+        Err("grafo: arrays no admitidos por esta sesión")
+    }
 }
 struct PublishSession { owner:usize, thread:std::thread::ThreadId, _heap:std::sync::Arc<()>, sink:std::sync::Arc<dyn PublishSink> }
 thread_local! { static PUBLISH_SESSION: std::cell::RefCell<Option<PublishSession>> = const { std::cell::RefCell::new(None) }; }
@@ -968,6 +1020,22 @@ fn publish_new_object(h:&mut Heap, id:usize, class:&'static str) {
     if !sink.admits(class) {return;}
     let handle=match share_project_object(h,id) {Ok(handle)=>handle,Err(e)=>error(&format!("publicación: {e}"))};
     if let Err(e)=sink.publish(owner,id,class,&handle) {error(&format!("publicación: {e}"));}
+}
+// Mismo contrato que publish_new_object, para arrays de referencias: sin sesión
+// no se comparte nada; desde otro heap o desde otro hilo el proceso aborta con
+// diagnóstico en vez de publicar en silencio.
+fn publish_new_array(h:&mut Heap,id:usize,element:&'static str) {
+    let pending=PUBLISH_SESSION.with(|session| session.borrow().as_ref().map(|s|(s.owner,s.thread,s.sink.clone())));
+    let Some((owner,thread,sink))=pending else {
+        let heap_owner=std::sync::Arc::as_ptr(&h.bridge_owner) as usize;
+        if publish_active_owner_of(heap_owner).is_some() {error("publicación: hilo distinto al de la sesión");}
+        return;
+    };
+    if std::sync::Arc::as_ptr(&h.bridge_owner) as usize!=owner {error("publicación: otro heap numérico");}
+    if std::thread::current().id()!=thread {error("publicación: hilo distinto al de la sesión");}
+    if !sink.admits_array(element) {return;}
+    let handle=match share_project_array(h,id) {Ok(handle)=>handle,Err(e)=>error(&format!("publicación: {e}"))};
+    if let Err(e)=sink.publish_array(owner,id,element,&handle) {error(&format!("publicación: {e}"));}
 }
 
 // Formas válidas de dup_x1, dup_x2, dup2_x1 y dup2_x2 según categoría JVM.
