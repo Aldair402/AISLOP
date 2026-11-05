@@ -24,6 +24,7 @@ literal y verificable.
 | **B-05** Composición | **Bloqueada por B-04** | prioridad fijada por rutas comprobadas | `submit(Callable)`/`supplyAsync` necesitan la forma de lambda con valor y el modelo de fallos |
 | **B-06** Factory y handler de `Util` | **Bloqueada, con causa medida** | `analysis/b06-util-factory-blockers.md` (bytecode real) | Decisión de logging (aparcada) y `onTermination(Throwable)` → depende de B-04 |
 | **B-07** Interfaz para A | **Entregada + opt-in unificado** | `analysis/b-api-for-a.md`, `rayon_b_api.rs` (6 pruebas de frontera) | A debe aceptar las tres decisiones abiertas de su §6 |
+| **B-09** Referencias mutables | **Subperfil 1 hecho** (acordado en Q-AB-1) | `check-rayon-mutable-refs.py` (84 resultados Java 25), guarda sin opt-in, `relink_under_monitor_keeps_the_chain_whole` (20×4×100) | Nada de B; A debe confirmar el orden campos→monitor en su lado |
 | **B-08** Estrés y regresiones | **Hecha** | `rayon_stress.rs`, 5 pruebas de invariantes con perro guardián | Que C la incorpore a la integral |
 
 ## 2. Qué tiene que hacer C al unificar
@@ -54,7 +55,7 @@ literal y verificable.
 
 | Comando | Resultado |
 |---|---|
-| `cargo test` (5 binarios) | **66 + 32 + 34 + 32 + 33 = 197 pruebas, 0 fallos** |
+| `cargo test` (5 binarios) | **66 + 32 + 34 + 32 + 34 = 198 pruebas, 0 fallos** |
 | Suite focalizada B (15 scripts `.py`, JDK 25) | **15/15 OK** — log `analysis/b03-b08-futures-suite-jdk25.log` |
 | **Integral completa** `bash mc-aot/run-regressions.sh` | **exit 0, 310 etapas**, «Todas las regresiones terminaron correctamente» — `analysis/full-regressions-b-frente-contrato-futures-retry3.log` |
 | `check-futures-contract.py` | exit 0: cada diferencial cita un test de la suite, cada guarda existe literalmente, cada unitaria existe, documento y JSON no divergen |

@@ -12,6 +12,15 @@ use std::path::Path;
 /// `MC_AOT_FUTURES=restricted`; el historico `MC_AOT_RAYON_COMPLETED_FUTURE=1` sigue
 /// valiendo como alias una version. Un valor desconocido se rechaza en vez de
 /// adivinarse, para que una errata no active el perfil por accidente.
+/// Opt-in de referencias mutables (Q-AB-1). Sin el, un campo de referencia no
+/// `final` sigue rechazandose: una referencia compartida y escribible sin reglas
+/// seria semantica inventada. Con el, la escritura pasa por el mutex del heap, el
+/// destino debe estar publicado y ser de la clase esperada, y un campo `final`
+/// sigue sin admitir escrituras fuera del constructor.
+fn mutable_refs_optin() -> bool {
+    std::env::var_os("MC_AOT_RAYON_MUTABLE_REFS").as_deref() == Some(std::ffi::OsStr::new("1"))
+}
+
 fn futures_restricted_optin() -> Result<bool> {
     match std::env::var("MC_AOT_FUTURES") {
         Ok(v) if v == "restricted" => Ok(true),
@@ -102,6 +111,16 @@ impl Builder<'_> {
         if meta.name!=klass || meta.flags&0x10==0 || meta.flags&0x0200!=0 || meta.parent.as_deref()!=Some("java/lang/Object") || !meta.interfaces.is_empty() || meta.methods.iter().any(|m|m.name=="<clinit>") {return Err(format!("concurrent-int: referencia requiere clase final directa sin interfaces ni inicializador: {klass}"));}
         Ok(Some(klass.to_owned()))
     }
+    fn field_is_final(&self, owner: &str, field: &str) -> Result<bool> {
+        let data = class_from_jar(self.jar, owner)?;
+        let meta = metadata::parse(&data)?;
+        meta.fields
+            .iter()
+            .find(|f| f.name == field && f.flags & 8 == 0)
+            .map(|f| f.flags & 0x10 != 0)
+            .ok_or_else(|| format!("concurrent-int: campo de instancia inexistente: {owner}.{field}"))
+    }
+
     fn object_fields(&self, owner: &str) -> Result<Vec<(String, String)>> {
         let data = class_from_jar(self.jar, owner)?;
         let meta = metadata::parse(&data)?;
@@ -171,7 +190,7 @@ impl Builder<'_> {
             let project=self.project_reference(&field.descriptor)?;
             let future=self.rayon && field.descriptor=="Ljava/util/concurrent/CompletableFuture;" && futures_restricted_optin()?;
             if future && field.flags&0x10==0 {return Err(format!("concurrent-int: captura CompletableFuture debe ser final: {owner}.{}",field.name));}
-            if project.is_some() && field.flags&0x10==0 {return Err(format!("concurrent-int: captura de referencia debe ser final: {owner}.{}",field.name));}
+            if project.is_some() && field.flags&0x10==0 && !mutable_refs_optin() {return Err(format!("concurrent-int: captura de referencia debe ser final: {owner}.{}",field.name));}
             if field.descriptor != "I" && project.is_none() && !future && !(tick_task && field.descriptor=="Ljava/lang/Runnable;" && field.flags&0x10!=0)
                 && !(self.rayon
                     && matches!(
@@ -1309,7 +1328,12 @@ impl Builder<'_> {
                     if descriptor != "I" && project.is_none() && !task_ref && !future_ref && !(self.rayon && matches!(descriptor,"Ljava/util/concurrent/ExecutorService;"|"Ljava/util/concurrent/atomic/AtomicInteger;"|"Ljava/lang/String;")) {
                         return Err("concurrent-int: campo de instancia no soportado".into());
                     }
-                    if project.is_some() && op==0xb5 && (owner!=klass || name!="<init>") {return Err("concurrent-int: escritura de captura final fuera del constructor".into());}
+                    if project.is_some() && op==0xb5 && (owner!=klass || name!="<init>") {
+                        let final_field = self.field_is_final(klass, field)?;
+                        if final_field || !mutable_refs_optin() {
+                            return Err("concurrent-int: escritura de captura final fuera del constructor".into());
+                        }
+                    }
                     let fields = self.object_fields(klass)?;
                     let slot = fields.iter().position(|(name,desc)| name==field && desc==descriptor)
                         .ok_or("concurrent-int: campo de instancia inexistente")?;

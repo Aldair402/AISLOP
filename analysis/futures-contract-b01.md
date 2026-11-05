@@ -86,7 +86,8 @@ Los oráculos corren 40 rondas porque la semántica de hilos y de handler no es 
 | `interrupción` | 2 | — | — | — | 2 | — |
 | `estrés` | 4 | — | — | 4 | — | — |
 | `frontera A` | 6 | — | — | 6 | — | — |
-| **Total** | **83** | **23** | **20** | **21** | **11** | **8** |
+| `referencias mutables` | 3 | 1 | 1 | 1 | — | — |
+| **Total** | **86** | **24** | **21** | **22** | **11** | **8** |
 
 ## 6. Detalle de los casos
 
@@ -240,6 +241,21 @@ No amplía el perfil: fija cómo A debe usarlo.
 | `api.publication-to-worker` | Objeto publicado visible y con identidad en la tarea | `pending_future_published_to_a_worker_is_visible` |
 | `api.foreign-heap-ids` | Referencias de otro heap rechazadas | `foreign_heap_references_are_rejected` |
 
+### 6.9 Referencias mutables en el backend concurrente (B-09)
+
+Acordado con A en `Q-AB-1`. El opt-in es `MC_AOT_RAYON_MUTABLE_REFS=1`; sin él la traducción se rechaza, y un
+campo `final` sigue sin admitir escrituras fuera del constructor. La escritura pasa por el mutex del heap y el
+destino debe estar publicado y ser de la clase esperada.
+
+| id | Semántica Java | Estado | Evidencia | Tarea |
+|---|---|---|---|---|
+| `mutable.ref-nonfinal` | Campo de referencia no `final` escrito fuera del constructor y leído después | diferencial | `check-rayon-mutable-refs.py` (28 valores por fixture) | B-09 |
+| `mutable.ref-requires-optin` | Sin declaración explícita no hay referencias compartidas escribibles | guarda: `concurrent-int: captura de referencia debe ser final` | `check-rayon-mutable-refs.py` | B-09 |
+| `mutable.ref-relink-stress` | Reenlazar bajo monitor no pierde nodos ni crea ciclos | unitaria `relink_under_monitor_keeps_the_chain_whole` | `mc-aot/tests/rayon_stress.rs` | B-09 |
+
+**Diferencia declarada:** lo que se garantiza es que la escritura es atómica bajo el mutex del heap y que los
+invariantes probados se cumplen; **no** que se reproduzca el *happens-before* del modelo de memoria de Java.
+
 ### 6.5 Composición (lo que pide Minecraft y aún no existe)
 
 | id | Semántica Java | Estado | Tarea |
@@ -315,6 +331,7 @@ Estas son las consecuencias operativas del contrato; no sustituyen los criterios
 - [x] Cada afirmación del contrato verificable por máquina (`check-futures-contract.py`, exit 0).
 - [x] Guardas citadas literalmente desde `mc-aot/src`.
 - [x] Huecos declarados, con tarea responsable y acción.
+- [x] **B-09 entregada:** referencias mutables con opt-in, 84 resultados contra Java 25, guarda sin opt-in y estrés de reenlazado.
 - [x] **Caso de cancelación colapsado (Q-BC-8):** un solo `future.cancel-pending` con la medición de las dos banderas.
 - [x] **83 casos con tercer oráculo:** cancelación de pendiente medida en `CompletableFutureCancelOracle.java` (40 rondas por bandera).
 - [x] **B-07 entregada:** interfaz para A en `analysis/b-api-for-a.md` con seis pruebas de frontera.

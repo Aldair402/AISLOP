@@ -278,3 +278,81 @@ fn pending_future_completion_race_has_single_winner() {
         },
     );
 }
+
+/// B-09: reenlazado de una cadena de referencias bajo monitor desde varios workers.
+/// Invariantes: ningún nodo se pierde ni se duplica, cada valor sigue intacto y la
+/// cadena recorrida desde la cabeza alcanza exactamente todos los nodos (sin ciclos).
+/// No se compara orden de escritura, solo el resultado final.
+#[test]
+fn relink_under_monitor_keeps_the_chain_whole() {
+    con_guardián(
+        "relink_under_monitor_keeps_the_chain_whole",
+        Duration::from_secs(120),
+        || {
+            const NODOS: usize = 64;
+            for ronda in 0..20 {
+                let heap = SharedHeap::default();
+                let nodos: Vec<ObjectId> = (0..NODOS)
+                    .map(|i| {
+                        heap.allocate(vec![Value::Int(i as i32), Value::Ref(None)])
+                            .unwrap()
+                    })
+                    .collect();
+                for par in nodos.windows(2) {
+                    heap.write(par[0], 1, Value::Ref(Some(par[1]))).unwrap();
+                }
+                let pool = WorkerPool::new(4).unwrap();
+                let puerta = Arc::new(Barrier::new(5));
+                for hilo in 0..4usize {
+                    let (h, g, ns) = (heap.clone(), Arc::clone(&puerta), nodos.clone());
+                    pool.execute(move || {
+                        g.wait();
+                        for intento in 0..100usize {
+                            let indice = (hilo * 16 + intento) % ns.len();
+                            // Regla acordada con A: monitor del objeto y, dentro, la
+                            // operacion del heap (su mutex es hoja). Nunca al reves.
+                            let guardia = h.enter(ns[indice]).unwrap();
+                            if let Ok(Value::Ref(Some(siguiente))) = h.read(ns[indice], 1) {
+                                let destino = ns[(indice + 1) % ns.len()];
+                                h.write(ns[indice], 1, Value::Ref(Some(destino))).unwrap();
+                                std::hint::black_box(siguiente);
+                            }
+                            drop(guardia);
+                        }
+                    })
+                    .unwrap();
+                }
+                puerta.wait();
+                assert_eq!(pool.shutdown(), Ok(0), "ronda {ronda}");
+                for (i, nodo) in nodos.iter().enumerate() {
+                    assert_eq!(
+                        heap.read(*nodo, 0),
+                        Ok(Value::Int(i as i32)),
+                        "ronda {ronda}: valor del nodo {i} alterado"
+                    );
+                    assert!(
+                        matches!(heap.read(*nodo, 1), Ok(Value::Ref(_))),
+                        "ronda {ronda}: el campo de referencia quedo en un valor inesperado"
+                    );
+                }
+                let mut recorridos = 0usize;
+                let mut actual = Some(nodos[0]);
+                while let Some(id) = actual {
+                    recorridos += 1;
+                    assert!(
+                        recorridos <= NODOS,
+                        "ronda {ronda}: la cadena tiene un ciclo"
+                    );
+                    actual = match heap.read(id, 1).unwrap() {
+                        Value::Ref(siguiente) => siguiente,
+                        otro => panic!("ronda {ronda}: campo de referencia no valido: {otro:?}"),
+                    };
+                }
+                assert_eq!(
+                    recorridos, NODOS,
+                    "ronda {ronda}: la cadena alcanza {recorridos} de {NODOS} nodos"
+                );
+            }
+        },
+    );
+}

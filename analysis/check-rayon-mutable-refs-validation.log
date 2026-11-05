@@ -1,0 +1,1 @@
+OK: 84 resultados Java 25/Rayon con campo de referencia no final escrito fuera del constructor bajo `MC_AOT_RAYON_MUTABLE_REFS=1`, mas el control con campo final y dos guardas (sin opt-in de referencias mutables se rechaza con "captura de referencia debe ser final"; sin referencias de proyecto no hay traduccion); sin reclamo de modelo de memoria, solo valores e invariantes

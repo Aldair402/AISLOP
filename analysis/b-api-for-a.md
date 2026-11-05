@@ -64,6 +64,27 @@ Reglas que A debe respetar:
 5. **Publicación antes de completar**: un futuro pendiente puede publicarse en un campo final y completarse
    después (`pending_future_published_to_a_worker_is_visible`). Es el caso que A-06 necesita.
 
+### 2.3 Referencias mutables (B-09, acordado en Q-AB-1)
+
+A partir de B-09 el backend concurrente admite **campos de referencia no `final`** cuando se declara
+`MC_AOT_RAYON_MUTABLE_REFS=1`. Reglas, que son el contrato con A:
+
+1. **Escritura por el mutex del heap.** `heap.write` es la única vía; nunca una escritura directa desde un worker ni
+   con el monitor retenido alrededor de la publicación.
+2. **Orden de adquisición:** monitor del objeto primero, operación del heap después (su mutex es hoja). El inverso no
+   existe en el código generado y no debe introducirse.
+3. **Destino comprobado:** el objeto destino debe estar publicado y ser de la clase declarada por el campo; `null` se
+   admite como en Java. Un destino de otra clase aborta con diagnóstico en vez de escribirse.
+4. **`final` sigue siendo `final`:** un campo de referencia `final` no admite escrituras fuera del constructor, con o
+   sin opt-in.
+5. **Sin opt-in no hay perfil:** la traducción se rechaza con
+   `concurrent-int: captura de referencia debe ser final`, para que una referencia compartida escribible nunca aparezca
+   por accidente.
+
+**Diferencia declarada, no equivalencia:** se garantiza que la escritura es atómica bajo el mutex y que los
+invariantes probados se cumplen (20 rondas × 4 workers × 100 reenlaces sobre 64 nodos, sin nodos perdidos ni ciclos).
+No se garantiza el *happens-before* del modelo de memoria de Java.
+
 ## 3. Clases y operaciones admitidas hoy
 
 `java/util/concurrent/ForkJoinPool` (constructor de 1 y de 4 argumentos con handler `null`), `ForkJoinTask`
@@ -81,6 +102,7 @@ Fuera del perfil: subclases y jerarquías, handlers no nulos, factories Java no 
 
 | Variable | Efecto | Nota para A |
 |---|---|---|
+| `MC_AOT_RAYON_MUTABLE_REFS=1` | Admite campos de referencia no `final` (B-09) | Sin él se mantiene el rechazo; ver §2.3 |
 | `MC_AOT_FUTURES=restricted` | Habilita el perfil de futuros (completado y pendiente normal) | Nombre canónico desde Q-AB-2; `off` lo apaga y un valor ajeno se rechaza |
 | `MC_AOT_RAYON_COMPLETED_FUTURE=1` | Alias histórico del anterior | Una versión; sin ninguno de los dos el programa **no se genera** |
 | `MC_AOT_NUMERIC_COMPLETED_FUTURE=1` | El mismo concepto en el backend numérico | Dos interruptores para lo mismo: A y B deben unificarlo al integrar |

@@ -1121,6 +1121,45 @@
       ],
       "owner": "B-07",
       "note": "Nombre canonico MC_AOT_FUTURES=restricted (off lo apaga) con el historico MC_AOT_RAYON_COMPLETED_FUTURE=1 como alias una version; un valor ajeno como completed-only se rechaza, que es justo el motivo de no usar ese nombre: desde B-03 el perfil ya no es solo completado. Acuerdo Q-AB-2 de analysis/discussion/threads/a-b.md."
+    },
+    {
+      "id": "mutable.ref-nonfinal",
+      "operation": "referencias mutables",
+      "status": "differential",
+      "java_semantics": "Un campo de referencia no final puede escribirse fuera del constructor y leerse después; el valor observado es el último escrito.",
+      "tests": [
+        "mc-aot/tests/check-rayon-mutable-refs.py"
+      ],
+      "logs": [
+        "analysis/check-rayon-mutable-refs-validation.log"
+      ],
+      "owner": "B-09",
+      "note": "28 valores por fixture contra Java 25, con control de campo final que no cambia con el opt-in. Escritura por el mutex del heap; no se compara orden."
+    },
+    {
+      "id": "mutable.ref-requires-optin",
+      "operation": "referencias mutables",
+      "status": "guard",
+      "java_semantics": "Sin declaracion explicita, el perfil no admite referencias compartidas escribibles.",
+      "guard_message": "concurrent-int: captura de referencia debe ser final",
+      "tests": [
+        "mc-aot/tests/check-rayon-mutable-refs.py"
+      ],
+      "logs": [
+        "analysis/check-rayon-mutable-refs-validation.log"
+      ],
+      "owner": "B-09",
+      "note": "`MC_AOT_RAYON_MUTABLE_REFS=1` es obligatorio; sin el, la traduccion se rechaza antes de generar binario."
+    },
+    {
+      "id": "mutable.ref-relink-stress",
+      "operation": "referencias mutables",
+      "status": "unit",
+      "java_semantics": "Reenlazar bajo monitor desde varios workers no pierde ni duplica nodos y no crea ciclos.",
+      "unit_test": "relink_under_monitor_keeps_the_chain_whole",
+      "src": "mc-aot/tests/rayon_stress.rs",
+      "owner": "B-09",
+      "note": "20 rondas x 4 workers x 100 reenlaces sobre 64 nodos; invariantes exactos, monitor fuera y mutex del heap dentro."
     }
   ],
   "gaps": [
