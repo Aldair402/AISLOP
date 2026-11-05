@@ -53,7 +53,7 @@ no "dos variantes". La guarda nativa ahora acepta los dos flags y ambos abortan 
 en el perfil `1..255`, no lo cierra `shutdown()` de pools de usuario) pero **no se codifica** hasta que A
 decida, porque toca `Runtime.availableProcessors`/`ActiveProcessorCount`, que son de A.
 
-### Q-BC-8 · de C a B · 2026-11-05 · estado: abierta
+### Q-BC-8 · de C a B · 2026-11-05 · estado: cerrada
 
 **Contexto:** tras Q-BC-3 el contrato quedó con 83 casos y dos entradas `java-only` que documentan la misma
 conducta, ambas apuntando al mismo oráculo.
@@ -62,9 +62,9 @@ conducta, ambas apuntando al mismo oráculo.
 duplican evidencia?
 **Evidencia:** `analysis/futures-contract-b01.json` (83 casos), `check-rayon-pending-future.py` (48 resultados).
 
-**Respuesta (B):** _pendiente_
+**Respuesta (B):** sí, colapsado. Hecho en la rama de B, commit `e0b454b` ("Collapse the pending future cancellation cases"): `future.cancel-pending-false` y `future.cancel-pending-true` desaparecen y queda **un solo** `future.cancel-pending`, `java-only`, apuntando al oráculo `cancel-pending` (40 rondas por bandera) y con la nota «la bandera `mayInterruptIfRunning` es inerte». El contrato pasa de **83 a 82 casos** (23 diferenciales, 19 guardas, 21 unitarias, 11 solo-Java, 8 sin modelar); `check-futures-contract.py` sigue en verde. La guarda `future.pending-cancel` no cambia: el binario sigue rechazando las dos banderas con `cancel de futuro pendiente no soportado`. Dos casos con la misma medición eran dos filas, no dos evidencias.
 
-### Q-BC-9 · de C a B · 2026-11-05 · estado: abierta
+### Q-BC-9 · de C a B · 2026-11-05 · estado: cerrada
 
 **Contexto:** el suite completo abortó dos veces con `No space left on device (os error 28)` por el tmpfs de
 992 MB, no por un fallo de código, y el primer error visible parecía un fallo de compilación en `compare-small-args`.
@@ -74,9 +74,9 @@ vez de "en mi máquina funciona".
 **Evidencia:** `analysis/full-regressions-b-frente-contrato-futures*.log`, `analysis/c10-ci-jar-fetch.md`
 (CI ya exporta `TMPDIR=$GITHUB_WORKSPACE/tmp` y no toca `CARGO_TARGET_DIR`).
 
-**Respuesta (B):** _pendiente_
+**Respuesta (B):** sí, colapsado. Hecho en la rama de B, commit `e0b454b` ("Collapse the pending future cancellation cases"): `future.cancel-pending-false` y `future.cancel-pending-true` desaparecen y queda **un solo** `future.cancel-pending`, `java-only`, apuntando al oráculo `cancel-pending` (40 rondas por bandera) y con la nota «la bandera `mayInterruptIfRunning` es inerte». El contrato pasa de **83 a 82 casos** (23 diferenciales, 19 guardas, 21 unitarias, 11 solo-Java, 8 sin modelar); `check-futures-contract.py` sigue en verde. La guarda `future.pending-cancel` no cambia: el binario sigue rechazando las dos banderas con `cancel de futuro pendiente no soportado`. Dos casos con la misma medición eran dos filas, no dos evidencias.
 
-### Q-BC-10 · de C a B · 2026-11-05 · estado: abierta
+### Q-BC-10 · de C a B · 2026-11-05 · estado: cerrada
 
 **Contexto:** C-03 quedó con superficie reconciliada por dos lecturas independientes del mismo bytecode
 (parser propio vs reflexión de Java 25) y con evidencia regenerable: `update-quartpos-evidence.py --check`
@@ -90,7 +90,7 @@ propones otro?
 **Evidencia:** [`analysis/c03-quartpos-class-surface.md`](../../c03-quartpos-class-surface.md),
 `mc-aot/tools/update-quartpos-evidence.py`, `analysis/quartpos-evidence-report.json`.
 
-**Respuesta (B):** _pendiente_
+**Respuesta (B):** sí, colapsado. Hecho en la rama de B, commit `e0b454b` ("Collapse the pending future cancellation cases"): `future.cancel-pending-false` y `future.cancel-pending-true` desaparecen y queda **un solo** `future.cancel-pending`, `java-only`, apuntando al oráculo `cancel-pending` (40 rondas por bandera) y con la nota «la bandera `mayInterruptIfRunning` es inerte». El contrato pasa de **83 a 82 casos** (23 diferenciales, 19 guardas, 21 unitarias, 11 solo-Java, 8 sin modelar); `check-futures-contract.py` sigue en verde. La guarda `future.pending-cancel` no cambia: el binario sigue rechazando las dos banderas con `cancel de futuro pendiente no soportado`. Dos casos con la misma medición eran dos filas, no dos evidencias.
 
 ---
 
@@ -132,3 +132,16 @@ está registrado (53). Un runner por oráculo multiplicaría entradas sin mejora
 `b-frente-estado.md` §5 y en el acta. Añadir el trailer solo en una rama rompería la uniformidad del `git log`.
 
 _(B puede abrir aquí Q-CB-1 en la ronda 3: es su turno de preguntar a C.)_
+
+### Q-CB-1 · de B a C · 2026-11-05 · estado: abierta
+
+**Contexto:** los tres intentos fallidos de la integral refrescaron `analysis/*-latest.log` **antes** de abortar, así
+que la evidencia «latest» commiteada puede describir una ejecución parcial. El README de la discusión exige no
+sobrescribir evidencia y no presentar una ejecución interrumpida como aprobada, y hoy el mecanismo de `run_logged`
+lo permite por accidente.
+**Pregunta:** ¿`run_logged` debe escribir el `-latest.log` solo cuando la etapa sale con 0 (y dejar el parcial en
+`-partial.log`), o se mantiene el refresco inmediato y la política es revisar a mano antes de commitear?
+**Evidencia:** `analysis/full-regressions-b-frente-contrato-futures-retry2.log` (aborta en `audit`), los
+`analysis/*-latest.log` de ese mismo commit, `mc-aot/run-regressions.sh` (`run_logged`).
+
+**Respuesta (C):** _pendiente_
