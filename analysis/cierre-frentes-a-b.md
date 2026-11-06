@@ -37,8 +37,8 @@ real del traductor.
 
 | Tarea | ¿Qué hay de verdad? | ¿Cerrable hoy? | Qué falta exactamente |
 |---|---|---|---|
-| **A-01** Contrato de integración | `analysis/a01-contrato-integracion-propuesta.md` con identidad, propiedad, publicación y límites; §4 admite `final` nullable; §7 dice que la matriz no lleva estado | **Sí, como contrato v1** | Falta la firma de B sobre ownership/cierre (B-07). El contrato **no** puede llamarse «unión de heaps»: describe dos heaps enlazados por el puente, no uno |
-| **A-02** Generación/verificación de layouts | `numeric_bridge_layout.py` + `check-numeric-bridge-layout.py` (25 rechazos) + opt-in de mutable refs | **Parcial: no** | El validador es estructural; **0/687** clases vanilla pasan. Sin parseo de classfile real, ningún layout es de Minecraft |
+| **A-01** Contrato de integración | `analysis/a01-contrato-integracion-propuesta.md` con identidad, propiedad, publicación y límites; §4 admite `final` nullable; §7 dice que la matriz no lleva estado | **No — falta la revisión de B** | Su «Termina cuando» exige revisión de **A y B** con alias, heap ajeno, sesión cerrada, ciclos y orden de locks. El documento los enumera; falta la firma de B (B-07). El contrato tampoco puede llamarse «unión de heaps»: describe dos heaps enlazados por el puente |
+| **A-02** Generación/verificación de layouts | `numeric_bridge_layout.py` + `check-numeric-bridge-layout.py`: acepta bytecode válido y rechaza 25 alteraciones (clase no final, interfaces, superclase, estáticos, inicializador, `int` final, `volatile`, los ocho descriptores equivocados, arrays, `String`, destino inválido, hash de JAR, clase ausente, JAR duplicado, multi-release) + opt-in de `MutRef` | **Sí, cerrada** | Criterio literal cumplido. **Límite de fase 2:** el validador es estructural y ninguna clase vanilla cae en el perfil (0/687); eso es alcance, no criterio |
 | **A-03** Identidad y publicación automática | `object_new` publica al construir con `PublishSink`, guarda en `Drop`, aborto en otro hilo/heap, sesiones por heap | **Sí, como subperfil** | Solo objetos **creados después** de instalar la sesión, solo clases con layout del harness; sin estáticos, `<clinit>` compartido, arrays automáticos ni unión de programas |
 | **A-04** Referencias y mutación | `MutRef` opt-in (`check-numeric-mutable-refs.py`, 20 rondas) + **arrays de referencias** (`check-numeric-shared-arrays.py`, diferencial Java 25) | **Sí, como subperfil** | Sin ciclos cerrados con alias publicado, sin subtipos, sin `String`, sin arrays de arrays ni primitivos compartidos |
 | **A-05** Monitores e inicialización | `check-numeric-shared-monitors.py` (monitor reentrante compartido entre bytecode numérico y tareas Rayon) | **Parcial** | Falta la **política común de estáticos e inicialización perezosa** entre los dos heaps: hoy el `<clinit>` es monohilo y no se comparte |
@@ -46,25 +46,26 @@ real del traductor.
 | **A-07** Ruta real a `Util.makeExecutor` | — | **No** | Depende de A-06 y de B-02/B-05/B-06 (fábrica, handler, composición). `Util.makeExecutor` construye el pool desde bytecode real |
 | **A-08** Repetir probe de `Main` | último intento registrado: bloqueo en `new ForkJoinPool` | **No** | Depende de A-07; sin eso el probe vuelve a morir en el mismo `new` |
 
-**Conclusión A:** se cierran hoy **A-01 (contrato v1), A-03 y A-04 como subperfiles con límites**. A-02 queda
-abierta por el 0/687, A-05 por los estáticos y A-06/A-07/A-08 porque son la cadena que lleva a `Main`.
+**Conclusión A:** se cierran hoy **A-02 y los subperfiles A-03b y A-04b**. A-01 espera la revisión de B; A-03 y A-04
+siguen abiertas pese a tener subperfiles cerrados; A-05 espera la política de estáticos; A-06/A-07/A-08 son la cadena
+que lleva a `Main`.
 
 ## 4. Frente B — ForkJoinPool, workers y futures
 
 | Tarea | ¿Qué hay de verdad? | ¿Cerrable hoy? | Qué falta exactamente |
 |---|---|---|---|
-| **B-01** Oráculos → contrato comprobable | `analysis/futures-contract-b01.md` (23 diferenciales, 19 guardas, 12 java-only, 21 unitarias, 8 no soportados, 7 huecos) y `check-futures-contract.py` que exige que cada guarda exista literalmente en `mc-aot/src` | **Sí** | Nada: el contrato es comprobable y falla si se rompe (así detectó mi cambio de mensaje del opt-in) |
-| **B-02** Lifecycle del pool | `executor_runtime.rs` + 33 unitarias (fábrica, inicio/terminación, rechazo tras cierre, `shutdown` que no espera, pool nunca usado) | **Sí, con límite** | Sin orden global de tareas prometido ni `awaitTermination` con timeout real desde bytecode |
-| **B-03** Futuros pendientes | `mark_pending_future`, `pending_future_completes_once_and_reports_state`, rechazo de objetos ajenos; desde **bytecode** solo `completedFuture` | **No** | `new CompletableFuture()` sigue rechazado al compilar: falta el ciclo de vida pendiente en el traductor, no solo en el heap Rust |
+| **B-01** Oráculos → contrato comprobable | `analysis/futures-contract-b01.md` (23 diferenciales, 19 guardas, 12 java-only, 21 unitarias, 8 no soportados, 7 huecos) y `check-futures-contract.py` que exige que cada guarda exista literalmente en `mc-aot/src` | **No — falta Q-BC-8 y la revisión cruzada** | El verificador es real (detectó mi cambio de mensaje del opt-in), pero la propia tarea deja abierto colapsar `cancel-pending-true/false` (Q-BC-8, de B) y la revisión cruzada |
+| **B-02** Lifecycle del pool | `executor_runtime.rs` + 33 unitarias (fábrica, inicio/terminación, rechazo tras cierre, `shutdown` que no espera, pool nunca usado) y `awaitTermination` con guarda desde worker propio; `shutdownNow`, handler y factory no trivial se **rechazan**, que es lo que pide la tarea | **Criterio cubierto; falta la confirmación de B** | Nada de código: falta que B confirme que no queda cláusula suelta |
+| **B-03** Futuros pendientes | Primer subperfil **integrado** (pendiente → completado normal, publicación en campo final, finalización única) con 48 resultados Java 25 en `check-rayon-pending-future.py` dentro de la integral; `cancel` medido y rechazado con guarda explícita | **Subperfil sí, tarea no** | Faltan fallo, cancelación efectiva y espera como subperfiles con diferencial |
 | **B-04** `get`/`join` y fallos observables | Solo el camino ya completado (`get`/`join`/`getNow`/`isDone`) | **No** | `ExecutionException`/`CompletionException`, cancelación efectiva, timeout e interrupción: ninguno existe. Medido: `cancel(true)`≡`cancel(false)` (Q-BC-3) |
 | **B-05** Envío y composición | Inventario estático: 44 `completedFuture`, 36 `join`, 33 `supplyAsync`, 29 `thenApply` en 97 clases | **No** | Nada de `supplyAsync`, `thenApply`, `thenCompose`, `allOf` ni callbacks con executor |
 | **B-06** Fábrica y handler de `Util` | Caracterización de `Util$2` + `TracyClient.setThreadName`; bloqueo de logger registrado | **No** | La ruta real se detiene en logging/`Exception.toString`; se cerró log4rs como «aparcado», no como resuelto |
 | **B-07** Interfaz para A | `analysis/b-api-for-a.md` con superficie, propiedad, locks, fallos y 6 pruebas de frontera (`rayon_b_api.rs`) | **Parcial** | Tres decisiones siguen abiertas: `Throwable`, fuente del número de procesadores para `commonPool()`, y el opt-in unificado (mitad de A hecha, falta la de B → `Q-AB-2`) |
 | **B-08** Estrés y regresiones | `rayon_stress.rs` con invariantes y timeouts; forma parte de la integral | **Sí** | Nada |
 
-**Conclusión B:** se cierran hoy **B-01, B-02 (con límite), B-08**. B-07 queda a una decisión. B-03/B-04/B-05 son
-el verdadero trabajo pendiente del frente: futuros pendientes, composición y excepciones son *capacidades*, no
-pruebas que falten.
+**Conclusión B:** se cierra hoy **B-08**; **B-02** cumple criterio y espera la confirmación de B; **B-01** espera una
+decisión suya (Q-BC-8). B-03 tiene un subperfil integrado. B-04/B-05 son el verdadero trabajo pendiente del frente:
+excepciones y composición son *capacidades*, no pruebas que falten.
 
 ## 5. Lo que no se puede cerrar con el diseño actual (y no es cuestión de tiempo)
 
@@ -86,18 +87,20 @@ pruebas que falten.
 
 | Se cierra | Con esta evidencia |
 |---|---|
-| A-01 contrato v1 | `analysis/a01-contrato-integracion-propuesta.md` + firma pendiente de B (no bloquea el cierre del documento) |
-| A-03 publicación automática (subperfil) | `check-numeric-auto-publish.py` (20 rondas, sesiones por heap, abortos) |
-| A-04 mutación (subperfil) | `check-numeric-mutable-refs.py` + `check-numeric-shared-arrays.py` |
-| A-05 discusión ronda 2 | `analysis/discussion/STATUS.md`, `threads/a-c.md`, `analysis/a05-round2.md` |
-| B-01 contrato | `analysis/futures-contract-b01.md` + `check-futures-contract.py` |
-| B-02 lifecycle (con límite) | `executor_runtime` 33 unitarias |
+| A-02 layouts | `check-numeric-bridge-layout.py` (25 rechazos + opt-in `MutRef`), con el 0/687 declarado como fase 2 |
+| *(subperfil)* A-03 publicación automática | `check-numeric-auto-publish.py` (20 rondas, sesiones por heap, abortos) — la **tarea** A-03 sigue abierta |
+| *(subperfil)* A-04 referencias mutables | `check-numeric-mutable-refs.py` — la **tarea** A-04 sigue abierta |
+| A-03b discusión ronda 2 | `analysis/discussion/STATUS.md`, `threads/a-c.md`, `analysis/a05-round2.md` |
+| A-04b arrays de referencias | `check-numeric-shared-arrays.py` (diferencial Java 25 + cinco guardas) |
 | B-08 estrés | `rayon_stress.rs` |
 
 **Fase 2 — queda abierta, con dueño y dependencia**:
 
 | Abierta | Depende de | Se cierra cuando |
 |---|---|---|
+| A-01 contrato | revisión de B | B revisa alias, heap ajeno, sesión cerrada, ciclos y orden de locks (B-07) |
+| B-01 contrato de futuros | decisión de B | se colapsa `cancel-pending-true/false` (Q-BC-8) y hay revisión cruzada |
+| B-02 lifecycle | confirmación de B | B confirma que no queda cláusula suelta |
 | A-02 layouts reales | parseo de classfile | ≥1 clase vanilla con layout verificado (hoy 0/687) |
 | A-05 estáticos | unión de programas | estáticos publicados y `<clinit>` con orden entre heaps |
 | A-06 entrada Java integrada | unión de programas | llamada Java real publica y observa tras `join` sin cableado del harness |
