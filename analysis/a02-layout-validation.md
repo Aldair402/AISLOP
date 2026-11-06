@@ -12,7 +12,7 @@
 
 - `analysis/a02-layout-guards.log`: OK, `javac` 25.0.5; no usa el JAR oficial.
 - `analysis/a02-generated-graph.log` y `analysis/a02-generated-graph-ticktask.log`: 20 rondas Java/Rust, 23 pruebas del crate concatenado, cuatro tareas `ForkJoinPool` en Rayon, `QuartPos` oficial, ejecución sin Java en `PATH`. El registro de objetos, publicación, unión de outputs y scheduling siguen siendo harness manual.
-- `analysis/a02-vanilla-scan.log`: de 687 clases candidatas del índice estático (`final`? filtro previo por superclase/interfaces/campos), **0** aceptadas por el perfil. Es esperado: casi todas tienen estáticos o no son `final`; no existe todavía un objeto vanilla válido para el grafo, y este barrido no certifica nada.
+- ~~`analysis/a02-vanilla-scan.log`: 0 de 687 candidatas~~ **Corregido el 2026-11-06:** ese log tiene una sola línea, no dice de dónde salieron las 687 ni qué cláusula falló, y el número está desactualizado. La medición real sobre las 7.762 clases del JAR oficial, con la ruta del verificador, está en [`a02-vanilla-profile-census.md`](a02-vanilla-profile-census.md): **6 aceptadas** (`WaypointStyleAsset`, `Graph`, `MobEffectUtil`, `LongJumpUtil`, `NoiseRouterData$QuantizedSpaghettiRarity`, `PreparableReloadListener$StateKey`), **ninguna con campos de instancia**, y el censo explica clase por clase qué cláusula bloquea al resto. La explicación «casi todas tienen estáticos» también era falsa: los estáticos bloquean 12 clases; el muro es `final` (5.377) y la superclase (1.527).
 
 ## Regresión
 

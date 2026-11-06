@@ -1,11 +1,4 @@
-   Compiling crossbeam-utils v0.8.23
-   Compiling crossbeam-epoch v0.9.21
-   Compiling crossbeam-deque v0.8.8
-   Compiling rayon-core v1.13.0
-   Compiling either v1.19.0
-   Compiling rayon v1.11.0
-   Compiling mc-aot v0.1.0 (/home/user/minecraft-rust/mc-aot)
-    Finished `release` profile [optimized] target(s) in 14.42s
+    Finished `release` profile [optimized] target(s) in 0.01s
 JAR: 7762 clases; 69821 métodos con código
 Alcance (static int y retornos primitivos pequeños): 202 métodos en 90 clases
 Compilan: 160 métodos en 73 clases

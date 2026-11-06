@@ -12,7 +12,9 @@
    pero **solo en harness opt-in**: no hay unión de los dos programas, ni estáticos publicados, ni `<clinit>`
    compartido, ni GC, ni reflexión.
 2. **Que los layouts salgan de clases reales de Minecraft.** El validador es estructural y el barrido vanilla da
-   **0 de 687** candidatas: ningún layout del puente viene todavía de una clase del JAR oficial.
+   el 0 de 687 estaba desactualizado: hoy el verificador acepta **6 clases del JAR oficial**, aunque
+   **ninguna tiene campos de instancia** (`analysis/a02-vanilla-profile-census.md`). Un layout sin
+   campos no es un layout de Minecraft: es evidencia de que la ruta lee bytes oficiales, nada más.
 3. **Que eso acerque el servidor.** `Main` sigue detenido en `new no soportado: java/util/concurrent/ForkJoinPool`
    y el contador oficial sigue en **0 de 7.762 clases completas** (mitad: 3.881).
 
@@ -101,7 +103,7 @@ excepciones y composición son *capacidades*, no pruebas que falten.
 | A-01 contrato | revisión de B | B revisa alias, heap ajeno, sesión cerrada, ciclos y orden de locks (B-07) |
 | B-01 contrato de futuros | decisión de B | se colapsa `cancel-pending-true/false` (Q-BC-8) y hay revisión cruzada |
 | B-02 lifecycle | confirmación de B | B confirma que no queda cláusula suelta |
-| A-02 layouts reales | parseo de classfile | ≥1 clase vanilla con layout verificado (hoy 0/687) |
+| A-02 layouts reales | ranuras nuevas + mundo cerrado | ≥1 clase vanilla **con campos** (hoy 6 sin campos; techo medido 186 con 375 campos tras cerrar `final`/interfaces/refs) |
 | A-05 estáticos | unión de programas | estáticos publicados y `<clinit>` con orden entre heaps |
 | A-06 entrada Java integrada | unión de programas | llamada Java real publica y observa tras `join` sin cableado del harness |
 | A-07 ruta `Util.makeExecutor` | A-06 + B-02/B-05/B-06 | el constructor real de 4 argumentos se traduce y ejecuta |

@@ -1,0 +1,15 @@
+  plan     6 clases /     0 con campos /     0 campos  perfil actual de `numeric_bridge_layout.verify`
+  plan     9 clases /     0 con campos /     0 campos  + estáticos y `clinit` fuera del criterio de layout
+  plan   291 clases /     1 con campos /     2 campos  + `final` -> tipo cerrado (ninguna subclase en el JAR)
+  plan   470 clases /     5 con campos /    10 campos  + interfaces fuera del criterio de layout
+  plan   651 clases /   186 con campos /   375 campos  + refs de instancia sin cierre (layout del destino bajo demanda)
+censo: 7762 clases, 6 admitidas con grafo cerrado, 5377 bloqueadas por `final`, 1527 por superclase
+  layout aceptado net/minecraft/server/packs/resources/PreparableReloadListener$StateKey (0 campos, sha 82bd0feb73d0)
+  layout aceptado net/minecraft/util/Graph (0 campos, sha e48bbe1f9d34)
+  layout aceptado net/minecraft/world/effect/MobEffectUtil (0 campos, sha b3a7c94c9baa)
+  layout aceptado net/minecraft/world/entity/ai/behavior/LongJumpUtil (0 campos, sha ee67ffd25514)
+  layout aceptado net/minecraft/world/level/levelgen/NoiseRouterData$QuantizedSpaghettiRarity (0 campos, sha acdac5711306)
+  layout aceptado net/minecraft/world/waypoints/WaypointStyleAsset (0 campos, sha ca5ebec038e3)
+parser cruzado: 12 clases reales, campos/métodos/flags idénticos
+controles negativos sobre bytes reales: 5 rechazos
+OK: perfil de layouts medido contra el JAR oficial
