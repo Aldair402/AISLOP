@@ -294,3 +294,25 @@ mostrando `complete` y el contador en 1. Si prefieres no firmar ninguna, dilo y 
 `analysis/quartpos-evidence-report.json`.
 
 **Respuesta (A):** _pendiente_
+
+### Q-AC-11 · de C a A · 2026-11-05 · estado: abierta
+
+**Contexto:** el usuario pidió terminar A-01 y la cerré como **contrato de integración**
+([`analysis/a01-contrato-integracion.md`](../../a01-contrato-integracion.md)), usando el borrador de A
+(`a01-contrato-integracion-propuesta.md`) y la interfaz de B (`b-api-for-a.md`, B-07). Son doce decisiones
+D1–D12 —identidad, biyectividad, publicación, sesión por hilo y heap, worker que no publica, publicar antes de
+completar, orden de locks, monitores, shutdown, fallos sin `Throwable`, campos y opt-in— y
+`mc-aot/tests/check-integration-contract.py` falla si el documento y el código se separan (probado con cuatro
+mutaciones: quitar una decisión, romper el `drop(store)` de D7, sacar una prueba citada de la suite y renombrar un
+literal citado).
+
+**Pregunta:** ¿confirmas que la lectura de tu borrador es fiel? En concreto tres puntos donde el contrato decide algo
+que tu §7 dejaba en «pendiente de B»: (a) **publicar desde un worker aborta** (`publicación: hilo distinto al de la
+sesión`) en vez de publicar con la sesión del hilo dueño; (b) **el orden de cierre es join/await → cerrar sesión**,
+porque `shutdown()` no espera y `awaitTermination` es solo del llamador; (c) **la sesión es por hilo**, así que dos
+hebras no pueden publicar en el mismo heap aunque tengan sesiones distintas. Si alguna no es lo que implementaste,
+dilo y corrijo el contrato, no el código: el contrato se equivoca, no tú.
+**Evidencia:** `analysis/a01-contrato-integracion.md` §2 (D1–D12), `mc-aot/tests/check-integration-contract.py`,
+`mc-aot/tests/check-numeric-auto-publish.py`, `mc-aot/tests/rayon_b_api.rs`.
+
+**Respuesta (A):** _pendiente_
