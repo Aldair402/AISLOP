@@ -1,69 +1,35 @@
     Updating crates.io index
  Downloading crates ...
-<<<<<<< Updated upstream
-  Downloaded arc-swap v1.9.3
-  Downloaded anyhow v1.0.100
-  Downloaded cfg-if v1.0.5
-  Downloaded autocfg v1.5.1
-  Downloaded smallvec v1.16.4
-  Downloaded log4rs v1.4.0
-  Downloaded fnv v1.0.7
-  Downloaded mock_instant v0.6.1
-  Downloaded thread-id v5.1.0
-  Downloaded log v0.4.28
-  Downloaded semver v1.0.28
-  Downloaded chrono v0.4.45
-  Downloaded rustversion v1.0.23
-  Downloaded scopeguard v1.2.0
-  Downloaded thiserror-impl v2.0.21
-  Downloaded lock_api v0.4.14
-  Downloaded quote v1.0.47
-  Downloaded thiserror v2.0.21
   Downloaded parking_lot_core v0.9.12
-  Downloaded iana-time-zone v0.1.65
   Downloaded num-traits v0.2.19
-  Downloaded rustc_version v0.4.1
-  Downloaded unicode-xid v0.2.6
-  Downloaded unicode-segmentation v1.13.3
-  Downloaded derive_more v2.1.1
-  Downloaded proc-macro2 v1.0.107
-  Downloaded log-mdc v0.1.0
-  Downloaded parking_lot v0.12.5
-  Downloaded unicode-ident v1.0.27
-  Downloaded derive_more-impl v2.1.1
-=======
-  Downloaded smallvec v1.16.4
-  Downloaded mock_instant v0.6.1
-  Downloaded lock_api v0.4.14
-  Downloaded thread-id v5.1.0
   Downloaded fnv v1.0.7
-  Downloaded rustc_version v0.4.1
-  Downloaded unicode-xid v0.2.6
   Downloaded cfg-if v1.0.5
-  Downloaded autocfg v1.5.1
-  Downloaded derive_more v2.1.1
-  Downloaded log-mdc v0.1.0
-  Downloaded rustversion v1.0.23
-  Downloaded thiserror v2.0.21
-  Downloaded parking_lot v0.12.5
-  Downloaded quote v1.0.47
-  Downloaded scopeguard v1.2.0
   Downloaded semver v1.0.28
-  Downloaded parking_lot_core v0.9.12
-  Downloaded unicode-ident v1.0.27
-  Downloaded num-traits v0.2.19
-  Downloaded proc-macro2 v1.0.107
-  Downloaded iana-time-zone v0.1.65
-  Downloaded thiserror-impl v2.0.21
-  Downloaded anyhow v1.0.100
-  Downloaded log v0.4.28
-  Downloaded log4rs v1.4.0
+  Downloaded autocfg v1.5.1
   Downloaded arc-swap v1.9.3
+  Downloaded thiserror v2.0.21
+  Downloaded rustc_version v0.4.1
+  Downloaded scopeguard v1.2.0
+  Downloaded log-mdc v0.1.0
   Downloaded unicode-segmentation v1.13.3
+  Downloaded iana-time-zone v0.1.65
+  Downloaded mock_instant v0.6.1
+  Downloaded quote v1.0.47
+  Downloaded rustversion v1.0.23
+  Downloaded anyhow v1.0.100
+  Downloaded lock_api v0.4.14
+  Downloaded smallvec v1.16.4
+  Downloaded thiserror-impl v2.0.21
+  Downloaded derive_more v2.1.1
+  Downloaded unicode-ident v1.0.27
+  Downloaded log v0.4.28
+  Downloaded proc-macro2 v1.0.107
   Downloaded derive_more-impl v2.1.1
+  Downloaded parking_lot v0.12.5
+  Downloaded thread-id v5.1.0
+  Downloaded log4rs v1.4.0
+  Downloaded unicode-xid v0.2.6
   Downloaded chrono v0.4.45
-  Downloaded syn v2.0.119
->>>>>>> Stashed changes
   Downloaded syn v3.0.9
   Downloaded syn v2.0.119
   Downloaded libc v0.2.191
@@ -74,50 +40,32 @@
    Compiling autocfg v1.5.1
    Compiling num-traits v0.2.19
    Compiling parking_lot_core v0.9.12
-<<<<<<< Updated upstream
-   Compiling syn v3.0.9
-   Compiling syn v2.0.119
-=======
    Compiling rustversion v1.0.23
    Compiling syn v2.0.119
    Compiling syn v3.0.9
-   Compiling anyhow v1.0.100
->>>>>>> Stashed changes
-   Compiling cfg-if v1.0.5
-   Compiling unicode-xid v0.2.6
    Compiling scopeguard v1.2.0
-   Compiling smallvec v1.16.4
-<<<<<<< Updated upstream
    Compiling thiserror v2.0.21
-   Compiling lock_api v0.4.14
+   Compiling anyhow v1.0.100
+   Compiling smallvec v1.16.4
+   Compiling unicode-xid v0.2.6
+   Compiling cfg-if v1.0.5
    Compiling derive_more-impl v2.1.1
-=======
-   Compiling derive_more-impl v2.1.1
-   Compiling lock_api v0.4.14
->>>>>>> Stashed changes
    Compiling thiserror-impl v2.0.21
+   Compiling lock_api v0.4.14
    Compiling iana-time-zone v0.1.65
-   Compiling arc-swap v1.9.3
    Compiling chrono v0.4.45
-   Compiling derive_more v2.1.1
+   Compiling arc-swap v1.9.3
    Compiling parking_lot v0.12.5
+   Compiling derive_more v2.1.1
    Compiling thread-id v5.1.0
-   Compiling fnv v1.0.7
-<<<<<<< Updated upstream
-   Compiling log v0.4.28
-=======
->>>>>>> Stashed changes
    Compiling mock_instant v0.6.1
    Compiling unicode-segmentation v1.13.3
    Compiling log v0.4.28
    Compiling log-mdc v0.1.0
+   Compiling fnv v1.0.7
    Compiling log4rs v1.4.0
    Compiling mc-log4rs-prototype v0.1.0 (/home/user/minecraft-rust/mc-aot/log4rs-prototype)
-<<<<<<< Updated upstream
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.62s
-=======
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.44s
->>>>>>> Stashed changes
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.69s
      Running unittests src/lib.rs (mc-aot/log4rs-prototype/target/debug/deps/mc_log4rs_prototype-ebb7943d52145b1f)
 
 running 5 tests

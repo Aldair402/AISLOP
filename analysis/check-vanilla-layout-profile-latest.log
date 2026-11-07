@@ -1,15 +1,34 @@
-  plan     6 clases /     0 con campos /     0 campos  perfil actual de `numeric_bridge_layout.verify`
-  plan     9 clases /     0 con campos /     0 campos  + estáticos y `clinit` fuera del criterio de layout
-  plan   291 clases /     1 con campos /     2 campos  + `final` -> tipo cerrado (ninguna subclase en el JAR)
-  plan   470 clases /     5 con campos /    10 campos  + interfaces fuera del criterio de layout
-  plan   651 clases /   186 con campos /   375 campos  + refs de instancia sin cierre (layout del destino bajo demanda)
-censo: 7762 clases, 6 admitidas con grafo cerrado, 5377 bloqueadas por `final`, 1527 por superclase
-  layout aceptado net/minecraft/server/packs/resources/PreparableReloadListener$StateKey (0 campos, sha 82bd0feb73d0)
-  layout aceptado net/minecraft/util/Graph (0 campos, sha e48bbe1f9d34)
-  layout aceptado net/minecraft/world/effect/MobEffectUtil (0 campos, sha b3a7c94c9baa)
-  layout aceptado net/minecraft/world/entity/ai/behavior/LongJumpUtil (0 campos, sha ee67ffd25514)
-  layout aceptado net/minecraft/world/level/levelgen/NoiseRouterData$QuantizedSpaghettiRarity (0 campos, sha acdac5711306)
-  layout aceptado net/minecraft/world/waypoints/WaypointStyleAsset (0 campos, sha ca5ebec038e3)
+censo: 7762 clases, 2161 describibles, 1114 con campos, 2469 campos de instancia
+  plan  2161 clases /  1114 con campos /  2469 campos  perfil actual (I y referencias finales)
+  plan  2213 clases /  1166 con campos /  2585 campos  + ranuras long
+  plan  2421 clases /  1374 con campos /  3351 campos  + ranuras long float double
+  plan  2611 clases /  1564 con campos /  4048 campos  + ranuras long float double byte boolean char short
+base externa: java.lang.Record declara 0 campos de instancia (reflexión JDK 25)
+  ok net/minecraft/DetectedVersion: super=java/lang/Object propios=0 total=0 cerrada=no-subclasses bloqueos=2
+  ok net/minecraft/advancements/AdvancementHolder: super=java/lang/Record propios=2 total=2 cerrada=final bloqueos=4
+  ok net/minecraft/commands/synchronization/SingletonArgumentInfo: super=java/lang/Object propios=1 total=1 cerrada=no-subclasses bloqueos=2
+  ok net/minecraft/data/worldgen/placement/AquaticPlacements: super=java/lang/Object propios=0 total=0 cerrada=no-subclasses bloqueos=2
+  ok net/minecraft/network/protocol/common/custom/CustomPacketPayload$Type: super=java/lang/Record propios=1 total=1 cerrada=final bloqueos=1
+  ok net/minecraft/server/commands/ExperienceCommand: super=java/lang/Object propios=0 total=0 cerrada=no-subclasses bloqueos=2
+  ok net/minecraft/server/permissions/LevelBasedPermissionSet$2: super=java/lang/Object propios=0 total=0 cerrada=no-subclasses bloqueos=2
+  ok net/minecraft/server/players/SleepStatus: super=java/lang/Object propios=2 total=2 cerrada=no-subclasses bloqueos=0
+  ok net/minecraft/util/valueproviders/UniformInt: super=java/lang/Record propios=2 total=2 cerrada=final bloqueos=3
+  ok net/minecraft/world/entity/ai/behavior/SetEntityLookTargetSometimes$Ticker: super=java/lang/Object propios=2 total=2 cerrada=final bloqueos=0
+  ok net/minecraft/world/entity/animal/chicken/ChickenVariant: super=java/lang/Record propios=3 total=3 cerrada=final bloqueos=5
+  ok net/minecraft/world/item/component/DyedItemColor: super=java/lang/Record propios=1 total=1 cerrada=final bloqueos=3
+  ok net/minecraft/world/level/BlockEventData: super=java/lang/Record propios=4 total=4 cerrada=final bloqueos=1
+  ok net/minecraft/world/level/block/TrapDoorBlock$1: super=java/lang/Object propios=0 total=0 cerrada=no-subclasses bloqueos=2
+  ok net/minecraft/world/level/levelgen/densityfunction/op/UnaryFunction$LogSampler: super=java/lang/Record propios=1 total=1 cerrada=final bloqueos=2
+  ok net/minecraft/world/level/levelgen/structure/BoundingBox: super=java/lang/Object propios=6 total=6 cerrada=no-subclasses bloqueos=2
+  ok net/minecraft/world/level/levelgen/structure/templatesystem/LavaSubmergedBlockProcessor: super=java/lang/Object propios=0 total=0 cerrada=no-subclasses bloqueos=3
+  rechazo net/minecraft/advancements/predicates/TagPredicate: descriptor de campo no soportado: Z
+  rechazo net/minecraft/nbt/ByteArrayTag: descriptor de campo no soportado: [B
+  rechazo net/minecraft/CrashReport: referencia fuera del JAR (sin bytes que describir): net/minecraft/Cras
+  rechazo net/minecraft/advancements/Advancement$Builder: referencia no final: net/minecraft/advancements/Advancement$Builder
+  rechazo net/minecraft/server/ServerFunctionLibrary: campos volatile no soportados: net/minecraft/server/ServerFunctionLibr
+  rechazo net/minecraft/CharPredicate: interfaz/annotation/enum fuera del perfil: net/minecraft/CharPredicate
+  rechazo net/minecraft/IdentifierException: clase de referencia ausente: java/lang/RuntimeException
 parser cruzado: 12 clases reales, campos/métodos/flags idénticos
-controles negativos sobre bytes reales: 5 rechazos
+  subclase real: layout idéntico, etiqueta has-subclasses
+controles negativos sobre bytes reales: 4 rechazos + 1 contrato de subclase
 OK: perfil de layouts medido contra el JAR oficial

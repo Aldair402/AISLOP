@@ -1,7 +1,3 @@
-<<<<<<< Updated upstream
-Note: /var/tmp/mc-url-uri-h47evm0s/UrlUriProbe.java uses or overrides a deprecated API.
-=======
-Note: /var/tmp/mc-url-uri-fy632mmq/UrlUriProbe.java uses or overrides a deprecated API.
->>>>>>> Stashed changes
+Note: /var/tmp/mc-url-uri-kdniu42r/UrlUriProbe.java uses or overrides a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
 OK: 50 casos URL.toURI null frente a Java; URL real rechazada

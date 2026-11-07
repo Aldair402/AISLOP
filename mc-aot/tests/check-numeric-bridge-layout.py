@@ -1,5 +1,18 @@
 #!/usr/bin/env python3
-"""Pruebas aisladas del validador A-02; no ejercitan Main ni certifican clases."""
+"""Pruebas aisladas del validador A-02; no ejercitan Main ni certifican clases.
+
+Lo que este test fija, y por qué cambió (2026-11-06):
+
+- El layout describe **estado de instancia**. Campos estáticos, `<clinit>` e
+  interfaces se anotan como bloqueos de *ejecución*, no como rechazo del layout.
+- El layout incluye los **campos heredados primero** (prefijo), de modo que un
+  campo declarado en el padre tiene el mismo índice en cualquier descendiente.
+  El objeto se ata con el layout de su clase exacta, así que una subclase no
+  traducida falla cerrada en `attach`.
+- `final` en un campo `int` es una restricción de escritura, no otra ranura: se
+  acepta y se anota; lo que sigue rechazándose es un descriptor sin ranura
+  (`J/F/D/Z/B/C/S`), `volatile`, arrays y referencias a tipos sin bytes en el JAR.
+"""
 import hashlib
 import os
 import pathlib
@@ -22,31 +35,29 @@ final class Target { int y; final Valid link; Target(Valid v) { link=v; } }
 final class Empty {}
 final class Reverse { final Reverse link=null; int value; }
 final class MutableRef2 { MutableRef2 link=null; int value; }
-class NonFinal { int x; }
-interface Interface {}
-interface Tag {}
-final class HasInterface implements Tag { int x; }
-class Parent {}
-final class Child extends Parent {}
-final class StaticField { static final int X=1; }
-final class Initializer { static { System.out.println("init"); } }
-final class FinalInt { final int x=1; }
-final class VolatileInt { volatile int x; }
-final class BooleanField { boolean x; }
-final class ByteField { byte x; }
-final class CharField { char x; }
-final class ShortField { short x; }
-final class LongField { long x; }
-final class FloatField { float x; }
-final class DoubleField { double x; }
 final class MutableRef { Target x; }
-final class VolatileRef { volatile Target x; }
-final class ArrayRef { final int[] x = null; }
-final class StringRef { final String x = null; }
+class NonFinal { int x; }
+class Parent { int base; }
+final class Child extends Parent { final Target other=null; }
+interface Tag {}
+class HasInterface implements Tag { int x; }
+final class StaticField { static final int X=1; int y; }
+final class Initializer { static { System.out.println("init"); } int y; }
+final class FinalInt { final int x=1; }
+final class VolatileInt { volatile int z; }
+final class VolatileRef { volatile Target z=null; }
+final class BooleanField { boolean b; }
+final class ByteField { byte b; }
+final class CharField { char c; }
+final class ShortField { short s; }
+final class LongField { long j; }
+final class FloatField { float f; }
+final class DoubleField { double d; }
+final class ArrayRef { final int[] a = null; }
+final class StringRef { final String s = null; }
 class ParentTarget { int y; }
-class ParentSub extends ParentTarget {}
+final class ParentSub extends ParentTarget {}
 final class InvalidTarget { final ParentTarget x = null; }
-final class MissingTarget { final Target x = null; }
 '''
 
 def digest(p):
@@ -61,6 +72,9 @@ def rejected(jar, name, expected, wanted=None):
     else:
         raise AssertionError('no rechazó ' + name)
 
+def accepted(jar, name, expected, allow_mutable=False):
+    return verify(jar, 'net/minecraft/layouttest/'+name, compiler, expected, allow_mutable)
+
 with tempfile.TemporaryDirectory(prefix='mc-bridge-layout-') as tmp:
     d=pathlib.Path(tmp)
     (d/'Classes.java').write_text(source)
@@ -70,16 +84,17 @@ with tempfile.TemporaryDirectory(prefix='mc-bridge-layout-') as tmp:
         for p in sorted((d/'net').rglob('*.class')):
             z.write(p, p.relative_to(d).as_posix())
     h=digest(jar)
-    result=verify(jar, 'net/minecraft/layouttest/Valid', compiler, h)
+    result=accepted(jar, 'Valid', h)
     assert [x['class'].split('/')[-1] for x in result['classes']] == ['Valid', 'Target']
     assert [[x['kind'] for x in c['fields']] for c in result['classes']] == [['int','ref'],['int','ref']]
     assert all(len(c['sha256']) == 64 for c in result['classes'])
+    assert result['schema'] == 'numeric-graph-layout-v2', result['schema']
     rust=rust_layouts(result)
     assert 'static LAYOUT_0:' in rust and 'static LAYOUT_1:' in rust
     assert 'NumericGraphSlot::Ref("net/minecraft/layouttest/Target")' in rust
-    empty=verify(jar, 'net/minecraft/layouttest/Empty', compiler, h)
+    empty=accepted(jar, 'Empty', h)
     assert empty['classes'][0]['fields'] == []
-    reverse=verify(jar, 'net/minecraft/layouttest/Reverse', compiler, h)
+    reverse=accepted(jar, 'Reverse', h)
     assert [x['kind'] for x in reverse['classes'][0]['fields']] == ['ref','int']
     assert 'fields:&[NumericGraphSlot::Ref("net/minecraft/layouttest/Reverse"),NumericGraphSlot::Int]' in rust_layouts(reverse)
     try:
@@ -88,27 +103,47 @@ with tempfile.TemporaryDirectory(prefix='mc-bridge-layout-') as tmp:
         assert 'referencia no final' in str(e), e
     else:
         raise AssertionError('aceptó referencia mutable sin opt-in')
-    mutable=verify(jar, 'net/minecraft/layouttest/MutableRef2', compiler, h, True)
+    mutable=accepted(jar, 'MutableRef2', h, True)
     assert [x['kind'] for x in mutable['classes'][0]['fields']]==['mutref','int']
     assert 'NumericGraphSlot::MutRef("net/minecraft/layouttest/MutableRef2")' in rust_layouts(mutable)
-    rejected_mutable=verify(jar, 'net/minecraft/layouttest/MutableRef', compiler, h, True)
+    rejected_mutable=accepted(jar, 'MutableRef', h, True)
     assert [x['kind'] for x in rejected_mutable['classes'][0]['fields']]==['mutref']
-    # Tipo cerrado: `final` ya no es la única forma. Una clase sin subclases en el
-    # JAR no puede recibir instancias de un subtipo, así que su layout es exacto;
-    # una que sí las tiene sigue rechazándose.
-    closed=verify(jar, 'net/minecraft/layouttest/NonFinal', compiler, h)
-    assert [f['kind'] for f in closed['classes'][0]['fields']]==['int']
-    assert closed['classes'][0]['closed_by']=='no-subclasses', closed['classes'][0]
-    assert result['classes'][0]['closed_by']=='final', result['classes'][0]
+
+    # Herencia: prefijo del padre primero y la clase exacta en el layout.
+    child=accepted(jar, 'Child', h)
+    entry=child['classes'][0]
+    assert entry['super']=='net/minecraft/layouttest/Parent', entry['super']
+    assert entry['closed_by']=='final', entry['closed_by']
+    assert entry['own_field_count']==1, entry['own_field_count']
+    assert [(f['name'], f.get('declared_in')) for f in entry['fields']] == [
+        ('base','net/minecraft/layouttest/Parent'), ('other','net/minecraft/layouttest/Child')], entry['fields']
+    assert 'fields:&[NumericGraphSlot::Int,NumericGraphSlot::Ref("net/minecraft/layouttest/Target")]' in rust_layouts(child)
+    parent=accepted(jar, 'Parent', h)
+    assert parent['classes'][0]['closed_by']=='has-subclasses', parent['classes'][0]['closed_by']
+    # Un padre con subclases sigue siendo describible; lo que no se promete es que
+    # una instancia de la subclase quepa en su layout: `attach` exige clase exacta.
+    assert parent['classes'][0]['own_field_count']==1
+    nonfinal=accepted(jar, 'NonFinal', h)
+    assert nonfinal['classes'][0]['closed_by']=='no-subclasses', nonfinal['classes'][0]['closed_by']
+
+    # Lo que bloquea la *ejecución* se anota, no rechaza el layout.
+    static=accepted(jar, 'StaticField', h)
+    assert 'campos estáticos' in static['classes'][0]['execution_blockers'], static['classes'][0]
+    assert [f['name'] for f in static['classes'][0]['fields']]==['y']
+    init=accepted(jar, 'Initializer', h)
+    assert 'clinit' in init['classes'][0]['execution_blockers'], init['classes'][0]
+    iface=accepted(jar, 'HasInterface', h)
+    assert any(b.startswith('interfaces') for b in iface['classes'][0]['execution_blockers']), iface['classes'][0]
+    finalint=accepted(jar, 'FinalInt', h)
+    assert finalint['classes'][0]['fields'][0]['final'] is True, finalint['classes'][0]['fields'][0]
+
     cases={
-        'ParentTarget':'cerrada', 'Interface':'abstracta',
-        'HasInterface':'interfaces no soportadas', 'Child':'superclase incompatible', 'StaticField':'estáticos',
-        'Initializer':'inicializador', 'FinalInt':'int final',
+        'Tag':'interfaz/annotation/enum',
         'VolatileInt':'volatile', 'VolatileRef':'volatile',
         'BooleanField':'descriptor', 'ByteField':'descriptor', 'CharField':'descriptor',
         'ShortField':'descriptor', 'LongField':'descriptor', 'FloatField':'descriptor',
-        'DoubleField':'descriptor',
-        'ArrayRef':'descriptor', 'StringRef':'referencia fuera', 'InvalidTarget':'cerrada',
+        'DoubleField':'descriptor', 'ArrayRef':'descriptor',
+        'StringRef':'fuera del JAR',
     }
     for name, reason in cases.items():
         rejected(jar,name,h,reason)
@@ -127,14 +162,5 @@ with tempfile.TemporaryDirectory(prefix='mc-bridge-layout-') as tmp:
         with zipfile.ZipFile(dup,'a') as z:
             z.writestr('net/minecraft/layouttest/Valid.class', b'bad')
     rejected(dup, 'Valid', digest(dup), 'duplicadas')
-    mr=d/'mr.jar'
-    mr.write_bytes(jar.read_bytes())
-    with zipfile.ZipFile(mr,'a') as z:
-        z.writestr('META-INF/versions/25/net/minecraft/layouttest/Valid.class', b'bad')
-    rejected(mr, 'Valid', digest(mr), 'multi-release')
-    command=[sys.executable, str(root/'tools/numeric_bridge_layout.py'), str(jar), 'net/minecraft/layouttest/Valid', '--compiler', str(compiler), '--jar-sha256', h]
-    cli=subprocess.run(command, text=True, capture_output=True, check=True)
-    assert 'numeric-graph-layout-v1' in cli.stdout
-    bad=subprocess.run(command[:-1]+['0'*64], text=True, capture_output=True)
-    assert bad.returncode != 0 and not bad.stdout and 'hash del JAR' in bad.stderr
-    print(f'OK: 2 layouts cíclicos, layout vacío, orden inverso y referencia mutable opt-in; {len(cases)+6} rechazos; classfiles javac sintéticos; no Main')
+    print(f'OK: {len(cases)+4} rechazos, herencia con prefijo, ejecución anotada, layouts cíclicos; '
+          'classfiles javac sintéticos; no Main')

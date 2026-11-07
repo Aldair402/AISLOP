@@ -1,10 +1,5 @@
-<<<<<<< Updated upstream
-WARN: overlap 747 classes for batch batch-04-chunks-world pkg net.minecraft.world.level.levelgen (hierarchical, will refine): ['net.minecraft.world.level.levelgen.feature.foliageplacers.SpruceFoliagePlacer', 'net.minecraft.world.level.levelgen.material.rule.package-info']
-WARN: overlap 368 classes for batch batch-05-network-protocol pkg net.minecraft.network.protocol (hierarchical, will refine): ['net.minecraft.network.protocol.login.ClientboundLoginDisconnectPacket', 'net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket']
-=======
-WARN: overlap 747 classes for batch batch-04-chunks-world pkg net.minecraft.world.level.levelgen (hierarchical, will refine): ['net.minecraft.world.level.levelgen.structure.structures.BuriedTreasurePieces$BuriedTreasurePiece', 'net.minecraft.world.level.levelgen.structure.structures.OceanMonumentPieces$FitDoubleXYRoom']
-WARN: overlap 368 classes for batch batch-05-network-protocol pkg net.minecraft.network.protocol (hierarchical, will refine): ['net.minecraft.network.protocol.common.ClientboundDisconnectPacket', 'net.minecraft.network.protocol.game.ClientboundTrackedWaypointPacket']
->>>>>>> Stashed changes
+WARN: overlap 747 classes for batch batch-04-chunks-world pkg net.minecraft.world.level.levelgen (hierarchical, will refine): ['net.minecraft.world.level.levelgen.structure.templatesystem.RuleProcessor', 'net.minecraft.world.level.levelgen.material.condition.BiomeCondition']
+WARN: overlap 368 classes for batch batch-05-network-protocol pkg net.minecraft.network.protocol (hierarchical, will refine): ['net.minecraft.network.protocol.game.ServerboundChangeDifficultyPacket', 'net.minecraft.network.protocol.game.VecDeltaCodec']
 INFO: some classes fall outside declared packages+uncovered — check
 OK: family partition — 6 batches, 5801 classes covered by packages, batch-01-primitives-coords:18, batch-02-collections-serialization:444, batch-03-registries-resources:36, batch-04-chunks-world:747, batch-05-network-protocol:368, batch-06-entities-server:201
   batches: batch-01-primitives-coords:18, batch-02-collections-serialization:444, batch-03-registries-resources:36, batch-04-chunks-world:747, batch-05-network-protocol:368, batch-06-entities-server:201

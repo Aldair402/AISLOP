@@ -12,10 +12,10 @@
    pero **solo en harness opt-in**: no hay unión de los dos programas, ni estáticos publicados, ni `<clinit>`
    compartido, ni GC, ni reflexión.
 2. **Que los layouts salgan de clases reales de Minecraft.** El validador es estructural y el barrido vanilla da
-   el 0 de 687 estaba desactualizado. Con el tipo cerrado por ausencia de subclases (2026-11-06) el
-   verificador acepta **165 clases del JAR oficial** y **una con campos** (`SleepStatus`: dos `int`).
-   Eso ya es un layout de objeto de Minecraft, aunque sin traducir ni ejecutar
-   (`analysis/a02-vanilla-profile-census.md`).
+   el 0 de 687 estaba desactualizado. Tras separar layout de ejecución y admitir herencia por
+   prefijo (2026-11-06), el verificador describe **2.161 clases del JAR oficial**, **1.114 con
+   campos** y **2.469 campos de instancia** (`analysis/a02-vanilla-profile-census.md`). Sigue sin
+   traducirse ni ejecutarse ninguna: un layout es un contrato de campos.
 3. **Que eso acerque el servidor.** `Main` sigue detenido en `new no soportado: java/util/concurrent/ForkJoinPool`
    y el contador oficial sigue en **0 de 7.762 clases completas** (mitad: 3.881).
 
@@ -41,7 +41,7 @@ real del traductor.
 | Tarea | ¿Qué hay de verdad? | ¿Cerrable hoy? | Qué falta exactamente |
 |---|---|---|---|
 | **A-01** Contrato de integración | `analysis/a01-contrato-integracion-propuesta.md` con identidad, propiedad, publicación y límites; §4 admite `final` nullable; §7 dice que la matriz no lleva estado | **No — falta la revisión de B** | Su «Termina cuando» exige revisión de **A y B** con alias, heap ajeno, sesión cerrada, ciclos y orden de locks. El documento los enumera; falta la firma de B (B-07). El contrato tampoco puede llamarse «unión de heaps»: describe dos heaps enlazados por el puente |
-| **A-02** Generación/verificación de layouts | `numeric_bridge_layout.py` + `check-numeric-bridge-layout.py`: acepta bytecode válido y rechaza 25 alteraciones (clase no final, interfaces, superclase, estáticos, inicializador, `int` final, `volatile`, los ocho descriptores equivocados, arrays, `String`, destino inválido, hash de JAR, clase ausente, JAR duplicado, multi-release) + opt-in de `MutRef` | **Sí, cerrada** | Criterio literal cumplido. **Límite de fase 2:** el validador es estructural; ya acepta 165 clases vanilla (una con campos) y el resto está medido, pero ninguna se ejecuta |
+| **A-02** Generación/verificación de layouts | `numeric_bridge_layout.py` + `check-numeric-bridge-layout.py`: acepta bytecode válido y rechaza 25 alteraciones (clase no final, interfaces, superclase, estáticos, inicializador, `int` final, `volatile`, los ocho descriptores equivocados, arrays, `String`, destino inválido, hash de JAR, clase ausente, JAR duplicado, multi-release) + opt-in de `MutRef` | **Sí, cerrada** | Criterio literal cumplido. **Límite de fase 2:** el validador es estructural; describe 2.161 clases vanilla (1.114 con campos) y el resto está medido con su bloqueo, pero ninguna se ejecuta |
 | **A-03** Identidad y publicación automática | `object_new` publica al construir con `PublishSink`, guarda en `Drop`, aborto en otro hilo/heap, sesiones por heap | **Sí, como subperfil** | Solo objetos **creados después** de instalar la sesión, solo clases con layout del harness; sin estáticos, `<clinit>` compartido, arrays automáticos ni unión de programas |
 | **A-04** Referencias y mutación | `MutRef` opt-in (`check-numeric-mutable-refs.py`, 20 rondas) + **arrays de referencias** (`check-numeric-shared-arrays.py`, diferencial Java 25) | **Sí, como subperfil** | Sin ciclos cerrados con alias publicado, sin subtipos, sin `String`, sin arrays de arrays ni primitivos compartidos |
 | **A-05** Monitores e inicialización | `check-numeric-shared-monitors.py` (monitor reentrante compartido entre bytecode numérico y tareas Rayon) | **Parcial** | Falta la **política común de estáticos e inicialización perezosa** entre los dos heaps: hoy el `<clinit>` es monohilo y no se comparte |
@@ -104,7 +104,7 @@ excepciones y composición son *capacidades*, no pruebas que falten.
 | A-01 contrato | revisión de B | B revisa alias, heap ajeno, sesión cerrada, ciclos y orden de locks (B-07) |
 | B-01 contrato de futuros | decisión de B | se colapsa `cancel-pending-true/false` (Q-BC-8) y hay revisión cruzada |
 | B-02 lifecycle | confirmación de B | B confirma que no queda cláusula suelta |
-| A-02 layouts reales | ranuras nuevas + herencia con campos | más de **1** clase vanilla con campos (hoy 165 clases, 1 con 2 campos; techo medido 186 con 375 campos tras interfaces/refs) |
+| A-02 layouts reales | ranuras `J/F/D/Z/B/C/S` y tipos del JAR de librería | ejecutar (no solo describir) una clase vanilla: hoy 2.161 describibles, 1.114 con campos, 0 traducidas |
 | A-05 estáticos | unión de programas | estáticos publicados y `<clinit>` con orden entre heaps |
 | A-06 entrada Java integrada | unión de programas | llamada Java real publica y observa tras `join` sin cableado del harness |
 | A-07 ruta `Util.makeExecutor` | A-06 + B-02/B-05/B-06 | el constructor real de 4 argumentos se traduce y ejecuta |

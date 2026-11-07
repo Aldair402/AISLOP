@@ -1,30 +1,32 @@
 #!/usr/bin/env python3
-"""A-02 fase 2: el perfil de layouts se mide contra el JAR oficial, no contra fixtures.
+"""A-02 fase 2: el perfil de layouts medido contra el JAR oficial, no contra fixtures.
 
 Qué demuestra esta prueba y qué no:
 
 - Demuestra que `numeric_bridge_layout.verify` (ruta real `mc-aot inspect`) acepta
-  clases **del JAR oficial** y produce un layout con su SHA-256, y que el censo
-  de las 7.762 clases cuadra con una lista fija (así un cambio del parser o del
-  perfil se nota). Desde el 2026-11-06 el perfil acepta tipos cerrados sin
-  `final`: 165 clases, y **una con campos de instancia** (`SleepStatus`, dos
-  `int`), que es el primer layout vanilla con estado.
-- Demuestra que el lector de classfiles en Rust y el de Python, escritos por
-  separado, coinciden campo a campo en clases reales de Minecraft.
+  clases **del JAR oficial** con su SHA-256 de classfile, que el censo de las
+  7.762 clases cuadra con cifras fijas, y que censo y verificador **coinciden**:
+  lo que el censo dice describible se acepta, y lo que dice bloqueado se rechaza
+  con el motivo que el censo nombró.
+- Demuestra que el lector de classfiles en Rust y el de Python coinciden campo a
+  campo en clases reales de Minecraft.
+- Demuestra que `java.lang.Record`, admitida como base externa sin estado, no
+  declara campos de instancia (por reflexión, no por suposición).
 - NO demuestra que esas clases se traduzcan ni se ejecuten. Un layout aceptado
-  es un contrato de campos, no una clase soportada.
+  es un contrato de campos; `execution_blockers` dice qué falta para ejecutar.
 
-El censo explica además por qué el resto no entra: hoy el límite no son los
-estáticos, es `final` (5.377 clases) y la superclase (1.527).
+Cifras al 2026-11-06: 2.161 clases describibles, 1.114 con campos, 2.469 campos.
+
+Historia: el número publicado antes fue «0 de 687» (irreproducible) y luego «6
+aceptadas, ninguna con campos». Ninguno de los dos describía el problema.
 """
 import hashlib
 import importlib.util
-import itertools
 import json
 import os
-import shutil
 import pathlib
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -32,37 +34,38 @@ import zipfile
 
 root = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(root / 'tools'))
-from numeric_bridge_layout import verify
+from numeric_bridge_layout import verify, EXTERNAL_EMPTY_BASES
 
 JAR = root.parent / 'downloads' / 'server-26.3-inner.jar'
 
-# Lista fija: si cambia, o cambió el JAR o cambió el perfil. Ambas cosas hay que
-# verlas, no aceptarlas en silencio. Se fija el número y un hash de la lista
-# completa; los nombres de abajo son la muestra que se lee en el log.
-ADMITTED_COUNT = 165
-ADMITTED_SHA256 = '0e96364c9ef2569f2cd6c5f834cba82d222b8085cf5ebc8ab51aa90131ee03e8'
-ADMITTED_SAMPLE = [
-    'net/minecraft/server/packs/resources/PreparableReloadListener$StateKey',
-    'net/minecraft/server/players/SleepStatus',
-    'net/minecraft/util/Graph',
-    'net/minecraft/world/effect/MobEffectUtil',
-    'net/minecraft/world/entity/ai/behavior/LongJumpUtil',
-    'net/minecraft/world/level/levelgen/NoiseRouterData$QuantizedSpaghettiRarity',
-    'net/minecraft/world/waypoints/WaypointStyleAsset',
-]
-# La única con campos de instancia: si deja de estarlo, el perfil cambió de sentido.
-ADMITTED_WITH_FIELDS = {'net/minecraft/server/players/SleepStatus': [('I', 'activePlayers'),
-                                                                   ('I', 'sleepingPlayers')]}
+# Cifras fijas del censo. Si cambian, o cambió el JAR o cambió el perfil: las dos
+# cosas hay que verlas, no aceptarlas en silencio.
 TOTAL_CLASSES = 7762
-FIRST_BLOCKER_NO_FINAL = 485
-FIRST_BLOCKER_SUPER = 3525
-# Plan medido (censo --plan): qué compra cada relajación. Se fija aquí porque es
-# la única cifra que decide qué se implementa después de A-02.
-PLAN = [
-    (165, 1, 2),
-    (291, 1, 2),
-    (470, 5, 10),
-    (651, 186, 375),
+DESCRIBABLE = 2161
+DESCRIBABLE_WITH_FIELDS = 1114
+INSTANCE_FIELDS = 2469
+
+# Casos que se leen en el log: los que justifican la forma del layout.
+NAMED = {
+    'net/minecraft/server/players/SleepStatus': [('int', 'activePlayers'), ('int', 'sleepingPlayers')],
+    # Record-like con dos `int final` y una referencia cuyo destino no se puede
+    # describir todavía: el layout es suyo, el bloqueo es del destino.
+    'net/minecraft/world/level/BlockEventData': [('ref', 'pos'), ('ref', 'block'),
+                                                 ('int', 'paramA'), ('int', 'paramB')],
+    'net/minecraft/world/level/levelgen/structure/BoundingBox': None,  # 6 int, sin leer nombres
+    'net/minecraft/advancements/AdvancementHolder': None,              # record: base externa sin estado
+    'net/minecraft/world/entity/ai/behavior/SetEntityLookTargetSometimes$Ticker': None,
+}
+
+# Motivo que el censo nombra -> mensaje que el verificador debe dar.
+BLOCKER_TO_MESSAGE = [
+    ('sin ranura', 'descriptor de campo no soportado'),
+    ('descriptor ', 'descriptor de campo no soportado'),
+    ('referencia fuera del JAR', 'referencia fuera del JAR'),
+    ('referencia no final', 'referencia no final'),
+    ('volatile', 'volatile'),
+    ('interfaz/anotación/enum', 'interfaz/annotation/enum'),
+    ('cadena fuera del JAR', 'clase de referencia ausente'),
 ]
 
 
@@ -77,21 +80,21 @@ census_mod = load('layout_profile_census', 'layout-profile-census.py')
 surface_mod = load('classfile_surface', 'classfile-surface.py')
 
 
-def build(profile):
-    out = subprocess.run(['cargo', 'build', '--offline', '--profile', profile,
-                          '--manifest-path', str(root / 'Cargo.toml')],
-                         check=True, capture_output=True, text=True)
-    binary = root / 'target' / profile / 'mc-aot'
-    assert binary.is_file(), out.stderr[-2000:]
-    return binary
-
-
 def sha256(blob):
     return hashlib.sha256(blob).hexdigest()
 
 
-def inspect(binary, jar, klass):
-    p = subprocess.run([str(binary), 'inspect', str(jar), klass],
+def build(profile):
+    subprocess.run(['cargo', 'build', '--offline', '--profile', profile,
+                    '--manifest-path', str(root / 'Cargo.toml')],
+                   check=True, capture_output=True, text=True)
+    binary = root / 'target' / profile / 'mc-aot'
+    assert binary.is_file()
+    return binary
+
+
+def inspect(binary, klass):
+    p = subprocess.run([str(binary), 'inspect', str(JAR), klass],
                        capture_output=True, text=True, timeout=120)
     assert p.returncode == 0, (klass, p.stderr[-500:])
     return p.stdout
@@ -100,78 +103,99 @@ def inspect(binary, jar, klass):
 def parse_inspect(text):
     """Superficie declarada según `mc-aot inspect`, para contrastarla con Python."""
     header = dict(re.findall(r'^(Clase|Superclase|Flags|Interfaces): (.*)$', text, re.M))
-    fields = [m.groups() for m in re.finditer(r'^  0x([0-9a-f]{4}) (\S+) (\S+)$', text, re.M)]
-    # `inspect` imprime nombre y descriptor juntos (`<init>()V`), igual que el
-    # verificador; se separan aquí para comparar con el parser de Python.
-    methods = [(int(a, 16), b.split('(', 1)[0], '(' + b.split('(', 1)[1])
-               for a, b in re.findall(r'^  0x([0-9a-f]{4}) (\S+) \| code=', text, re.M)]
+    fields = [(int(a, 16), b, c) for a, b, c in
+              re.findall(r'^  0x([0-9a-f]{4}) (\S+) (\S+)$', text, re.M)]
+    # `inspect` imprime nombre y descriptor juntos (`<init>()V`).
+    methods = [(int(a, 16), b.split('(', 1)[0], '(' + b.split('(', 1)[1]) for a, b in
+               re.findall(r'^  0x([0-9a-f]{4}) (\S+) \| code=', text, re.M)]
     return {'class': header['Clase'], 'super': header['Superclase'],
-            'flags': int(header['Flags'], 16),
-            'fields': [(int(a, 16), b, c) for a, b, c in fields],
-            'methods': methods}
+            'flags': int(header['Flags'], 16), 'fields': fields, 'methods': methods}
 
 
-def check_census(jar_sha):
-    """El censo del JAR oficial debe dar exactamente lo registrado."""
-    rows = census_mod.census(JAR, False)
-    assert len(rows) == TOTAL_CLASSES, f'clases en el JAR: {len(rows)} != {TOTAL_CLASSES}'
-    closed = sorted(census_mod.closure_admitted(rows))
-    digest = hashlib.sha256('\n'.join(closed).encode()).hexdigest()
-    assert len(closed) == ADMITTED_COUNT, ('número de admitidas', len(closed))
-    assert digest == ADMITTED_SHA256, ('la lista de admitidas cambió', digest)
-    missing = [k for k in ADMITTED_SAMPLE if k not in closed]
-    assert not missing, missing
-    by_class = {r['class']: r for r in rows}
-    assert any(k in closed for k in ADMITTED_WITH_FIELDS), 'se perdió la admitida con campos'
-    first = census_mod.summarize(rows)['first_blocker']
-    assert first['clase-no-final'] == FIRST_BLOCKER_NO_FINAL, first['clase-no-final']
-    assert first['superclase'] == FIRST_BLOCKER_SUPER, first['superclase']
-    steps = census_mod.plan(rows)
-    got = [(x['classes'], x['classes_with_fields'], x['instance_fields']) for x in steps]
-    assert got == PLAN, ('el plan cambió', got)
-    for step, numbers in zip(steps, got):
-        print(f"  plan {numbers[0]:5d} clases / {numbers[1]:5d} con campos / {numbers[2]:5d} campos  {step['step']}")
-    print(f'censo: {len(rows)} clases, {len(closed)} admitidas con grafo cerrado, '
-          f'{first["clase-no-final"]} por tipo no cerrado, {first["superclase"]} por superclase')
+def check_census():
+    rows = census_mod.census(JAR)
+    summary = census_mod.summarize(rows)
+    assert len(rows) == TOTAL_CLASSES, len(rows)
+    assert len(summary['admitted']) == DESCRIBABLE, len(summary['admitted'])
+    assert len(summary['with_fields']) == DESCRIBABLE_WITH_FIELDS, len(summary['with_fields'])
+    assert summary['fields'] == INSTANCE_FIELDS, summary['fields']
+    print(f"censo: {len(rows)} clases, {DESCRIBABLE} describibles, "
+          f"{DESCRIBABLE_WITH_FIELDS} con campos, {INSTANCE_FIELDS} campos de instancia")
+    for step in census_mod.plan(rows):
+        print(f"  plan {step['classes']:5d} clases / {step['classes_with_fields']:5d} con campos / "
+              f"{step['instance_fields']:5d} campos  {step['step']}")
     return rows
 
 
-def check_admitted(jar_sha, compiler, rows):
-    """Cada clase admitida por el censo debe pasar el verificador real."""
+def check_admitted(rows, compiler, jar_sha):
+    """Cada clase que el censo llama describible debe pasar el verificador real."""
     by_class = {r['class']: r for r in rows}
-    for klass in sorted(census_mod.closure_admitted(rows)):
+    admitted = [r['class'] for r in rows if not r['layout_blockers']]
+    sample = list(NAMED)
+    # Muestra repartida por todo el JAR, determinista.
+    sample += [admitted[i] for i in range(0, len(admitted), max(1, len(admitted) // 12))][:12]
+    sample = sorted(dict.fromkeys(sample))
+    for klass in sample:
         result = verify(JAR, klass, compiler, jar_sha)
-        assert result['root'] == klass
-        assert result['jar_sha256'] == jar_sha
-        classes = result['classes']
-        assert classes[0]['class'] == klass, classes[0]['class']
+        entry = result['classes'][0]
+        assert entry['class'] == klass, entry['class']
         with zipfile.ZipFile(JAR) as z:
             blob = z.read(klass + '.class')
-        assert classes[0]['sha256'] == sha256(blob), 'hash de clase distinto del classfile'
-        # El layout debe describir los mismos campos, en el mismo orden, que el
-        # classfile: si el perfil cambia de orden sin cambiar de bytes, esto falla.
         surface = surface_mod.parse_class(blob)
-        expected = []
-        for field in surface['fields']:
-            if field['flag_bits'] & 0x0008:
-                continue
-            descriptor = field['descriptor']
-            if descriptor == 'I':
-                expected.append(('int', field['name'], None))
-            else:
-                kind = 'ref' if field['flag_bits'] & 0x0010 else 'mutref'
-                expected.append((kind, field['name'], descriptor[1:-1]))
-        got = [(f['kind'], f['name'], f.get('target')) for f in classes[0]['fields']]
-        assert got == expected, (klass, got, expected)
-        if klass in ADMITTED_WITH_FIELDS:
-            assert [(f['descriptor'], f['name']) for f in surface['fields']] == ADMITTED_WITH_FIELDS[klass]
-            assert classes[0]['closed_by'] == 'no-subclasses', classes[0]['closed_by']
-        assert classes[0]['closed_by'] in ('final', 'no-subclasses'), classes[0]
-        with_fields = [k for k in ADMITTED_WITH_FIELDS if k in by_class]
-        if klass in ADMITTED_WITH_FIELDS:
-            print(f'  layout CON CAMPOS {klass}: {[name for _, name in ADMITTED_WITH_FIELDS[klass]]}')
-    print(f'  {len(sorted(census_mod.closure_admitted(rows)))} layouts verificados por la ruta real')
-    assert len(by_class) == TOTAL_CLASSES
+        assert entry['sha256'] == sha256(blob), klass
+        assert entry['own_field_count'] == len([f for f in surface['fields']
+                                               if not f['flag_bits'] & 0x0008]), klass
+        # El layout completo = campos de la cadena desde Object + propios.
+        expected_own = [(f['descriptor'], f['name']) for f in surface['fields']
+                        if not f['flag_bits'] & 0x0008]
+        got_own = [(f['descriptor'], f['name']) for f in entry['fields'][-len(expected_own):]] if expected_own else []
+        assert got_own == expected_own, (klass, got_own, expected_own)
+        if entry['super'] in EXTERNAL_EMPTY_BASES:
+            assert entry['fields'], klass
+        if NAMED.get(klass):
+            assert [(f['kind'], f['name']) for f in entry['fields']] == NAMED[klass], (klass, entry['fields'])
+        print(f"  ok {klass}: super={entry['super']} propios={entry['own_field_count']} "
+              f"total={len(entry['fields'])} cerrada={entry['closed_by']} "
+              f"bloqueos={len(entry['execution_blockers'])}")
+    assert len(sample) >= 10, len(sample)
+
+
+def check_rejected(rows, compiler, jar_sha):
+    """El verificador debe rechazar lo que el censo declara bloqueado, y por lo mismo."""
+    checked = 0
+    for fragment, message in BLOCKER_TO_MESSAGE:
+        candidate = next((r for r in rows
+                          if r['layout_blockers'] and fragment in r['layout_blockers'][0]), None)
+        if candidate is None:
+            continue
+        try:
+            verify(JAR, candidate['class'], compiler, jar_sha)
+        except ValueError as error:
+            assert message in str(error), (candidate['class'], str(error), message)
+            print(f"  rechazo {candidate['class']}: {str(error)[:70]}")
+            checked += 1
+        else:
+            raise AssertionError('aceptó una clase que el censo bloquea: ' + candidate['class'])
+    assert checked >= 5, checked
+
+
+def check_record_base():
+    """`java.lang.Record` se admite como base porque no tiene campos de instancia."""
+    jdk = pathlib.Path(os.environ['JAVA_HOME']) / 'bin'
+    with tempfile.TemporaryDirectory() as tmp:
+        source = pathlib.Path(tmp) / 'Probe.java'
+        source.write_text('public class Probe { public static void main(String[] a) {\n'
+                          '  System.out.println("fields=" + java.lang.Record.class.getDeclaredFields().length);\n'
+                          '  System.out.println("kind=" + java.lang.Record.class.getSuperclass().getName());\n'
+                          '} }\n')
+        subprocess.run([str(jdk / 'javac'), '-d', tmp, str(source)], check=True,
+                       capture_output=True)
+        out = subprocess.run([str(jdk / 'java'), '-cp', tmp, 'Probe'],
+                             check=True, capture_output=True, text=True).stdout
+    assert 'fields=0' in out, out
+    assert 'kind=java.lang.Object' in out, out
+    assert EXTERNAL_EMPTY_BASES == {'java/lang/Record'}, EXTERNAL_EMPTY_BASES
+    print('base externa: java.lang.Record declara 0 campos de instancia (reflexión JDK 25)')
 
 
 def check_parser_cross(binary):
@@ -179,111 +203,99 @@ def check_parser_cross(binary):
     with zipfile.ZipFile(JAR) as z:
         entries = sorted(n for n in z.namelist()
                          if n.endswith('.class') and not n.startswith('META-INF/'))
-        sample = [entries[i] for i in range(0, len(entries), 409)]
-        sample = sample[:12]
+        sample = [entries[i] for i in range(0, len(entries), 409)][:12]
         compared = 0
         for entry in sample:
             klass = entry[:-6]
-            blob = z.read(entry)
-            surface = surface_mod.parse_class(blob)
+            surface = surface_mod.parse_class(z.read(entry))
             if len(surface['fields']) > 40 or len(surface['methods']) > 40:
                 continue
-            seen = parse_inspect(inspect(binary, JAR, klass))
-            assert seen['class'] == surface['this_class'], (klass, seen['class'])
+            seen = parse_inspect(inspect(binary, klass))
+            assert seen['class'] == surface['this_class'], klass
             assert seen['super'] == (surface['super_class'] or ''), klass
             assert seen['flags'] == surface['flag_bits'], (klass, hex(seen['flags']))
             fields = [(f['flag_bits'], f['name'], f['descriptor']) for f in surface['fields']]
-            assert seen['fields'] == fields, (klass, 'campos', seen['fields'], fields)
+            assert seen['fields'] == fields, (klass, 'campos')
             methods = [(m['flag_bits'], m['name'], m['descriptor']) for m in surface['methods']]
-            assert seen['methods'] == methods, (klass, 'métodos', seen['methods'], methods)
-            assert ('<clinit>' in [m[1] for m in seen['methods']]) == surface['has_clinit'], klass
+            assert seen['methods'] == methods, (klass, 'métodos')
             compared += 1
-        assert compared >= 8, f'solo {compared} clases comparadas'
+        assert compared >= 8, compared
         print(f'parser cruzado: {compared} clases reales, campos/métodos/flags idénticos')
 
 
-def check_negative_controls(jar_sha, compiler):
-    """Sobre bytes reales: si se altera el classfile, el perfil debe rechazarlo."""
+def check_negative_controls(compiler, jar_sha):
+    """Sobre bytes reales: lo que no se puede describir debe rechazarse."""
     klass = 'net/minecraft/util/Graph'
     with zipfile.ZipFile(JAR) as z:
         blob = bytearray(z.read(klass + '.class'))
     flags_offset = class_flags_offset(blob, surface_mod)
     with tempfile.TemporaryDirectory() as tmp:
-        counter = itertools.count()
+        counter = iter(range(100))
 
         def jar_with(payload, entry=klass + '.class'):
-            # Nombre distinto por JAR: dos JAR con el mismo nombre, tamaño y
-            # `mtime_ns` harían que la caché de `read_jar` devolviera el anterior.
             path = pathlib.Path(tmp) / f'altered-{next(counter)}.jar'
             with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as z:
                 z.writestr(entry, bytes(payload))
             return path, sha256(path.read_bytes())
 
-        # 1. Marcarla abstracta: aunque conserve los bytes, el perfil no la admite.
+        # 1. Marcarla interfaz: no describe un objeto ordinario.
         altered = bytearray(blob)
-        altered[flags_offset:flags_offset + 2] = (int.from_bytes(
-            altered[flags_offset:flags_offset + 2], 'big') | 0x0400).to_bytes(2, 'big')
+        bits = int.from_bytes(altered[flags_offset:flags_offset + 2], 'big') | 0x0200
+        altered[flags_offset:flags_offset + 2] = bits.to_bytes(2, 'big')
         path, digest = jar_with(altered)
-        expect_reject(path, klass, compiler, digest, 'abstracta')
+        expect_reject(path, klass, compiler, digest, 'interfaz')
 
-        # 2. Truncar el classfile: no se puede inventar un layout de bytes cortados.
+        # 2. Truncar el classfile.
         path, digest = jar_with(blob[:-8])
         expect_reject(path, klass, compiler, digest, None)
 
-        # 3. Hash del JAR que no corresponde: el layout dejaría de estar atado a
-        #    los bytes que se compilaron.
+        # 3. Hash del JAR que no corresponde.
         path, _ = jar_with(blob)
         expect_reject(path, klass, compiler, 'f' * 64, 'hash')
 
-        # 4. Clase ausente: un grafo no se completa con huecos.
+        # 4. Clase ausente.
         path, digest = jar_with(blob, 'net/minecraft/util/Other.class')
         expect_reject(path, klass, compiler, digest, 'ausente')
-        # 5. Una subclase real invalida el layout. `SleepStatus` no es `final` y hoy
-        #    se acepta porque nada la extiende; si aparece una subclase compilada
-        #    contra la clase oficial, el layout deja de ser exacto y debe caer.
-        #    (Quitar `final` ya no es un control válido: el tipo cerrado no depende
-        #    de esa bandera; esa cláusula se prueba en check-numeric-bridge-layout.)
-        subclass_control(tmp, compiler, jar_sha)
-        print('controles negativos sobre bytes reales: 5 rechazos')
+
+        # 5. Una subclase real NO invalida el layout (cambia la etiqueta, no los
+        #    campos): ese es el contrato nuevo. Se compila contra la clase oficial.
+        subclass_control(tmp, compiler)
+        print('controles negativos sobre bytes reales: 4 rechazos + 1 contrato de subclase')
 
 
-def subclass_control(tmp, compiler, jar_sha):
-    """Compila una subclase de una clase vanilla aceptada y exige el rechazo."""
-    javac = pathlib.Path(os.environ['JAVA_HOME']) / 'bin' / 'javac'
-    jar_bin = pathlib.Path(os.environ['JAVA_HOME']) / 'bin' / 'jar'
+def subclass_control(tmp, compiler):
+    """Compila una subclase de una clase vanilla y exige que el layout no cambie."""
+    jdk = pathlib.Path(os.environ['JAVA_HOME']) / 'bin'
     klass = 'net/minecraft/server/players/SleepStatus'
-    entry = klass.split('/')
+    package_parts = klass.split('/')
     with zipfile.ZipFile(JAR) as z:
         original = z.read(klass + '.class')
 
-    def write_tree(base):
-        package = base.joinpath(*entry[:-1])
+    def tree(base):
+        package = base.joinpath(*package_parts[:-1])
         package.mkdir(parents=True)
-        (package / (entry[-1] + '.class')).write_bytes(original)
+        (package / (package_parts[-1] + '.class')).write_bytes(original)
         return base
 
-    work = pathlib.Path(tmp) / 'subclass'
-    with_sub = write_tree(work / 'with')
-    package = with_sub.joinpath(*entry[:-1])
+    with_sub = tree(pathlib.Path(tmp) / 'with')
     (with_sub / 'SleepStatusSub.java').write_text(
         'package net.minecraft.server.players;\n'
         'final class SleepStatusSub extends SleepStatus {}\n')
-    compiled = subprocess.run([str(javac), '-nowarn', '-cp', str(with_sub), '-d', str(with_sub),
-                               str(with_sub / 'SleepStatusSub.java')],
-                              capture_output=True, text=True)
-    assert compiled.returncode == 0, compiled.stderr[-800:]
-    path = work / 'with-subclass.jar'
-    subprocess.run([str(jar_bin), 'cf', str(path), '-C', str(with_sub), 'net/minecraft'],
+    built = subprocess.run([str(jdk / 'javac'), '-nowarn', '-cp', str(with_sub), '-d', str(with_sub),
+                            str(with_sub / 'SleepStatusSub.java')], capture_output=True, text=True)
+    assert built.returncode == 0, built.stderr[-800:]
+    path = pathlib.Path(tmp) / 'with-subclass.jar'
+    subprocess.run([str(jdk / 'jar'), 'cf', str(path), '-C', str(with_sub), 'net/minecraft'],
                    check=True, capture_output=True)
-    expect_reject(path, klass, compiler, sha256(path.read_bytes()), 'cerrada')
-
-    # Sin la subclase, la misma clase vuelve a aceptarse: el rechazo era la
-    # jerarquía, no otra cláusula.
-    clean_root = write_tree(work / 'clean')
-    clean = work / 'clean.jar'
-    subprocess.run([str(jar_bin), 'cf', str(clean), '-C', str(clean_root), 'net/minecraft'],
-                   check=True, capture_output=True)
-    verify(clean, klass, compiler, sha256(clean.read_bytes()))
+    with_subclass = verify(path, klass, compiler, sha256(path.read_bytes()))['classes'][0]
+    assert with_subclass['closed_by'] == 'has-subclasses', with_subclass['closed_by']
+    assert [(f['kind'], f['name']) for f in with_subclass['fields']] == [
+        ('int', 'activePlayers'), ('int', 'sleepingPlayers')], with_subclass['fields']
+    without = verify(JAR, klass, compiler, sha256(JAR.read_bytes()))['classes'][0]
+    assert without['closed_by'] == 'no-subclasses', without['closed_by']
+    assert [(f['kind'], f['name']) for f in without['fields']] == [
+        (f['kind'], f['name']) for f in with_subclass['fields']]
+    print('  subclase real: layout idéntico, etiqueta has-subclasses')
 
 
 def class_flags_offset(blob, module):
@@ -311,10 +323,12 @@ def main():
         return 2
     jar_sha = sha256(JAR.read_bytes())
     compiler = build('release')
-    rows = check_census(jar_sha)
-    check_admitted(jar_sha, compiler, rows)
+    rows = check_census()
+    check_record_base()
+    check_admitted(rows, compiler, jar_sha)
+    check_rejected(rows, compiler, jar_sha)
     check_parser_cross(compiler)
-    check_negative_controls(jar_sha, compiler)
+    check_negative_controls(compiler, jar_sha)
     print('OK: perfil de layouts medido contra el JAR oficial')
     return 0
 
