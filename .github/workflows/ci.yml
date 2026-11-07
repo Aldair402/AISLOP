@@ -55,6 +55,7 @@ jobs:
           python3 mc-aot/tools/update-class-evidence.py --spec analysis/class-specs/featureflaguniverse.json --check
           python3 mc-aot/tests/check-update-class-evidence.py
           python3 mc-aot/tools/check-class-registry.py
+          python3 mc-aot/tests/check-integration-contract.py
           python3 mc-aot/tools/check-family-partition.py
       - name: baseline guard
         run: |

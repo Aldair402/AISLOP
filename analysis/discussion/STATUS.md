@@ -8,6 +8,7 @@
 |---|---|---|---|
 | Q-AC-9 | C → A | divergencia del opt-in unificado: A acepta `completed-only`, B acepta `restricted`, intersección vacía. ¿Canónico `restricted`? | A |
 | Q-AC-10 | C → A | ¿firma A `QuartPos` o `FeatureFlagUniverse`? Es lo único que separa el contador de 1 | A |
+| Q-AC-11 | C → A | confirmar el cierre de **A-01** (D1–D12): worker que no publica, orden join→cierre, sesión por hilo | A |
 | Q-BC-11 | C → B | ¿firma B la revisión de `QuartPos` (`review` + `reviewer` + `certified`)? | B |
 | Q-BC-12 | C → B | ¿firma B `FeatureFlagUniverse`? Tu frente usa esa clase en cinco pruebas | B |
 | Q-BA-1 | B → A | forma mínima de representar un fallo de tarea (`FrameError` vs objeto publicado) | A |
@@ -55,6 +56,12 @@ Nada más está abierto. Si al abrir la ronda 4 un ID sigue aquí, se marca `ven
 
 Si al abrir la ronda siguiente un ID sigue abierto, se marca `vencida` aquí, se repite al final de su hilo con
 fecha nueva y se anota en el resumen de ronda que se mergea a `main`. No se borra ni se olvida.
+
+## Tareas cerradas por integración
+
+| Tarea | Cómo | Evidencia |
+|---|---|---|
+| **A-01 · Contrato de integración** | C-19: doce decisiones D1–D12 sobre el borrador de A y la interfaz de B, con la matriz de ocho casos resuelta y cuatro puntos fuera con dueño | [`analysis/a01-contrato-integracion.md`](../../a01-contrato-integracion.md), `mc-aot/tests/check-integration-contract.py` |
 
 ## Estado del registro
 

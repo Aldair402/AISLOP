@@ -37,6 +37,11 @@ run_logged check-real-tracy-thread-name python3 mc-aot/tests/check-real-tracy-th
 run_logged check-real-util-worker-guards python3 mc-aot/tests/check-real-util-worker-guards.py
 run_logged check-real-util-worker-onstart python3 mc-aot/tests/check-real-util-worker-onstart.py
 run_logged check-quartpos-class-surface python3 mc-aot/tests/check-quartpos-class-surface.py
+# A-04: referencias mutables bajo opt-in. Existía y no corría en la integral; la
+# entrada la añade el cierre de A-01 (contrato de integración), no una tarea nueva.
+run_logged check-numeric-mutable-refs python3 mc-aot/tests/check-numeric-mutable-refs.py
+# A-01: el contrato de integración se comprueba contra el código en cada corrida.
+run_logged check-integration-contract python3 mc-aot/tests/check-integration-contract.py
 run_logged check-class-surface-evidence python3 mc-aot/tests/check-class-surface-evidence.py
 run_logged check-classfile-surface python3 mc-aot/tools/classfile-surface.py net.minecraft.core.QuartPos --registry analysis/class-registry.json
 run_logged check-quartpos-evidence-audit python3 mc-aot/tools/class-surface-evidence.py analysis/class-evidence/quartpos.json
