@@ -51,14 +51,19 @@ def load_parser():
     return module
 
 
-def blockers(surface, allow_mutable_refs=False, relax=frozenset()):
-    """Cláusulas del perfil que la clase viola, en el orden del verificador."""
+def blockers(surface, allow_mutable_refs=False, relax=frozenset(), extended=frozenset()):
+    """Cláusulas del perfil que la clase viola, en el orden del verificador.
+
+    `clase-no-final` ya no significa «no es `final`»: significa «no es un tipo
+    cerrado», es decir, o no es `final` o alguna clase del JAR la extiende. Es lo
+    que hace `numeric_bridge_layout.verify` desde el 2026-11-06.
+    """
     out = []
     flags = surface["flag_bits"]
     name = surface["this_class"]
     if "name" not in relax and not NAME.match(name):
         out.append("nombre-fuera-del-perfil")
-    if "final" not in relax and not flags & CLASS_ACC["final"]:
+    if "final" not in relax and not flags & CLASS_ACC["final"] and name in extended:
         out.append("clase-no-final")
     if any(flags & CLASS_ACC[k] for k in ("interface", "abstract", "annotation", "enum")):
         out.append("clase-abstracta/interfaz/enum")
@@ -104,9 +109,10 @@ def census(jar, allow_mutable_refs):
     with zipfile.ZipFile(jar) as z:
         entries = [n for n in z.namelist()
                    if n.endswith(".class") and not n.startswith("META-INF/")]
-        for entry in sorted(entries):
-            data = z.read(entry)
-            surface = parser.parse_class(data)
+        parsed = [(entry, parser.parse_class(z.read(entry))) for entry in sorted(entries)]
+        # Jerarquía del mundo cerrado: quién es extendido por otra clase del JAR.
+        extended = {surface["super_class"] for _, surface in parsed if surface["super_class"]}
+        for entry, surface in parsed:
             instance = [f for f in surface["fields"] if not f["flag_bits"] & 0x0008]
             refs = sorted({f["descriptor"][1:-1] for f in surface["fields"]
                            if f["descriptor"].startswith("L")})
@@ -124,7 +130,7 @@ def census(jar, allow_mutable_refs):
                 "instance_refs": inst_refs,
                 "instance_descriptors": sorted({f["descriptor"] for f in instance}),
                 "static_fields": len(surface["fields"]) - len(instance),
-                "blockers": blockers(surface, allow_mutable_refs),
+                "blockers": blockers(surface, allow_mutable_refs, frozenset(), extended),
                 "has_clinit": surface["has_clinit"],
             })
     return rows
@@ -216,8 +222,13 @@ def structural_blockers(row, closed, relax=frozenset()):
     pero la clase todavía no se puede ejecutar", que es lo que de verdad pasa.
     """
     out = []
-    if "final" in relax and row["class"] in closed:
-        pass
+    if "final" in relax:
+        # Sólo para comparar escenarios antiguos: hoy el perfil ya cierra por
+        # ausencia de subclases.
+        if row["class"] in closed and "clase-no-final" in row["blockers"]:
+            pass
+        elif "clase-no-final" in row["blockers"]:
+            out.append("clase-no-final")
     elif "clase-no-final" in row["blockers"]:
         out.append("clase-no-final")
     for clause in ("nombre-fuera-del-perfil", "superclase", "ref-fuera-del-perfil",
@@ -240,12 +251,10 @@ def plan(rows):
     steps = [
         ("perfil actual de `numeric_bridge_layout.verify`", frozenset()),
         ("+ estáticos y `clinit` fuera del criterio de layout", frozenset({"statics", "clinit"})),
-        ("+ `final` -> tipo cerrado (ninguna subclase en el JAR)",
-         frozenset({"statics", "clinit", "final"})),
         ("+ interfaces fuera del criterio de layout",
-         frozenset({"statics", "clinit", "final", "interfaces"})),
+         frozenset({"statics", "clinit", "interfaces"})),
         ("+ refs de instancia sin cierre (layout del destino bajo demanda)",
-         frozenset({"statics", "clinit", "final", "interfaces"})),
+         frozenset({"statics", "clinit", "interfaces"})),
     ]
 
     def admitted(relax, require_closure):

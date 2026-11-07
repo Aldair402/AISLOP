@@ -43,7 +43,9 @@ final class MutableRef { Target x; }
 final class VolatileRef { volatile Target x; }
 final class ArrayRef { final int[] x = null; }
 final class StringRef { final String x = null; }
-final class InvalidTarget { final NonFinal x = null; }
+class ParentTarget { int y; }
+class ParentSub extends ParentTarget {}
+final class InvalidTarget { final ParentTarget x = null; }
 final class MissingTarget { final Target x = null; }
 '''
 
@@ -91,15 +93,22 @@ with tempfile.TemporaryDirectory(prefix='mc-bridge-layout-') as tmp:
     assert 'NumericGraphSlot::MutRef("net/minecraft/layouttest/MutableRef2")' in rust_layouts(mutable)
     rejected_mutable=verify(jar, 'net/minecraft/layouttest/MutableRef', compiler, h, True)
     assert [x['kind'] for x in rejected_mutable['classes'][0]['fields']]==['mutref']
+    # Tipo cerrado: `final` ya no es la única forma. Una clase sin subclases en el
+    # JAR no puede recibir instancias de un subtipo, así que su layout es exacto;
+    # una que sí las tiene sigue rechazándose.
+    closed=verify(jar, 'net/minecraft/layouttest/NonFinal', compiler, h)
+    assert [f['kind'] for f in closed['classes'][0]['fields']]==['int']
+    assert closed['classes'][0]['closed_by']=='no-subclasses', closed['classes'][0]
+    assert result['classes'][0]['closed_by']=='final', result['classes'][0]
     cases={
-        'NonFinal':'clase debe ser final', 'Interface':'clase debe ser final',
+        'ParentTarget':'cerrada', 'Interface':'abstracta',
         'HasInterface':'interfaces no soportadas', 'Child':'superclase incompatible', 'StaticField':'estáticos',
         'Initializer':'inicializador', 'FinalInt':'int final',
         'VolatileInt':'volatile', 'VolatileRef':'volatile',
         'BooleanField':'descriptor', 'ByteField':'descriptor', 'CharField':'descriptor',
         'ShortField':'descriptor', 'LongField':'descriptor', 'FloatField':'descriptor',
         'DoubleField':'descriptor',
-        'ArrayRef':'descriptor', 'StringRef':'referencia fuera', 'InvalidTarget':'clase debe ser final',
+        'ArrayRef':'descriptor', 'StringRef':'referencia fuera', 'InvalidTarget':'cerrada',
     }
     for name, reason in cases.items():
         rejected(jar,name,h,reason)

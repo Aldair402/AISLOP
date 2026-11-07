@@ -7,8 +7,8 @@ test concurrent_heap::tests::pending_future_completes_once_and_reports_state ...
 test concurrent_heap::tests::pending_future_rejects_foreign_objects_and_values ... ok
 test concurrent_heap::tests::time_unit_wait_conversion_is_saturating_and_interned ... ok
 test concurrent_heap::tests::workers_share_reentrant_monitor_and_fields ... ok
-test concurrent_heap::tests::interned_utf16_strings_share_identity_and_preserve_unpaired_surrogates ... ok
 test concurrent_heap::tests::workers_update_shared_fields_via_cas_and_wrapping_add ... ok
+test concurrent_heap::tests::interned_utf16_strings_share_identity_and_preserve_unpaired_surrogates ... ok
 test executor_runtime::tests::constructor_and_unused_shutdown_do_not_start_workers ... ok
 test executor_runtime::tests::never_started_pool_is_terminated_after_shutdown ... ok
 test executor_runtime::tests::completed_future_does_not_keep_shutdown_pool_alive ... ok
@@ -29,5 +29,9 @@ test scheduler::tests::shutdown_timeout_rejection_and_panic ... ok
 test scheduler::tests::weak_helper_does_not_keep_closed_pool_alive ... ok
 test graph_tests::graph_traversal_between_backends ... ok
 
+<<<<<<< Updated upstream
 test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.78s
+=======
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.91s
+>>>>>>> Stashed changes
 OK: 20 rondas Java y Rust; dos backends traducidos, navegación de referencia final entre dos objetos y monitor compartido; cuatro tareas ForkJoinPool Java en Rayon, QuartPos oficial, alias y guardas de identidad, registro y tipo, ejecución sin Java en PATH; layout generado de classfile; harness externo opt-in, no Main

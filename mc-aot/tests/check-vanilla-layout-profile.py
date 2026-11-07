@@ -6,7 +6,9 @@ Qué demuestra esta prueba y qué no:
 - Demuestra que `numeric_bridge_layout.verify` (ruta real `mc-aot inspect`) acepta
   clases **del JAR oficial** y produce un layout con su SHA-256, y que el censo
   de las 7.762 clases cuadra con una lista fija (así un cambio del parser o del
-  perfil se nota).
+  perfil se nota). Desde el 2026-11-06 el perfil acepta tipos cerrados sin
+  `final`: 165 clases, y **una con campos de instancia** (`SleepStatus`, dos
+  `int`), que es el primer layout vanilla con estado.
 - Demuestra que el lector de classfiles en Rust y el de Python, escritos por
   separado, coinciden campo a campo en clases reales de Minecraft.
 - NO demuestra que esas clases se traduzcan ni se ejecuten. Un layout aceptado
@@ -17,8 +19,10 @@ estáticos, es `final` (5.377 clases) y la superclase (1.527).
 """
 import hashlib
 import importlib.util
+import itertools
 import json
 import os
+import shutil
 import pathlib
 import re
 import subprocess
@@ -33,23 +37,29 @@ from numeric_bridge_layout import verify
 JAR = root.parent / 'downloads' / 'server-26.3-inner.jar'
 
 # Lista fija: si cambia, o cambió el JAR o cambió el perfil. Ambas cosas hay que
-# verlas, no aceptarlas en silencio.
-ADMITTED = [
+# verlas, no aceptarlas en silencio. Se fija el número y un hash de la lista
+# completa; los nombres de abajo son la muestra que se lee en el log.
+ADMITTED_COUNT = 165
+ADMITTED_SHA256 = '0e96364c9ef2569f2cd6c5f834cba82d222b8085cf5ebc8ab51aa90131ee03e8'
+ADMITTED_SAMPLE = [
     'net/minecraft/server/packs/resources/PreparableReloadListener$StateKey',
+    'net/minecraft/server/players/SleepStatus',
     'net/minecraft/util/Graph',
     'net/minecraft/world/effect/MobEffectUtil',
     'net/minecraft/world/entity/ai/behavior/LongJumpUtil',
     'net/minecraft/world/level/levelgen/NoiseRouterData$QuantizedSpaghettiRarity',
     'net/minecraft/world/waypoints/WaypointStyleAsset',
 ]
+# La única con campos de instancia: si deja de estarlo, el perfil cambió de sentido.
+ADMITTED_WITH_FIELDS = {'net/minecraft/server/players/SleepStatus': [('I', 'activePlayers'),
+                                                                   ('I', 'sleepingPlayers')]}
 TOTAL_CLASSES = 7762
-FIRST_BLOCKER_NO_FINAL = 5377
-FIRST_BLOCKER_SUPER = 1527
+FIRST_BLOCKER_NO_FINAL = 485
+FIRST_BLOCKER_SUPER = 3525
 # Plan medido (censo --plan): qué compra cada relajación. Se fija aquí porque es
 # la única cifra que decide qué se implementa después de A-02.
 PLAN = [
-    (6, 0, 0),
-    (9, 0, 0),
+    (165, 1, 2),
     (291, 1, 2),
     (470, 5, 10),
     (651, 186, 375),
@@ -106,7 +116,13 @@ def check_census(jar_sha):
     rows = census_mod.census(JAR, False)
     assert len(rows) == TOTAL_CLASSES, f'clases en el JAR: {len(rows)} != {TOTAL_CLASSES}'
     closed = sorted(census_mod.closure_admitted(rows))
-    assert closed == ADMITTED, ('admitidas cambiaron', closed)
+    digest = hashlib.sha256('\n'.join(closed).encode()).hexdigest()
+    assert len(closed) == ADMITTED_COUNT, ('número de admitidas', len(closed))
+    assert digest == ADMITTED_SHA256, ('la lista de admitidas cambió', digest)
+    missing = [k for k in ADMITTED_SAMPLE if k not in closed]
+    assert not missing, missing
+    by_class = {r['class']: r for r in rows}
+    assert any(k in closed for k in ADMITTED_WITH_FIELDS), 'se perdió la admitida con campos'
     first = census_mod.summarize(rows)['first_blocker']
     assert first['clase-no-final'] == FIRST_BLOCKER_NO_FINAL, first['clase-no-final']
     assert first['superclase'] == FIRST_BLOCKER_SUPER, first['superclase']
@@ -116,14 +132,14 @@ def check_census(jar_sha):
     for step, numbers in zip(steps, got):
         print(f"  plan {numbers[0]:5d} clases / {numbers[1]:5d} con campos / {numbers[2]:5d} campos  {step['step']}")
     print(f'censo: {len(rows)} clases, {len(closed)} admitidas con grafo cerrado, '
-          f'{first["clase-no-final"]} bloqueadas por `final`, {first["superclase"]} por superclase')
+          f'{first["clase-no-final"]} por tipo no cerrado, {first["superclase"]} por superclase')
     return rows
 
 
 def check_admitted(jar_sha, compiler, rows):
     """Cada clase admitida por el censo debe pasar el verificador real."""
     by_class = {r['class']: r for r in rows}
-    for klass in ADMITTED:
+    for klass in sorted(census_mod.closure_admitted(rows)):
         result = verify(JAR, klass, compiler, jar_sha)
         assert result['root'] == klass
         assert result['jar_sha256'] == jar_sha
@@ -147,7 +163,14 @@ def check_admitted(jar_sha, compiler, rows):
                 expected.append((kind, field['name'], descriptor[1:-1]))
         got = [(f['kind'], f['name'], f.get('target')) for f in classes[0]['fields']]
         assert got == expected, (klass, got, expected)
-        print(f'  layout aceptado {klass} ({len(got)} campos, sha {classes[0]["sha256"][:12]})')
+        if klass in ADMITTED_WITH_FIELDS:
+            assert [(f['descriptor'], f['name']) for f in surface['fields']] == ADMITTED_WITH_FIELDS[klass]
+            assert classes[0]['closed_by'] == 'no-subclasses', classes[0]['closed_by']
+        assert classes[0]['closed_by'] in ('final', 'no-subclasses'), classes[0]
+        with_fields = [k for k in ADMITTED_WITH_FIELDS if k in by_class]
+        if klass in ADMITTED_WITH_FIELDS:
+            print(f'  layout CON CAMPOS {klass}: {[name for _, name in ADMITTED_WITH_FIELDS[klass]]}')
+    print(f'  {len(sorted(census_mod.closure_admitted(rows)))} layouts verificados por la ruta real')
     assert len(by_class) == TOTAL_CLASSES
 
 
@@ -186,39 +209,81 @@ def check_negative_controls(jar_sha, compiler):
         blob = bytearray(z.read(klass + '.class'))
     flags_offset = class_flags_offset(blob, surface_mod)
     with tempfile.TemporaryDirectory() as tmp:
+        counter = itertools.count()
+
         def jar_with(payload, entry=klass + '.class'):
-            path = pathlib.Path(tmp) / 'altered.jar'
+            # Nombre distinto por JAR: dos JAR con el mismo nombre, tamaño y
+            # `mtime_ns` harían que la caché de `read_jar` devolviera el anterior.
+            path = pathlib.Path(tmp) / f'altered-{next(counter)}.jar'
             with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as z:
                 z.writestr(entry, bytes(payload))
             return path, sha256(path.read_bytes())
 
-        # 1. Quitar ACC_FINAL de una clase real: ya no es un tipo cerrado.
-        altered = bytearray(blob)
-        altered[flags_offset:flags_offset + 2] = (int.from_bytes(
-            altered[flags_offset:flags_offset + 2], 'big') & ~0x0010).to_bytes(2, 'big')
-        path, digest = jar_with(altered)
-        expect_reject(path, klass, compiler, digest, 'final')
-
-        # 2. Marcarla abstracta: aunque conserve los bytes, el perfil no la admite.
+        # 1. Marcarla abstracta: aunque conserve los bytes, el perfil no la admite.
         altered = bytearray(blob)
         altered[flags_offset:flags_offset + 2] = (int.from_bytes(
             altered[flags_offset:flags_offset + 2], 'big') | 0x0400).to_bytes(2, 'big')
         path, digest = jar_with(altered)
         expect_reject(path, klass, compiler, digest, 'abstracta')
 
-        # 3. Truncar el classfile: no se puede inventar un layout de bytes cortados.
+        # 2. Truncar el classfile: no se puede inventar un layout de bytes cortados.
         path, digest = jar_with(blob[:-8])
         expect_reject(path, klass, compiler, digest, None)
 
-        # 4. Hash del JAR que no corresponde: el layout dejaría de estar atado a
+        # 3. Hash del JAR que no corresponde: el layout dejaría de estar atado a
         #    los bytes que se compilaron.
         path, _ = jar_with(blob)
         expect_reject(path, klass, compiler, 'f' * 64, 'hash')
 
-        # 5. Clase ausente: un grafo no se completa con huecos.
+        # 4. Clase ausente: un grafo no se completa con huecos.
         path, digest = jar_with(blob, 'net/minecraft/util/Other.class')
         expect_reject(path, klass, compiler, digest, 'ausente')
+        # 5. Una subclase real invalida el layout. `SleepStatus` no es `final` y hoy
+        #    se acepta porque nada la extiende; si aparece una subclase compilada
+        #    contra la clase oficial, el layout deja de ser exacto y debe caer.
+        #    (Quitar `final` ya no es un control válido: el tipo cerrado no depende
+        #    de esa bandera; esa cláusula se prueba en check-numeric-bridge-layout.)
+        subclass_control(tmp, compiler, jar_sha)
         print('controles negativos sobre bytes reales: 5 rechazos')
+
+
+def subclass_control(tmp, compiler, jar_sha):
+    """Compila una subclase de una clase vanilla aceptada y exige el rechazo."""
+    javac = pathlib.Path(os.environ['JAVA_HOME']) / 'bin' / 'javac'
+    jar_bin = pathlib.Path(os.environ['JAVA_HOME']) / 'bin' / 'jar'
+    klass = 'net/minecraft/server/players/SleepStatus'
+    entry = klass.split('/')
+    with zipfile.ZipFile(JAR) as z:
+        original = z.read(klass + '.class')
+
+    def write_tree(base):
+        package = base.joinpath(*entry[:-1])
+        package.mkdir(parents=True)
+        (package / (entry[-1] + '.class')).write_bytes(original)
+        return base
+
+    work = pathlib.Path(tmp) / 'subclass'
+    with_sub = write_tree(work / 'with')
+    package = with_sub.joinpath(*entry[:-1])
+    (with_sub / 'SleepStatusSub.java').write_text(
+        'package net.minecraft.server.players;\n'
+        'final class SleepStatusSub extends SleepStatus {}\n')
+    compiled = subprocess.run([str(javac), '-nowarn', '-cp', str(with_sub), '-d', str(with_sub),
+                               str(with_sub / 'SleepStatusSub.java')],
+                              capture_output=True, text=True)
+    assert compiled.returncode == 0, compiled.stderr[-800:]
+    path = work / 'with-subclass.jar'
+    subprocess.run([str(jar_bin), 'cf', str(path), '-C', str(with_sub), 'net/minecraft'],
+                   check=True, capture_output=True)
+    expect_reject(path, klass, compiler, sha256(path.read_bytes()), 'cerrada')
+
+    # Sin la subclase, la misma clase vuelve a aceptarse: el rechazo era la
+    # jerarquía, no otra cláusula.
+    clean_root = write_tree(work / 'clean')
+    clean = work / 'clean.jar'
+    subprocess.run([str(jar_bin), 'cf', str(clean), '-C', str(clean_root), 'net/minecraft'],
+                   check=True, capture_output=True)
+    verify(clean, klass, compiler, sha256(clean.read_bytes()))
 
 
 def class_flags_offset(blob, module):

@@ -6,9 +6,11 @@ compilar el mismo JAR identificado por hash y registrar/publicar manualmente.
 """
 import argparse
 import hashlib
+import importlib.util
 import json
 import pathlib
 import re
+import struct
 import subprocess
 import sys
 import zipfile
@@ -20,6 +22,71 @@ DIGEST = re.compile(r'[0-9a-f]{64}\Z')
 
 def sha(data):
     return hashlib.sha256(data).hexdigest()
+
+
+_CLASSFILE = None
+
+
+def classfile_parser():
+    """El parser puro-Python del suite, cargado sin depender del nombre del fichero."""
+    global _CLASSFILE
+    if _CLASSFILE is None:
+        path = pathlib.Path(__file__).with_name('classfile-surface.py')
+        spec = importlib.util.spec_from_file_location('classfile_surface', path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        _CLASSFILE = module
+    return _CLASSFILE
+
+
+_EXTENDED = {}
+_JAR_BYTES = {}
+
+
+def read_jar(jar):
+    """Bytes y digest del JAR, cacheados por identidad del fichero.
+
+    Sin caché, verificar 165 clases de un JAR de 80 MB lee y hashea 13 GB. La
+    clave incluye tamaño y `mtime_ns`, así que un JAR modificado se relee y el
+    chequeo «el JAR no cambió durante la inspección» sigue significando algo.
+    """
+    stat = jar.stat()
+    key = (str(jar), stat.st_size, stat.st_mtime_ns, stat.st_ino)
+    if key not in _JAR_BYTES:
+        blob = jar.read_bytes()
+        _JAR_BYTES.clear()
+        _JAR_BYTES[key] = (blob, sha(blob))
+    return _JAR_BYTES[key]
+
+
+def extended_classes(jar, blob):
+    """Clases que alguna otra clase del JAR extiende.
+
+    Es la comprobación de tipo cerrado que no exige `final`: en un mundo AOT
+    cerrado, una clase sin subclases en el JAR no puede recibir instancias de un
+    subtipo, así que su layout es igual de exacto que el de una clase `final`.
+    Se lee el `super_class` real del classfile, no el texto de una constante.
+    """
+    key = (str(jar), sha(blob))
+    if key in _EXTENDED:
+        return _EXTENDED[key]
+    parser = classfile_parser()
+    extended = set()
+    import io
+    with zipfile.ZipFile(io.BytesIO(blob)) as z:
+        for entry in z.namelist():
+            if not entry.endswith('.class'):
+                continue
+            try:
+                surface = parser.parse_class(z.read(entry))
+            except (ValueError, IndexError, struct.error):
+                # Un classfile roto no aporta jerarquía; el resto de comprobaciones
+                # (duplicados, raíz ausente, inspección del root) lo denuncian aparte.
+                continue
+            if surface['super_class']:
+                extended.add(surface['super_class'])
+    _EXTENDED[key] = extended
+    return extended
 
 
 def header(text, name):
@@ -36,11 +103,12 @@ def verify(jar, root, compiler, expected_jar_sha256, allow_mutable_refs=False):
         raise ValueError('clase raíz fuera del perfil')
     if not DIGEST.fullmatch(expected_jar_sha256):
         raise ValueError('SHA-256 esperado inválido')
-    blob = jar.read_bytes()
-    if sha(blob) != expected_jar_sha256:
+    blob, digest = read_jar(jar)
+    if digest != expected_jar_sha256:
         raise ValueError('hash del JAR no coincide')
     # Solo JAR directo, sin multi-release; no confiar en la selección de otra
     # versión ni aceptar nombres duplicados. El parser Rust recibe el mismo JAR.
+    extended = extended_classes(jar, blob)
     import io
     with zipfile.ZipFile(io.BytesIO(blob)) as z:
         all_names = [entry.filename for entry in z.infolist()]
@@ -65,7 +133,7 @@ def verify(jar, root, compiler, expected_jar_sha256, allow_mutable_refs=False):
                                capture_output=True, text=True, timeout=60)
             if p.returncode:
                 raise ValueError('inspect rechazó classfile: ' + p.stderr[-1000:])
-            if sha(jar.read_bytes()) != expected_jar_sha256:
+            if read_jar(jar)[1] != expected_jar_sha256:
                 raise ValueError('JAR cambió durante inspección')
             text = p.stdout
             if header(text, 'Clase') != klass or header(text, 'Superclase') != 'java/lang/Object':
@@ -74,8 +142,12 @@ def verify(jar, root, compiler, expected_jar_sha256, allow_mutable_refs=False):
             if not re.fullmatch(r'0x[0-9a-fA-F]{4}', flags_text):
                 raise ValueError('flags inválidos')
             flags = int(flags_text, 16)
-            if not flags & 0x10 or flags & (0x0200 | 0x0400 | 0x2000 | 0x4000):
-                raise ValueError('clase debe ser final y no abstracta/interfaz/enum: ' + klass)
+            if flags & (0x0200 | 0x0400 | 0x2000 | 0x4000):
+                raise ValueError('clase no puede ser abstracta/interfaz/enum: ' + klass)
+            # Tipo cerrado: `final` o, en mundo cerrado, sin subclases en el JAR.
+            if not flags & 0x10 and klass in extended:
+                raise ValueError('clase debe ser final o estar cerrada (tiene subclases en el JAR): ' + klass)
+            closed_by = 'final' if flags & 0x10 else 'no-subclasses'
             if header(text, 'Interfaces').strip():
                 raise ValueError('interfaces no soportadas: ' + klass)
             fm = re.search(r'^Campos \((\d+)\):\n(.*?)^Métodos \((\d+)\):\n(.*)\Z', text, re.M | re.S)
@@ -124,12 +196,15 @@ def verify(jar, root, compiler, expected_jar_sha256, allow_mutable_refs=False):
                         pending.append(target)
                 else:
                     raise ValueError('descriptor de campo no soportado: ' + desc)
-            classes[klass] = {'class': klass, 'sha256': class_hash, 'fields': fields}
-    if sha(jar.read_bytes()) != expected_jar_sha256:
+            classes[klass] = {'class': klass, 'sha256': class_hash,
+                              'closed_by': closed_by, 'fields': fields}
+    if read_jar(jar)[1] != expected_jar_sha256:
         raise ValueError('JAR cambió durante inspección')
     return {'schema': 'numeric-graph-layout-v1', 'jar_sha256': expected_jar_sha256,
             'root': root, 'classes': list(classes.values()),
-            'limitations': 'Solo layouts; sin verifier JVM, registro/publicación automática, ni Main.'}
+            'limitations': ('Solo layouts; sin verifier JVM, registro/publicación automática, ni Main. '
+                            'Tipo cerrado = final o sin subclases en este JAR (mundo cerrado): '
+                            'si aparece una subclase nueva, el layout deja de valer.')}
 
 
 def rust_layouts(result):
