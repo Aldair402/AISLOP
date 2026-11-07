@@ -45,6 +45,7 @@ run_logged check-numeric-concurrent-bridge python3 mc-aot/tests/check-numeric-co
 run_logged check-numeric-concurrent-graph python3 mc-aot/tests/check-numeric-concurrent-graph.py
 run_logged check-numeric-concurrent-graph-ticktask python3 mc-aot/tests/check-numeric-concurrent-graph.py --ticktask
 run_logged check-numeric-bridge-layout python3 mc-aot/tests/check-numeric-bridge-layout.py
+run_logged check-numeric-wide-slots python3 mc-aot/tests/check-numeric-wide-slots.py
 run_logged check-vanilla-layout-profile python3 mc-aot/tests/check-vanilla-layout-profile.py
 run_logged check-numeric-auto-publish python3 mc-aot/tests/check-numeric-auto-publish.py
 run_logged check-numeric-shared-arrays python3 mc-aot/tests/check-numeric-shared-arrays.py

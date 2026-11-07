@@ -3,13 +3,24 @@
 // No hay registro automático, GC, subtipos, arrays, String ni clases compartidas.
 // Ref: campo final, solo lectura. MutRef: campo no final, escribible desde el
 // backend concurrente bajo el mutex de campos; el destino debe estar publicado.
-#[derive(Clone,Copy,PartialEq,Eq)] enum NumericGraphSlot { Int, Ref(&'static str), MutRef(&'static str) }
+// Una ranura por tipo declarado: el layout viene de un classfile verificado, así
+// que `boolean`/`byte`/`char`/`short` no se confunden con `int` aunque el heap
+// los guarde en V::I (la JVM también los ensancha a int en el marco).
+#[derive(Clone,Copy,PartialEq,Eq)]
+enum NumericGraphSlot { Int, Bool, Byte, Char, Short, Long, Float, Double, Ref(&'static str), MutRef(&'static str) }
+fn slot_matches_value(slot:&NumericGraphSlot,value:&V)->bool {
+    matches!((value,slot),
+        (V::I(_),NumericGraphSlot::Int|NumericGraphSlot::Bool|NumericGraphSlot::Byte|NumericGraphSlot::Char|NumericGraphSlot::Short)
+        |(V::L(_),NumericGraphSlot::Long)
+        |(V::F(_),NumericGraphSlot::Float)
+        |(V::D(_),NumericGraphSlot::Double)
+        |(V::R(_),NumericGraphSlot::Ref(_))
+        |(V::R(_),NumericGraphSlot::MutRef(_)))
+}
 #[derive(Clone,Copy)] struct NumericGraphLayout { class:&'static str, fields:&'static [NumericGraphSlot] }
-// La etiqueta interna V::I cubre int/byte/char/short/boolean: el layout debe
-// venir de un classfile verificado, no de la variante del heap.
 fn self_layout_element(layout:&'static NumericGraphArrayLayout)->&'static str {layout.element}
 fn graph_layout_matches(fields:&[V],layout:&NumericGraphLayout)->bool {
-    fields.len()==layout.fields.len() && fields.iter().zip(layout.fields).all(|(v,k)|matches!((v,k),(V::I(_),NumericGraphSlot::Int)|(V::R(_),NumericGraphSlot::Ref(_))|(V::R(_),NumericGraphSlot::MutRef(_))))
+    fields.len()==layout.fields.len() && fields.iter().zip(layout.fields).all(|(v,k)|slot_matches_value(k,v))
 }
 #[derive(Default)] struct NumericGraphMap {
     forward:std::collections::HashMap<usize,(concurrent_heap::ObjectId,&'static NumericGraphLayout)>,
@@ -35,7 +46,10 @@ impl concurrent_heap::ExternalObject for NumericGraphObject {
         let kind=*self.layout.fields.get(slot).ok_or("campo inexistente")?;
         let value={let fields=self.handle.fields.lock().map_err(|_|"objeto compartido dañado")?;*fields.get(slot).ok_or("campo inexistente")?};
         match (kind,value) {
-            (NumericGraphSlot::Int,V::I(v))=>Ok(concurrent_heap::ExternalValue::Int(v)),
+            (NumericGraphSlot::Int|NumericGraphSlot::Bool|NumericGraphSlot::Byte|NumericGraphSlot::Char|NumericGraphSlot::Short,V::I(v))=>Ok(concurrent_heap::ExternalValue::Int(v)),
+            (NumericGraphSlot::Long,V::L(v))=>Ok(concurrent_heap::ExternalValue::Long(v)),
+            (NumericGraphSlot::Float,V::F(v))=>Ok(concurrent_heap::ExternalValue::Float(v.to_bits())),
+            (NumericGraphSlot::Double,V::D(v))=>Ok(concurrent_heap::ExternalValue::Double(v.to_bits())),
             (NumericGraphSlot::Ref(_),V::R(None))|(NumericGraphSlot::MutRef(_),V::R(None))=>Ok(concurrent_heap::ExternalValue::Ref(None)),
             (NumericGraphSlot::Ref(expected),V::R(Some(id)))|(NumericGraphSlot::MutRef(expected),V::R(Some(id)))=>{
                 let map=state.map.lock().map_err(|_|"grafo: mapa dañado")?;
@@ -48,7 +62,10 @@ impl concurrent_heap::ExternalObject for NumericGraphObject {
         let alive=self.state.upgrade().ok_or("grafo: sesión cerrada")?;
         let kind=*self.layout.fields.get(slot).ok_or("campo inexistente")?;
         let value=match (kind,value) {
-            (NumericGraphSlot::Int,concurrent_heap::ExternalValue::Int(v))=>V::I(v),
+            (NumericGraphSlot::Int|NumericGraphSlot::Bool|NumericGraphSlot::Byte|NumericGraphSlot::Char|NumericGraphSlot::Short,concurrent_heap::ExternalValue::Int(v))=>V::I(v),
+            (NumericGraphSlot::Long,concurrent_heap::ExternalValue::Long(v))=>V::L(v),
+            (NumericGraphSlot::Float,concurrent_heap::ExternalValue::Float(bits))=>V::F(f32::from_bits(bits)),
+            (NumericGraphSlot::Double,concurrent_heap::ExternalValue::Double(bits))=>V::D(f64::from_bits(bits)),
             (NumericGraphSlot::Ref(_),_)=>return Err("grafo: escritura de referencia no soportada"),
             (NumericGraphSlot::MutRef(_),concurrent_heap::ExternalValue::Ref(None))=>V::R(None),
             (NumericGraphSlot::MutRef(expected),concurrent_heap::ExternalValue::Ref(Some(target)))=>{

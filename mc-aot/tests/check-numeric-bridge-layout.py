@@ -10,8 +10,10 @@ Lo que este test fija, y por qué cambió (2026-11-06):
   El objeto se ata con el layout de su clase exacta, así que una subclase no
   traducida falla cerrada en `attach`.
 - `final` en un campo `int` es una restricción de escritura, no otra ranura: se
-  acepta y se anota; lo que sigue rechazándose es un descriptor sin ranura
-  (`J/F/D/Z/B/C/S`), `volatile`, arrays y referencias a tipos sin bytes en el JAR.
+  acepta y se anota. Desde el 2026-11-06 hay ranura para los ocho primitivos
+  (`int`, `boolean`, `byte`, `char`, `short`, `long`, `float`, `double`), así que
+  lo que sigue rechazándose es `volatile`, arrays y referencias a tipos sin bytes
+  en el JAR.
 """
 import hashlib
 import os
@@ -137,12 +139,20 @@ with tempfile.TemporaryDirectory(prefix='mc-bridge-layout-') as tmp:
     finalint=accepted(jar, 'FinalInt', h)
     assert finalint['classes'][0]['fields'][0]['final'] is True, finalint['classes'][0]['fields'][0]
 
+    # Las ocho ranuras primitivas: un campo por tipo declarado, en el orden del
+    # classfile, y el nombre exacto de la variante en el Rust generado.
+    for name, kind, variant in (('BooleanField', 'bool', 'Bool'), ('ByteField', 'byte', 'Byte'),
+                                ('CharField', 'char', 'Char'), ('ShortField', 'short', 'Short'),
+                                ('LongField', 'long', 'Long'), ('FloatField', 'float', 'Float'),
+                                ('DoubleField', 'double', 'Double')):
+        wide = accepted(jar, name, h)
+        assert [f['kind'] for f in wide['classes'][0]['fields']] == [kind], (name, wide['classes'][0])
+        assert 'NumericGraphSlot::' + variant in rust_layouts(wide), name
+
     cases={
         'Tag':'interfaz/annotation/enum',
         'VolatileInt':'volatile', 'VolatileRef':'volatile',
-        'BooleanField':'descriptor', 'ByteField':'descriptor', 'CharField':'descriptor',
-        'ShortField':'descriptor', 'LongField':'descriptor', 'FloatField':'descriptor',
-        'DoubleField':'descriptor', 'ArrayRef':'descriptor',
+        'ArrayRef':'descriptor',
         'StringRef':'fuera del JAR',
     }
     for name, reason in cases.items():
@@ -162,5 +172,5 @@ with tempfile.TemporaryDirectory(prefix='mc-bridge-layout-') as tmp:
         with zipfile.ZipFile(dup,'a') as z:
             z.writestr('net/minecraft/layouttest/Valid.class', b'bad')
     rejected(dup, 'Valid', digest(dup), 'duplicadas')
-    print(f'OK: {len(cases)+4} rechazos, herencia con prefijo, ejecución anotada, layouts cíclicos; '
-          'classfiles javac sintéticos; no Main')
+    print(f'OK: {len(cases)+4} rechazos, ocho ranuras primitivas, herencia con prefijo, '
+          'ejecución anotada, layouts cíclicos; classfiles javac sintéticos; no Main')

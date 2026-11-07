@@ -15,7 +15,8 @@ Qué demuestra esta prueba y qué no:
 - NO demuestra que esas clases se traduzcan ni se ejecuten. Un layout aceptado
   es un contrato de campos; `execution_blockers` dice qué falta para ejecutar.
 
-Cifras al 2026-11-06: 2.161 clases describibles, 1.114 con campos, 2.469 campos.
+Cifras al 2026-11-06: 2.611 clases describibles, 1.564 con campos, 4.048 campos, con
+ranura propia para los ocho primitivos.
 
 Historia: el número publicado antes fue «0 de 687» (irreproducible) y luego «6
 aceptadas, ninguna con campos». Ninguno de los dos describía el problema.
@@ -41,9 +42,9 @@ JAR = root.parent / 'downloads' / 'server-26.3-inner.jar'
 # Cifras fijas del censo. Si cambian, o cambió el JAR o cambió el perfil: las dos
 # cosas hay que verlas, no aceptarlas en silencio.
 TOTAL_CLASSES = 7762
-DESCRIBABLE = 2161
-DESCRIBABLE_WITH_FIELDS = 1114
-INSTANCE_FIELDS = 2469
+DESCRIBABLE = 2611
+DESCRIBABLE_WITH_FIELDS = 1564
+INSTANCE_FIELDS = 4048
 
 # Casos que se leen en el log: los que justifican la forma del layout.
 NAMED = {
@@ -55,6 +56,10 @@ NAMED = {
     'net/minecraft/world/level/levelgen/structure/BoundingBox': None,  # 6 int, sin leer nombres
     'net/minecraft/advancements/AdvancementHolder': None,              # record: base externa sin estado
     'net/minecraft/world/entity/ai/behavior/SetEntityLookTargetSometimes$Ticker': None,
+    # Un record real con tres `double` finales: la ranura ancha sale del classfile.
+    'net/minecraft/commands/arguments/coordinates/LocalCoordinates': [('double', 'left'),
+                                                                     ('double', 'up'),
+                                                                     ('double', 'forwards')],
 }
 
 # Motivo que el censo nombra -> mensaje que el verificador debe dar.

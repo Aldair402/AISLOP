@@ -1,4 +1,4 @@
-/var/tmp/mc-format-3il0t3ub/FormatDemo.java:7: warning: non-varargs call of varargs method with inexact argument type for last parameter;
+/var/tmp/mc-format-29a3s96e/FormatDemo.java:7: warning: non-varargs call of varargs method with inexact argument type for last parameter;
  case 3:s=String.format("%s",new String[]{"x","extra"});return s.equals("x")?13:0;
                              ^
   cast to Object for a varargs call

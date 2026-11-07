@@ -16,6 +16,11 @@ import sys
 import zipfile
 
 NAME = re.compile(r'net/minecraft/(?:[A-Za-z0-9_$]+/)*[A-Za-z0-9_$]+\Z')
+# Descriptor -> variante de NumericGraphSlot. boolean/byte/char/short se guardan
+# en la misma ranura física que int (V::I), pero el layout conserva el tipo
+# declarado: el traductor necesita saber qué anchura recortar al escribir.
+PRIMITIVE_SLOTS = {'Z': 'bool', 'B': 'byte', 'C': 'char', 'S': 'short',
+                   'I': 'int', 'J': 'long', 'F': 'float', 'D': 'double'}
 MEMBER = re.compile(r'[A-Za-z_$][A-Za-z0-9_$]*\Z')
 DIGEST = re.compile(r'[0-9a-f]{64}\Z')
 
@@ -186,11 +191,12 @@ def instance_fields(info, klass, allow_mutable_refs, class_names):
             continue
         if flag & 0x40:
             raise ValueError('campos volatile no soportados: ' + klass)
-        if desc == 'I':
+        if desc in PRIMITIVE_SLOTS:
             # `final` en un campo es una restricción de escritura, no otra ranura:
             # el layout es el mismo y se anota para que el traductor pueda negar
             # la escritura en vez de olvidarla.
-            fields.append({'name': field, 'descriptor': desc, 'kind': 'int',
+            fields.append({'name': field, 'descriptor': desc,
+                           'kind': PRIMITIVE_SLOTS[desc],
                            'final': bool(flag & 0x10), 'declared_in': klass})
         elif desc.startswith('L') and desc.endswith(';'):
             target = desc[1:-1]
@@ -349,10 +355,15 @@ def verify(jar, root, compiler, expected_jar_sha256, allow_mutable_refs=False):
     return {'schema': 'numeric-graph-layout-v2', 'jar_sha256': expected_jar_sha256,
             'root': root, 'classes': ordered_classes,
             'limitations': ('Solo layouts; sin verifier JVM, registro/publicación automática, ni Main. '
+                            'Ranuras: int, bool, byte, char, short, long, float, double y referencias. '
                             'Campos heredados primero; el objeto se ata con el layout de su clase exacta, '
                             'así que una subclase no traducida falla en `attach` en vez de corromper. '
                             'Estáticos, <clinit> e interfaces se declaran en execution_blockers: bloquean '
                             'ejecutar la clase, no describir su layout.')}
+
+
+RUST_SLOT = {'int': 'Int', 'bool': 'Bool', 'byte': 'Byte', 'char': 'Char',
+             'short': 'Short', 'long': 'Long', 'float': 'Float', 'double': 'Double'}
 
 
 def rust_layouts(result):
@@ -360,8 +371,8 @@ def rust_layouts(result):
     for i, item in enumerate(result['classes']):
         slots = []
         for field in item['fields']:
-            if field['kind'] == 'int':
-                slots.append('NumericGraphSlot::Int')
+            if field['kind'] in RUST_SLOT:
+                slots.append('NumericGraphSlot::' + RUST_SLOT[field['kind']])
             elif field['kind'] == 'ref':
                 slots.append('NumericGraphSlot::Ref(' + json.dumps(field['target'], ensure_ascii=True) + ')')
             else:

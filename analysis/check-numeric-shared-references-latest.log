@@ -1,6 +1,6 @@
 running 1 test
 test ref_bridge_tests::object_identity_cycles_and_guarded_references ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
 OK: 96 decisiones con Java 25; 20 rondas × 8000 incrementos sobre dos objetos, alias y ciclo; null, cambio de referencia y guardas; no ejecuta tareas Java en Rayon
 OK: 96 resultados Java/nativo con dos referencias a un universo compartido en FeatureFlag/FeatureFlagSet oficiales; tres hashes verificados; activación experimental solo en la prueba

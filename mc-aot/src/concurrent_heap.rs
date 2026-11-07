@@ -25,6 +25,11 @@ pub enum FutureState {
 pub enum Value {
     Int(i32),
     Long(i64),
+    // Float y Double guardan los **bits** para conservar Eq: la igualdad de un
+    // `Value` es de representación, no IEEE (+0.0 y -0.0 difieren, NaN es igual
+    // a sí mismo). La semántica de coma flotante vive en la pila del intérprete.
+    Float(u32),
+    Double(u64),
     Ref(Option<ObjectId>),
     Void,
 }
@@ -34,7 +39,8 @@ pub enum Value {
 /// no supone semántica general de tipos, clases, excepciones ni memoria JVM.
 pub trait ExternalGuard {}
 impl<T> ExternalGuard for T {}
-#[derive(Clone,Copy)] pub enum ExternalValue { Int(i32), Ref(Option<ObjectId>) }
+#[derive(Clone,Copy,Debug,PartialEq,Eq)]
+pub enum ExternalValue { Int(i32), Long(i64), Float(u32), Double(u64), Ref(Option<ObjectId>) }
 pub trait ExternalObject: Send + Sync {
     fn identity_key(&self) -> usize;
     fn domain_key(&self) -> usize;
@@ -532,7 +538,12 @@ impl SharedHeap {
         let index = store.check(id)?;
         if let Some(external)=store.objects[index].external.clone() {
             drop(store);
-            let value=match external.read(field)? {ExternalValue::Int(v)=>Value::Int(v),ExternalValue::Ref(id)=>Value::Ref(id)};
+            let value=match external.read(field)? {
+                ExternalValue::Int(v)=>Value::Int(v),
+                ExternalValue::Long(v)=>Value::Long(v),
+                ExternalValue::Float(bits)=>Value::Float(bits),
+                ExternalValue::Double(bits)=>Value::Double(bits),
+                ExternalValue::Ref(id)=>Value::Ref(id)};
             let store=self.store.lock().map_err(|_|"heap dañado")?;store.check_value(value)?;return Ok(value);
         }
         store.objects[index].fields.get(field).copied().ok_or("objeto o campo inválido")
@@ -541,7 +552,15 @@ impl SharedHeap {
         let mut store = self.store.lock().map_err(|_| "heap dañado")?;
         let index = store.check(id)?;
         store.check_value(value)?;
-        if let Some(external)=store.objects[index].external.clone() {let value=match value {Value::Int(v)=>ExternalValue::Int(v),Value::Ref(v)=>ExternalValue::Ref(v),_=>return Err("puente: tipo no soportado")};drop(store);return external.write(field,value);}
+        if let Some(external)=store.objects[index].external.clone() {
+            let value=match value {
+                Value::Int(v)=>ExternalValue::Int(v),
+                Value::Long(v)=>ExternalValue::Long(v),
+                Value::Float(bits)=>ExternalValue::Float(bits),
+                Value::Double(bits)=>ExternalValue::Double(bits),
+                Value::Ref(v)=>ExternalValue::Ref(v),
+                Value::Void=>return Err("puente: tipo no soportado")};
+            drop(store);return external.write(field,value);}
         let slot = store.objects[index].fields.get_mut(field).ok_or("objeto o campo inválido")?;
         if std::mem::discriminant(slot) != std::mem::discriminant(&value) {return Err("tipo de campo incompatible");}
         *slot = value;Ok(())

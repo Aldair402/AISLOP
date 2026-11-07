@@ -29,5 +29,5 @@ test scheduler::tests::shutdown_timeout_rejection_and_panic ... ok
 test scheduler::tests::weak_helper_does_not_keep_closed_pool_alive ... ok
 test bridge_tests::real_numeric_and_translated_java_forkjoin_share_object_and_monitor ... ok
 
-test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.22s
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.25s
 OK: 20 rondas Java y Rust; dos backends traducidos, mismo objeto y monitor; cuatro tareas ForkJoinPool Java en Rayon, QuartPos oficial, alias, reentrada y guardas, ejecución sin Java en PATH; harness externo opt-in, no Main

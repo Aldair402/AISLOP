@@ -28,7 +28,8 @@ harness=r'''
    assert_eq!(heap.class_of(external),Ok(Some("net/minecraft/test/Cell")));
    assert_eq!(heap.read(external,0),Ok(Value::Int(2147483600)));
    assert_eq!(heap.read(external,1),Err("campo inexistente"));
-   assert_eq!(heap.write(external,0,Value::Long(1)),Err("puente: tipo no soportado"));
+   // El valor ancho ya cruza el heap; el puente v1 (solo `int`) lo rechaza él mismo.
+   assert_eq!(heap.write(external,0,Value::Long(1)),Err("puente: solo campos int"));
    assert_eq!(heap.get_and_add_int(external,0,1),Err("RMW externo no soportado"));
    assert_eq!(heap.compare_exchange(external,0,Value::Int(1),Value::Int(2)),Err("CAS externo no soportado"));
    let other=SharedHeap::default();assert!(other.read(external,0).is_err());

@@ -69,7 +69,7 @@ def surfaces(jar):
     return out
 
 
-def verdict(name, table, allow_mutable_refs=False, slots=frozenset({'I'})):
+def verdict(name, table, allow_mutable_refs=False, slots=frozenset(PRIMITIVES)):
     """(bloqueos de layout, bloqueos de ejecución, campos de instancia)."""
     fatal, execute = [], []
     chain, seen, current = [], set(), name
@@ -128,7 +128,7 @@ def verdict(name, table, allow_mutable_refs=False, slots=frozenset({'I'})):
     return seen_fatal, seen_exec, fields
 
 
-def census(jar, allow_mutable_refs=False, slots=frozenset({'I'})):
+def census(jar, allow_mutable_refs=False, slots=frozenset(PRIMITIVES)):
     table = surfaces(jar)
     rows = []
     for name, surface in sorted(table.items()):
@@ -157,10 +157,9 @@ def plan(rows):
     """Cuántas clases abre añadir ranuras al puente (lo único que falta para describir)."""
     base = sum(1 for r in rows if not r['layout_blockers'])
     base_fields = sum(1 for r in rows if not r['layout_blockers'] and r['instance_fields'])
-    steps = [('perfil actual (I y referencias finales)', {'I'})]
-    for extra in ('J', 'JFD', 'JFDBZCS'):
-        steps.append(('+ ranuras ' + ' '.join(PRIMITIVES[c] for c in extra),
-                      {'I'} | set(extra)))
+    steps = [('perfil actual (ocho primitivos y referencias finales)', set(PRIMITIVES))]
+    for extra in ('', ):
+        pass
     out = []
     for label, slots in steps:
         admitted = [r for r in rows

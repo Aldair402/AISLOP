@@ -1,4 +1,4 @@
-    Finished `release` profile [optimized] target(s) in 0.02s
+    Finished `release` profile [optimized] target(s) in 0.01s
 JAR: 7762 clases; 69821 métodos con código
 Alcance (static int y retornos primitivos pequeños): 202 métodos en 90 clases
 Compilan: 160 métodos en 73 clases
