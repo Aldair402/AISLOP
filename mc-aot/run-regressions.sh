@@ -50,6 +50,7 @@ run_logged check-vanilla-first-class python3 mc-aot/tests/check-vanilla-first-cl
 run_logged check-class-demo-signatures python3 mc-aot/tests/check-class-demo-signatures.py
 run_logged check-vanilla-two-more-classes python3 mc-aot/tests/check-vanilla-two-more-classes.py
 run_logged check-vanilla-empty-classes python3 mc-aot/tests/check-vanilla-empty-classes.py
+run_logged check-vanilla-intbounds python3 mc-aot/tests/check-vanilla-intbounds.py
 run_logged check-math-float-minmax python3 mc-aot/tests/check-math-float-minmax.py
 run_logged check-vanilla-layout-profile python3 mc-aot/tests/check-vanilla-layout-profile.py
 run_logged check-numeric-auto-publish python3 mc-aot/tests/check-numeric-auto-publish.py

@@ -30,7 +30,8 @@ with tempfile.TemporaryDirectory(prefix='class-signatures-') as temp:
     src.mkdir(parents=True)
     cases = {
         'Primitive': 'public Primitive(int n) { this.n=n; } int n; public int value() { return n; }',
-        'ReturnString': 'public ReturnString() {} public String value() { return "x"; }',
+        'ReturnObject': 'public ReturnObject() {} public Object value() { return null; }',
+        'ArgString': 'public ArgString() {} public int value(String x) { return 1; }',
         'ArgObject': 'public ArgObject() {} public int value(Object x) { return 1; }',
         'CtorArray': 'public CtorArray(int[] x) {} public int value() { return 1; }',
         'ReturnArray': 'public ReturnArray() {} public int[] value() { return null; }',
@@ -69,10 +70,10 @@ with tempfile.TemporaryDirectory(prefix='class-signatures-') as temp:
                   '--compiler', compiler, '--jobs', '2', '--out', report])
     assert census.returncode == 0, census.stderr
     data = json.loads(report.read_text())
-    assert data['total'] == 5 and data['traducen_enteras'] == 1, data
+    assert data['total'] == 6 and data['traducen_enteras'] == 1, data
     assert data['ok'] == ['net/minecraft/test/Primitive'], data['ok']
     assert data['jar_sha256'] == hashlib.sha256(jar.read_bytes()).hexdigest()
     assert data['compiler_sha256'] == hashlib.sha256(compiler.read_bytes()).hexdigest()
     assert all('referencia en firma fuera del driver' in reason for reason in data['fail'].values()), data['fail']
 
-    print('OK: firmas primitivas compilan y ejecutan sin JVM; String, objeto y arrays rechazados antes de rustc; class-demo-rs y class-demo coinciden')
+    print('OK: firmas primitivas compilan y ejecutan sin JVM; referencias de objeto y arrays rechazadas antes de rustc; class-demo-rs y class-demo coinciden')

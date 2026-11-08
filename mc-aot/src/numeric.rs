@@ -3901,7 +3901,8 @@ pub(super) fn compile_jar(jar: &Path, class: &str, method: &str, desc: &str) -> 
 ///
 /// Cada paso escribe una línea: `OK` para `void`, el entero tal cual (los
 /// booleanos como `1`/`0`, igual que el driver Java) y `fbits:`/`dbits:` para
-/// coma flotante, que es la representación que usan las demás pruebas.
+/// coma flotante. Los retornos String se representan como `s:null` o `s16:`
+/// seguido de las unidades UTF-16 en hexadecimal, para conservar sustitutos aislados.
 ///
 /// Se rechaza con motivo nombrado lo que el perfil no describe: clase no
 /// pública, base distinta de `Object`, interfaces, campos estáticos, `<clinit>`,
@@ -3975,12 +3976,13 @@ pub(super) fn class_demo_admission(jar: &Path, class: &str) -> Result<(super::me
     if ctors.len() != 1 {
         return Err("se requiere exactamente un constructor".into());
     }
-    // El driver solo interpreta e imprime primitivas. No generar Rust inválido
-    // ni aparentar cobertura de String, objetos o arrays en firmas públicas.
+    // El driver admite argumentos primitivos y retornos primitivos o String.
+    // Los String de salida se codifican como unidades UTF-16, incluso null y
+    // sustitutos aislados; otras referencias se rechazan antes de generar Rust.
     for m in &meta.methods {
         let sig = signature_ext(&m.descriptor, true)
             .map_err(|e| format!("firma no admitida en {} {}: {e}", m.name, m.descriptor))?;
-        if sig.args.iter().any(|t| is_ref(*t)) || is_ref(sig.ret) {
+        if sig.args.iter().any(|t| is_ref(*t)) || (is_ref(sig.ret) && sig.ret != 'T') {
             return Err(format!("referencia en firma fuera del driver: {} {}", m.name, m.descriptor));
         }
     }
@@ -4067,6 +4069,9 @@ pub(super) fn compile_class_demo(jar: &Path, class: &str) -> Result<String> {
             ),
             'D' => format!(
                 "            let r={func}(&mut heap,id{args});\n            println!(\"dbits:{{:016x}}\",r.to_bits());\n"
+            ),
+            'T' => format!(
+                "            let r={func}(&mut heap,id{args});\n            match r {{None=>println!(\"s:null\"),Some(_)=>{{print!(\"s16:\");for u in string_units(&heap,r){{print!(\"{{:04x}}\",u);}}println!();}}}}\n"
             ),
             _ => format!("            println!(\"{{}}\",{func}(&mut heap,id{args}));\n"),
         };
