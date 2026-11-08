@@ -76,4 +76,17 @@ with tempfile.TemporaryDirectory(prefix='class-signatures-') as temp:
     assert data['compiler_sha256'] == hashlib.sha256(compiler.read_bytes()).hexdigest()
     assert all('referencia en firma fuera del driver' in reason for reason in data['fail'].values()), data['fail']
 
-    print('OK: firmas primitivas compilan y ejecutan sin JVM; referencias de objeto y arrays rechazadas antes de rustc; class-demo-rs y class-demo coinciden')
+    reference = d / 'census-individual.json'
+    individual = run([sys.executable, root / 'tools/execution-census.py', '--jar', jar,
+                      '--compiler', compiler, '--jobs', '2', '--individual', '--out', reference])
+    assert individual.returncode == 0, individual.stderr
+    old = json.loads(reference.read_text())
+    assert old['ok'] == data['ok'] and old['fail'] == data['fail'], (old, data)
+    # La ruta de lote preserva índice, orden y clases repetidas, y no comparte
+    # los ficheros temporales cuando se usan varios trabajadores.
+    rows = census_module.translate_batch(compiler, jar,
+        ['net/minecraft/test/Primitive', 'net/minecraft/test/ReturnObject',
+         'net/minecraft/test/Primitive'], d)
+    assert [r[1] is None for r in rows] == [True, False, True], rows
+
+    print('OK: firmas primitivas compilan y ejecutan sin JVM; referencias de objeto y arrays rechazadas antes de rustc; lote e individual coinciden; class-demo-rs y class-demo coinciden')

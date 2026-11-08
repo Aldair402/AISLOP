@@ -812,6 +812,30 @@ fn run() -> Result<()> {
         let source = numeric::compile_class_demo(Path::new(&args[2]), &args[3])?;
         return emit_binary(&args[4], &source);
     }
+    if args.len() == 5 && args[1] == "class-demo-scan" {
+        // Censo de generación en lote: reutiliza el índice del classpath por
+        // proceso. No invoca rustc ni ejecuta las clases. Errores en hex UTF-8
+        // mantienen intactos saltos de línea y delimitadores del diagnóstico.
+        use std::io::Write;
+        let input = std::fs::read_to_string(&args[3])
+            .map_err(|e| format!("no se pudo leer lista: {e}"))?;
+        let file = std::fs::File::create(&args[4])
+            .map_err(|e| format!("no se pudo crear informe: {e}"))?;
+        let mut out = std::io::BufWriter::new(file);
+        for (i, class) in input.lines().enumerate() {
+            let result = numeric::compile_class_demo(Path::new(&args[2]), class);
+            let line = match result {
+                Ok(_) => format!("{i}\tok\n"),
+                Err(err) => {
+                    let encoded: String = err.as_bytes().iter().map(|b| format!("{b:02x}")).collect();
+                    format!("{i}\terr\t{encoded}\n")
+                }
+            };
+            out.write_all(line.as_bytes()).map_err(|e| format!("error al escribir informe: {e}"))?;
+        }
+        out.flush().map_err(|e| format!("error al cerrar informe: {e}"))?;
+        return Ok(());
+    }
     if args.len() == 5 && args[1] == "class-demo-rs" {
         // El mismo trabajo que `class-demo` pero parando antes de rustc: el censo
         // de ejecutabilidad mide la traducción de miles de clases y compilar cada
@@ -844,7 +868,7 @@ fn run() -> Result<()> {
         let source = multi::compile_multi(&a, &b, ref_source.as_deref())?;
         return emit_binary(&args[7], &source);
     }
-    let usage = "uso: mc-aot compile <server.jar> <clase/sin/.class> <método> <descriptor> <binario>\n     mc-aot compile-numeric <server.jar> <clase> <método> <descriptor> <binario>\n     mc-aot multi-static-demo <server.jar> <clase> <binario> <método> <descriptor> [<método> <descriptor> ...]\n     mc-aot shared-worker-demo <server.jar> <clase-raíz> <campo-static> <clase-runnable> <binario> <tick> <lectura> [--util-named-wrapper|--ticktask-wrapper]\n     mc-aot concurrent-int-demo <server.jar> <clase> <binario> <método> '(I)I'\n     mc-aot concurrent-rayon-int-demo <server.jar> <clase> <binario> <método> '(I)I'\n     mc-aot static-demo <server.jar> <clase> <binario> <método> <descriptor> [<método> <descriptor> ...]\n     mc-aot class-demo <server.jar> <clase> <binario>\n     mc-aot class-demo-rs <server.jar> <clase> <archivo.rs> (solo generación; no verifica ni ejecuta)\n     mc-aot object-demo <server.jar> <clase> <binario> [--default <interfaz> <método>]\n     mc-aot multi-demo <server.jar> <clase1> <clase2> <interfaz> <default> <binario> [--reference <clase> <getter>]\n     mc-aot reference-demo <server.jar> <clase> <getter> <binario>\n     mc-aot inspect <server.jar> <clase>\n     mc-aot index-dir <directorio-de-class>\n     mc-aot graph-dir <directorio-de-class>\nArrays CLI (I/J/Z/B/C/S): null, [], [1,2] o @0 para reutilizar un array anterior.\nString: null o s:contenido; String[]: null o sarr:[x<hex-UTF8>,n,...], n=null y x=cadena vacía.\nHeap experimental: 10 000 objetos/arrays, 1 000 000 elementos y unidades UTF-16 acumulados; sin GC.\nEl análisis es estructural, no verifica la semántica ni traduce clases. Solo archivos de confianza.\nejemplo: mc-aot compile server.jar net/minecraft/util/Mth square '(I)I' ./square";
+    let usage = "uso: mc-aot compile <server.jar> <clase/sin/.class> <método> <descriptor> <binario>\n     mc-aot compile-numeric <server.jar> <clase> <método> <descriptor> <binario>\n     mc-aot multi-static-demo <server.jar> <clase> <binario> <método> <descriptor> [<método> <descriptor> ...]\n     mc-aot shared-worker-demo <server.jar> <clase-raíz> <campo-static> <clase-runnable> <binario> <tick> <lectura> [--util-named-wrapper|--ticktask-wrapper]\n     mc-aot concurrent-int-demo <server.jar> <clase> <binario> <método> '(I)I'\n     mc-aot concurrent-rayon-int-demo <server.jar> <clase> <binario> <método> '(I)I'\n     mc-aot static-demo <server.jar> <clase> <binario> <método> <descriptor> [<método> <descriptor> ...]\n     mc-aot class-demo <server.jar> <clase> <binario>\n     mc-aot class-demo-rs <server.jar> <clase> <archivo.rs> (solo generación; no verifica ni ejecuta)\n     mc-aot class-demo-scan <server.jar> <lista.txt> <informe.tsv> (generación en lote)\n     mc-aot object-demo <server.jar> <clase> <binario> [--default <interfaz> <método>]\n     mc-aot multi-demo <server.jar> <clase1> <clase2> <interfaz> <default> <binario> [--reference <clase> <getter>]\n     mc-aot reference-demo <server.jar> <clase> <getter> <binario>\n     mc-aot inspect <server.jar> <clase>\n     mc-aot index-dir <directorio-de-class>\n     mc-aot graph-dir <directorio-de-class>\nArrays CLI (I/J/Z/B/C/S): null, [], [1,2] o @0 para reutilizar un array anterior.\nString: null o s:contenido; String[]: null o sarr:[x<hex-UTF8>,n,...], n=null y x=cadena vacía.\nHeap experimental: 10 000 objetos/arrays, 1 000 000 elementos y unidades UTF-16 acumulados; sin GC.\nEl análisis es estructural, no verifica la semántica ni traduce clases. Solo archivos de confianza.\nejemplo: mc-aot compile server.jar net/minecraft/util/Mth square '(I)I' ./square";
     if args.len() == 2 && matches!(args[1].as_str(), "--help" | "-h") {
         println!("{usage}");
         return Ok(());

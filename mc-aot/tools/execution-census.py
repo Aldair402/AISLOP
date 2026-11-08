@@ -5,7 +5,7 @@ El censo de layouts (`layout-profile-census.py`) dice qué clases se pueden *des
 este dice qué clases se pueden *traducir enteras* con el traductor actual, que es la
 condición necesaria para ejecutar una clase completa (no un método suelto).
 
-Se apoya en `mc-aot class-demo-rs`: genera Rust con las mismas guardas que
+Se apoya en `mc-aot class-demo-scan` (o `class-demo-rs` con `--individual`): genera Rust con las mismas guardas que
 `class-demo`, pero no invoca rustc. Un resultado favorable NO demuestra que Rust
 compile, que la clase se ejecute ni su equivalencia con Java; requiere pruebas
 independientes. Los bloqueos son el primer error observado, no todos los posibles.
@@ -83,12 +83,47 @@ def translate(compiler, jar, name, scratch):
     return name, normalize(done.stderr or done.stdout)
 
 
+def translate_batch(compiler, jar, names, scratch):
+    """Genera cada clase en el mismo proceso; verifica exactamente una fila por entrada."""
+    if not names:
+        return []
+    with tempfile.TemporaryDirectory(dir=scratch) as td:
+        base = pathlib.Path(td)
+        listing, report = base / 'classes.txt', base / 'report.tsv'
+        listing.write_text(''.join(name + '\n' for name in names), encoding='utf-8')
+        try:
+            done = subprocess.run([str(compiler), 'class-demo-scan', str(jar), str(listing), str(report)],
+                                  capture_output=True, text=True, timeout=1800)
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError('censo en lote: tiempo agotado; resultado incompleto') from exc
+        if done.returncode != 0 or not report.is_file():
+            raise RuntimeError(f'censo en lote falló ({done.returncode}): {done.stderr}')
+        lines = report.read_text(encoding='utf-8').splitlines()
+        if len(lines) != len(names):
+            raise RuntimeError(f'informe incompleto: {len(lines)} de {len(names)}')
+        results = []
+        for index, line in enumerate(lines):
+            parts = line.split('\t')
+            if parts == [str(index), 'ok']:
+                results.append((names[index], None))
+            elif len(parts) == 3 and parts[:2] == [str(index), 'err']:
+                try:
+                    message = bytes.fromhex(parts[2]).decode('utf-8')
+                except (ValueError, UnicodeError) as exc:
+                    raise RuntimeError(f'diagnóstico inválido en {index}') from exc
+                results.append((names[index], normalize(message)))
+            else:
+                raise RuntimeError(f'fila inválida o desordenada {index}: {line!r}')
+        return results
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--jar', type=pathlib.Path, default=DEFAULT_JAR)
     ap.add_argument('--compiler', type=pathlib.Path, default=COMPILER)
     ap.add_argument('--jobs', type=int, default=2)
+    ap.add_argument('--individual', action='store_true', help='referencia lenta: un proceso por clase')
     ap.add_argument('--limit', type=int, help='solo las N primeras clases (para probar)')
     ap.add_argument('--only-admitted', action='store_true',
                     help='solo las clases sin bloqueo de layout (el universo describible)')
@@ -110,12 +145,20 @@ def main():
 
     with tempfile.TemporaryDirectory(prefix='mc-exec-census-') as td:
         with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as pool:
-            futures = [pool.submit(translate, args.compiler, args.jar, name,
-                                   pathlib.Path(td)) for name in universe]
+            if args.individual:
+                futures = [pool.submit(translate, args.compiler, args.jar, name,
+                                       pathlib.Path(td)) for name in universe]
+                batches = False
+            else:
+                groups = [universe[i::args.jobs] for i in range(args.jobs)]
+                futures = [pool.submit(translate_batch, args.compiler, args.jar, group,
+                                       pathlib.Path(td)) for group in groups if group]
+                batches = True
             for done in concurrent.futures.as_completed(futures):
-                name, reason = done.result()
-                if reason is not None:
-                    fail[name] = reason
+                results = done.result() if batches else [done.result()]
+                for name, reason in results:
+                    if reason is not None:
+                        fail[name] = reason
 
     fail = dict(sorted(fail.items()))
     ok = [n for n in universe if n not in fail]
@@ -130,6 +173,7 @@ def main():
         'jar': str(args.jar),
         'jar_sha256': hashlib.sha256(args.jar.read_bytes()).hexdigest(),
         'compiler_sha256': hashlib.sha256(args.compiler.read_bytes()).hexdigest(),
+        'mode': 'individual' if args.individual else 'batch',
         'universe': 'describibles (sin bloqueo de layout)' if args.only_admitted else 'todo el JAR',
         'total': len(universe),
         'traducen_enteras': len(ok),
