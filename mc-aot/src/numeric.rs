@@ -11,23 +11,35 @@ struct Sig {
     ret: char,
 }
 // Minúsculas: arrays primitivos; T: String; t: String[].
-// Opt-in de futuros completados. Nombre unificado `MC_AOT_FUTURES=completed-only`
-// (Q-AC-7) con `MC_AOT_NUMERIC_COMPLETED_FUTURE=1` conservado como alias por una
-// versión. Un valor desconocido en el nombre nuevo se rechaza: no se ignora en
-// silencio ni se adivina la intención.
+// Opt-in unificado de futuros (Q-AB-2/Q-AC-9, decidido el 2026-11-07). El nombre
+// canónico es `MC_AOT_FUTURES=restricted` — el que B honra en su backend desde
+// `504994b` y el que B publica en su rama — porque describe un perfil (todos los
+// futuros tan restringidos como el completed-only) y no caduca si el perfil crece.
+// `completed-only` se conserva como alias histórico del mismo perfil y `off` lo
+// apaga explícitamente; `MC_AOT_NUMERIC_COMPLETED_FUTURE=1` sigue valiendo como
+// alias heredado una versión. La variable vacía cae al alias heredado, igual que no
+// estar definida. Un valor desconocido se rechaza: no se ignora en silencio ni se
+// adivina la intención. Habilitar `restricted` aquí no habilita futuros pendientes:
+// este perfil solo modela futuros ya completados con normalidad, igual que B los
+// modela para su backend.
 fn futures_optin() -> Result<bool> {
     static CACHE: std::sync::OnceLock<std::result::Result<bool, String>> = std::sync::OnceLock::new();
     CACHE
-        .get_or_init(|| match std::env::var_os("MC_AOT_FUTURES") {
-            Some(value) if value == std::ffi::OsStr::new("completed-only") => Ok(true),
-            Some(value) if value.is_empty() => Ok(numeric_completed_future_alias()),
-            Some(value) => Err(format!("MC_AOT_FUTURES: valor no soportado: {}", value.to_string_lossy())),
-            None => Ok(numeric_completed_future_alias()),
+        .get_or_init(|| match std::env::var("MC_AOT_FUTURES") {
+            Ok(value) if value == "restricted" || value == "completed-only" => Ok(true),
+            Ok(value) if value == "off" => Ok(false),
+            Ok(value) if value.is_empty() => {
+                // Variable vacía se comporta como no definida: vale el alias heredado
+                // `MC_AOT_NUMERIC_COMPLETED_FUTURE=1` (una versión, Q-AC-7).
+                Ok(std::env::var_os("MC_AOT_NUMERIC_COMPLETED_FUTURE").as_deref() == Some(std::ffi::OsStr::new("1")))
+            }
+            Ok(value) => Err(format!("MC_AOT_FUTURES: valor no soportado: {value} (admitidos: restricted, completed-only, off)")),
+            Err(_) => {
+                // Alias heredado por defecto: `MC_AOT_NUMERIC_COMPLETED_FUTURE=1`.
+                Ok(std::env::var_os("MC_AOT_NUMERIC_COMPLETED_FUTURE").as_deref() == Some(std::ffi::OsStr::new("1")))
+            }
         })
         .clone()
-}
-fn numeric_completed_future_alias() -> bool {
-    std::env::var_os("MC_AOT_NUMERIC_COMPLETED_FUTURE").as_deref() == Some(std::ffi::OsStr::new("1"))
 }
 
 fn is_ref(t: char) -> bool {
@@ -3076,7 +3088,7 @@ impl NumericCompiler<'_> {
                     let idx=u16::from_be_bytes([read()?,read()?]);let (owner,name,desc)=method_ref(&m.cp,idx)?;
                     match (owner,name,desc) {
                         ("java/util/concurrent/CompletableFuture",_,_) if self.multi_classes.is_some()=>{
-                            if !futures_optin()? {return Err("CompletableFuture: requiere MC_AOT_NUMERIC_COMPLETED_FUTURE=1 (o el nombre unificado MC_AOT_FUTURES=completed-only)".into());}
+                            if !futures_optin()? {return Err("CompletableFuture: requiere MC_AOT_FUTURES=restricted (alias histórico MC_AOT_FUTURES=completed-only o MC_AOT_NUMERIC_COMPLETED_FUTURE=1)".into());}
                             match (name,desc) {
                                 ("get"|"join","()Ljava/lang/Object;")=>"let r=pop_r(&mut stack);stack.push(V::R(completed_future_value(heap,r)));".into(),
                                 ("getNow","(Ljava/lang/Object;)Ljava/lang/Object;")=>"let _fallback=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(completed_future_value(heap,r)));".into(),
@@ -3383,7 +3395,7 @@ impl NumericCompiler<'_> {
                         ("org/apache/logging/log4j/util/OsgiServiceLocator","loadServices","(Ljava/lang/Class;Ljava/lang/Class;Lorg/apache/logging/log4j/Logger;)Ljava/util/stream/Stream;") if self.multi_classes.is_some() && start==55 && self.active.last().is_some_and(|k| k=="org/apache/logging/log4j/util/ServiceLoaderUtil.safeStream(Ljava/lang/Class;Ljava/util/ServiceLoader;Lorg/apache/logging/log4j/Logger;)Ljava/util/stream/Stream;")=>{self.verify_log4j_absent_osgi()?;"{ error(\"Log4j OSGi: rama inalcanzable ejecutada\"); None }".into()},
                         ("java/util/stream/Stream","concat","(Ljava/util/stream/Stream;Ljava/util/stream/Stream;)Ljava/util/stream/Stream;") if self.multi_classes.is_some() && start==58 && self.active.last().is_some_and(|k| k=="org/apache/logging/log4j/util/ServiceLoaderUtil.safeStream(Ljava/lang/Class;Ljava/util/ServiceLoader;Lorg/apache/logging/log4j/Logger;)Ljava/util/stream/Stream;")=>{self.verify_log4j_absent_osgi()?;"{ error(\"Log4j OSGi: rama inalcanzable ejecutada\"); None }".into()},
                         ("java/util/concurrent/CompletableFuture","completedFuture","(Ljava/lang/Object;)Ljava/util/concurrent/CompletableFuture;") if self.multi_classes.is_some()=>{
-                            if !futures_optin()? {return Err("completedFuture: requiere MC_AOT_NUMERIC_COMPLETED_FUTURE=1 (o el nombre unificado MC_AOT_FUTURES=completed-only)".into());}
+                            if !futures_optin()? {return Err("completedFuture: requiere MC_AOT_FUTURES=restricted (alias histórico MC_AOT_FUTURES=completed-only o MC_AOT_NUMERIC_COMPLETED_FUTURE=1)".into());}
                             "Some(completed_future_new(heap,x0))".into()
                         },
                         ("java/util/concurrent/ConcurrentHashMap","newKeySet","()Ljava/util/concurrent/ConcurrentHashMap$KeySetView;") if self.multi_classes.is_some()=>"Some(concurrent_keyset_new(heap))".into(),

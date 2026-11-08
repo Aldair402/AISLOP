@@ -32,11 +32,20 @@ with tempfile.TemporaryDirectory(prefix='mc-numeric-completed-future-') as t:
  disabled=env.copy();disabled.pop('MC_AOT_NUMERIC_COMPLETED_FUTURE')
  bad=run(cmd[:9]+[str(d/'disabled'),'run','(I)I'],capture_output=True,env=disabled)
  assert bad.returncode!=0 and 'MC_AOT_FUTURES=completed-only' in bad.stderr and not (d/'disabled').exists(),bad.stderr
- # Q-AC-7: el nombre unificado basta por sí solo y da el mismo binario observable.
- unified=disabled.copy();unified['MC_AOT_FUTURES']='completed-only'
- ok(run(cmd[:9]+[str(d/'unified'),'run','(I)I'],capture_output=True,env=unified))
- native_unified=ok(run([str(d/'unified'),*[v for n in values for v in ('0',str(n))]],capture_output=True,env=native_env))
- assert native_unified.stdout==java.stdout,(native_unified.stdout,java.stdout)
+ # Q-AC-7/Q-AC-9: el nombre unificado canónico basta por sí solo y da el mismo binario observable.
+ unified=disabled.copy();unified['MC_AOT_FUTURES']='restricted'
+ ok(run(cmd[:9]+[str(d/'restricted'),'run','(I)I'],capture_output=True,env=unified))
+ native_restricted=ok(run([str(d/'restricted'),*[v for n in values for v in ('0',str(n))]],capture_output=True,env=native_env))
+ assert native_restricted.stdout==java.stdout,(native_restricted.stdout,java.stdout)
+ # `completed-only` se conserva como alias histórico del mismo perfil por una versión.
+ legacy=disabled.copy();legacy['MC_AOT_FUTURES']='completed-only'
+ ok(run(cmd[:9]+[str(d/'legacy'),'run','(I)I'],capture_output=True,env=legacy))
+ native_legacy=ok(run([str(d/'legacy'),*[v for n in values for v in ('0',str(n))]],capture_output=True,env=native_env))
+ assert native_legacy.stdout==java.stdout,(native_legacy.stdout,java.stdout)
+ # `off` apaga el perfil explícitamente, igual que en el backend concurrente.
+ off=disabled.copy();off['MC_AOT_FUTURES']='off'
+ bad=run(cmd[:9]+[str(d/'off'),'run','(I)I'],capture_output=True,env=off)
+ assert bad.returncode!=0 and 'MC_AOT_FUTURES=restricted' in bad.stderr and not (d/'off').exists(),bad.stderr
  # Un valor desconocido se rechaza, no se ignora en silencio.
  bogus=disabled.copy();bogus['MC_AOT_FUTURES']='completed'
  bad=run(cmd[:9]+[str(d/'bogus'),'run','(I)I'],capture_output=True,env=bogus)
@@ -50,4 +59,4 @@ with tempfile.TemporaryDirectory(prefix='mc-numeric-completed-future-') as t:
   ok(run([str(jdk/'jar'),'cf',str(c/'bad.jar'),'-C',str(c),'net'],capture_output=True))
   bad=run(cmd[:7]+[str(c/'bad.jar'),'net/minecraft/test/FutureFixture',str(c/'native'),'run','(I)I'],capture_output=True,env=env)
   assert bad.returncode!=0 and error in bad.stderr and not (c/'native').exists(),(label,bad.stderr)
- print(f'OK: {len(values)} resultados Java 25/nativo; completedFuture normal monohilo, identidad/null, consultas, complete/cancel ya completado, instanceof/getClass y NPE capturada, QuartPos oficial, cuatro guardas y el opt-in unificado `MC_AOT_FUTURES=completed-only` con el nombre viejo como alias y valor desconocido rechazado; sin future general ni integración concurrente')
+ print(f'OK: {len(values)} resultados Java 25/nativo; completedFuture normal monohilo, identidad/null, consultas, complete/cancel ya completado, instanceof/getClass y NPE capturada, QuartPos oficial, cuatro guardas y el opt-in unificado `MC_AOT_FUTURES=restricted` como canónico (`completed-only` como alias histórico, `off` explícito, nombre viejo como alias y valor desconocido rechazado); sin future general ni integración concurrente')
