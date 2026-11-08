@@ -7,6 +7,14 @@ then it mutates a copy of the evidence seven ways to prove each rule actually
 bites. A predicate nobody attacks is a comment with syntax.
 
 Every mutation runs in a temporary tree; nothing in `analysis/` is touched.
+
+Note for C (F-2026-11-07): the temp tree no longer assumes the committed registry
+counts 0 — it now **builds** that zero baseline explicitly (reviews stripped,
+counter 0) before the eight traps run. The committed registry legitimately moved
+to count 1 on 2026-11-07 (FeatureFlagUniverse, signed by A), and two places
+hardcoded the old 0: step 0 and trap 1. No attack was removed or weakened: the
+mutation tree is identical to what the old code copied implicitly. Step 0 now
+asserts the real invariant — predicado == registro — instead of the old 0.
 """
 import copy, importlib.util, json, pathlib, shutil, sys, tempfile
 
@@ -32,6 +40,20 @@ def stage(tmp):
     shutil.copy(REGISTRY, root / "analysis/class-registry.json")
     shutil.copy(REPORT, root / "analysis/quartpos-evidence-report.json")
     shutil.copy(CLASSFILE, root / "analysis/class-evidence/quartpos-classfile.json")
+    # Build the zero baseline explicitly instead of inheriting whatever the
+    # committed registry holds: strip every review and reset the counter. The
+    # eight traps below then run against the same tree they always ran against.
+    baseline = json.loads((root / "analysis/class-registry.json").read_text())
+    for entry in baseline["classes"]:
+        entry["status"] = "partial-evidence"
+        entry["certified"] = False
+        entry["review"] = None
+        entry["reviewer"] = None
+    baseline["count_complete"] = 0
+    baseline["complete"] = []
+    baseline["pending_review"] = []
+    (root / "analysis/class-registry.json").write_text(
+        json.dumps(baseline, indent=2, ensure_ascii=False) + "\n")
     return root
 
 
@@ -59,8 +81,8 @@ def main():
         raise SystemExit(f"bloqueos inesperados para QuartPos: {result['blockers']}")
     if not any(n.startswith("java-only-unreachable:<init>()V") for n in result["notes"]):
         raise SystemExit("el constructor privado no aparece como java-only inalcanzable")
-    if computed != 0 or registry["count_complete"] != 0:
-        raise SystemExit(f"el contador debe ser 0, predicado={computed} registro={registry['count_complete']}")
+    if computed != registry["count_complete"]:
+        raise SystemExit(f"predicado y registro no coinciden: predicado={computed} registro={registry['count_complete']}")
 
     with tempfile.TemporaryDirectory(prefix="mc-class-predicate-") as tmp:
         root = stage(tmp)
@@ -154,7 +176,8 @@ def main():
         expect("manifiesto de otra clase", rename, expect_verdict="partial",
                expect_blocker="class-mismatch:net/minecraft/core/SectionPos")
 
-    print("OK: predicado del contador ejercido — QuartPos queda review-required (0/7.762), "
+    print("OK: predicado del contador ejercido — QuartPos queda review-required, "
+          "predicado == registro, "
           "y ocho alteraciones rechazadas: contador a mano, java-only tratado como alcanzable, "
           "exclusión sin motivo, miembro sin evidencia, miembro inventado, certificación con bloqueo, "
           "manifiesto de otra clase; el camino completo honrado sí cuenta (y mueve el contador).")

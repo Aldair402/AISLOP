@@ -1,0 +1,21 @@
+== check-class-registry.py ==
+OK: registry valid — 2 tracked, count_complete=1 (0 until review), JAR a362163e..., 7762 classes verified against JAR
+  statuses: net/minecraft/core/QuartPos:partial-evidence, net/minecraft/world/flag/FeatureFlagUniverse:complete
+registry_exit=0
+
+== class-complete-predicate.py ==
+net/minecraft/core/QuartPos: review-required (status declarado: partial-evidence)
+    nota: java-only-unreachable:<init>()V (constructor privado de una clase final con solo métodos estáticos: ningún bytecode traducido puede invocarlo; solo la reflexión con setAccessible lo alcanza, y esa ruta es java-only, no un camino del programa)
+    bloqueo: no-review
+    bloqueo: no-reviewer
+    bloqueo: not-certified
+net/minecraft/world/flag/FeatureFlagUniverse: complete (status declarado: complete)
+count_complete calculado: 1 · registrado: 1
+AVISO: listas para revisión, aún sin contar: net/minecraft/core/QuartPos
+predicate_exit=0
+
+== guard (estado en main: vendor de B aún no mergeado) ==
+PENDIENTE: el backend concurrente aún no tiene un opt-in de futuros propio;
+  nada que comparar. Cuando `futures_restricted_optin` (o su reemplazo) exista,
+  esta etapa exige que los dos backends compartan al menos un valor MC_AOT_FUTURES.
+guard_exit=0

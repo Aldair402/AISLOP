@@ -12,8 +12,9 @@ Comprueba:
   2. funciones nombradas                          -> existen en el archivo declarado
   3. reglas de locks (D7/D8)                      -> patrón prohibido ausente, drop antes de delegar
   4. pruebas citadas                              -> existen por nombre y están en la suite
-  5. D12 (opt-in)                                 -> describe la divergencia real, no una inventada
-  6. no certifica                                 -> count_complete sigue en 0
+  5. D12 (opt-in)                                 -> describe el estado real del opt-in (integrado o sin integrar), no uno inventado
+  6. nadie se certifica sin revisión independiente -> toda entrada certified/complete lleva review y reviewer no nulos
+     y count_complete coincide con las marcas completas
 
 No comprueba: que el orden de locks sea correcto en todas las rutas, ni el modelo de
 memoria JVM. Un `grep` no prueba ausencia de interbloqueos; eso lo dicen las pruebas
@@ -144,7 +145,7 @@ def main():
             problems.append(f"`{name}` existe pero no está registrada en run-regressions.sh")
 
     # 5. D12 describe la divergencia real (o su ausencia)
-    a_only = re.findall(r'value == std::ffi::OsStr::new\("([^"]+)"\)', sources["numeric"])
+    a_only = re.findall(r'\b(?:value|v)\s*==\s*(?:std::ffi::OsStr::new\()?"([^"]+)"', sources["numeric"])
     b_text = sources["concurrent_compile"]
     b_match = re.search(r"fn futures_\w*optin\(\)(.*?)\n\}", b_text, re.S)
     b_only = re.findall(r'\bv? ?== "([^"]+)"', b_match.group(1)) if b_match else []
@@ -160,12 +161,16 @@ def main():
             "b-01" in line and "no está integrada" in contract for line in contract.splitlines()):
         problems.append("el contrato habla de divergencia sin explicar que la mitad de B no está en main")
 
-    # 6. nada certifica
+    # 6. nadie se certifica sin revisión independiente
     registry = json.loads(read(PROJECT / "analysis/class-registry.json"))
-    if registry.get("count_complete") != 0:
-        problems.append("el contrato no certifica clases y count_complete ya no es 0")
-    if any(entry.get("certified") for entry in registry.get("classes", [])):
-        problems.append("hay una clase certificada sin que el contrato lo refleje")
+    complete = [e for e in registry.get("classes", []) if e.get("status") == "complete"]
+    for entry in registry.get("classes", []):
+        if entry.get("certified") and (not entry.get("review") or not entry.get("reviewer")):
+            problems.append(f"{entry.get('class')} certificada sin revisión (review o reviewer nulos)")
+        if entry.get("status") == "complete" and not (entry.get("certified") and entry.get("review") and entry.get("reviewer")):
+            problems.append(f"{entry.get('class')} marcada completa sin certified/review/reviewer")
+    if registry.get("count_complete") != len(complete):
+        problems.append(f"count_complete ({registry.get('count_complete')}) no coincide con las clases completas ({len(complete)})")
 
     if problems:
         for problem in problems:
@@ -174,8 +179,8 @@ def main():
     print(f"OK: contrato A-01 comprobado — 12 decisiones presentes, {len(LITERALS)} literales de rechazo "
           f"existen en mc-aot/src, {len(SYMBOLS)} símbolos en su archivo declarado, las reglas de locks D7/D8 "
           f"se cumplen en los archivos citados (sin lock de campos+mapa simultáneo y con drop antes de delegar), "
-          f"{len(RUST_TESTS) + len(PY_TESTS)} pruebas citadas existen y están registradas, D12 describe la "
-          f"divergencia de opt-in real y el contador sigue en 0")
+          f"{len(RUST_TESTS) + len(PY_TESTS)} pruebas citadas existen y están registradas, D12 describe el estado "
+          f"real del opt-in y toda certificación lleva revisión independiente (contador: {registry.get('count_complete')})")
     return 0
 
 

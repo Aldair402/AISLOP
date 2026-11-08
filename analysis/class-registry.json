@@ -3,7 +3,7 @@
   "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
   "jar_classes_total": 7762,
   "jar_url": "https://piston-data.mojang.com/v1/objects/33680f5f2ac32864d6d7cf5e56a705fdb3e05f4c/server.jar (inner: META-INF/versions/26.3/server-26.3.jar)",
-  "count_complete": 0,
+  "count_complete": 1,
   "thresholds": {
     "first": 1,
     "ten_percent": 777,
@@ -99,7 +99,7 @@
     },
     {
       "class": "net/minecraft/world/flag/FeatureFlagUniverse",
-      "status": "partial-evidence",
+      "status": "complete",
       "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
       "class_sha256": "61e490913ad43b3f0137a8fd3f310856ef8b06c32051cbc80bc3bfb7c211e2c0",
       "surface": {
@@ -144,13 +144,27 @@
         "No se mide identidad de la clase en el heap nativo más allá de getClass()==FeatureFlagUniverse.class, ni igualdad/hash de instancias: la clase no declara equals ni hashCode, así que hereda los de Object y esa parte no es de esta clase.",
         "El arnés expone un único punto de entrada estático (run(I)I); no se ejercita el uso de la clase como valor de retorno de otro método traducido ni su publicación entre hilos."
       ],
-      "certified": false,
-      "review": null,
-      "reviewer": null,
-      "date_verified": "2026-11-05"
+      "certified": true,
+      "review": {
+        "by": "A (MIlaSoraki)",
+        "date": "2026-11-07",
+        "front": "A — backend principal e integración",
+        "method": "revisión independiente del frente A sobre la evidencia medida por C: (1) re-ejecución fresca con update-class-evidence.py --check (la evidencia commiteada coincide con una ejecución nueva, 3/3 miembros, 288 resultados); (2) lectura del manifiesto del classfile (flags, superclase Object, sin interfaces, sin <clinit>, 1 campo, 2 métodos) y del informe (0 solo-Java, 0 huecos, dependencia cruzada constructor→toString declarada); (3) hash de la clase verificado contra el JAR oficial por check-class-registry.py; (4) limitaciones y exclusiones revisadas y transcritas abajo",
+        "evidence": [
+          "analysis/class-evidence/featureflaguniverse.json",
+          "analysis/class-evidence/featureflaguniverse-classfile.json",
+          "analysis/featureflaguniverse-evidence-report.json",
+          "analysis/featureflaguniverse-static-surface.log"
+        ],
+        "log": "analysis/a-review-featureflaguniverse.log"
+      },
+      "reviewer": "A (MIlaSoraki)",
+      "date_verified": "2026-11-07"
     }
   ],
   "pending_review": [],
-  "complete": [],
+  "complete": [
+    "net/minecraft/world/flag/FeatureFlagUniverse"
+  ],
   "notes": "Registry is append-only. To move a class to complete, add a review entry with PR, hashes of tools/tests rerun on clean clone, and explicit gaps. Counter stays 0 until that review lands."
 }
