@@ -39,3 +39,15 @@ hashes de JAR y binario traductor; el log `analysis/execution-census-full.log`
 registra `CENSO_RC=0`. La integral que incluye la prueba de lote sigue pendiente
 hasta completar toda la ejecución con el árbol final. La meta de 3.881 y el
 arranque del servidor siguen abiertos.
+
+## Siguiente corte: records primitivos
+
+De esas 1.313 entradas cuya primera causa es `java/lang/Record`, 12 son
+layouts describibles con únicamente campos primitivos y sin los bloqueos de
+estáticos/`<clinit>`/interfaces anotados por el censo de layouts. **No son 12
+clases listas**: ese censo no examina todas las firmas ni los bytecodes de sus
+métodos. Por ejemplo, `FileSystemCapabilities` tiene retorno de array, y
+`FpsStat` tiene un método estático; ambos incluyen `equals`, `hashCode` y
+`toString` generados mediante `invokedynamic`/`ObjectMethods`. Para admitirlos
+harían falta, además de `Record.<init>`, traducción de esas operaciones y del
+driver de referencias, con pruebas diferenciales; no se deben saltar métodos.
