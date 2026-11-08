@@ -2,6 +2,7 @@
 """El driver de clase completa rechaza referencias en firmas antes de rustc."""
 import os
 import json
+import importlib.util
 import hashlib
 import sys
 import pathlib
@@ -17,6 +18,11 @@ def run(args, **kwargs):
     return subprocess.run([str(a) for a in args], capture_output=True, text=True,
                           timeout=180, **kwargs)
 
+
+spec = importlib.util.spec_from_file_location('execution_census', root / 'tools/execution-census.py')
+census_module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(census_module)
+assert census_module.normalize('Error: invokestatic no soportado: java/lang/Math.max(FF)F\n  al compilar net/minecraft/Test.go()V') == 'invokestatic no soportado: <clase>.max(FF)F'
 
 with tempfile.TemporaryDirectory(prefix='class-signatures-') as temp:
     d = pathlib.Path(temp)

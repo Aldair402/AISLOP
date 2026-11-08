@@ -48,7 +48,9 @@ def layout_census():
 
 
 def normalize(message):
-    text = message.strip().splitlines()[-1] if message.strip() else 'sin mensaje'
+    # La primera línea es el error original; las siguientes 'al compilar'
+    # son contexto de pila, no el motivo raíz.
+    text = message.strip().splitlines()[0] if message.strip() else 'sin mensaje'
     text = re.sub(r'^Error:\s*', '', text)
     text = OPTION.sub('<clase>', text)
     text = OBJECT.sub('<clase>', text)
@@ -76,6 +78,8 @@ def translate(compiler, jar, name, scratch):
             raise RuntimeError(f'{name}: el compilador no creó el archivo prometido')
     if done.returncode == 0:
         return name, None
+    if done.returncode < 0 or 'panicked at' in done.stderr:
+        raise RuntimeError(f'{name}: fallo interno del compilador: {done.stderr}')
     return name, normalize(done.stderr or done.stdout)
 
 

@@ -14,6 +14,12 @@ fn rem_i(a:i32,b:i32)->i32 {if b==0 {raise("ArithmeticException","/ by zero");} 
 fn div_l(a:i64,b:i64)->i64 {if b==0 {raise("ArithmeticException","/ by zero");} a.wrapping_div(b)}
 fn rem_l(a:i64,b:i64)->i64 {if b==0 {raise("ArithmeticException","/ by zero");} a.wrapping_rem(b)}
 fn int_exact(a:i64)->i32 {i32::try_from(a).unwrap_or_else(|_| {raise("ArithmeticException","integer overflow")})}
+// Java Math.min/max propagates NaN, unlike Rust's f32::min/max, and
+// orders -0.0 below +0.0. Preserve the chosen operand's raw bits.
+fn java_min_f(a:f32,b:f32)->f32 {if a.is_nan(){a}else if b.is_nan(){b}else if a==0.0 && b==0.0 {f32::from_bits(a.to_bits() | b.to_bits())}else if a<=b {a}else{b}}
+fn java_max_f(a:f32,b:f32)->f32 {if a.is_nan(){a}else if b.is_nan(){b}else if a==0.0 && b==0.0 {f32::from_bits(a.to_bits() & b.to_bits())}else if a>=b {a}else{b}}
+fn java_min_d(a:f64,b:f64)->f64 {if a.is_nan(){a}else if b.is_nan(){b}else if a==0.0 && b==0.0 {f64::from_bits(a.to_bits() | b.to_bits())}else if a<=b {a}else{b}}
+fn java_max_d(a:f64,b:f64)->f64 {if a.is_nan(){a}else if b.is_nan(){b}else if a==0.0 && b==0.0 {f64::from_bits(a.to_bits() & b.to_bits())}else if a>=b {a}else{b}}
 fn floor_div_i(a:i32,b:i32)->i32 {let q=div_i(a,b);let r=rem_i(a,b);if r!=0 && (a^b)<0 {q.wrapping_sub(1)} else {q}}
 // Valores de Math.asin(i/256) y Math.cos(asin(i/256)) del oráculo Java 25; no es Math general.
 static MTH_MATH_JAVA25:[(u64,u64);257]=[
