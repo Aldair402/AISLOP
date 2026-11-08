@@ -3892,7 +3892,7 @@ pub(super) fn compile_jar(jar: &Path, class: &str, method: &str, desc: &str) -> 
 
 /// A-02 fase 3 · driver de una clase vanilla **completa**.
 ///
-/// Compila el constructor y todas las declaraciones de instancia de una clase
+/// Compila el constructor y todos los métodos estáticos y de instancia de una clase
 /// admitida por el perfil y emite un binario que ejecuta un guion de llamadas:
 ///
 /// ```text
@@ -3949,10 +3949,10 @@ pub(super) fn class_demo_admission(jar: &Path, class: &str) -> Result<(super::me
             if m.name != "<init>" {
                 return Err(format!("método especial no soportado: {}", m.name));
             }
+            if m.flags & (0x0100 | 0x0400) != 0 || m.exception_handlers != 0 {
+                return Err(format!("constructor native/abstract o con manejadores fuera del driver: {}", m.descriptor));
+            }
             continue;
-        }
-        if m.flags & 0x0008 != 0 {
-            return Err(format!("método estático fuera del perfil: {}", m.name));
         }
         if m.flags & (0x0100 | 0x0400) != 0 {
             return Err(format!("método native/abstract fuera del perfil: {}", m.name));
@@ -3962,6 +3962,9 @@ pub(super) fn class_demo_admission(jar: &Path, class: &str) -> Result<(super::me
                 "manejador de excepciones fuera del driver: {} {}",
                 m.name, m.descriptor
             ));
+        }
+        if m.name == "read" || m.name == "new" {
+            return Err(format!("nombre reservado por el driver: {}", m.name));
         }
         if !seen.insert(m.name.clone()) {
             return Err(format!("sobrecarga fuera del driver: {}", m.name));
@@ -4057,27 +4060,38 @@ pub(super) fn compile_class_demo(jar: &Path, class: &str) -> Result<String> {
     let mut method_counts = Vec::new();
     for m in meta.methods.iter().filter(|m| m.name != "<init>") {
         let sig = signature_ext(&m.descriptor, true)?;
-        let func = compiler.compile_instance(class, &m.name, &m.descriptor)?;
+        let is_static = m.flags & 0x0008 != 0;
+        let func = if is_static {
+            compiler.compile(class, &m.name, &m.descriptor)?
+        } else {
+            compiler.compile_instance(class, &m.name, &m.descriptor)?
+        };
+        let receiver = if is_static { "" } else { ",id" };
+        let prepare = if is_static {
+            format!("            init_class_{root}(&mut heap);\n")
+        } else {
+            "            let id=object.unwrap_or_else(||error(\"objeto no construido\"));\n".to_string()
+        };
         let reads = demo_arg_reads(&sig, 1);
         let args = (0..sig.args.len())
             .map(|i| format!(",a{i}"))
             .collect::<String>();
         let call = match sig.ret {
-            'V' => format!("            {func}(&mut heap,id{args});\n            println!(\"OK\");\n"),
+            'V' => format!("            {func}(&mut heap{receiver}{args});\n            println!(\"OK\");\n"),
             'F' => format!(
-                "            let r={func}(&mut heap,id{args});\n            println!(\"fbits:{{:08x}}\",r.to_bits());\n"
+                "            let r={func}(&mut heap{receiver}{args});\n            println!(\"fbits:{{:08x}}\",r.to_bits());\n"
             ),
             'D' => format!(
-                "            let r={func}(&mut heap,id{args});\n            println!(\"dbits:{{:016x}}\",r.to_bits());\n"
+                "            let r={func}(&mut heap{receiver}{args});\n            println!(\"dbits:{{:016x}}\",r.to_bits());\n"
             ),
             'T' => format!(
-                "            let r={func}(&mut heap,id{args});\n            match r {{None=>println!(\"s:null\"),Some(_)=>{{print!(\"s16:\");for u in string_units(&heap,r){{print!(\"{{:04x}}\",u);}}println!();}}}}\n"
+                "            let r={func}(&mut heap{receiver}{args});\n            match r {{None=>println!(\"s:null\"),Some(_)=>{{print!(\"s16:\");for u in string_units(&heap,r){{print!(\"{{:04x}}\",u);}}println!();}}}}\n"
             ),
-            _ => format!("            println!(\"{{}}\",{func}(&mut heap,id{args}));\n"),
+            _ => format!("            println!(\"{{}}\",{func}(&mut heap{receiver}{args}));\n"),
         };
         method_counts.push(m.name.clone());
         arms.push_str(&format!(
-            "        {:?} => {{\n            let id=object.unwrap_or_else(||error(\"objeto no construido\"));\n{reads}{call}        }}\n",
+            "        {:?} => {{\n{prepare}{reads}{call}        }}\n",
             m.name
         ));
     }
@@ -4098,6 +4112,10 @@ pub(super) fn compile_class_demo(jar: &Path, class: &str) -> Result<String> {
         .map(|i| format!(",a{i}"))
         .collect::<String>();
     let nclasses = compiler.multi_classes.as_ref().map(|c| c.len()).unwrap_or(1);
+    // El grafo puede incluir campos estáticos de dependencias aunque la clase
+    // raíz no tenga ninguno. Prepararlos antes de ejecutar cualquier <clinit>.
+    let static_initial = compiler.multi_fields.iter()
+        .map(|f| f.initial.as_str()).collect::<Vec<_>>().join(",");
     let source = format!(
         "// class-demo de {class}: constructor y todas las declaraciones, sin omisiones.\n\
          #![allow(dead_code,unused_variables,unused_mut)]\n{RUNTIME}\n{parents}\n{inits}\n{functions}\n\
@@ -4110,6 +4128,7 @@ pub(super) fn compile_class_demo(jar: &Path, class: &str) -> Result<String> {
          \x20   if !cur.is_empty(){{steps.push(cur);}}\n\
          \x20   if steps.is_empty(){{error(\"sin pasos: usa new y métodos separados por --\");}}\n\
          \x20   let mut heap=Heap::default();\n\
+         \x20   heap.fields=vec![{static_initial}];\n\
          \x20   heap.init_states=vec![0;{nclasses}];\n\
          \x20   let mut object:Option<usize>=None;\n\
          \x20   for step in steps {{\n\
