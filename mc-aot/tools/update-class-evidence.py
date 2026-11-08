@@ -255,12 +255,15 @@ def main():
     if entry is None:
         registry["classes"].append(new_entry)
         registry["classes"].sort(key=lambda e: e["class"])
+    elif (entry.get("status") not in (None, "partial-evidence")
+          or entry.get("certified") or entry.get("review") or entry.get("reviewer")):
+        # Si otro frente firmó la clase, el registro se conserva **tal cual**: esta
+        # herramienta no es quién para borrar una firma (ni estado, ni fecha ni
+        # revisión) ni para inventar una. La evidencia derivada (reporte, manifiesto
+        # y log) sí se regenera y `--check` la compara byte a byte; con evidencia
+        # fresca idéntica, el registro no cambia y la comprobación pasa.
+        pass
     else:
-        # Nunca se reescribe la firma: si otro frente revisó la clase, esta herramienta
-        # no es quién para borrarla, pero tampoco para inventarla.
-        for key in ("review", "reviewer", "certified", "status"):
-            if entry.get(key) not in (None, False, "partial-evidence") and key in ("review", "reviewer", "certified"):
-                new_entry[key] = entry[key]
         entry.clear()
         entry.update(new_entry)
     REGISTRY.write_text(json.dumps(registry, indent=2, ensure_ascii=False) + "\n")
