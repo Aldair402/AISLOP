@@ -203,15 +203,31 @@ fn jdk_function_interface(name: &str) -> bool {
             | "java/util/function/Consumer"
             | "java/util/function/BiConsumer"
             | "java/util/function/Predicate"
+            | "java/util/function/UnaryOperator"
             | "java/util/function/BooleanSupplier"
             | "java/util/function/IntUnaryOperator"
             | "java/util/function/ToIntFunction"
+            | "java/util/concurrent/ForkJoinPool$ForkJoinWorkerThreadFactory"
+            | "java/lang/Thread$UncaughtExceptionHandler"
+            | "java/util/concurrent/Executor"
+            | "java/util/concurrent/ThreadFactory"
+            | "java/util/function/LongSupplier"
+            | "java/util/function/IntSupplier"
+            | "java/util/function/IntFunction"
+            | "java/util/function/ObjIntConsumer"
+            | "java/util/Comparator"
     )
 }
 fn jdk_function_method(owner: &str, name: &str, desc: &str) -> bool {
     matches!(
         (owner, name, desc),
         ("java/lang/Runnable", "run", "()V")
+            | ("java/util/concurrent/Executor", "execute", "(Ljava/lang/Runnable;)V")
+            | ("java/util/concurrent/ThreadFactory", "newThread", "(Ljava/lang/Runnable;)Ljava/lang/Thread;")
+            | ("java/util/function/LongSupplier", "getAsLong", "()J")
+            | ("java/util/function/IntSupplier", "getAsInt", "()I")
+            | ("java/util/concurrent/ForkJoinPool$ForkJoinWorkerThreadFactory", "newThread", "(Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinWorkerThread;")
+            | ("java/lang/Thread$UncaughtExceptionHandler", "uncaughtException", "(Ljava/lang/Thread;Ljava/lang/Throwable;)V")
             | (
                 "java/security/PrivilegedAction",
                 "run",
@@ -228,11 +244,17 @@ fn jdk_function_method(owner: &str, name: &str, desc: &str) -> bool {
                 "(Ljava/lang/Object;)Ljava/lang/Object;"
             )
             | (
+                "java/util/function/UnaryOperator",
+                "apply",
+                "(Ljava/lang/Object;)Ljava/lang/Object;"
+            )
+            | (
                 "java/util/function/BiFunction" | "java/util/function/BinaryOperator",
                 "apply",
                 "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"
             )
             | ("java/util/function/Supplier", "get", "()Ljava/lang/Object;")
+            | ("java/util/Comparator", "compare", "(Ljava/lang/Object;Ljava/lang/Object;)I")
             | ("java/util/function/BooleanSupplier", "getAsBoolean", "()Z")
             | (
                 "java/util/function/Consumer",
@@ -255,6 +277,8 @@ fn jdk_function_method(owner: &str, name: &str, desc: &str) -> bool {
                 "applyAsInt",
                 "(Ljava/lang/Object;)I"
             )
+            | ("java/util/function/IntFunction", "apply", "(I)Ljava/lang/Object;")
+            | ("java/util/function/ObjIntConsumer", "accept", "(Ljava/lang/Object;I)V")
     )
 }
 // Equivalentes monohilo concretos, no despacho general de interfaces.
@@ -309,6 +333,7 @@ fn collection_intrinsic(owner: &str, name: &str, desc: &str) -> Option<&'static 
         (_,true,_,_,"offer","(Ljava/lang/Object;)Z")=>Some("let v=pop_r(&mut stack);let q=pop_r(&mut stack);queue_offer(heap,q,v);stack.push(V::I(1));"),
         (_,true,_,_,"poll","()Ljava/lang/Object;")=>Some("let q=pop_r(&mut stack);stack.push(V::R(queue_poll(heap,q,true)));"),
         (_,true,_,_,"peek","()Ljava/lang/Object;")=>Some("let q=pop_r(&mut stack);stack.push(V::R(queue_poll(heap,q,false)));"),
+        (_,_,true,_,"indexOf","(Ljava/lang/Object;)I")=>Some("let v=pop_r(&mut stack);let l=pop_r(&mut stack);stack.push(V::I(list_index_of(heap,l,v)));"),
         (_,_,true,_,"toString","()Ljava/lang/String;")=>Some("let l=pop_r(&mut stack);stack.push(V::R(Some(list_to_string(heap,l))));"),
         (_,_,true,_,"get","(I)Ljava/lang/Object;")=>Some("let i=pop_i(&mut stack);let l=pop_r(&mut stack);stack.push(V::R(list_get(heap,l,i)));"),
         (_,_,true,_,"set","(ILjava/lang/Object;)Ljava/lang/Object;")=>Some("let v=pop_r(&mut stack);let i=pop_i(&mut stack);let l=pop_r(&mut stack);stack.push(V::R(list_set(heap,l,i,v)));"),
@@ -421,6 +446,7 @@ fn known_exception(t: &str) -> Option<&'static str> {
         "java/lang/IllegalArgumentException" => "IllegalArgumentException",
         "java/lang/IllegalStateException" => "IllegalStateException",
         "java/lang/IllegalCallerException" => "IllegalCallerException",
+        "java/lang/MatchException" => "MatchException",
         "java/lang/NumberFormatException" => "NumberFormatException",
         "java/lang/IndexOutOfBoundsException" => "IndexOutOfBoundsException",
         "java/lang/ArithmeticException" => "ArithmeticException",
@@ -766,6 +792,7 @@ struct NumericCompiler<'a> {
     uses_service_loader: bool,
     uses_resource_lookup: bool,
     uses_enum_valueof: bool,
+    uses_enum_constants: bool,
     interface_calls: Vec<(String, String, String)>,
     virtual_calls: Vec<(String, String, String)>,
     bootstrap_cache: BTreeMap<String, Vec<super::Bootstrap>>,
@@ -999,6 +1026,7 @@ impl NumericCompiler<'_> {
                 | "java/lang/RuntimeException"
                 | "java/lang/IllegalStateException"
                 | "java/lang/IllegalArgumentException"
+                | "java/lang/MatchException"
                 | "java/lang/InternalError"
         ) {
             return Err(format!(
@@ -1043,6 +1071,15 @@ impl NumericCompiler<'_> {
                         | "java/util/Comparator"
                         | "java/util/Spliterator"
                         | "java/util/List"
+                        | "java/util/Set"
+                        | "java/util/Map$Entry"
+                        | "java/util/SequencedSet"
+                        | "java/util/SequencedCollection"
+                        | "java/util/SequencedMap"
+                        | "java/util/SortedSet"
+                        | "java/util/NavigableSet"
+                        | "java/util/SortedMap"
+                        | "java/util/NavigableMap"
                         | "java/lang/Iterable"
                         | "java/util/RandomAccess"
                         | "java/io/Closeable"
@@ -1103,6 +1140,15 @@ impl NumericCompiler<'_> {
             } else {
                 match name.as_str() {
                     "java/util/List" | "java/util/Set" => todo.push("java/util/Collection".into()),
+                    "java/util/SequencedSet" => todo.push("java/util/Set".into()),
+                    "java/util/SequencedCollection" => todo.push("java/util/Collection".into()),
+                    "java/util/SequencedMap" => todo.push("java/util/Map".into()),
+                    "java/util/SortedSet" | "java/util/NavigableSet" => {
+                        todo.push("java/util/SequencedSet".into())
+                    }
+                    "java/util/SortedMap" | "java/util/NavigableMap" => {
+                        todo.push("java/util/SequencedMap".into())
+                    }
                     "java/util/Collection" => todo.push("java/lang/Iterable".into()),
                     "java/io/Closeable" => todo.push("java/lang/AutoCloseable".into()),
                     "java/io/Externalizable" => todo.push("java/io/Serializable".into()),
@@ -1141,6 +1187,15 @@ impl NumericCompiler<'_> {
                         | "java/util/Comparator"
                         | "java/util/Spliterator"
                         | "java/util/List"
+                        | "java/util/Set"
+                        | "java/util/Map$Entry"
+                        | "java/util/SequencedSet"
+                        | "java/util/SequencedCollection"
+                        | "java/util/SequencedMap"
+                        | "java/util/SortedSet"
+                        | "java/util/NavigableSet"
+                        | "java/util/SortedMap"
+                        | "java/util/NavigableMap"
                         | "java/lang/Iterable"
                         | "java/util/RandomAccess"
                         | "java/io/Closeable"
@@ -1212,6 +1267,7 @@ impl NumericCompiler<'_> {
                         | "java/lang/Throwable"
                         | "java/lang/Record"
                         | "java/util/AbstractCollection"
+                        | "java/util/AbstractMap"
                 ) {
                     break;
                 }
@@ -1248,7 +1304,14 @@ impl NumericCompiler<'_> {
         let inheritable_local = meta.parent.as_deref() == Some("java/lang/InheritableThreadLocal");
         let security_manager = meta.parent.as_deref() == Some("java/lang/SecurityManager");
         let record = meta.parent.as_deref() == Some("java/lang/Record");
+        // commons-lang3 Fraction y similares: aritmética entera pura sobre Number.
+        let number_class = meta.parent.as_deref() == Some("java/lang/Number")
+            && !meta.flags & 0x0400 == 0x0400;
         let abstract_collection = meta.parent.as_deref() == Some("java/util/AbstractCollection");
+        let abstract_map = meta.parent.as_deref() == Some("java/util/AbstractMap");
+        let abstract_list = meta.parent.as_deref() == Some("java/util/AbstractList");
+        let abstract_sequential_list =
+            meta.parent.as_deref() == Some("java/util/AbstractSequentialList");
         let abstract_spliterator =
             meta.parent.as_deref() == Some("java/util/Spliterators$AbstractSpliterator");
         if abstract_spliterator
@@ -1290,8 +1353,12 @@ impl NumericCompiler<'_> {
                 && !security_manager
                 && !record
                 && !abstract_collection
+                && !abstract_map
+                && !abstract_list
+                && !abstract_sequential_list
                 && !abstract_spliterator
                 && !foreign_exception
+                && !number_class
                 && project_parent.is_none())
         {
             return Err(format!("superclase JDK no soportada: {class}"));
@@ -1625,6 +1692,22 @@ impl NumericCompiler<'_> {
             id = c.parent;
         }
         Ok(false)
+    }
+    // Registra "java/lang/Object","hashCode","()I" en el despacho virtual sin pasar
+    // por ensure_multi_class (Object es JDK): los brazos se generan por subclase
+    // proyecto que sobrescribe hashCode; sin override no hay brazo (aborta).
+    fn register_object_hashcode(&mut self) -> usize {
+        let key = (
+            "java/lang/Object".to_owned(),
+            "hashCode".to_owned(),
+            "()I".to_owned(),
+        );
+        if let Some(n) = self.virtual_calls.iter().position(|k| *k == key) {
+            return n;
+        }
+        let n = self.virtual_calls.len();
+        self.virtual_calls.push(key);
+        n
     }
     fn virtual_call(&mut self, owner: &str, method: &str, desc: &str) -> Result<String> {
         self.ensure_multi_class(owner)?;
@@ -1967,6 +2050,11 @@ impl NumericCompiler<'_> {
                             extraction
                                 .push_str(&format!("let unboxed{i}=integer_value(heap,{name});"));
                             actual.push(format!("unboxed{i}"));
+                        } else if matches!((source,dest),(super::metadata::Type::Object(n),super::metadata::Type::Int) if n=="java/lang/Byte")
+                        {
+                            extraction
+                                .push_str(&format!("let unboxed{i}=byte_value(heap,{name}) as i32;"));
+                            actual.push(format!("unboxed{i}"));
                         } else if matches!((source,dest),(super::metadata::Type::Object(n),super::metadata::Type::Byte) if n=="java/lang/Byte")
                         {
                             extraction
@@ -1981,6 +2069,16 @@ impl NumericCompiler<'_> {
                         {
                             extraction
                                 .push_str(&format!("let unboxed{i}=float_value(heap,{name});"));
+                            actual.push(format!("unboxed{i}"));
+                        } else if matches!((source,dest),(super::metadata::Type::Object(n),super::metadata::Type::Double) if n=="java/lang/Double")
+                        {
+                            extraction
+                                .push_str(&format!("let unboxed{i}=double_value(heap,{name});"));
+                            actual.push(format!("unboxed{i}"));
+                        } else if matches!((source,dest),(super::metadata::Type::Object(n),super::metadata::Type::Boolean) if n=="java/lang/Boolean")
+                        {
+                            extraction
+                                .push_str(&format!("let unboxed{i}=boolean_value(heap,{name}) as i32;"));
                             actual.push(format!("unboxed{i}"));
                         } else {
                             actual.push(name.to_owned());
@@ -2019,6 +2117,22 @@ impl NumericCompiler<'_> {
                         format!("({}.is_some()) as i32", actual[0])
                     } else if lambda.impl_owner == "java/util/UUID" {
                         format!("Some(uuid_string(heap,{}))", actual[0])
+                    } else if (lambda.impl_kind, lambda.impl_owner.as_str(), lambda.impl_name.as_str(), lambda.impl_desc.as_str()) == (9, "java/util/Map$Entry", "getKey", "()Ljava/lang/Object;") {
+                        format!("map_entry_key(heap,{})", actual[0])
+                    } else if (lambda.impl_kind, lambda.impl_owner.as_str(), lambda.impl_name.as_str(), lambda.impl_desc.as_str()) == (6, "java/util/List", "copyOf", "(Ljava/util/Collection;)Ljava/util/List;") {
+                        format!("Some(list_copy_of(heap,{}))", actual[0])
+                    } else if (lambda.impl_kind, lambda.impl_owner.as_str(), lambda.impl_name.as_str(), lambda.impl_desc.as_str()) == (8, "java/util/ArrayList", "<init>", "(Ljava/util/Collection;)V") {
+                        format!("Some(list_construct_from_collection(heap,{}))", actual[0])
+                    } else if lambda.impl_owner == "java/lang/Enum"
+                        && lambda.impl_name == "toString"
+                        && lambda.impl_desc == "()Ljava/lang/String;"
+                    {
+                        format!("enum_name(heap,{})", actual[0])
+                    } else if lambda.impl_owner == "java/lang/Enum"
+                        && lambda.impl_name == "ordinal"
+                        && lambda.impl_desc == "()I"
+                    {
+                        format!("enum_ordinal(heap,{})", actual[0])
                     } else if lambda.impl_owner == "java/util/regex/Pattern" {
                         format!("pattern_string(heap,{})", actual[0])
                     } else if lambda.impl_owner == "java/lang/Character" {
@@ -2049,7 +2163,15 @@ impl NumericCompiler<'_> {
                         } else {
                             args.clone()
                         };
-                        if matches!((&target.returns,&inst.returns),(super::metadata::Type::Int,super::metadata::Type::Object(n)) if n=="java/lang/Integer")
+                        if matches!((&target.returns,&inst.returns),(super::metadata::Type::Long,super::metadata::Type::Object(n)) if n=="java/lang/Long")
+                        {
+                            format!("let result={f}(heap{args});Some(long_value_of(heap,result))")
+                        } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Object(n),super::metadata::Type::Boolean) if n=="java/lang/Boolean")
+                        {
+                            format!(
+                                "let result={f}(heap{args});boolean_value(heap,result) as i32"
+                            )
+                        } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Int,super::metadata::Type::Object(n)) if n=="java/lang/Integer")
                         {
                             format!(
                                 "let result={f}(heap{args});Some(integer_value_of(heap,result))"
@@ -2063,6 +2185,12 @@ impl NumericCompiler<'_> {
                         } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Float,super::metadata::Type::Object(n)) if n=="java/lang/Float")
                         {
                             format!("let result={f}(heap{args});Some(float_value_of(heap,result))")
+                        } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Double,super::metadata::Type::Object(n)) if n=="java/lang/Double")
+                        {
+                            format!("let result={f}(heap{args});Some(double_value_of(heap,result))")
+                        } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Boolean,super::metadata::Type::Object(n)) if n=="java/lang/Boolean")
+                        {
+                            format!("let result={f}(heap{args});Some(boolean_value_of(heap,result!=0))")
                         } else {
                             format!("{f}(heap{args})")
                         }
@@ -2139,9 +2267,11 @@ impl NumericCompiler<'_> {
                         continue;
                     }
                     progress = true;
+                    let is_object_root =
+                        owner == "java/lang/Object" && project_class(&class.name);
                     if !admitted(&class.name)
                         || class.flags & (0x0200 | 0x0400) != 0
-                        || !self.is_project_subclass(&class.name, owner)
+                        || (!is_object_root && !self.is_project_subclass(&class.name, owner))
                     {
                         continue;
                     }
@@ -2399,6 +2529,13 @@ impl NumericCompiler<'_> {
         {
             return Ok(true);
         }
+        // Borrado simétrico: un MethodHandle con retorno/parámetro java/lang/Object
+        // puede usarse como lambda instanciada a cualquier referencia (LambdaMetafactory realiza el cast).
+        if matches!(from,Type::Object(n) if n=="java/lang/Object")
+            && matches!(to, Type::Object(_) | Type::Array(_))
+        {
+            return Ok(true);
+        }
         let (from, to) = match (from, to) {
             (Type::Object(f), Type::Object(t)) => (f, t),
             _ => return Ok(false),
@@ -2415,6 +2552,11 @@ impl NumericCompiler<'_> {
             if !project_class(&name) {
                 let parents: &[&str] = match name.as_str() {
                     "java/util/List" | "java/util/Set" => &["java/util/Collection"],
+                    "java/util/SequencedSet" => &["java/util/Set"],
+                    "java/util/SequencedCollection" => &["java/util/Collection"],
+                    "java/util/SequencedMap" => &["java/util/Map"],
+                    "java/util/SortedSet" | "java/util/NavigableSet" => &["java/util/SequencedSet"],
+                    "java/util/SortedMap" | "java/util/NavigableMap" => &["java/util/SequencedMap"],
                     "java/util/Collection" => &["java/lang/Iterable"],
                     "java/util/HashMap" => &["java/util/Map"],
                     "java/util/HashSet" => &["java/util/Set"],
@@ -2506,6 +2648,13 @@ impl NumericCompiler<'_> {
         let jdk_ok = matches!(
             (impl_kind, impl_owner, impl_name, impl_desc),
             (6, "java/util/Objects", "nonNull", "(Ljava/lang/Object;)Z")
+                | (9, "java/util/Map", "get", "(Ljava/lang/Object;)Ljava/lang/Object;")
+                | (9, "java/util/Map", "containsKey", "(Ljava/lang/Object;)Z")
+                | (9, "java/util/Map$Entry", "getKey", "()Ljava/lang/Object;")
+                | (9, "java/util/Map$Entry", "getValue", "()Ljava/lang/Object;")
+                | (9, "java/util/List", "indexOf", "(Ljava/lang/Object;)I")
+                | (6, "java/util/List", "copyOf", "(Ljava/util/Collection;)Ljava/util/List;")
+                | (8, "java/util/ArrayList", "<init>", "(Ljava/util/Collection;)V")
                 | (9, "java/util/Set", "add", "(Ljava/lang/Object;)Z")
                 | (
                     9,
@@ -2537,7 +2686,11 @@ impl NumericCompiler<'_> {
                     "(I)Ljava/lang/String;"
                 )
                 | (5, "java/net/URI", "toString", "()Ljava/lang/String;")
+                | (5, "java/lang/Enum", "toString", "()Ljava/lang/String;")
+                | (5, "java/lang/Enum", "ordinal", "()I")
                 | (9, "java/security/Key", "getEncoded", "()[B")
+                | (6, "java/lang/System", "nanoTime", "()J")
+                | (6, "java/lang/System", "currentTimeMillis", "()J")
                 | (
                     6,
                     "java/time/Instant",
@@ -2572,9 +2725,12 @@ impl NumericCompiler<'_> {
                 .zip(expected.iter())
                 .map(|(f, t)| {
                     if matches!((f,t),(Type::Object(n),Type::Int) if n=="java/lang/Integer")
+                        || matches!((f,t),(Type::Object(n),Type::Int) if n=="java/lang/Byte")
                         || matches!((f,t),(Type::Object(n),Type::Byte) if n=="java/lang/Byte")
                         || matches!((f,t),(Type::Object(n),Type::Float) if n=="java/lang/Float")
                         || matches!((f,t),(Type::Object(n),Type::Long) if n=="java/lang/Long")
+                        || matches!((f,t),(Type::Object(n),Type::Double) if n=="java/lang/Double")
+                        || matches!((f,t),(Type::Object(n),Type::Boolean) if n=="java/lang/Boolean")
                     {
                         Ok(true)
                     } else {
@@ -2588,10 +2744,13 @@ impl NumericCompiler<'_> {
             true
         } else if impl_kind != 8 {
             (matches!((&implementation_type.returns,&inst.returns),(Type::Int,Type::Object(n)) if n=="java/lang/Integer")
+                || matches!((&implementation_type.returns,&inst.returns),(Type::Long,Type::Object(n)) if n=="java/lang/Long")
                 || matches!((&implementation_type.returns,&inst.returns),(Type::Float,Type::Object(n)) if n=="java/lang/Float")
+                || matches!((&implementation_type.returns,&inst.returns),(Type::Double,Type::Object(n)) if n=="java/lang/Double")
                 || matches!((&implementation_type.returns,&inst.returns),(Type::Byte,Type::Object(n)) if n=="java/lang/Byte")
-                || matches!((&implementation_type.returns,&inst.returns),(Type::Long,Type::Object(n)) if n=="java/lang/Long"))
-                || self.lambda_assignable(&implementation_type.returns, &inst.returns)?
+                || matches!((&implementation_type.returns,&inst.returns),(Type::Object(n),Type::Boolean) if n=="java/lang/Boolean")
+                || matches!((&implementation_type.returns,&inst.returns),(Type::Boolean,Type::Object(n)) if n=="java/lang/Boolean")
+                || self.lambda_assignable(&implementation_type.returns, &inst.returns)?)
         } else {
             impl_name == "<init>"
                 && implementation_type.returns == Type::Void
@@ -2612,9 +2771,9 @@ impl NumericCompiler<'_> {
                 .iter()
                 .zip(inst.args.iter())
                 .any(|(a, b)| !erased(a, b))
-            || !erased(&sam.returns, &inst.returns)
+            || !self.lambda_assignable(&inst.returns, &sam.returns)?
         {
-            return Err("lambda adaptación de parámetros no soportada".into());
+            return Err(format!("lambda adaptación de parámetros no soportada: combined={combined:?} expected={expected:?} inst={instantiated} sam={sam_desc} impl={impl_owner}.{impl_name}{impl_desc}"));
         }
         signature_ext(&sam_desc, true)?;
         signature_ext(&instantiated, true)?;
@@ -3175,6 +3334,26 @@ impl NumericCompiler<'_> {
                         ("java/util/Date","getTime","()J") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::L(date_get(heap,r)));".into(),
                         ("java/util/Date","setTime","(J)V") if self.multi_classes.is_some()=>"let v=pop_l(&mut stack);let r=pop_r(&mut stack);date_set(heap,r,v);".into(),
                         ("java/util/UUID","toString","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);let v=uuid_string(heap,r);stack.push(V::R(Some(v)));".into(),
+                        ("java/util/BitSet","set","(I)V") if self.multi_classes.is_some()=>"let i=pop_i(&mut stack);let r=pop_r(&mut stack);bitset_set(heap,r,i);".into(),
+                        ("java/util/BitSet","set","(IZ)V") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let i=pop_i(&mut stack);let r=pop_r(&mut stack);bitset_set_bool(heap,r,i,v);".into(),
+                        ("java/util/BitSet","set","(II)V") if self.multi_classes.is_some()=>"let to=pop_i(&mut stack);let from=pop_i(&mut stack);let r=pop_r(&mut stack);bitset_set_range(heap,r,from,to);".into(),
+                        ("java/util/BitSet","get","(I)Z") if self.multi_classes.is_some()=>"let i=pop_i(&mut stack);let r=pop_r(&mut stack);stack.push(V::I(bitset_get(heap,r,i)));".into(),
+                        ("java/util/BitSet","get","(II)Ljava/util/BitSet;") if self.multi_classes.is_some()=>"let to=pop_i(&mut stack);let from=pop_i(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(bitset_get_range(heap,r,from,to))));".into(),
+                        ("java/util/BitSet","isEmpty","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(bitset_is_empty(heap,r)));".into(),
+                        ("java/util/BitSet","length","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(bitset_length(heap,r)));".into(),
+                        ("java/util/BitSet","size","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(bitset_size(heap,r)));".into(),
+                        ("java/util/BitSet","cardinality","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(bitset_cardinality(heap,r)));".into(),
+                        ("java/util/BitSet","nextSetBit","(I)I") if self.multi_classes.is_some()=>"let i=pop_i(&mut stack);let r=pop_r(&mut stack);stack.push(V::I(bitset_next_set_bit(heap,r,i)));".into(),
+                        ("java/util/BitSet","nextClearBit","(I)I") if self.multi_classes.is_some()=>"let i=pop_i(&mut stack);let r=pop_r(&mut stack);stack.push(V::I(bitset_next_clear_bit(heap,r,i)));".into(),
+                        ("java/util/BitSet","clear","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);bitset_clear_all(heap,r);".into(),
+                        ("java/util/BitSet","clear","(I)V") if self.multi_classes.is_some()=>"let i=pop_i(&mut stack);let r=pop_r(&mut stack);bitset_clear_one(heap,r,i);".into(),
+                        ("java/util/BitSet","clear","(II)V") if self.multi_classes.is_some()=>"let to=pop_i(&mut stack);let from=pop_i(&mut stack);let r=pop_r(&mut stack);bitset_clear_range(heap,r,from,to);".into(),
+                        ("java/util/BitSet","toLongArray","()[J") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(bitset_to_longs(heap,r))));".into(),
+                        ("java/util/BitSet","toByteArray","()[B") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(bitset_to_bytes(heap,r))));".into(),
+                        ("java/util/BitSet","clone","()Ljava/lang/Object;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(bitset_clone(heap,r))));".into(),
+                        ("java/util/BitSet","hashCode","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(bitset_hash_code(heap,r)));".into(),
+                        ("java/util/BitSet","equals","(Ljava/lang/Object;)Z") if self.multi_classes.is_some()=>"let o=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::I(bitset_equals(heap,r,o)));".into(),
+                        ("java/util/BitSet","stream","()Ljava/util/stream/IntStream;") if self.multi_classes.is_some()=>"{let r=pop_r(&mut stack);error(\"BitSet.stream no soportado en este perfil\")}".into(),
                         ("java/util/UUID","version","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(uuid_parts(heap,r).0 as i32));".into(),
                         ("java/util/UUID","variant","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(uuid_parts(heap,r).1 as i32));".into(),
                         ("java/lang/String","matches","(Ljava/lang/String;)Z") if self.multi_classes.is_some()=>"let p=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::I(string_matches_formatting(heap,r,p) as i32));".into(),
@@ -3199,6 +3378,7 @@ impl NumericCompiler<'_> {
                         ("java/util/Optional","get","()Ljava/lang/Object;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(optional_value(heap,r).unwrap_or_else(||raise(\"NoSuchElementException\",\"No value present\")))));".into(),
                         ("java/util/Optional","orElseGet","(Ljava/util/function/Supplier;)Ljava/lang/Object;") if self.multi_classes.is_some()=>{self.interface_call("java/util/function/Supplier","get","()Ljava/lang/Object;")?;let id=self.interface_calls.iter().position(|v|v.0=="java/util/function/Supplier"&&v.1=="get"&&v.2=="()Ljava/lang/Object;").ok_or("Supplier.get no registrado")?;format!("let f=pop_r(&mut stack);let r=pop_r(&mut stack);let v=match optional_value(heap,r){{Some(v)=>Some(v),None=>{{let _opaque=call_guard(\"<jdk-callback>\");interface_dispatch_{id}(heap,f)}}}};stack.push(V::R(v));")},
                         ("java/util/Optional","orElse","(Ljava/lang/Object;)Ljava/lang/Object;") if self.multi_classes.is_some()=>"let v=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(optional_value(heap,r).or(v)));".into(),
+                        ("java/util/Optional","orElseThrow","(Ljava/util/function/Supplier;)Ljava/lang/Object;") if self.multi_classes.is_some()=>{self.interface_call("java/util/function/Supplier","get","()Ljava/lang/Object;")?;let id=self.interface_calls.iter().position(|v|v.0=="java/util/function/Supplier"&&v.1=="get"&&v.2=="()Ljava/lang/Object;").ok_or("Supplier.get no registrada")?;format!("let f=pop_r(&mut stack);let r=pop_r(&mut stack);let v=match optional_value(heap,r){{Some(v)=>v,None=>{{let _opaque=call_guard(\"<jdk-callback>\");let ex=interface_dispatch_{id}(heap,f);throw_ref(heap,ex)}}}};stack.push(V::R(Some(v)));")},
                         ("java/lang/Long","longValue","()J") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::L(long_value(heap,r)));".into(),
                         ("java/lang/Integer","intValue","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(integer_value(heap,r)));".into(),
                         ("java/lang/Byte","byteValue","()B") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(byte_value(heap,r)));".into(),
@@ -3208,6 +3388,7 @@ impl NumericCompiler<'_> {
                         ("java/lang/ThreadLocal"|"java/lang/InheritableThreadLocal","remove","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);threadlocal_remove(heap,r);".into(),
                         ("java/util/concurrent/TimeUnit","ordinal","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);timeunit_id(heap,r);stack.push(V::I(enum_ordinal(heap,r)));".into(),
                         ("java/util/concurrent/TimeUnit","name","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);timeunit_id(heap,r);stack.push(V::R(enum_name(heap,r)));".into(),
+                        ("java/nio/file/spi/FileSystemProvider","getScheme","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(zip_fs_provider_get_scheme(heap,r))));".into(),
                         ("java/util/concurrent/TimeUnit","convert","(JLjava/util/concurrent/TimeUnit;)J") if self.multi_classes.is_some()=>"let source=pop_r(&mut stack);let value=pop_l(&mut stack);let r=pop_r(&mut stack);stack.push(V::L(timeunit_convert(heap,r,value,source)));".into(),
                         ("java/util/concurrent/TimeUnit","toNanos"|"toMicros"|"toMillis"|"toSeconds"|"toMinutes"|"toHours"|"toDays","(J)J") if self.multi_classes.is_some()=>{let target=match name{"toNanos"=>0,"toMicros"=>1,"toMillis"=>2,"toSeconds"=>3,"toMinutes"=>4,"toHours"=>5,_=>6};format!("let value=pop_l(&mut stack);let r=pop_r(&mut stack);stack.push(V::L(timeunit_to(heap,r,value,{target}))); ")},
                         ("java/lang/Enum","ordinal","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(enum_ordinal(heap,r)));".into(),
@@ -3236,6 +3417,7 @@ impl NumericCompiler<'_> {
                         ("java/lang/Object","toString","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);let s=object_to_string_guard(heap,r);stack.push(V::R(Some(s)));".into(),
                         ("java/lang/StringBuilder","append","(D)Ljava/lang/StringBuilder;") if self.multi_classes.is_some()=>r#"error("StringBuilder.append(double): representación decimal no implementada");"#.into(),
                         ("java/lang/StringBuilder","append","(F)Ljava/lang/StringBuilder;") if self.multi_classes.is_some()=>r#"error("StringBuilder.append(float): representación decimal no implementada");"#.into(),
+                        ("java/lang/Integer","highestOneBit","(I)I") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);stack.push(V::I(integer_highest_one_bit(v)));".into(),
                         ("java/lang/StringBuilder","toString","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(builder_to_string(heap,r))));".into(),
                         ("java/util/ArrayList","stream","()Ljava/util/stream/Stream;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(collection_stream(heap,r))));".into(),
                         ("java/util/ServiceLoader","iterator","()Ljava/util/Iterator;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(service_iterator(heap,r))));".into(),
@@ -3243,6 +3425,7 @@ impl NumericCompiler<'_> {
                         ("java/lang/Module","getLayer","()Ljava/lang/ModuleLayer;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(module_layer(heap,r))));".into(),
                         ("java/lang/ModuleLayer","findModule","(Ljava/lang/String;)Ljava/util/Optional;") if self.multi_classes.is_some()=>"let name=pop_r(&mut stack);let layer=pop_r(&mut stack);let module=find_jfr_module(heap,layer,name);stack.push(V::R(Some(optional_new(heap,module))));".into(),
                         ("java/lang/Class","getCanonicalName","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);let s=class_canonical_top(heap,r);stack.push(V::R(Some(s)));".into(),
+                        ("java/lang/Class","getEnumConstants","()[Ljava/lang/Object;") if self.multi_classes.is_some()=>{self.uses_enum_constants=true;"let r=pop_r(&mut stack);stack.push(V::R(enum_constants(heap,r)));".into()},
                         ("java/lang/Class","getSimpleName","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(class_simple_name(heap,r))));".into(),
                         ("java/lang/Class","getName","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(class_get_name(heap,r))));".into(),
                         _ if self.multi_classes.is_some() && name=="getClass" && desc=="()Ljava/lang/Class;" && (owner=="java/lang/Object" || project_class(owner) || matches!(owner,"java/lang/String"|"java/lang/StringBuilder"))=>"let r=pop_r(&mut stack);stack.push(V::R(Some(object_get_class(heap,r))));".into(),
@@ -3261,7 +3444,7 @@ impl NumericCompiler<'_> {
                         ("java/lang/Class","getConstructor","([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;") if self.multi_classes.is_some()=>"let args=pop_r(&mut stack);let class=pop_r(&mut stack);stack.push(V::R(Some(reflect_get_constructor(heap,class,args,REFLECT_CTORS))));".into(),
                         ("java/lang/reflect/Constructor","newInstance","([Ljava/lang/Object;)Ljava/lang/Object;") if self.multi_classes.is_some()=>"let args=pop_r(&mut stack);let ctor=pop_r(&mut stack);stack.push(V::R(reflect_construct(heap,ctor,args)));".into(),
                         ("java/util/ServiceConfigurationError","getMessage","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(service_error_message(heap,r)));".into(),
-                        ("java/lang/Throwable","addSuppressed","(Ljava/lang/Throwable;)V") if self.multi_classes.is_some()=>"let suppressed=pop_r(&mut stack);let r=pop_r(&mut stack);exception_add_suppressed(heap,r,suppressed);".into(),
+                        (_,"addSuppressed","(Ljava/lang/Throwable;)V") if self.multi_classes.is_some() && (owner=="java/lang/Throwable" || known_exception(owner).is_some())=>"let suppressed=pop_r(&mut stack);let r=pop_r(&mut stack);exception_add_suppressed(heap,r,suppressed);".into(),
                         (_,"printStackTrace","(Ljava/io/PrintStream;)V") if self.multi_classes.is_some() && (known_exception(owner).is_some() || (project_class(owner) && self.resolve_exception_type(owner).is_ok()))=>"let stream=pop_r(&mut stack);let exception=pop_r(&mut stack);print_stack_trace_guard(heap,exception,stream);".into(),
                         ("java/net/URISyntaxException","getInput"|"getReason","()Ljava/lang/String;") if self.multi_classes.is_some()=>format!("let r=pop_r(&mut stack);stack.push(V::R(Some(uri_syntax_part(heap,r,{}))));",name=="getInput"),
                         ("java/net/URISyntaxException","getIndex","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(uri_syntax_index(heap,r)));".into(),
@@ -3302,6 +3485,16 @@ impl NumericCompiler<'_> {
                         _ if self.multi_classes.is_some() && matches!(owner,"java/util/HashMap"|"java/util/concurrent/ConcurrentHashMap"|"java/util/concurrent/ConcurrentMap"|"java/util/Map") && name=="computeIfAbsent" && desc=="(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;"=>self.map_compute_if_absent()?,
                         _ if self.multi_classes.is_some() && collection_intrinsic(owner,name,desc).is_some()=>collection_intrinsic(owner,name,desc).unwrap().into(),
                         _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(owner,name,desc)?,
+                        ("java/lang/ScopedValue","isBound","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(scoped_value_is_bound(heap,r) as i32));".into(),
+                        ("java/lang/ScopedValue","get","()Ljava/lang/Object;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(scoped_value_get(heap,r)));".into(),
+                        ("java/lang/ScopedValue$Carrier","run","(Ljava/lang/Runnable;)V") if self.multi_classes.is_some()=>{self.interface_call("java/lang/Runnable","run","()V")?;let id=self.interface_calls.iter().position(|v|v.0=="java/lang/Runnable"&&v.1=="run"&&v.2=="()V").ok_or("Runnable.run no registrada")?;format!("let f=pop_r(&mut stack);let r=pop_r(&mut stack);scoped_carrier_run(heap,r,f,interface_dispatch_{id});").into()},
+                        ("java/lang/Thread","getStackTrace","()[Ljava/lang/StackTraceElement;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);let _=r;error(\"Thread.getStackTrace: no soportado en el perfil AOT (solo la rama isDebugEnabled lo alcanza)\")".into(),
+                        ("java/lang/StackTraceElement","getClassName","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);let _=r;error(\"StackTraceElement.getClassName: no soportado en el perfil AOT (rama debug)\")".into(),
+                        ("java/lang/StackTraceElement","getMethodName","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);let _=r;error(\"StackTraceElement.getMethodName: no soportado en el perfil AOT (rama debug)\")".into(),
+                        ("java/lang/StackTraceElement","getLineNumber","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);let _=r;error(\"StackTraceElement.getLineNumber: no soportado en el perfil AOT (rama debug)\")".into(),
+                        ("java/util/EnumMap","put","(Ljava/lang/Enum;Ljava/lang/Object;)Ljava/lang/Object;") if self.multi_classes.is_some()=>"let value=pop_r(&mut stack);let key=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(enum_map_put(heap,r,key,value)));".into(),
+                        ("java/util/HexFormat","withUpperCase","()Ljava/util/HexFormat;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(hex_format_with_upper_case(heap,r))));".into(),
+                        ("java/util/HexFormat","toHexDigits","(B)Ljava/lang/String;") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(hex_digits_byte(heap,r,v))));".into(),
                         _=>return Err(format!("invokevirtual no soportado: {owner}.{name}{desc}")),
                     }
                 },
@@ -3325,6 +3518,10 @@ impl NumericCompiler<'_> {
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/locks/ReentrantReadWriteLock","(Z)V") {"let _fair=pop_i(&mut stack);let r=pop_r(&mut stack);rw_lock_id(heap,r);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/locks/ReentrantReadWriteLock","()V") {"let r=pop_r(&mut stack);rw_lock_id(heap,r);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/locks/ReentrantLock","()V") {"let r=pop_r(&mut stack);reentrant_count(heap,r);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/ForkJoinPool","(ILjava/util/concurrent/ForkJoinPool$ForkJoinWorkerThreadFactory;Ljava/lang/Thread$UncaughtExceptionHandler;Z)V") {"let handler=pop_r(&mut stack);let factory=pop_r(&mut stack);let async_mode=pop_i(&mut stack);let parallelism=pop_i(&mut stack);let r=pop_r(&mut stack);forkjoin_pool_init(heap,r,parallelism,factory,handler,async_mode);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/util/UUID","(JJ)V") {"let least=pop_l(&mut stack);let most=pop_l(&mut stack);let r=pop_r(&mut stack);uuid_init(heap,r,most,least);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/util/BitSet","(I)V") {"let n=pop_i(&mut stack);let r=pop_r(&mut stack);bitset_init_checked(heap,r,n);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/util/BitSet","()V") {"let r=pop_r(&mut stack);let r=r;".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/atomic/AtomicInteger","()V") {"let r=pop_r(&mut stack);atomic_integer_set(heap,r,0);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/atomic/AtomicInteger","(I)V") {"let v=pop_i(&mut stack);let r=pop_r(&mut stack);atomic_integer_set(heap,r,v);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/atomic/AtomicLong","()V") {"let r=pop_r(&mut stack);atomic_long_set(heap,r,0);".into()
@@ -3344,6 +3541,7 @@ impl NumericCompiler<'_> {
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/IdentityHashMap","()V") {"let r=pop_r(&mut stack);identity_map_id(heap,r);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/HashMap","(I)V") {"let n=pop_i(&mut stack);let r=pop_r(&mut stack);hashmap_init_capacity(heap,r,n);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/HashMap","()V") {"let r=pop_r(&mut stack);hashmap_id(heap,r);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/text/DecimalFormat","(Ljava/lang/String;Ljava/text/DecimalFormatSymbols;)V") {"let symbols=pop_r(&mut stack);let pattern=pop_r(&mut stack);let r=pop_r(&mut stack);decimal_format_init(heap,r,pattern,symbols);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/HashMap","(Ljava/util/Map;)V") {"let source=pop_r(&mut stack);let r=pop_r(&mut stack);hashmap_init_map(heap,r,source);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/ByteArrayInputStream","([B)V") {"let b=pop_r(&mut stack);let r=pop_r(&mut stack);byte_input_init(heap,r,b);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/InputStreamReader","(Ljava/io/InputStream;Ljava/nio/charset/Charset;)V") {"let charset=pop_r(&mut stack);let stream=pop_r(&mut stack);let r=pop_r(&mut stack);reader_init(heap,r,stream,charset);".into()
@@ -3362,7 +3560,7 @@ impl NumericCompiler<'_> {
                         format!("let r=pop_r(&mut stack);collection_init(heap,r,{owner:?});")
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/Spliterators$AbstractSpliterator","(JI)V") {
                         "let flags=pop_i(&mut stack);let estimate=pop_l(&mut stack);let r=pop_r(&mut stack);spliterator_init(heap,r,estimate,flags);".into()
-                    } else if self.multi_classes.is_some() && matches!((owner,desc),("java/lang/Object"|"java/lang/Record"|"java/util/AbstractCollection","()V")) {
+                    } else if self.multi_classes.is_some() && matches!((owner,desc),("java/lang/Object"|"java/lang/Record"|"java/lang/Number"|"java/util/AbstractCollection"|"java/util/AbstractList"|"java/util/AbstractSequentialList"|"java/util/AbstractMap","()V")) {
                         "let r=pop_r(&mut stack);check_any_object(heap,r);".into()
                     } else if owner=="net/minecraft/IdentifierException" && matches!(desc,"(Ljava/lang/String;)V"|"(Ljava/lang/String;Ljava/lang/Throwable;)V") && self.multi_classes.is_some() {
                         self.validate_exception_class(owner)?;
@@ -3381,6 +3579,8 @@ impl NumericCompiler<'_> {
 
                             _=>return Err(format!("constructor de excepción no soportado: {owner}{desc}")),
                         }
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/util/EnumMap","(Ljava/util/Map;)V") {"let source=pop_r(&mut stack);let r=pop_r(&mut stack);enum_map_init_map(heap,r,source);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/util/EnumMap","(Ljava/lang/Class;)V") {"let keyclass=pop_r(&mut stack);let r=pop_r(&mut stack);enum_map_init_class(heap,r,keyclass);".into()
                     } else if self.multi_classes.is_some() && project_class(owner) {self.instance_call(owner,method,desc)?}
                     else {return Err(format!("constructor no soportado: {owner}.{method}{desc}"));}
                 },
@@ -3392,6 +3592,7 @@ impl NumericCompiler<'_> {
                     for (i,t) in call_sig.args.iter().enumerate().rev() {pre.push_str(&format!("let x{i}={}(&mut stack); ",pop(*t)));}
                     let args=(0..call_sig.args.len()).map(|i|format!("x{i}")).collect::<Vec<_>>().join(",");
                     let expr=match (callee,method,desc) {
+                        ("java/lang/Integer","highestOneBit","(I)I") if self.multi_classes.is_some()=>"stack.push(V::I(integer_highest_one_bit(x0)));".into(),
                         ("org/apache/logging/log4j/util/OsgiServiceLocator","loadServices","(Ljava/lang/Class;Ljava/lang/Class;Lorg/apache/logging/log4j/Logger;)Ljava/util/stream/Stream;") if self.multi_classes.is_some() && start==55 && self.active.last().is_some_and(|k| k=="org/apache/logging/log4j/util/ServiceLoaderUtil.safeStream(Ljava/lang/Class;Ljava/util/ServiceLoader;Lorg/apache/logging/log4j/Logger;)Ljava/util/stream/Stream;")=>{self.verify_log4j_absent_osgi()?;"{ error(\"Log4j OSGi: rama inalcanzable ejecutada\"); None }".into()},
                         ("java/util/stream/Stream","concat","(Ljava/util/stream/Stream;Ljava/util/stream/Stream;)Ljava/util/stream/Stream;") if self.multi_classes.is_some() && start==58 && self.active.last().is_some_and(|k| k=="org/apache/logging/log4j/util/ServiceLoaderUtil.safeStream(Ljava/lang/Class;Ljava/util/ServiceLoader;Lorg/apache/logging/log4j/Logger;)Ljava/util/stream/Stream;")=>{self.verify_log4j_absent_osgi()?;"{ error(\"Log4j OSGi: rama inalcanzable ejecutada\"); None }".into()},
                         ("java/util/concurrent/CompletableFuture","completedFuture","(Ljava/lang/Object;)Ljava/util/concurrent/CompletableFuture;") if self.multi_classes.is_some()=>{
@@ -3417,6 +3618,7 @@ impl NumericCompiler<'_> {
                             "class_for_name_absent_osgi(heap,x0)".into()
                         },
                         ("java/util/Objects","toString","(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/String;") if self.multi_classes.is_some()=>"objects_to_string_default(heap,x0,x1)".into(),
+                        ("java/util/Comparator","comparingInt","(Ljava/util/function/ToIntFunction;)Ljava/util/Comparator;") if self.multi_classes.is_some()=>"Some(comparator_comparing_int(heap,x0))".into(),
                         ("java/util/Comparator","comparing","(Ljava/util/function/Function;)Ljava/util/Comparator;") if self.multi_classes.is_some()=>"Some(comparator_comparing(heap,x0))".into(),
                         ("java/util/stream/StreamSupport","stream","(Ljava/util/Spliterator;Z)Ljava/util/stream/Stream;") if self.multi_classes.is_some()=>"Some(stream_support(heap,x0,x1))".into(),
                         ("java/util/Objects","requireNonNull","(Ljava/lang/Object;)Ljava/lang/Object;") if self.multi_classes.is_some()=>"require_non_null(heap,x0,None)".into(),
@@ -3429,11 +3631,18 @@ impl NumericCompiler<'_> {
                         ("java/lang/Enum","valueOf","(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;") if self.multi_classes.is_some()=>{self.uses_enum_valueof=true;"enum_valueof(heap,x0,x1)".into()},
                         ("java/util/EnumSet","allOf","(Ljava/lang/Class;)Ljava/util/EnumSet;") if self.multi_classes.is_some() && class=="org/apache/logging/log4j/spi/StandardLevel"=>{let (_,slot,_)=self.resolve_static_field(class,"$VALUES","[Lorg/apache/logging/log4j/spi/StandardLevel;")?;format!("Some(standardlevel_enumset(heap,x0,{slot}))")},
                         ("com/google/common/util/concurrent/MoreExecutors","newDirectExecutorService","()Lcom/google/common/util/concurrent/ListeningExecutorService;") if self.multi_classes.is_some()=>r#"{error("MoreExecutors.newDirectExecutorService: ejecución concurrente no implementada")}"#.into(),
+                        ("java/util/stream/Collectors","toMap","(Ljava/util/function/Function;Ljava/util/function/Function;)Ljava/util/stream/Collector;") if self.multi_classes.is_some()=>"Some(collectors_to_map(heap,x0,x1))".into(),
+                        ("java/lang/ScopedValue","newInstance","()Ljava/lang/ScopedValue;") if self.multi_classes.is_some()=>"Some(scoped_value_new(heap))".into(),
+                        ("java/lang/ScopedValue","where","(Ljava/lang/ScopedValue;Ljava/lang/Object;)Ljava/lang/ScopedValue$Carrier;") if self.multi_classes.is_some()=>"Some(scoped_value_where(heap,x0,x1))".into(),
+                        ("java/util/stream/Collectors","toMap","(Ljava/util/function/Function;Ljava/util/function/Function;Ljava/util/function/Function;)Ljava/util/stream/Collector;") if self.multi_classes.is_some()=>"{let c=pop_r(&mut stack);let b=pop_r(&mut stack);let a=pop_r(&mut stack);error(\"Collectors.toMap no soportado en este perfil\")}".into(),
+                        ("java/util/stream/Collectors","toList","()Ljava/util/stream/Collector;") if self.multi_classes.is_some()=>"Some(collectors_to_list(heap))".into(),
+                        ("java/util/stream/Collectors","joining","(Ljava/lang/CharSequence;)Ljava/util/stream/Collector;") if self.multi_classes.is_some()=>"Some(collectors_joining_delimiter(heap,x0))".into(),
                         ("java/util/stream/Collectors","joining","(Ljava/lang/CharSequence;Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/util/stream/Collector;") if self.multi_classes.is_some()=>"Some(collectors_joining(heap,x0,x1,x2))".into(),
                         ("java/util/stream/Collector","of","(Ljava/util/function/Supplier;Ljava/util/function/BiConsumer;Ljava/util/function/BinaryOperator;[Ljava/util/stream/Collector$Characteristics;)Ljava/util/stream/Collector;") if self.multi_classes.is_some()=>"Some(collector_of(heap,x0,x1,x2,x3))".into(),
                         ("jdk/jfr/FlightRecorder","isAvailable","()Z") if self.multi_classes.is_some() && std::env::var("MC_AOT_DISABLE_JFR").as_deref()==Ok("1")=>"0".into(),
                         ("java/lang/System","identityHashCode","(Ljava/lang/Object;)I") if self.multi_classes.is_some()=>r#"{if x0.is_some(){error("System.identityHashCode: identidad de host no verificada");}0i32}"#.into(),
                         ("java/util/concurrent/Executors","defaultThreadFactory","()Ljava/util/concurrent/ThreadFactory;") if self.multi_classes.is_some()=>r#"{error("Executors.defaultThreadFactory: hilos no implementados")}"#.into(),
+                        ("java/util/concurrent/Executors","newCachedThreadPool","(Ljava/util/concurrent/ThreadFactory;)Ljava/util/concurrent/ExecutorService;") if self.multi_classes.is_some()=>"Some(cached_thread_pool_new(heap,x0))".into(),
                         ("java/lang/System","currentTimeMillis","()J") if self.multi_classes.is_some()=>"current_time_millis()".into(),
                         ("java/lang/Thread","currentThread","()Ljava/lang/Thread;") if self.multi_classes.is_some()=>"Some(current_thread(heap))".into(),
                         ("java/lang/Thread","interrupted","()Z") if self.multi_classes.is_some()=>"thread_interrupted(heap) as i32".into(),
@@ -3462,11 +3671,23 @@ impl NumericCompiler<'_> {
                         ("java/util/List","of",_) if self.multi_classes.is_some() && (3..=10).contains(&call_sig.args.len()) && desc==format!("({})Ljava/util/List;","Ljava/lang/Object;".repeat(call_sig.args.len()))=>format!("Some(immutable_list_new(heap,vec![{}]))",(0..call_sig.args.len()).map(|i|format!("x{i}")).collect::<Vec<_>>().join(",")),
                         ("java/util/List","of","([Ljava/lang/Object;)Ljava/util/List;") if self.multi_classes.is_some()=>"Some(immutable_list_from_array(heap,x0))".into(),
                         ("java/util/List","of","()Ljava/util/List;") if self.multi_classes.is_some()=>"Some(immutable_list_new(heap,Vec::new()))".into(),
+                        ("java/util/List","copyOf","(Ljava/util/Collection;)Ljava/util/List;") if self.multi_classes.is_some()=>"Some(list_copy_of(heap,x0))".into(),
                         ("java/util/List","of","(Ljava/lang/Object;)Ljava/util/List;") if self.multi_classes.is_some()=>"Some(immutable_list_new(heap,vec![x0]))".into(),
                         ("java/util/List","of","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;") if self.multi_classes.is_some()=>"Some(immutable_list_new(heap,vec![x0,x1]))".into(),
                         ("java/util/Collections","newSetFromMap","(Ljava/util/Map;)Ljava/util/Set;") if self.multi_classes.is_some()=>"Some(identity_set_new(heap,x0))".into(),
                         ("java/util/Collections","sort","(Ljava/util/List;)V") if self.multi_classes.is_some()=>"{list_sort_strings(heap,x0);}".into(),
+                        ("java/util/Arrays","sort","([Ljava/lang/Object;Ljava/util/Comparator;)V") if self.multi_classes.is_some()=>{self.interface_call("java/util/Comparator","compare","(Ljava/lang/Object;Ljava/lang/Object;)I")?;let id=self.interface_calls.iter().position(|v|v.0=="java/util/Comparator"&&v.1=="compare"&&v.2=="(Ljava/lang/Object;Ljava/lang/Object;)I").ok_or("Comparator.compare no registrada")?;format!("object_array_sort_comparator(heap,x0,x1,interface_dispatch_{id});").into()},
+                        ("java/nio/file/spi/FileSystemProvider","installedProviders","()Ljava/util/List;") if self.multi_classes.is_some()=>"Some(installed_providers_zip(heap))".into(),
                         ("java/util/Collections","emptySet","()Ljava/util/Set;") if self.multi_classes.is_some()=>"Some(empty_set(heap))".into(),
+                        ("java/util/Map","of",_) if self.multi_classes.is_some() && (2..=20).contains(&call_sig.args.len()) && call_sig.args.len()%2==0 && desc==format!("({})Ljava/util/Map;","Ljava/lang/Object;".repeat(call_sig.args.len()))=>format!("Some(map_of_n(heap,vec![{}]))",(0..call_sig.args.len()/2).map(|i|format!("(x{},x{})",i*2,i*2+1)).collect::<Vec<_>>().join(",")),
+                        ("java/util/Map","of","()Ljava/util/Map;") if self.multi_classes.is_some()=>"Some(empty_map(heap))".into(),
+                        ("java/util/Set","of",_) if self.multi_classes.is_some() && (1..=10).contains(&call_sig.args.len()) && desc==format!("({})Ljava/util/Set;","Ljava/lang/Object;".repeat(call_sig.args.len()))=>format!("Some(set_of_n(heap,vec![{}]))",(0..call_sig.args.len()).map(|i|format!("x{i}")).collect::<Vec<_>>().join(",")),
+                        ("java/util/Set","of","()Ljava/util/Set;") if self.multi_classes.is_some()=>"Some(empty_set(heap))".into(),
+                        ("java/util/BitSet","valueOf","([J)Ljava/util/BitSet;") if self.multi_classes.is_some()=>"Some(bitset_of_longs(heap,x0))".into(),
+                        ("java/util/BitSet","valueOf","([B)Ljava/util/BitSet;") if self.multi_classes.is_some()=>"Some(bitset_of_bytes(heap,x0))".into(),
+                        ("java/util/stream/IntStream","range","(II)Ljava/util/stream/IntStream;") if self.multi_classes.is_some()=>"Some(int_stream_range(heap,x0,x1))".into(),
+                        ("java/util/stream/IntStream","rangeClosed","(II)Ljava/util/stream/IntStream;") if self.multi_classes.is_some()=>"Some(int_stream_range(heap,x0,x1+1i32))".into(),
+                        ("java/util/Set","of","([Ljava/lang/Object;)Ljava/util/Set;") if self.multi_classes.is_some()=>"Some(set_of_array(heap,x0))".into(),
                         ("java/util/Collections","emptyList","()Ljava/util/List;") if self.multi_classes.is_some()=>"Some(empty_list(heap))".into(),
                         ("java/util/Collections","emptyMap","()Ljava/util/Map;") if self.multi_classes.is_some()=>"Some(empty_map(heap))".into(),
                         ("java/util/Optional","empty","()Ljava/util/Optional;") if self.multi_classes.is_some()=>"Some(optional_new(heap,None))".into(),
@@ -3485,6 +3706,11 @@ impl NumericCompiler<'_> {
                         ("java/lang/Math","cos","(D)D") if self.multi_classes.is_some()=>"mth_cos(x0)".into(),
                         ("java/lang/Math","sqrt","(D)D") if self.multi_classes.is_some()=>"x0.sqrt()".into(),
                         ("java/lang/Math","ceil","(D)D") if self.multi_classes.is_some()=>"x0.ceil()".into(),
+                        ("java/lang/Math","floor","(D)D") if self.multi_classes.is_some()=>"x0.floor()".into(),
+                        ("java/lang/Math","rint","(D)D") if self.multi_classes.is_some()=>"x0.round_ties_even()".into(),
+                        ("java/lang/Math","round","(D)J") if self.multi_classes.is_some()=>"(x0+0.5f64).floor() as i64".into(),
+                        ("java/lang/Math","round","(F)I") if self.multi_classes.is_some()=>"(x0+0.5f32).floor() as i32".into(),
+                        ("java/lang/Math","round","(F)J") if self.multi_classes.is_some()=>"(x0 as f64+0.5f64).floor() as i64".into(),
                         ("java/lang/Float","intBitsToFloat","(I)F") if self.multi_classes.is_some()=>"f32::from_bits(x0 as u32)".into(),
                         ("java/lang/Float","floatToRawIntBits","(F)I") if self.multi_classes.is_some()=>"x0.to_bits() as i32".into(),
                         ("java/lang/Float","floatToIntBits","(F)I") if self.multi_classes.is_some()=>"if x0.is_nan(){0x7fc00000u32 as i32}else{x0.to_bits() as i32}".into(),
@@ -3492,12 +3718,22 @@ impl NumericCompiler<'_> {
                         ("java/lang/Double","doubleToRawLongBits","(D)J") if self.multi_classes.is_some()=>"x0.to_bits() as i64".into(),
                         ("java/lang/Double","doubleToLongBits","(D)J") if self.multi_classes.is_some()=>"if x0.is_nan(){0x7ff8000000000000u64 as i64}else{x0.to_bits() as i64}".into(),
                         ("java/lang/ThreadLocal","withInitial","(Ljava/util/function/Supplier;)Ljava/lang/ThreadLocal;") if self.multi_classes.is_some()=>"Some(threadlocal_with_initial(heap,x0))".into(),
+                        ("java/text/DecimalFormatSymbols","getInstance","(Ljava/util/Locale;)Ljava/text/DecimalFormatSymbols;") if self.multi_classes.is_some()=>"Some(decimal_symbols_get_instance(heap,x0))".into(),
+                        ("java/util/HexFormat","of","()Ljava/util/HexFormat;") if self.multi_classes.is_some()=>"Some(hex_format_of(heap))".into(),
+                        ("java/nio/ByteBuffer","wrap","([B)Ljava/nio/ByteBuffer;") if self.multi_classes.is_some()=>"Some(byte_buffer_wrap(heap,x0))".into(),
+                        ("java/util/HexFormat","fromHexDigits","(Ljava/lang/CharSequence;)I") if self.multi_classes.is_some()=>"let s=pop_r(&mut stack);stack.push(V::I(hex_from_digits(heap,s)));".into(),
                         ("java/time/Instant","now","()Ljava/time/Instant;") if self.multi_classes.is_some()=>"Some(instant_now(heap))".into(),
                         ("java/time/Duration","between","(Ljava/time/temporal/Temporal;Ljava/time/temporal/Temporal;)Ljava/time/Duration;") if self.multi_classes.is_some()=>"Some(duration_between_instants(heap,x0,x1))".into(),
                         ("java/time/Duration","ofMillis","(J)Ljava/time/Duration;") if self.multi_classes.is_some()=>"Some(duration_from_millis(heap,x0))".into(),
                         ("java/lang/StackWalker","getInstance","()Ljava/lang/StackWalker;") if self.multi_classes.is_some()=>"Some(default_stack_walker(heap))".into(),
                         ("java/lang/StackWalker","getInstance","(Ljava/lang/StackWalker$Option;)Ljava/lang/StackWalker;") if self.multi_classes.is_some()=>"Some(stack_walker_new(heap,x0))".into(),
+                        ("java/util/Arrays","fill","([Ljava/lang/Object;Ljava/lang/Object;)V") if self.multi_classes.is_some()=>"{ref_array_fill(heap,x0,x1);}".into(),
+                        ("java/util/Arrays","copyOf","([II)[I") if self.multi_classes.is_some()=>"Some(int_array_copy_of(heap,x0,x1))".into(),
                         ("java/util/Arrays","copyOf","([Ljava/lang/Object;I)[Ljava/lang/Object;") if self.multi_classes.is_some()=>"Some(ref_array_copy_of(heap,x0,x1))".into(),
+                        ("java/util/stream/Stream","of","([Ljava/lang/Object;)Ljava/util/stream/Stream;") if self.multi_classes.is_some()=>"Some(arrays_stream(heap,x0))".into(),
+                        ("com/google/common/collect/ImmutableList","toImmutableList","()Ljava/util/stream/Collector;") if self.multi_classes.is_some()=>"Some(collectors_to_immutable_list(heap))".into(),
+                        ("com/google/common/collect/ImmutableMap","copyOf","(Ljava/util/Map;)Lcom/google/common/collect/ImmutableMap;") if self.multi_classes.is_some()=>"Some(immutable_map_copy_of(heap,x0))".into(),
+                        ("java/util/Arrays","stream","([Ljava/lang/Object;)Ljava/util/stream/Stream;") if self.multi_classes.is_some()=>"Some(arrays_stream(heap,x0))".into(),
                         ("java/util/Arrays","asList","([Ljava/lang/Object;)Ljava/util/List;") if self.multi_classes.is_some()=>"Some(arrays_as_list(heap,x0))".into(),
                         ("java/lang/String","valueOf","(I)Ljava/lang/String;") if self.multi_classes.is_some()=>"Some(new_string(heap,x0.to_string().encode_utf16().collect()))".into(),
                         ("java/lang/String","valueOf","(J)Ljava/lang/String;") if self.multi_classes.is_some()=>"Some(new_string(heap,x0.to_string().encode_utf16().collect()))".into(),
@@ -3523,7 +3759,13 @@ impl NumericCompiler<'_> {
                         ("java/lang/System","setProperty","(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;") if self.multi_classes.is_some()=>"property_set(heap,x0,x1)".into(),
                         ("java/lang/System","clearProperty","(Ljava/lang/String;)Ljava/lang/String;") if self.multi_classes.is_some()=>"property_clear(heap,x0)".into(),
                         ("java/lang/Math","abs","(I)I")|("java/lang/Math","abs","(J)J") => "x0.wrapping_abs()".to_string(),
+                        ("java/lang/Math","abs","(D)D")=>"x0.abs()".into(),
+                        ("java/lang/Math","abs","(F)F")=>"x0.abs()".into(),
                         ("java/lang/Math","min","(II)I")|("java/lang/Math","min","(JJ)J")=>"std::cmp::min(x0,x1)".into(),
+                        ("java/lang/Math","min","(DD)D")=>"java_min_d(x0,x1)".into(),
+                        ("java/lang/Math","min","(FF)F")=>"java_min_f(x0,x1)".into(),
+                        ("java/lang/Math","max","(DD)D")=>"java_max_d(x0,x1)".into(),
+                        ("java/lang/Math","max","(FF)F")=>"java_max_f(x0,x1)".into(),
                         ("java/lang/Math","max","(II)I")|("java/lang/Math","max","(JJ)J")=>"std::cmp::max(x0,x1)".into(),
                         ("java/lang/Math","floorDiv","(II)I")=>"floor_div_i(x0,x1)".into(),
                         ("java/lang/Math","floorMod","(II)I")=>"floor_mod_i(x0,x1)".into(),
@@ -3553,10 +3795,18 @@ impl NumericCompiler<'_> {
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/Comparator","compare","(Ljava/lang/Object;Ljava/lang/Object;)I") {self.interface_call("java/util/function/Function","apply","(Ljava/lang/Object;)Ljava/lang/Object;")?;let id=self.interface_calls.iter().position(|v|v.0=="java/util/function/Function"&&v.1=="apply"&&v.2=="(Ljava/lang/Object;)Ljava/lang/Object;").ok_or("Function.apply no registrada")?;format!("let b=pop_r(&mut stack);let a=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::I(comparator_compare(heap,r,a,b,interface_dispatch_{id}))); ")}
                     else if self.multi_classes.is_some() && matches!(owner,"java/util/Collection"|"java/util/List"|"java/util/Set") && name=="stream" && desc=="()Ljava/util/stream/Stream;" {"let r=pop_r(&mut stack);stack.push(V::R(Some(collection_stream(heap,r))));".into()}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/stream/Stream","skip","(J)Ljava/util/stream/Stream;") {"let n=pop_l(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(stack_stream_skip(heap,r,n))));".into()}
-                    else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/stream/Stream","findFirst","()Ljava/util/Optional;") {self.interface_call("java/util/function/Function","apply","(Ljava/lang/Object;)Ljava/lang/Object;")?;self.interface_call("java/util/function/Predicate","test","(Ljava/lang/Object;)Z")?;let apply=self.interface_calls.iter().position(|v|v.0=="java/util/function/Function"&&v.1=="apply"&&v.2=="(Ljava/lang/Object;)Ljava/lang/Object;").ok_or("Function.apply no registrada")?;let test=self.interface_calls.iter().position(|v|v.0=="java/util/function/Predicate"&&v.1=="test"&&v.2=="(Ljava/lang/Object;)Z").ok_or("Predicate.test no registrada")?;format!("let r=pop_r(&mut stack);stack.push(V::R(Some(stack_stream_find_first(heap,r,interface_dispatch_{apply},interface_dispatch_{test}))));")}
+                    else if self.multi_classes.is_some() && (owner=="java/util/List"||owner=="java/util/Collection"||owner=="java/util/Set"||owner=="java/util/ArrayList") && name=="toArray" && desc=="(Ljava/util/function/IntFunction;)[Ljava/lang/Object;" {self.interface_call("java/util/function/IntFunction","apply","(I)Ljava/lang/Object;")?;let gen=self.interface_calls.iter().position(|v|v.0=="java/util/function/IntFunction"&&v.1=="apply"&&v.2=="(I)Ljava/lang/Object;").ok_or("IntFunction.apply no registrada")?;format!("let g=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(collection_to_array_gen(heap,r,g,interface_dispatch_{gen}))));")}
+                    else if self.multi_classes.is_some() && (owner=="java/util/List"||owner=="java/util/Collection"||owner=="java/util/Set"||owner=="java/util/ArrayList") && name=="toArray" && desc=="()[Ljava/lang/Object;" {"let r=pop_r(&mut stack);stack.push(V::R(Some(collection_to_array(heap,r))));".into()}
+                    else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/stream/Stream","toArray","(Ljava/util/function/IntFunction;)[Ljava/lang/Object;") {self.interface_call("java/util/function/IntFunction","apply","(I)Ljava/lang/Object;")?;self.interface_call("java/util/function/Predicate","test","(Ljava/lang/Object;)Z")?;self.interface_call("java/util/function/ToIntFunction","applyAsInt","(Ljava/lang/Object;)I")?;let gen=self.interface_calls.iter().position(|v|v.0=="java/util/function/IntFunction"&&v.1=="apply"&&v.2=="(I)Ljava/lang/Object;").ok_or("IntFunction.apply no registrada")?;let test=self.interface_calls.iter().position(|v|v.0=="java/util/function/Predicate"&&v.1=="test"&&v.2=="(Ljava/lang/Object;)Z").ok_or("Predicate.test no registrada")?;let cmp=self.interface_calls.iter().position(|v|v.0=="java/util/function/ToIntFunction"&&v.1=="applyAsInt"&&v.2=="(Ljava/lang/Object;)I").ok_or("ToIntFunction.applyAsInt no registrada")?;format!("let g=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(stream_to_array(heap,r,g,interface_dispatch_{cmp},interface_dispatch_{gen},interface_dispatch_{test}))));")}
+                    else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/stream/Stream","findFirst","()Ljava/util/Optional;") {self.interface_call("java/util/function/Function","apply","(Ljava/lang/Object;)Ljava/lang/Object;")?;self.interface_call("java/util/function/Predicate","test","(Ljava/lang/Object;)Z")?;let apply=self.interface_calls.iter().position(|v|v.0=="java/util/function/Function"&&v.1=="apply"&&v.2=="(Ljava/lang/Object;)Ljava/lang/Object;").ok_or("Function.apply no registrada")?;let test=self.interface_calls.iter().position(|v|v.0=="java/util/function/Predicate"&&v.1=="test"&&v.2=="(Ljava/lang/Object;)Z").ok_or("Predicate.test no registrada")?;format!("let r=pop_r(&mut stack);stack.push(V::R(Some(stream_find_first(heap,r,interface_dispatch_{apply},interface_dispatch_{test}))));")}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/lang/StackWalker$StackFrame","getClassName","()Ljava/lang/String;") {"let r=pop_r(&mut stack);stack.push(V::R(Some(stack_frame_class_name(heap,r))));".into()}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/lang/StackWalker$StackFrame","getDeclaringClass","()Ljava/lang/Class;") {"let r=pop_r(&mut stack);stack.push(V::R(Some(stack_frame_class(heap,r))));".into()}
-                    else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/stream/Stream","collect","(Ljava/util/stream/Collector;)Ljava/lang/Object;") {"let c=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(stream_collect_joining(heap,r,c))));".into()}
+                    else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/stream/IntStream","mapToObj","(Ljava/util/function/IntFunction;)Ljava/util/stream/Stream;") {self.interface_call("java/util/function/IntFunction","apply","(I)Ljava/lang/Object;")?;let i=self.interface_calls.iter().position(|v|v.0=="java/util/function/IntFunction"&&v.1=="apply"&&v.2=="(I)Ljava/lang/Object;").ok_or("IntFunction.apply no registrada")?;format!("let f=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(int_stream_map_to_obj(heap,r,f,interface_dispatch_{i}))));")}
+                    else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/stream/IntStream","collect","(Ljava/util/function/Supplier;Ljava/util/function/ObjIntConsumer;Ljava/util/function/BiConsumer;)Ljava/lang/Object;") {self.interface_call("java/util/function/Supplier","get","()Ljava/lang/Object;")?;self.interface_call("java/util/function/ObjIntConsumer","accept","(Ljava/lang/Object;I)V")?;self.interface_call("java/util/function/BiConsumer","accept","(Ljava/lang/Object;Ljava/lang/Object;)V")?;let s=self.interface_calls.iter().position(|v|v.0=="java/util/function/Supplier"&&v.1=="get"&&v.2=="()Ljava/lang/Object;").ok_or("Supplier.get no registrada")?;let o=self.interface_calls.iter().position(|v|v.0=="java/util/function/ObjIntConsumer"&&v.1=="accept"&&v.2=="(Ljava/lang/Object;I)V").ok_or("ObjIntConsumer.accept no registrada")?;let b=self.interface_calls.iter().position(|v|v.0=="java/util/function/BiConsumer"&&v.1=="accept"&&v.2=="(Ljava/lang/Object;Ljava/lang/Object;)V").ok_or("BiConsumer.accept no registrada")?;format!("let c=pop_r(&mut stack);let f=pop_r(&mut stack);let sup=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(int_stream_collect(heap,r,sup,Some(f),Some(c),interface_dispatch_{s},interface_dispatch_{o},interface_dispatch_{b}))));")}
+                    else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/stream/Stream","collect","(Ljava/util/stream/Collector;)Ljava/lang/Object;") {self.interface_call("java/util/function/Predicate","test","(Ljava/lang/Object;)Z")?;self.interface_call("java/util/function/ToIntFunction","applyAsInt","(Ljava/lang/Object;)I")?;self.interface_call("java/util/function/Function","apply","(Ljava/lang/Object;)Ljava/lang/Object;")?;let test=self.interface_calls.iter().position(|v|v.0=="java/util/function/Predicate"&&v.1=="test"&&v.2=="(Ljava/lang/Object;)Z").ok_or("Predicate.test no registrada")?;let cmp=self.interface_calls.iter().position(|v|v.0=="java/util/function/ToIntFunction"&&v.1=="applyAsInt"&&v.2=="(Ljava/lang/Object;)I").ok_or("ToIntFunction.applyAsInt no registrada")?;let apply=self.interface_calls.iter().position(|v|v.0=="java/util/function/Function"&&v.1=="apply"&&v.2=="(Ljava/lang/Object;)Ljava/lang/Object;").ok_or("Function.apply no registrada")?;format!("let c=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(stream_collect(heap,r,c,interface_dispatch_{cmp},interface_dispatch_{test},interface_dispatch_{apply}))));")}
+                    else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/stream/Stream","toList","()Ljava/util/List;") {self.interface_call("java/util/function/Predicate","test","(Ljava/lang/Object;)Z")?;self.interface_call("java/util/function/ToIntFunction","applyAsInt","(Ljava/lang/Object;)I")?;let test=self.interface_calls.iter().position(|v|v.0=="java/util/function/Predicate"&&v.1=="test"&&v.2=="(Ljava/lang/Object;)Z").ok_or("Predicate.test no registrada")?;let cmp=self.interface_calls.iter().position(|v|v.0=="java/util/function/ToIntFunction"&&v.1=="applyAsInt"&&v.2=="(Ljava/lang/Object;)I").ok_or("ToIntFunction.applyAsInt no registrada")?;format!("let r=pop_r(&mut stack);stack.push(V::R(Some(stream_to_list(heap,r,interface_dispatch_{cmp},interface_dispatch_{test}))));")}
+                    else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/Map","forEach","(Ljava/util/function/BiConsumer;)V") {self.interface_call("java/util/function/BiConsumer","accept","(Ljava/lang/Object;Ljava/lang/Object;)V")?;let i=self.interface_calls.iter().position(|v|v.0=="java/util/function/BiConsumer"&&v.1=="accept"&&v.2=="(Ljava/lang/Object;Ljava/lang/Object;)V").ok_or("BiConsumer.accept no registrada")?;format!("let action=pop_r(&mut stack);let r=pop_r(&mut stack);map_for_each(heap,r,action,interface_dispatch_{i});").into()}
+                    else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/List","hashCode","()I") {let id=self.register_object_hashcode();format!("let r=pop_r(&mut stack);stack.push(V::I(list_hash(heap,r,virtual_dispatch_{id})));").into()}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/stream/Stream","dropWhile","(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;") {"let pred=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(stack_stage_new(heap,r,pred,1))));".into()}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/stream/Stream","map","(Ljava/util/function/Function;)Ljava/util/stream/Stream;") {"let f=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(stream_map(heap,r,f))));".into()}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/stream/Stream","max","(Ljava/util/Comparator;)Ljava/util/Optional;") {self.interface_call("java/util/function/Function","apply","(Ljava/lang/Object;)Ljava/lang/Object;")?;let id=self.interface_calls.iter().position(|v|v.0=="java/util/function/Function"&&v.1=="apply"&&v.2=="(Ljava/lang/Object;)Ljava/lang/Object;").ok_or("Function.apply no registrada")?;format!("let cmp=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(stream_max_list(heap,r,cmp,interface_dispatch_{id}))));")}
@@ -3624,10 +3874,14 @@ impl NumericCompiler<'_> {
                     } else if self.multi_classes.is_some() && class=="java/io/ByteArrayInputStream" {"stack.push(V::R(Some(byte_input_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/io/InputStreamReader" {"stack.push(V::R(Some(reader_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/util/WeakHashMap" {"error(\"new WeakHashMap: semántica de claves débiles no implementada\");".into()
+                    } else if self.multi_classes.is_some() && class=="java/text/DecimalFormat" {"stack.push(V::R(Some(decimal_format_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/text/SimpleDateFormat" {"error(\"new SimpleDateFormat: no soportado\");".into()
                     } else if self.multi_classes.is_some() && class=="java/io/FileOutputStream" {"error(\"new FileOutputStream: no soportado\");".into()
                     } else if self.multi_classes.is_some() && class=="java/io/PrintStream" {"error(\"new PrintStream: no soportado\");".into()
                     } else if self.multi_classes.is_some() && class=="java/lang/ref/WeakReference" {"stack.push(V::R(Some(weak_loader_new(heap))));".into()
+                    } else if self.multi_classes.is_some() && class=="java/util/concurrent/ForkJoinPool" {"stack.push(V::R(Some(forkjoin_pool_new(heap))));".into()
+                    } else if self.multi_classes.is_some() && class=="java/util/UUID" {"stack.push(V::R(Some(uuid_new(heap))));".into()
+                    } else if self.multi_classes.is_some() && class=="java/util/BitSet" {"stack.push(V::R(Some(bitset_new(heap,0))));".into()
                     } else if self.multi_classes.is_some() && class=="java/lang/RuntimePermission" {"stack.push(V::R(Some(runtime_permission_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/util/Date" {
                         "stack.push(V::R(Some(date_new(heap))));".into()
@@ -3639,6 +3893,7 @@ impl NumericCompiler<'_> {
                         format!("stack.push(V::R(Some(collection_new(heap,{class:?}))));")
                     } else if self.multi_classes.is_some() && class=="java/lang/Object" {
                         "stack.push(V::R(Some(object_new(heap,\"java/lang/Object\",vec![],false))));".into()
+                    } else if self.multi_classes.is_some() && class=="java/util/EnumMap" {"stack.push(V::R(Some(enum_map_new(heap))));".into()
                     } else if self.multi_classes.is_some() && project_class(class) {
                         let id=self.ensure_multi_class(class)?;
                         if self.multi_classes.as_ref().unwrap()[id].flags&0x0400!=0 {return Err(format!("new de clase abstracta no soportado: {class}"));}
@@ -3693,6 +3948,7 @@ impl NumericCompiler<'_> {
                     } else if self.multi_classes.is_some() && name=="java/lang/StackTraceElement" {"false".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/lang/CharSequence" {"charsequence_instance(heap,r,PROJECT_INTERFACES)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/nio/file/Path" {"path_instance(heap,r)".to_owned()
+                    } else if self.multi_classes.is_some() && name=="java/util/RandomAccess" {"list_random_access_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/util/Map$Entry" {"tree_entry_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/io/Serializable" {
                         "serializable_instance(heap,r,PROJECT_INTERFACES)".to_owned()
@@ -3704,7 +3960,7 @@ impl NumericCompiler<'_> {
                         self.verify_project_cast_target(name)?;
                         format!("project_instance(heap,r,{name:?},PROJECT_INTERFACES)")
                     } else {
-                        let kind=match name {"java/lang/String"=>"s","java/io/PrintStream" if self.multi_classes.is_some()=>"printstream","java/lang/ClassLoader" if self.multi_classes.is_some()=>"classloader","java/lang/Class" if self.multi_classes.is_some()=>"class","java/util/Optional" if self.multi_classes.is_some()=>"optional","java/util/concurrent/CompletableFuture" if self.multi_classes.is_some() && futures_optin().ok()==Some(true)=>"completedfuture","java/net/URI" if self.multi_classes.is_some()=>"uri","java/lang/StackWalker$StackFrame" if self.multi_classes.is_some()=>"stackframe","java/util/stream/Stream" if self.multi_classes.is_some()=>"stream","java/util/Map" if self.multi_classes.is_some()=>"map","java/util/concurrent/ConcurrentMap" if self.multi_classes.is_some()=>"concurrentmap","java/util/List" if self.multi_classes.is_some()=>"list","java/lang/Number" if self.multi_classes.is_some()=>"number","java/lang/StringBuilder" if self.multi_classes.is_some()=>"builder","java/io/Reader" if self.multi_classes.is_some()=>"reader","java/io/InputStream" if self.multi_classes.is_some()=>"inputstream","java/lang/Integer" if self.multi_classes.is_some()=>"integer","java/lang/Boolean" if self.multi_classes.is_some()=>"boolean","java/lang/Long" if self.multi_classes.is_some()=>"long","java/lang/Short" if self.multi_classes.is_some()=>"short","java/lang/Character" if self.multi_classes.is_some()=>"character","java/lang/Double" if self.multi_classes.is_some()=>"double","java/lang/Float" if self.multi_classes.is_some()=>"float","java/lang/Byte" if self.multi_classes.is_some()=>"byte","[Ljava/lang/String;"=>"t","java/lang/Object"=>"o","java/net/URL" if self.multi_classes.is_some()=>"U","[Ljava/lang/Object;" if self.multi_classes.is_some()=>"A","[Ljava/lang/Class;" if self.multi_classes.is_some()=>"C",_=>return Err(format!("checkcast/instanceof no soportado: {name}"))};
+                        let kind=match name {"java/lang/String"=>"s","java/io/PrintStream" if self.multi_classes.is_some()=>"printstream","java/lang/ClassLoader" if self.multi_classes.is_some()=>"classloader","java/lang/Class" if self.multi_classes.is_some()=>"class","java/util/Optional" if self.multi_classes.is_some()=>"optional","java/util/concurrent/CompletableFuture" if self.multi_classes.is_some() && futures_optin().ok()==Some(true)=>"completedfuture","java/net/URI" if self.multi_classes.is_some()=>"uri","java/nio/file/spi/FileSystemProvider" if self.multi_classes.is_some()=>"zipfsprovider","java/util/BitSet" if self.multi_classes.is_some()=>"bitset","java/lang/Enum" if self.multi_classes.is_some()=>"enum","java/lang/StackWalker$StackFrame" if self.multi_classes.is_some()=>"stackframe","java/util/stream/Stream" if self.multi_classes.is_some()=>"stream","java/util/Map" if self.multi_classes.is_some()=>"map","java/util/concurrent/ConcurrentMap" if self.multi_classes.is_some()=>"concurrentmap","java/util/List" if self.multi_classes.is_some()=>"list","java/lang/Number" if self.multi_classes.is_some()=>"number","java/lang/StringBuilder" if self.multi_classes.is_some()=>"builder","java/io/Reader" if self.multi_classes.is_some()=>"reader","java/io/InputStream" if self.multi_classes.is_some()=>"inputstream","java/lang/Integer" if self.multi_classes.is_some()=>"integer","java/lang/Boolean" if self.multi_classes.is_some()=>"boolean","java/lang/Long" if self.multi_classes.is_some()=>"long","java/lang/Short" if self.multi_classes.is_some()=>"short","java/lang/Character" if self.multi_classes.is_some()=>"character","java/lang/Double" if self.multi_classes.is_some()=>"double","java/lang/Float" if self.multi_classes.is_some()=>"float","java/lang/Byte" if self.multi_classes.is_some()=>"byte","[Ljava/lang/String;"=>"t","java/lang/Object"=>"o","java/net/URL" if self.multi_classes.is_some()=>"U","[Ljava/lang/Object;" if self.multi_classes.is_some()=>"A","[Ljava/lang/Enum;" if self.multi_classes.is_some()=>"A","[Ljava/lang/Class;" if self.multi_classes.is_some()=>"C",_=>return Err(format!("checkcast/instanceof no soportado: {name}"))};
                         format!("builtin_instance(heap,r,{kind:?})")
                     };
                     if op==0xc0 {format!("let r=pop_r(&mut stack);if r.is_some()&&!{pred} {{raise(\"ClassCastException\",\"\");}}stack.push(V::R(r));")}
@@ -3859,6 +4115,7 @@ pub(super) fn compile_jar(jar: &Path, class: &str, method: &str, desc: &str) -> 
         uses_service_loader: false,
         uses_resource_lookup: false,
         uses_enum_valueof: false,
+        uses_enum_constants: false,
         interface_calls: Vec::new(),
         virtual_calls: Vec::new(),
         bootstrap_cache: BTreeMap::new(),
@@ -4030,6 +4287,7 @@ pub(super) fn compile_class_demo(jar: &Path, class: &str) -> Result<String> {
         uses_service_loader: false,
         uses_resource_lookup: false,
         uses_enum_valueof: false,
+        uses_enum_constants: false,
         interface_calls: Vec::new(),
         virtual_calls: Vec::new(),
         bootstrap_cache: BTreeMap::new(),
@@ -4200,6 +4458,7 @@ pub(super) fn compile_static_demo(
         uses_service_loader: false,
         uses_resource_lookup: false,
         uses_enum_valueof: false,
+        uses_enum_constants: false,
         interface_calls: Vec::new(),
         virtual_calls: Vec::new(),
         bootstrap_cache: BTreeMap::new(),
@@ -4311,6 +4570,7 @@ fn compile_multi_static_inner(
         uses_service_loader: false,
         uses_resource_lookup: false,
         uses_enum_valueof: false,
+        uses_enum_constants: false,
         interface_calls: Vec::new(),
         virtual_calls: Vec::new(),
         bootstrap_cache: BTreeMap::new(),
@@ -4652,7 +4912,8 @@ fn compile_multi_static_inner(
     // Perfil conservador: únicamente el values() canónico de javac, con $VALUES
     // privado static final synthetic. Otros enums se rechazan al ejecutarse.
     let mut enum_cases=String::new();
-    if compiler.uses_enum_valueof {
+    let mut enum_const_cases=String::new();
+    if compiler.uses_enum_valueof || compiler.uses_enum_constants {
         for (id,c) in compiler.multi_classes.as_ref().unwrap().iter().enumerate() {
             let bytes=class_from_jar(jar,&c.name)?;
             let meta=super::metadata::parse(&bytes)?;
@@ -4670,10 +4931,13 @@ fn compile_multi_static_inner(
             if cast!=Some(arr.as_str()){continue;}
             let Some((slot,_))=c.fields.iter().find(|(_,f)|f.name=="$VALUES"&&f.descriptor==arr) else {continue;};
             let canonical=if c.name.contains('$'){"None".to_owned()}else{format!("Some({:?})",c.name.replace('/',"."))};
-            enum_cases.push_str(&format!("{:?}=>{{init_class_{id}(heap);enum_valueof_array(heap,target,name,{slot},{canonical})}},",c.name));
+            if compiler.uses_enum_valueof {enum_cases.push_str(&format!("{:?}=>{{init_class_{id}(heap);enum_valueof_array(heap,target,name,{slot},{canonical})}},",c.name));}
+            if compiler.uses_enum_constants {enum_const_cases.push_str(&format!("{:?}=>{{init_class_{id}(heap);enum_constants_array(heap,{slot},{:?})}},",c.name,c.name));}
         }
     }
-    let enum_source=if compiler.uses_enum_valueof {format!("fn enum_valueof(heap:&mut Heap,class:Option<usize>,name:Option<usize>)->Option<usize>{{let id=array_id(heap,class);let target=match heap.arrays[id]{{Array::Class(n)=>n,_=>error(\"Enum.valueOf: Class fuera del perfil\")}};match target{{{enum_cases}_=>error(\"Enum.valueOf: clase fuera del perfil\")}}}} ")}else{String::new()};
+    let valueof_fn=if compiler.uses_enum_valueof {format!("fn enum_valueof(heap:&mut Heap,class:Option<usize>,name:Option<usize>)->Option<usize>{{let id=array_id(heap,class);let target=match heap.arrays[id]{{Array::Class(n)=>n,_=>error(\"Enum.valueOf: Class fuera del perfil\")}};match target{{{enum_cases}_=>error(\"Enum.valueOf: clase fuera del perfil\")}}}} ")}else{String::new()};
+    let constants_fn=if compiler.uses_enum_constants {format!("fn enum_constants(heap:&mut Heap,class:Option<usize>)->Option<usize>{{let id=array_id(heap,class);let target=match heap.arrays[id]{{Array::Class(n)=>n,_=>error(\"Class.getEnumConstants: receptor no es una clase\")}};match target{{{enum_const_cases}_=>None}}}}")}else{"fn enum_constants(_heap:&mut Heap,class:Option<usize>)->Option<usize>{let _=class;None}".to_owned()};
+    let enum_source=format!("{valueof_fn}{constants_fn}\n");
     let loader_table = format!("const PRECOMPILED_CLASSES:&[(&str,&str)]=&[{entries}];\nfn class_for_name_three(heap:&mut Heap,name:Option<usize>,initialize:i32,loader:Option<usize>)->usize{{string_units(heap,name);if loader.is_none(){{error(\"Class.forName: loader bootstrap fuera del perfil\");}}let class=classloader_load(heap,loader,name,PRECOMPILED_CLASSES);let target=match heap.arrays[class]{{Array::Class(n)=>n,_=>unreachable!()}};if [\"java/\",\"javax/\",\"jdk/\",\"sun/\",\"com/sun/\"].iter().any(|p|target.starts_with(p))||target.starts_with('['){{error(\"Class.forName: solo clases de proyecto precompiladas\");}}if initialize!=0{{match target{{{init_cases}_=>error(\"Class.forName: inicialización no precompilada\")}}}}class}}");
     if let Some(plan)=worker {
         let descriptor=format!("L{};",plan.target_class);

@@ -281,11 +281,12 @@ fn floor_mod_i(a:i32,b:i32)->i32 {let r=rem_i(a,b);if r!=0 && (a^b)<0 {r.wrappin
 fn floor_div_l(a:i64,b:i64)->i64 {let q=div_l(a,b);let r=rem_l(a,b);if r!=0 && (a^b)<0 {q.wrapping_sub(1)} else {q}}
 fn floor_mod_l(a:i64,b:i64)->i64 {let r=rem_l(a,b);if r!=0 && (a^b)<0 {r.wrapping_add(b)} else {r}}
 
-enum Array { Z(Vec<bool>), B(Vec<i8>), C(Vec<u16>), S(Vec<i16>), I(Vec<i32>), J(Vec<i64>), F(Vec<f32>), D(Vec<f64>), Strings(Vec<Option<usize>>), Str(Vec<u16>), Boolean(bool), Integer(i32), Long(i64), Byte(i8), Short(i16), Character(u16), Float(f32), Double(f64), StackOption, TimeUnit(u8), StackWalker(bool), StackWalkStream(Vec<&'static str>,usize,bool,usize,bool), StackStage(usize,bool,u8,usize), StackFrame(&'static str,bool), Duration(i64,i32), CompletedFuture(Option<usize>), AtomicRef(Option<usize>), AtomicLong(i64), AtomicInteger(i32), ReentrantLock(i32), ReadWriteLock(i32,i32,Option<usize>,Option<usize>), ReadLock(usize), WriteLock(usize), CurrentProcess, CurrentThread(bool,usize), RuntimeSingleton, RuntimePermission(Option<usize>), WeakLoader(Option<usize>), Collector(usize,usize,usize), JoinCollector(Option<usize>,Option<usize>,Option<usize>), Comparing(usize), BaseModule, BootLayer, JfrModule, Lambda(usize,&'static str,Vec<V>), IdentityFunction, IsoInstantFormatter, RootLocale, Path(String,Option<usize>), File(Option<String>,Option<usize>), CrashDateFormatter, Optional(Option<usize>), Pattern(usize,i32), Matcher(usize,usize,Option<(usize,usize,Option<(usize,usize)>)>), Uuid([u8;16]), Date(i64), Zoned(i64,i32), Instant(i64,i32), ResourceStream(&'static [u8],usize,bool), ByteInput(Option<usize>,usize,usize,usize), FileInput(Option<std::fs::File>), FileOutput(Option<std::fs::File>), Uri(usize), Properties(std::collections::HashMap<Vec<u16>,usize>), PropertiesEntries(usize), PropertiesEmptyIter(usize), Utf8Charset, Reader(Option<usize>,Option<Vec<u16>>,usize,bool), Builder(Vec<u16>), Stdout, Stderr, Exception(&'static str,&'static str,Option<usize>), Obj(&'static str,Vec<V>), SharedObj(&'static str,NumericObjectHandle), LocalObj(&'static str,Vec<V>,Option<usize>), Map(Vec<(usize,usize)>,usize,bool), HashMap(Vec<(Option<usize>,Option<usize>)>), IdentityMap(Vec<(Option<usize>,Option<usize>)>), IdentitySet(usize), LinkedMap(Vec<(Option<usize>,Option<usize>)>,i32), LinkedIter(usize,Vec<Option<usize>>,usize,i32), TreeMap(Vec<(usize,Option<usize>)>,i32), TreeEntries(usize), TreeEntry(usize,usize,i32), TreeIter(usize,Vec<usize>,usize,i32,bool), EmptyMap, EnumSet(Vec<usize>), EnumSetIter(Vec<usize>,usize), EmptyList, EmptySet, ImmutableList(Vec<Option<usize>>), EmptyIterator, MapValues(usize), Queue(std::collections::VecDeque<usize>), ConcurrentQueue(std::collections::VecDeque<usize>), Deque(std::collections::VecDeque<usize>), Local(Option<usize>), SuppliedLocal(usize,Option<Option<usize>>), Class(&'static str), List(Vec<Option<usize>>,i32), ArraysList(usize), ArraysListIter(usize,usize), Set(Vec<Option<usize>>,i32), HashSet(Vec<Option<usize>>,i32), KeySet(Vec<Option<usize>>,i32), AppLoader, PlatformLoader, Refs(u8,Vec<Option<usize>>), ProjectRefs(&'static str,Vec<Option<usize>>), SharedRefs(&'static str,NumericArrayHandle), Constructor(&'static str), ReflectMethod(usize), Service(&'static str,&'static [&'static str],usize,Vec<usize>), ServiceIter(usize,usize), LazyStream(usize,bool,Option<usize>,bool), SortedStream(usize,bool,usize), MappedStream(usize,bool,usize), StreamSink(Vec<usize>,usize), ListIter(usize,usize,i32), SetIter(usize,Vec<Option<usize>>,usize,i32), EmptyEnumeration }
+struct ForkJoinPoolState{parallelism:i32,async_mode:bool,factory:Option<usize>,handler:Option<usize>}
+enum Array { Z(Vec<bool>), B(Vec<i8>), C(Vec<u16>), S(Vec<i16>), I(Vec<i32>), J(Vec<i64>), F(Vec<f32>), D(Vec<f64>), Strings(Vec<Option<usize>>), Str(Vec<u16>), Boolean(bool), Integer(i32), Long(i64), Byte(i8), Short(i16), Character(u16), Float(f32), Double(f64), StackOption, TimeUnit(u8), StackWalker(bool), StackWalkStream(Vec<&'static str>,usize,bool,usize,bool), StackStage(usize,bool,u8,usize), StackFrame(&'static str,bool), Duration(i64,i32), CompletedFuture(Option<usize>), AtomicRef(Option<usize>), AtomicLong(i64), AtomicInteger(i32), ReentrantLock(i32), ReadWriteLock(i32,i32,Option<usize>,Option<usize>), ReadLock(usize), WriteLock(usize), CurrentProcess, CurrentThread(bool,usize), RuntimeSingleton, RuntimePermission(Option<usize>), WeakLoader(Option<usize>), Collector(usize,usize,usize), JoinCollector(Option<usize>,Option<usize>,Option<usize>), Comparing(usize), BaseModule, BootLayer, JfrModule, Lambda(usize,&'static str,Vec<V>), IdentityFunction, IsoInstantFormatter, RootLocale, Path(String,Option<usize>), File(Option<String>,Option<usize>), CrashDateFormatter, Optional(Option<usize>), Pattern(usize,i32), Matcher(usize,usize,Option<(usize,usize,Option<(usize,usize)>)>), Uuid([u8;16]), Date(i64), Zoned(i64,i32), Instant(i64,i32), ResourceStream(&'static [u8],usize,bool), ByteInput(Option<usize>,usize,usize,usize), FileInput(Option<std::fs::File>), FileOutput(Option<std::fs::File>), Uri(usize), Properties(std::collections::HashMap<Vec<u16>,usize>), PropertiesEntries(usize), PropertiesEmptyIter(usize), Utf8Charset, Reader(Option<usize>,Option<Vec<u16>>,usize,bool), Builder(Vec<u16>), Stdout, Stderr, Exception(&'static str,&'static str,Option<usize>), Obj(&'static str,Vec<V>), SharedObj(&'static str,NumericObjectHandle), LocalObj(&'static str,Vec<V>,Option<usize>), Map(Vec<(usize,usize)>,usize,bool), HashMap(Vec<(Option<usize>,Option<usize>)>), IdentityMap(Vec<(Option<usize>,Option<usize>)>), IdentitySet(usize), LinkedMap(Vec<(Option<usize>,Option<usize>)>,i32), LinkedIter(usize,Vec<Option<usize>>,usize,i32), TreeMap(Vec<(usize,Option<usize>)>,i32), TreeEntries(usize), TreeEntry(usize,usize,i32), TreeIter(usize,Vec<usize>,usize,i32,bool), EmptyMap, EnumSet(Vec<usize>), EnumSetIter(Vec<usize>,usize), EmptyList, EmptySet, ImmutableList(Vec<Option<usize>>), EmptyIterator, MapValues(usize), Queue(std::collections::VecDeque<usize>), ConcurrentQueue(std::collections::VecDeque<usize>), Deque(std::collections::VecDeque<usize>), Local(Option<usize>), SuppliedLocal(usize,Option<Option<usize>>), Class(&'static str), List(Vec<Option<usize>>,i32), ArraysList(usize), ArraysListIter(usize,usize), Set(Vec<Option<usize>>,i32), HashSet(Vec<Option<usize>>,i32), KeySet(Vec<Option<usize>>,i32), AppLoader, PlatformLoader, Refs(u8,Vec<Option<usize>>), ProjectRefs(&'static str,Vec<Option<usize>>), SharedRefs(&'static str,NumericArrayHandle), Constructor(&'static str), ReflectMethod(usize), Service(&'static str,&'static [&'static str],usize,Vec<usize>), ServiceIter(usize,usize), LazyStream(usize,bool,Option<usize>,bool), SortedStream(usize,bool,usize), MappedStream(usize,bool,usize), StreamSink(Vec<usize>,usize), ListIter(usize,usize,i32), SetIter(usize,Vec<Option<usize>>,usize,i32), EmptyEnumeration, ForkJoinPool(ForkJoinPoolState), ThreadPoolExecutor(Option<usize>), ZipFsProvider, ComparingInt(usize), BitSet(Vec<u64>), ToListMarker, ToImmutableListMarker, IntStream(i32,i32), IntStreamClosed, ImmutableMap(Vec<(Option<usize>,Option<usize>)>), ToMapMarker(usize,usize), ScopedValue(bool,Option<usize>), ScopedCarrier(usize,Option<usize>), DecimalFormat(Vec<u16>,Option<usize>), DecimalFormatSymbols(usize), HexFormat(bool), ByteBuffer(Vec<i8>) }
 impl Array {
     fn len(&self)->usize {match self {Self::Z(v)=>v.len(),Self::B(v)=>v.len(),Self::C(v)=>v.len(),Self::S(v)=>v.len(),Self::I(v)=>v.len(),Self::J(v)=>v.len(),Self::F(v)=>v.len(),Self::D(v)=>v.len(),Self::Strings(v)=>v.len(),Self::Refs(_,v)=>v.len(),Self::ProjectRefs(_,v)=>v.len(),Self::SharedRefs(_,a)=>a.slots.lock().map(|s|s.len()).unwrap_or(0),_=>panic!("se esperaba array")}}
 }
-#[derive(Default)] struct Heap { bridge_owner:std::sync::Arc<()>, arrays:Vec<Array>, elements:usize, fields:Vec<V>, interfaces:&'static [(&'static str,&'static str)], init_states:Vec<u8>, intern:std::collections::HashMap<Vec<u16>,usize>, stdout:Option<usize>, stderr:Option<usize>, properties:Option<std::collections::HashMap<Vec<u16>,usize>>, classes:std::collections::HashMap<&'static str,usize>, simple_names:std::collections::HashMap<&'static str,usize>, monitors:std::collections::HashMap<usize,usize>, app_loader:Option<usize>, platform_loader:Option<usize>, context_loader:Option<Option<usize>>, time_units:[Option<usize>;7], enum_values:std::collections::HashMap<usize,(Option<usize>,i32)>, enum_directories:std::collections::HashMap<&'static str,Vec<(usize,usize)>>, causes:std::collections::HashMap<usize,usize>, suppressed:std::collections::HashMap<usize,Vec<usize>>, map_views:std::collections::HashMap<usize,usize>, booleans:[Option<usize>;2], parents:std::collections::HashMap<&'static str,&'static str>, exception_messages:std::collections::HashMap<usize,Option<usize>>, uri_syntax:std::collections::HashMap<usize,(usize,usize,i32)>, uri_schemes:std::collections::HashMap<usize,usize>, uri_paths:std::collections::HashMap<usize,usize>, stack_option:Option<usize>, default_stack_walker:Option<usize>, duration_zero:Option<usize>, integers:std::collections::HashMap<i32,usize>, longs:std::collections::HashMap<i64,usize>, bytes:std::collections::HashMap<i8,usize>, shorts:std::collections::HashMap<i16,usize>, characters:std::collections::HashMap<u16,usize>, tree_entry_views:std::collections::HashMap<usize,usize>, active_maps:Vec<usize>, identity_function:Option<usize>, iso_instant:Option<usize>, root_locale:Option<usize>, builder_caps:std::collections::HashMap<usize,(i32,bool)>, optional_empty:Option<usize>, utf8_charset:Option<usize>, empty_map:Option<usize>, empty_list:Option<usize>, empty_set:Option<usize>, immutable_empty:Option<usize>, empty_iterator:Option<usize>, current_process:Option<usize>, runtime_singleton:Option<usize>, line_separator:Option<usize>, base_module:Option<usize>, boot_layer:Option<usize>, jfr_module:Option<usize>, lambdas:std::collections::HashMap<usize,usize>, spliterators:std::collections::HashMap<usize,(i64,i32)>, walk_scopes:Vec<bool> }
+#[derive(Default)] struct Heap { bridge_owner:std::sync::Arc<()>, arrays:Vec<Array>, elements:usize, fields:Vec<V>, interfaces:&'static [(&'static str,&'static str)], init_states:Vec<u8>, intern:std::collections::HashMap<Vec<u16>,usize>, stdout:Option<usize>, stderr:Option<usize>, properties:Option<std::collections::HashMap<Vec<u16>,usize>>, classes:std::collections::HashMap<&'static str,usize>, simple_names:std::collections::HashMap<&'static str,usize>, monitors:std::collections::HashMap<usize,usize>, app_loader:Option<usize>, platform_loader:Option<usize>, context_loader:Option<Option<usize>>, time_units:[Option<usize>;7], enum_values:std::collections::HashMap<usize,(Option<usize>,i32)>, enum_directories:std::collections::HashMap<&'static str,Vec<(usize,usize)>>, causes:std::collections::HashMap<usize,usize>, suppressed:std::collections::HashMap<usize,Vec<usize>>, map_views:std::collections::HashMap<usize,usize>, booleans:[Option<usize>;2], parents:std::collections::HashMap<&'static str,&'static str>, exception_messages:std::collections::HashMap<usize,Option<usize>>, uri_syntax:std::collections::HashMap<usize,(usize,usize,i32)>, uri_schemes:std::collections::HashMap<usize,usize>, uri_paths:std::collections::HashMap<usize,usize>, stack_option:Option<usize>, default_stack_walker:Option<usize>, duration_zero:Option<usize>, integers:std::collections::HashMap<i32,usize>, longs:std::collections::HashMap<i64,usize>, bytes:std::collections::HashMap<i8,usize>, shorts:std::collections::HashMap<i16,usize>, characters:std::collections::HashMap<u16,usize>, tree_entry_views:std::collections::HashMap<usize,usize>, active_maps:Vec<usize>, identity_function:Option<usize>, iso_instant:Option<usize>, root_locale:Option<usize>, decimal_symbols_root:Option<usize>, hex_default:Option<usize>, hex_upper:Option<usize>, builder_caps:std::collections::HashMap<usize,(i32,bool)>, optional_empty:Option<usize>, utf8_charset:Option<usize>, empty_map:Option<usize>, empty_list:Option<usize>, empty_set:Option<usize>, zip_fs_provider:Option<usize>, immutable_empty:Option<usize>, empty_iterator:Option<usize>, current_process:Option<usize>, runtime_singleton:Option<usize>, line_separator:Option<usize>, base_module:Option<usize>, boot_layer:Option<usize>, jfr_module:Option<usize>, lambdas:std::collections::HashMap<usize,usize>, spliterators:std::collections::HashMap<usize,(i64,i32)>, walk_scopes:Vec<bool> }
 fn error(label:&str)->! { eprintln!("{label}");std::process::exit(2) }
 // Guarda explícita del runtime experimental; no simula StackOverflowError.
 thread_local! {static JAVA_STACK:std::cell::RefCell<Vec<&'static str>>=const{std::cell::RefCell::new(Vec::new())};}
@@ -329,6 +330,8 @@ fn project_array_new(h:&mut Heap,class:&'static str,n:i32)->usize {
     id
 }
 fn ref_array_copy_of(h:&mut Heap,r:Option<usize>,n:i32)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::Strings(_)|Array::Refs(_,_)|Array::ProjectRefs(_,_)){error("Arrays.copyOf: fuente no es array de referencias");}if n<0{let msg=new_string(h,n.to_string().encode_utf16().collect());let ex=new_exception(h,"NegativeArraySizeException");init_exception(h,Some(ex),"NegativeArraySizeException",Some(msg));throw_ref(h,Some(ex));}let n=n as usize;if h.arrays.len()>=10000||h.elements.checked_add(n).map_or(true,|v|v>1_000_000){error("Arrays.copyOf: límite experimental de arrays excedido");}let a=match &h.arrays[id]{Array::Strings(v)=>{let mut out=v[..v.len().min(n)].to_vec();out.resize(n,None);Array::Strings(out)},Array::Refs(k,v)=>{let mut out=v[..v.len().min(n)].to_vec();out.resize(n,None);Array::Refs(*k,out)},Array::ProjectRefs(c,v)=>{let mut out=v[..v.len().min(n)].to_vec();out.resize(n,None);Array::ProjectRefs(c,out)},_=>unreachable!()};let out=h.arrays.len();h.arrays.push(a);h.elements+=n;out}
+fn int_array_copy_of(h:&mut Heap,r:Option<usize>,n:i32)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::I(_)){error("Arrays.copyOf: fuente no es array de int");}if n<0{let msg=new_string(h,n.to_string().encode_utf16().collect());let ex=new_exception(h,"NegativeArraySizeException");init_exception(h,Some(ex),"NegativeArraySizeException",Some(msg));throw_ref(h,Some(ex));}let n=n as usize;if h.arrays.len()>=10000||h.elements.checked_add(n).map_or(true,|v|v>1_000_000){error("Arrays.copyOf: límite experimental de arrays excedido");}let a=match &h.arrays[id]{Array::I(v)=>{let mut out=v[..v.len().min(n)].to_vec();out.resize(n,0);Array::I(out)},_=>unreachable!()};let out=h.arrays.len();h.arrays.push(a);h.elements+=n;out}
+fn ref_array_fill(h:&mut Heap,r:Option<usize>,val:Option<usize>){let id=array_id(h,r);match &mut h.arrays[id]{Array::Strings(v)|Array::Refs(_,v)|Array::ProjectRefs(_,v)=>{for slot in v.iter_mut(){*slot=val;}},_=>error("Arrays.fill: receptor no es array de referencias")}}
 fn ref_array_clone(h:&mut Heap,r:Option<usize>)->usize {
     let id=array_id(h,r);let a=match &h.arrays[id] {Array::Strings(v)=>Array::Strings(v.clone()),Array::Refs(k,v)=>Array::Refs(*k,v.clone()),Array::ProjectRefs(c,v)=>Array::ProjectRefs(c,v.clone()),_=>panic!("clone requiere array de referencia")};
     let n=a.len();if h.arrays.len()>=10000||h.elements.checked_add(n).map_or(true,|v|v>1_000_000){error("Límite experimental de arrays excedido");}
@@ -626,7 +629,7 @@ fn parse_string_array(h:&mut Heap,text:&str,prior:&[(char,Option<usize>)])->Opti
 
 fn builtin_instance(h:&Heap,r:Option<usize>,kind:&str)->bool {
     if matches!(kind,"map"|"concurrentmap"|"number"|"list"|"stream"|"stackframe")&&matches!(r.and_then(|id|h.arrays.get(id)),Some(Array::Obj(_,_)|Array::SharedObj(_,_)|Array::LocalObj(_,_,_))){error("Map/Number/List: objeto proyecto no verificado");}
-    match (kind,r.and_then(|id|h.arrays.get(id))) {("list",Some(Array::List(_,_)|Array::ArraysList(_)|Array::ImmutableList(_)|Array::EmptyList))|("number",Some(Array::Byte(_)|Array::Short(_)|Array::Integer(_)|Array::Long(_)|Array::Float(_)|Array::Double(_)))|("stream",Some(Array::LazyStream(_,_,_,_)|Array::SortedStream(_,_,_)|Array::MappedStream(_,_,_)|Array::StackWalkStream(_,_,_,_,_)|Array::StackStage(_,_,_,_)))|("stackframe",Some(Array::StackFrame(_,_)))|("concurrentmap",Some(Array::Map(_,_,_)))|("map",Some(Array::Map(_,_,_)|Array::HashMap(_)|Array::IdentityMap(_)|Array::LinkedMap(_,_)|Array::TreeMap(_,_)|Array::EmptyMap))|("completedfuture",Some(Array::CompletedFuture(_)))|("optional",Some(Array::Optional(_)))|("class",Some(Array::Class(_)))|("classloader",Some(Array::AppLoader|Array::PlatformLoader))|("printstream",Some(Array::Stdout|Array::Stderr))|("builder",Some(Array::Builder(_)))|("reader",Some(Array::Reader(_,_,_,_)))|("inputstream",Some(Array::ResourceStream(_,_,_)|Array::FileInput(_)|Array::ByteInput(_,_,_,_)))|("uuid",Some(Array::Uuid(_)))|("uri",Some(Array::Uri(_)))|("pattern",Some(Array::Pattern(_,_)))|("long",Some(Array::Long(_)))|("float",Some(Array::Float(_)))|("double",Some(Array::Double(_)))|("byte",Some(Array::Byte(_)))|("short",Some(Array::Short(_)))|("character",Some(Array::Character(_)))|("integer",Some(Array::Integer(_)))|("boolean",Some(Array::Boolean(_)))|("s",Some(Array::Str(_)))|("t",Some(Array::Strings(_)))|("o",Some(_))|("A",Some(Array::Strings(_)))|("A",Some(Array::Refs(_, _)))|("A",Some(Array::ProjectRefs(_, _)))|("C",Some(Array::Refs(14,_)))=>true,_=>false}
+    match (kind,r.and_then(|id|h.arrays.get(id))) {("list",Some(Array::List(_,_)|Array::ArraysList(_)|Array::ImmutableList(_)|Array::EmptyList))|("number",Some(Array::Byte(_)|Array::Short(_)|Array::Integer(_)|Array::Long(_)|Array::Float(_)|Array::Double(_)))|("stream",Some(Array::LazyStream(_,_,_,_)|Array::SortedStream(_,_,_)|Array::MappedStream(_,_,_)|Array::StackWalkStream(_,_,_,_,_)|Array::StackStage(_,_,_,_)))|("stackframe",Some(Array::StackFrame(_,_)))|("concurrentmap",Some(Array::Map(_,_,_)))|("map",Some(Array::Map(_,_,_)|Array::HashMap(_)|Array::IdentityMap(_)|Array::LinkedMap(_,_)|Array::TreeMap(_,_)|Array::EmptyMap|Array::ImmutableMap(_)))|("completedfuture",Some(Array::CompletedFuture(_)))|("optional",Some(Array::Optional(_)))|("class",Some(Array::Class(_)))|("classloader",Some(Array::AppLoader|Array::PlatformLoader))|("printstream",Some(Array::Stdout|Array::Stderr))|("builder",Some(Array::Builder(_)))|("reader",Some(Array::Reader(_,_,_,_)))|("inputstream",Some(Array::ResourceStream(_,_,_)|Array::FileInput(_)|Array::ByteInput(_,_,_,_)))|("uuid",Some(Array::Uuid(_)))|("bitset",Some(Array::BitSet(_)))|("zipfsprovider",Some(Array::ZipFsProvider))|("uri",Some(Array::Uri(_)))|("pattern",Some(Array::Pattern(_,_)))|("long",Some(Array::Long(_)))|("float",Some(Array::Float(_)))|("double",Some(Array::Double(_)))|("byte",Some(Array::Byte(_)))|("short",Some(Array::Short(_)))|("character",Some(Array::Character(_)))|("integer",Some(Array::Integer(_)))|("boolean",Some(Array::Boolean(_)))|("s",Some(Array::Str(_)))|("t",Some(Array::Strings(_)))|("o",Some(_))|("A",Some(Array::Strings(_)))|("A",Some(Array::Refs(_, _)))|("A",Some(Array::ProjectRefs(_, _)))|("C",Some(Array::Refs(14,_)))=>true,(kind,Some(Array::Obj(actual,_)|Array::SharedObj(actual,_)|Array::LocalObj(actual,_,_))) if kind=="enum"=>project_subtype(h,actual,"java/lang/Enum")||interfaces.iter().any(|(c,i)|*c==actual&&*i=="java/lang/Enum"),(kind,Some(Array::TimeUnit(_))) if kind=="enum"=>project_subtype(h,"java/time/TimeUnit","java/lang/Enum")||true,_=>false}
 }
 fn serializable_instance(h:&Heap,r:Option<usize>,interfaces:&[(&str,&str)])->bool{let Some(id)=r else{return false};if h.enum_values.contains_key(&id){return true;}match h.arrays.get(id){
  Some(Array::Obj(_,_)|Array::SharedObj(_,_)|Array::LocalObj(_,_,_)|Array::Lambda(_,_,_)|Array::IdentityFunction)=>project_instance(h,r,"java/io/Serializable",interfaces),
@@ -652,6 +655,10 @@ fn byte_input_mark(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);match &mut 
 fn byte_input_reset(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);match &mut h.arrays[id]{Array::ByteInput(Some(_),p,mark,_)=>*p=*mark,_=>error("InputStream.reset: solo ByteArrayInputStream soportado")}}
 fn resource_read(h:&mut Heap,r:Option<usize>)->i32{let id=array_id(h,r);if matches!(h.arrays[id],Array::ByteInput(_,_,_,_)){return byte_input_read(h,id);}match &mut h.arrays[id]{Array::ResourceStream(bytes,pos,closed)=>{if *closed{raise("IOException","Stream closed");}if *pos>=bytes.len(){return -1;}let b=bytes[*pos];*pos+=1;b as i32},Array::FileInput(file)=>{use std::io::Read;let file=file.as_mut().unwrap_or_else(||raise("IOException","Stream Closed"));let mut b=[0u8;1];match file.read(&mut b){Ok(0)=>-1,Ok(_)=>b[0] as i32,Err(e)=>error(&format!("InputStream.read: E/S no traducida: {e}"))}},_=>error("InputStream concreto no soportado")}}
 fn resource_close(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);if matches!(h.arrays[id],Array::ByteInput(_,_,_,_)){return;}match &mut h.arrays[id]{Array::ResourceStream(_,_,closed)=>*closed=true,Array::FileInput(file)=>{*file=None;},_=>error("InputStream concreto no soportado")}}
+fn byte_buffer_wrap(h:&mut Heap,r:Option<usize>)->usize{if r.is_none(){raise("NullPointerException","array");}let id=array_id(h,r);let bytes=match &h.arrays[id]{Array::B(v)=>v.clone(),_=>error("ByteBuffer.wrap: array fuente no soportado")};if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::ByteBuffer(bytes));out}
+fn list_construct_from_collection(h:&mut Heap,source:Option<usize>)->usize{let id=array_id(h,source);let items=match &h.arrays[id]{Array::List(v,_)|Array::ImmutableList(v)|Array::Set(v,_)|Array::HashSet(v,_)|Array::KeySet(v,_)|Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),Array::EmptyList|Array::EmptySet=>Vec::new(),Array::ArraysList(a)=>match &h.arrays[*a]{Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),Array::Strings(u)=>{let mut items=Vec::with_capacity(u.len());for item in u{items.push(match item{Some(units)=>Some(new_string(h,units.clone())),None=>None});}items},_=>unreachable!()},_=>error("ArrayList(Collection) como lambda: colección fuera del perfil")};if h.elements.checked_add(items.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}h.elements+=items.len();if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::List(items,0));out}
+fn integer_highest_one_bit(v:i32)->i32{let u=v as u32;if u==0{0}else{(1u32<<(31 - u.leading_zeros())) as i32}}
+fn collectors_joining_delimiter(h:&mut Heap,delimiter:Option<usize>)->usize{if delimiter.is_none(){raise("NullPointerException","The delimiter must not be null");}if !matches!(h.arrays[delimiter.unwrap()],Array::Str(_)){error("Collectors.joining: solo String/null soportados");}let prefix=new_string(h,Vec::new());let suffix=new_string(h,Vec::new());if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::JoinCollector(delimiter,Some(prefix),Some(suffix)));id}
 fn collectors_joining(h:&mut Heap,delimiter:Option<usize>,prefix:Option<usize>,suffix:Option<usize>)->usize {for v in [delimiter,prefix,suffix].into_iter().flatten(){if !matches!(h.arrays[v],Array::Str(_)){error("Collectors.joining: solo String/null soportados");}}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::JoinCollector(delimiter,prefix,suffix));id}
 fn current_time_millis()->i64{let millis=match std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH){Ok(v)=>i128::try_from(v.as_millis()).unwrap_or_else(|_|error("System.currentTimeMillis: reloj fuera de rango")),Err(e)=>-i128::try_from((e.duration().as_nanos()+999_999)/1_000_000).unwrap_or_else(|_|error("System.currentTimeMillis: reloj fuera de rango"))};i64::try_from(millis).unwrap_or_else(|_|error("System.currentTimeMillis: reloj fuera de rango"))}
 fn current_thread(h:&mut Heap)->usize{if let Some(id)=h.arrays.iter().position(|a|matches!(a,Array::CurrentThread(_,_))){return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let name=new_string(h,vec![109,97,105,110]);if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::CurrentThread(false,name));id}
@@ -691,6 +698,205 @@ fn date_from_instant(h:&mut Heap,r:Option<usize>)->usize{let v=instant_millis(h,
 fn date_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Date(0));id}
 fn date_get(h:&Heap,r:Option<usize>)->i64{let id=array_id(h,r);match h.arrays[id]{Array::Date(n)=>n,_=>error("Date concreto no soportado")}}
 fn date_set(h:&mut Heap,r:Option<usize>,value:i64){let id=array_id(h,r);match &mut h.arrays[id]{Array::Date(n)=>*n=value,_=>error("Date concreto no soportado")}}
+// java.util.BitSet con semántica de posiciones: bit i en palabra i/64 (little-endian de palabras).
+fn bitset_new(h:&mut Heap,n:i32)->usize{if n<0{raise("NegativeArraySizeException","nbits < 0");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::BitSet(Vec::new()));id}
+fn bitset_init_checked(h:&mut Heap,r:Option<usize>,n:i32){let id=bitset_check(h,r);if n<0{raise("NegativeArraySizeException","nbits < 0");}}
+fn bitset_words_clamp(w:Vec<u64>)->Vec<u64>{let mut w=w;while w.last()==Some(&0){w.pop();}w}
+fn bitset_of_longs(h:&mut Heap,r:Option<usize>)->usize{let id=array_id(h,r);let words=match &h.arrays[id]{Array::J(v)=>v.iter().map(|x|*x as u64).collect::<Vec<_>>(),_=>error("BitSet.valueOf([J): array fuente no soportado")};let out=h.arrays.len();h.arrays.push(Array::BitSet(bitset_words_clamp(words)));out}
+fn bitset_of_bytes(h:&mut Heap,r:Option<usize>)->usize{let id=array_id(h,r);let bytes=match &h.arrays[id]{Array::B(v)=>v.clone(),_=>error("BitSet.valueOf([B): array fuente no soportado")};let mut words=Vec::with_capacity((bytes.len()+7)/8);for chunk in bytes.chunks(8){let mut w=0u64;for (i,b) in chunk.iter().enumerate(){w|=((*b as u8) as u64)<<(8*i);}words.push(w);}let out=h.arrays.len();h.arrays.push(Array::BitSet(bitset_words_clamp(words)));out}
+fn bitset_check(h:&Heap,r:Option<usize>)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::BitSet(_)){error("BitSet concreto no soportado");}id}
+fn bitset_set_word(w:&mut Vec<u64>,i:usize){if w.len()<=i/64{w.resize(i/64+1,0);}w[i/64]|=1u64<<(i%64);}
+fn bitset_clear_word(w:&mut Vec<u64>,i:usize,to:Option<usize>){if let Some(to)=to{for i in i..to{bitset_clear_word(w,i,None);}return;}if i/64<w.len(){w[i/64]&=!(1u64<<(i%64));if w.last()==Some(&0){w.pop();}}}
+fn bitset_set(h:&mut Heap,r:Option<usize>,i32b:i32){let id=bitset_check(h,r);if i32b<0{raise("IndexOutOfBoundsException","bit index is negative");}let i=i32b as usize;match &mut h.arrays[id]{Array::BitSet(w)=>bitset_set_word(w,i),_=>unreachable!()}}
+fn bitset_set_bool(h:&mut Heap,r:Option<usize>,i32b:i32,value:i32){let id=bitset_check(h,r);if i32b<0{raise("IndexOutOfBoundsException","bit index is negative");}let i=i32b as usize;if value!=0{match &mut h.arrays[id]{Array::BitSet(w)=>bitset_set_word(w,i),_=>unreachable!()}}else{match &mut h.arrays[id]{Array::BitSet(w)=>bitset_clear_word(w,i,None),_=>unreachable!()}}}
+fn bitset_set_range(h:&mut Heap,r:Option<usize>,from:i32,to:i32){let id=bitset_check(h,r);if from<0||to<from{raise("IndexOutOfBoundsException","fromIndex > toIndex");}match &mut h.arrays[id]{Array::BitSet(w)=>{for i in from..to{bitset_set_word(w,i as usize);}},_=>unreachable!()}}
+fn bitset_get(h:&Heap,r:Option<usize>,i32b:i32)->i32{let id=bitset_check(h,r);if i32b<0{raise("IndexOutOfBoundsException","bit index is negative");}let i=i32b as usize;match &h.arrays[id]{Array::BitSet(w)=>{if i/64<w.len(){((w[i/64]>>(i%64))&1) as i32}else{0}},_=>unreachable!()}}
+fn bitset_get_range(h:&mut Heap,r:Option<usize>,from:i32,to:i32)->usize{let id=bitset_check(h,r);if from<0||to<from{raise("IndexOutOfBoundsException","fromIndex > toIndex");}let mut words=Vec::new();match &h.arrays[id]{Array::BitSet(w)=>{for i in from..to{let src=i as usize;if src/64<w.len()&&(w[src/64]>>(src%64))&1==1{bitset_set_word(&mut words,src-from as usize);}}},_=>unreachable!()};let out=h.arrays.len();h.arrays.push(Array::BitSet(words));out}
+fn bitset_is_empty(h:&Heap,r:Option<usize>)->i32{let id=bitset_check(h,r);match &h.arrays[id]{Array::BitSet(w)=>w.is_empty() as i32,_=>unreachable!()}}
+fn bitset_length(h:&Heap,r:Option<usize>)->i32{let id=bitset_check(h,r);match &h.arrays[id]{Array::BitSet(w)=>{for i in (0..w.len()).rev(){if w[i]!=0{return (i*64+64-w[i].leading_zeros() as usize) as i32;}}0},_=>unreachable!()}}
+fn bitset_size(h:&Heap,r:Option<usize>)->i32{let id=bitset_check(h,r);match &h.arrays[id]{Array::BitSet(w)=>(w.len()*64) as i32,_=>unreachable!()}}
+fn bitset_cardinality(h:&Heap,r:Option<usize>)->i32{let id=bitset_check(h,r);match &h.arrays[id]{Array::BitSet(w)=>w.iter().map(|x|x.count_ones() as i32).sum(),_=>unreachable!()}}
+fn bitset_next_set_bit(h:&Heap,r:Option<usize>,from:i32)->i32{let id=bitset_check(h,r);if from<0{raise("IndexOutOfBoundsException","fromIndex is negative");}let from=from as usize;match &h.arrays[id]{Array::BitSet(w)=>{let mut i=from;while i/64<w.len(){let mask=if i%64==0{u64::MAX}else{u64::MAX<<(i%64)};let bits=w[i/64]&mask;if bits!=0{return (i/64*64+bits.trailing_zeros() as usize) as i32;}i=(i/64+1)*64;}-1},_=>unreachable!()}}
+fn bitset_next_clear_bit(h:&mut Heap,r:Option<usize>,from:i32)->i32{let id=bitset_check(h,r);if from<0{raise("IndexOutOfBoundsException","fromIndex is negative");}let from=from as usize;let snapshot=match &h.arrays[id]{Array::BitSet(w)=>w.clone(),_=>unreachable!()};let mut w=snapshot;let mut i=from;loop{let wi=i/64;if wi<w.len(){let mask=if i%64==0{u64::MAX}else{u64::MAX<<(i%64)};let bits=!w[wi]&mask;if bits!=0{return (wi*64+bits.trailing_zeros() as usize) as i32;}i=(wi+1)*64;}else{return i as i32;}}}
+fn bitset_clear_all(h:&mut Heap,r:Option<usize>){let id=bitset_check(h,r);match &mut h.arrays[id]{Array::BitSet(w)=>w.clear(),_=>unreachable!()}}
+fn bitset_clear_one(h:&mut Heap,r:Option<usize>,i32b:i32){let id=bitset_check(h,r);if i32b<0{raise("IndexOutOfBoundsException","bit index is negative");}match &mut h.arrays[id]{Array::BitSet(w)=>bitset_clear_word(w,i32b as usize,None),_=>unreachable!()}}
+fn bitset_clear_range(h:&mut Heap,r:Option<usize>,from:i32,to:i32){let id=bitset_check(h,r);if from<0||to<from{raise("IndexOutOfBoundsException","fromIndex > toIndex");}match &mut h.arrays[id]{Array::BitSet(w)=>{for i in from..to{bitset_clear_word(w,i as usize,None);}},_=>unreachable!()}}
+fn bitset_to_longs(h:&mut Heap,r:Option<usize>)->usize{let id=bitset_check(h,r);let words=match &h.arrays[id]{Array::BitSet(w)=>w.len(),_=>unreachable!()};let mut out=Vec::with_capacity(words);match &h.arrays[id]{Array::BitSet(w)=>{for x in w{out.push(*x as i64);}},_=>unreachable!()}let a=h.arrays.len();h.arrays.push(Array::J(out));a}
+fn bitset_to_bytes(h:&mut Heap,r:Option<usize>)->usize{let id=bitset_check(h,r);let byte_len=(bitset_length(h,r)+7)/8;let mut out=Vec::with_capacity(byte_len as usize);match &h.arrays[id]{Array::BitSet(w)=>{for b in 0..byte_len{let wi=(b/8) as usize;let bits=if wi<w.len(){(w[wi]>>(8*(b%8) as u32))&0xff}else{0};out.push(bits as i8);}},_=>unreachable!()}let a=h.arrays.len();h.arrays.push(Array::B(out));a}
+fn bitset_clone(h:&mut Heap,r:Option<usize>)->usize{let id=bitset_check(h,r);let words=match &h.arrays[id]{Array::BitSet(w)=>w.clone(),_=>unreachable!()};let out=h.arrays.len();h.arrays.push(Array::BitSet(words));out}
+fn bitset_hash_code(h:&Heap,r:Option<usize>)->i32{let id=bitset_check(h,r);match &h.arrays[id]{Array::BitSet(w)=>{let mut hash:u32=0x9e3779b9;for x in w{hash^=(x.wrapping_add(0x9e3779b97f4a7c15)) as u32;hash=hash.wrapping_mul(16777619);hash^=(*x>>32) as u32;hash=hash.wrapping_mul(16777619);}hash as i32},_=>unreachable!()}}
+fn bitset_equals(h:&Heap,r:Option<usize>,other:Option<usize>)->i32{let id=bitset_check(h,r);let Some(o)=other else{return 0};match (&h.arrays[id],h.arrays.get(o)){(Array::BitSet(a),Some(Array::BitSet(b)))=>{let strip=|x:&Vec<u64>|{let mut x=x.clone();while x.last()==Some(&0){x.pop();}x};(strip(a)==strip(b)) as i32},_=>0}}
+fn zip_fs_provider(h:&mut Heap)->usize{if let Some(id)=h.zip_fs_provider{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ZipFsProvider);h.zip_fs_provider=Some(id);id}
+// Proveedor inerte que modela el jdk.zipfs de la JDK: esquema "jar". Nunca abre
+// filesystems; newFileSystem aborta explícitamente donde se use.
+fn installed_providers_zip(h:&mut Heap)->usize{let p=zip_fs_provider(h);if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}if h.elements>=1_000_000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::List(vec![Some(p)],0));h.elements+=1;id}
+fn zip_fs_provider_get_scheme(h:&mut Heap,r:Option<usize>)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::ZipFsProvider){error("FileSystemProvider concreto no soportado");}new_string(h,"jar".encode_utf16().collect())}
+// findFirst perezoso: cubre fuentes ArrayList con etapas filter (el caso del
+// descubrimiento del proveedor zipfs) y delega al walk StackWalker cuando
+// aplica. Semántica secuencial: primer elemento que pasa todos los filtros.
+fn comparator_comparing_int(h:&mut Heap,extractor:Option<usize>)->usize{let f=array_id(h,extractor);if !matches!(h.arrays[f],Array::Lambda(_,"java/util/function/ToIntFunction",_)){error("Comparator.comparingInt: ToIntFunction fuera del perfil");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ComparingInt(f));id}
+// Terminal toArray(IntFunction) para fuentes ArrayList con filter/sorted opcionales.
+// La semántica es secuencial: prima el orden estable y las claves ToIntFunction
+// sobre el extractor en ComparingInt; Comparing (Function) se rechaza explícito.
+fn int_stream_range(h:&mut Heap,start:i32,end:i32)->usize{if start>end{raise("IllegalArgumentException","startInclusive > endExclusive");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::IntStream(start,end));id}
+fn int_stream_collect(h:&mut Heap,r:Option<usize>,supplier:Option<usize>,objint:Option<usize>,bicombiner:Option<usize>,
+    get:fn(&mut Heap,Option<usize>)->Option<usize>,
+    accept:fn(&mut Heap,Option<usize>,Option<usize>,i32),
+    combine:fn(&mut Heap,Option<usize>,Option<usize>,Option<usize>))->usize {
+  let id=array_id(h,r);
+  let (start,end)=match h.arrays[id]{Array::IntStream(s,e)=>(s,e),Array::IntStreamClosed=>raise("IllegalStateException","stream has already been operated upon or closed"),_=>error("IntStream: receptor fuera del perfil")};
+  h.arrays[id]=Array::IntStreamClosed;
+  let s=supplier.unwrap_or_else(||raise("NullPointerException",""));
+  let o=objint.unwrap_or_else(||raise("NullPointerException",""));
+  let _=bicombiner.unwrap_or_else(||raise("NullPointerException",""));
+  let result={let _opaque=call_guard("<jdk-callback>");get(h,Some(s))};
+  let rid=array_id(h,result);
+  for i in start..end{let _opaque=call_guard("<jdk-callback>");accept(h,Some(o),Some(rid),i);}
+  rid
+}
+fn collectors_to_list(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ToListMarker);id}
+// Recorre la cadena filter/sorted de un LazyStream sobre ArrayList (semántica
+// secuencial): aplica filtros en orden; sorted solo con ComparingInt. Devuelve
+// los elementos supervivientes consumiendo las etapas.
+fn collectors_to_immutable_list(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ToImmutableListMarker);id}
+fn int_stream_map_to_obj(h:&mut Heap,r:Option<usize>,fun:Option<usize>,
+    apply:fn(&mut Heap,Option<usize>,i32)->Option<usize>)->usize {
+  let id=array_id(h,r);let f=array_id(h,fun);
+  if !matches!(h.arrays[f],Array::Lambda(_,"java/util/function/IntFunction",_)){error("IntStream.mapToObj: IntFunction fuera del perfil");}
+  let (start,end)=match h.arrays[id]{Array::IntStream(s,e)=>(s,e),Array::IntStreamClosed=>raise("IllegalStateException","stream has already been operated upon or closed"),_=>error("IntStream.mapToObj: receptor fuera del perfil")};
+  if h.arrays.len()>=10000||h.elements.checked_add((end.max(start)-start) as usize).map_or(true,|v|v>1_000_000){error("límite experimental de heap excedido");}
+  h.arrays[id]=Array::IntStreamClosed;
+  let mut items:Vec<Option<usize>>=Vec::with_capacity((end.max(start)-start) as usize);
+  for i in start..end{items.push({let _opaque=call_guard("<jdk-callback>");apply(h,Some(f),i)});}
+  h.elements+=items.len();
+  let list_id=h.arrays.len();h.arrays.push(Array::List(items,0));
+  let out=h.arrays.len();h.arrays.push(Array::LazyStream(list_id,false,None,false));out
+}
+fn stream_chain_items(h:&mut Heap,r:Option<usize>,
+    cmp_int:fn(&mut Heap,Option<usize>,Option<usize>)->i32,
+    test:fn(&mut Heap,Option<usize>,Option<usize>)->i32)->(Vec<Option<usize>>,bool) {
+  let stage=array_id(h,r);
+  match &mut h.arrays[stage]{Array::LazyStream(_,linked,_,_)|Array::SortedStream(_,linked,_)|Array::MappedStream(_,linked,_)=>*linked=true,_=>error("Stream: receptor fuera del perfil")}
+  let mut cur=stage;let mut predicates=Vec::new();let mut sorter:Option<usize>=None;
+  let source=loop{match h.arrays[cur]{
+    Array::LazyStream(source,_,None,taken)=>{if taken{raise("IllegalStateException","source already consumed or closed");}break source},
+    Array::LazyStream(parent,_,Some(pred),_)=>{predicates.push(pred);match &mut h.arrays[cur]{Array::LazyStream(_,linked,_,_)=>*linked=true,_=>unreachable!()}cur=parent;},
+    Array::SortedStream(parent,_,cmp)=>{if sorter.is_some(){error("Stream: sorted anidado no soportado");}sorter=Some(cmp);match &mut h.arrays[cur]{Array::SortedStream(_,linked,_)=>*linked=true,_=>unreachable!()}cur=parent;},
+    Array::MappedStream(_,_,_)=>error("Stream: map no soportado en la cadena"),
+    _=>error("Stream: cadena fuera del perfil")}};
+  if let Array::LazyStream(_,_,_,taken)=&mut h.arrays[cur]{*taken=true;}
+  let (items,version)=match &h.arrays[source]{Array::List(values,v)=>(values.clone(),*v),_=>error("Stream: solo fuente ArrayList directa soportada")};
+  predicates.reverse();
+  let mut elems:Vec<Option<usize>>=Vec::new();
+  for value in items{
+    let mut ok=true;
+    for pred in &predicates{let result={let _opaque=call_guard("<jdk-callback>");test(h,Some(*pred),value)};if result==0{ok=false;break;}}
+    if let Array::List(_,v)=h.arrays[source]{if v!=version{raise("ConcurrentModificationException","");}}
+    if ok{elems.push(value);}
+  }
+  if let Some(cmp)=sorter{
+    match h.arrays[cmp]{Array::ComparingInt(f)=>{
+      let mut keyed:Vec<(i32,Option<usize>)>=Vec::with_capacity(elems.len());
+      for v in elems{let key={let _opaque=call_guard("<jdk-callback>");cmp_int(h,Some(f),v)};keyed.push((key,v));}
+      keyed.sort_by_key(|&(k,_)|k);elems=keyed.into_iter().map(|(_,v)|v).collect();
+    },Array::Comparing(_)=>error("Stream: sorted Function extractor fuera del perfil"),_=>unreachable!()}
+  }
+  (elems,true)
+}
+fn stream_collect(h:&mut Heap,r:Option<usize>,collector:Option<usize>,
+    cmp_int:fn(&mut Heap,Option<usize>,Option<usize>)->i32,
+    test:fn(&mut Heap,Option<usize>,Option<usize>)->i32,
+    map_apply:fn(&mut Heap,Option<usize>,Option<usize>)->Option<usize>)->usize {
+  let id=array_id(h,r);let cid=array_id(h,collector);
+  if matches!(h.arrays[cid],Array::JoinCollector(_,_,_)){return stream_collect_joining(h,r,collector);}
+  if matches!(h.arrays[cid],Array::ToListMarker){
+    let (elems,_)=stream_chain_items(h,r,cmp_int,test);
+    if h.elements.checked_add(elems.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
+    h.elements+=elems.len();
+    let out=h.arrays.len();h.arrays.push(Array::List(elems,0));return out;
+  }
+  if matches!(h.arrays[cid],Array::ToImmutableListMarker){
+    let (elems,_)=stream_chain_items(h,r,cmp_int,test);
+    return immutable_list_new(h,elems);
+  }
+  if let Array::ToMapMarker(kf,vf)=h.arrays[cid]{
+    let (elems,_)=stream_chain_items(h,r,cmp_int,test);
+    let mut entries:Vec<(Option<usize>,Option<usize>)>=Vec::with_capacity(elems.len());
+    for e in elems{let key={let _opaque=call_guard("<jdk-callback>");map_apply(h,Some(kf),e)};let value={let _opaque=call_guard("<jdk-callback>");map_apply(h,Some(vf),e)};if key.is_none(){raise("NullPointerException","key cannot be null");}if value.is_none(){raise("NullPointerException","value cannot be null");}for (ek,_) in &entries{if map_key_eq(h,*ek,key){raise("IllegalStateException","Duplicate key");}}entries.push((key,value));}
+    if h.arrays.len()>=10000||h.elements.checked_add(entries.len()*2).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
+    h.elements+=entries.len()*2;let out=h.arrays.len();h.arrays.push(Array::LinkedMap(entries,0));return out;
+  }
+  error("Stream.collect: solo Collectors.toList/joining/toImmutableList/toMap soportados")
+}
+fn stream_to_array(h:&mut Heap,r:Option<usize>,generator:Option<usize>,
+    cmp_int:fn(&mut Heap,Option<usize>,Option<usize>)->i32,
+    gen:fn(&mut Heap,Option<usize>,i32)->Option<usize>,
+    test:fn(&mut Heap,Option<usize>,Option<usize>)->i32)->usize {
+  let stage=array_id(h,r);
+  match &mut h.arrays[stage]{Array::LazyStream(_,linked,_,_)|Array::SortedStream(_,linked,_)|Array::MappedStream(_,linked,_)=>*linked=true,_=>error("Stream.toArray: receptor fuera del perfil")}
+  let mut cur=stage;let mut predicates=Vec::new();let mut sorter:Option<usize>=None;
+  let source=loop{match h.arrays[cur]{
+    Array::LazyStream(source,_,None,taken)=>{if taken{raise("IllegalStateException","source already consumed or closed");}break source},
+    Array::LazyStream(parent,_,Some(pred),_)=>{predicates.push(pred);match &mut h.arrays[cur]{Array::LazyStream(_,linked,_,_)=>*linked=true,_=>unreachable!()}cur=parent;},
+    Array::SortedStream(parent,_,cmp)=>{if sorter.is_some(){error("Stream.toArray: sorted anidado no soportado");}sorter=Some(cmp);match &mut h.arrays[cur]{Array::SortedStream(_,linked,_)=>*linked=true,_=>unreachable!()}cur=parent;},
+    Array::MappedStream(_,_,_)=>error("Stream.toArray: map no soportado en la cadena"),
+    _=>error("Stream.toArray: cadena fuera del perfil")}};
+  if let Array::LazyStream(_,_,_,taken)=&mut h.arrays[cur]{*taken=true;}
+  let (items,version)=match &h.arrays[source]{Array::List(values,v)=>(values.clone(),*v),_=>error("Stream.toArray: solo fuente ArrayList directa soportada")};
+  predicates.reverse();
+  let mut elems:Vec<Option<usize>>=Vec::new();
+  for value in items{
+    let mut ok=true;
+    for pred in &predicates{let result={let _opaque=call_guard("<jdk-callback>");test(h,Some(*pred),value)};if result==0{ok=false;break;}}
+    if let Array::List(_,v)=h.arrays[source]{if v!=version{raise("ConcurrentModificationException","");}}
+    if ok{elems.push(value);}
+  }
+  if let Some(cmp)=sorter{
+    match h.arrays[cmp]{Array::ComparingInt(f)=>{
+      let mut keyed:Vec<(i32,Option<usize>)>=Vec::with_capacity(elems.len());
+      for v in elems{let key={let _opaque=call_guard("<jdk-callback>");cmp_int(h,Some(f),v)};keyed.push((key,v));}
+      keyed.sort_by_key(|&(k,_)|k);elems=keyed.into_iter().map(|(_,v)|v).collect();
+    },Array::Comparing(_)=>error("Stream.toArray: sorted Function extractor fuera del perfil"),_=>unreachable!()}
+  }
+  let size=elems.len() as i32;
+  let generator=generator.unwrap_or_else(||raise("NullPointerException",""));
+  let result={let _opaque=call_guard("<jdk-callback>");gen(h,Some(generator),size)};
+  let arr=array_id(h,result);
+  match &mut h.arrays[arr]{Array::ProjectRefs(_,v)=>{if v.len()!=elems.len(){error("Stream.toArray: generador devolvió tamaño incorrecto");}v.clone_from(&elems);},Array::Refs(_,v)=>{if v.len()!=elems.len(){error("Stream.toArray: generador devolvió tamaño incorrecto");}v.clone_from(&elems);},_=>error("Stream.toArray: el generador no creó un array de referencias")}
+  arr
+}
+fn stream_to_list(h:&mut Heap,r:Option<usize>,
+    cmp_int:fn(&mut Heap,Option<usize>,Option<usize>)->i32,
+    test:fn(&mut Heap,Option<usize>,Option<usize>)->i32)->usize {
+  let (elems,_)=stream_chain_items(h,r,cmp_int,test);
+  immutable_list_new(h,elems)
+}
+fn arrays_stream(h:&mut Heap,r:Option<usize>)->usize{
+  let id=array_id(h,r);
+  let items=match &h.arrays[id]{Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),Array::Strings(v)=>{let mut out=Vec::with_capacity(v.len());for u in v{out.push(Some(new_string(h,u.clone())));}out},_=>error("Arrays.stream(T[]): array fuente fuera del perfil")};
+  if h.arrays.len()>=10000||h.elements.checked_add(items.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
+  h.elements+=items.len();
+  let list_id=h.arrays.len();h.arrays.push(Array::List(items,0));
+  let out=h.arrays.len();h.arrays.push(Array::LazyStream(list_id,false,None,false));out
+}
+fn stream_find_first(h:&mut Heap,r:Option<usize>,apply:fn(&mut Heap,Option<usize>,Option<usize>)->Option<usize>,test:fn(&mut Heap,Option<usize>,Option<usize>)->i32)->usize{
+  let id=array_id(h,r);if matches!(h.arrays[id],Array::StackWalkStream(_,_,_,_,_)|Array::StackStage(_,_,_,_)){return stack_stream_find_first(h,r,apply,test);}
+  let mut cur=id;let mut predicates=Vec::new();
+  let source=loop{match h.arrays[cur]{Array::LazyStream(source,_,None,taken)=>{if taken{raise("IllegalStateException","source already consumed or closed");}break source},Array::LazyStream(parent,_,Some(pred),_)=>{predicates.push(pred);cur=parent;},_=>error("Stream.findFirst: solo fuente ArrayList directa con filter soportada")}};
+  if let Array::LazyStream(_,_,_,taken)=&mut h.arrays[cur]{*taken=true;}
+  match &mut h.arrays[id]{Array::LazyStream(_,linked,_,_)|Array::SortedStream(_,linked,_)|Array::MappedStream(_,linked,_)=>*linked=true,_=>unreachable!()}
+  let (items,version)=match &h.arrays[source]{Array::List(values,v)=>(values.clone(),*v),_=>error("Stream.findFirst: solo fuente ArrayList directa soportada")};
+  predicates.reverse();
+  for value in items{
+    let mut ok=true;
+    for pred in &predicates{let result={let _opaque=call_guard("<jdk-callback>");test(h,Some(*pred),value)};if result==0{ok=false;break;}}
+    if let Array::List(_,v)=h.arrays[source]{if v!=version{raise("ConcurrentModificationException","");}}else{error("Stream.findFirst: fuente modificada durante recorrido");}
+    if ok{return optional_new(h,value);}
+  }
+  optional_new(h,None)
+}
+fn uuid_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Uuid([0;16]));id}
+fn uuid_init(h:&mut Heap,r:Option<usize>,most:i64,least:i64){let id=array_id(h,r);let mut b=[0u8;16];b[..8].copy_from_slice(&most.to_be_bytes());b[8..].copy_from_slice(&least.to_be_bytes());if !matches!(h.arrays[id],Array::Uuid(_)){error("UUID inválido");}h.arrays[id]=Array::Uuid(b);}
 fn uuid_random(h:&mut Heap)->usize{use std::io::Read;let mut bytes=[0u8;16];let mut f=std::fs::File::open("/dev/urandom").unwrap_or_else(|_|error("UUID.randomUUID: fuente de entropía no disponible"));f.read_exact(&mut bytes).unwrap_or_else(|_|error("UUID.randomUUID: fallo de entropía"));bytes[6]=(bytes[6]&0x0f)|0x40;bytes[8]=(bytes[8]&0x3f)|0x80;if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Uuid(bytes));id}
 fn uuid_bytes(h:&Heap,r:Option<usize>)->[u8;16]{let id=array_id(h,r);match h.arrays[id]{Array::Uuid(bytes)=>bytes,_=>error("UUID concreto no soportado")}}
 fn uuid_parts(h:&Heap,r:Option<usize>)->(u8,u8){let b=uuid_bytes(h,r);(b[6]>>4,if b[8]&0x80==0{0}else if b[8]&0xc0==0x80{2}else if b[8]&0xe0==0xc0{6}else{7})}
@@ -762,7 +968,7 @@ fn exception_matches(kind:&str,catch:&str)->bool {
             "ClassNotFoundException"|"NoSuchMethodException"|"InstantiationException"|"IllegalAccessException"|"InvocationTargetException"=>"ReflectiveOperationException",
             "NumberFormatException"=>"IllegalArgumentException",
             "ArrayIndexOutOfBoundsException"|"StringIndexOutOfBoundsException"=>"IndexOutOfBoundsException",
-            "UncheckedIOException"|"DateTimeException"|"IllegalArgumentException"|"IllegalStateException"|"IllegalCallerException"|"IndexOutOfBoundsException"|"ArithmeticException"|"NullPointerException"|"NegativeArraySizeException"|"ClassCastException"|"ArrayStoreException"|"SecurityException"|"IllegalMonitorStateException"|"UnsupportedOperationException"|"NoSuchElementException"|"ConcurrentModificationException"=>"RuntimeException",
+            "UncheckedIOException"|"DateTimeException"|"IllegalArgumentException"|"IllegalStateException"|"IllegalCallerException"|"IndexOutOfBoundsException"|"ArithmeticException"|"NullPointerException"|"NegativeArraySizeException"|"ClassCastException"|"ArrayStoreException"|"SecurityException"|"IllegalMonitorStateException"|"UnsupportedOperationException"|"NoSuchElementException"|"ConcurrentModificationException"|"MatchException"=>"RuntimeException",
             _=>return false,
         };
     }
@@ -844,6 +1050,12 @@ fn enum_valueof_array(h:&mut Heap,class:&'static str,name:Option<usize>,slot:usi
     let canonical=canonical.unwrap_or_else(||error("Enum.valueOf: nombre canónico anidado no modelado"));
     let mut msg:Vec<u16>="No enum constant ".encode_utf16().collect();msg.extend(canonical.encode_utf16());msg.push('.' as u16);msg.extend_from_slice(text);
     let m=new_string(h,msg);let e=new_exception(h,"IllegalArgumentException");init_exception(h,Some(e),"IllegalArgumentException",Some(m));throw_ref(h,Some(e))
+}
+fn enum_constants_array(h:&mut Heap,slot:usize,class:&'static str)->Option<usize>{
+  let arr=match h.fields.get(slot){Some(V::R(Some(id)))=>*id,_=>error("enum_constants: values aún no disponible")};
+  let vals=match h.arrays.get(arr){Some(Array::ProjectRefs(c,v)) if *c==class=>v.clone(),_=>error("enum_constants: array fuera del perfil")};
+  if h.arrays.len()>=10000||h.elements.checked_add(vals.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
+  h.elements+=vals.len();let out=h.arrays.len();h.arrays.push(Array::ProjectRefs(class,vals));Some(out)
 }
 fn enum_ordinal(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);h.enum_values.get(&id).expect("enum no inicializado").1}
 fn enum_name(h:&Heap,r:Option<usize>)->Option<usize>{let id=array_id(h,r);h.enum_values.get(&id).expect("enum no inicializado").0}
@@ -1066,6 +1278,80 @@ fn immutable_list_new(h:&mut Heap,v:Vec<Option<usize>>)->usize{if v.iter().any(O
 fn immutable_list_from_array(h:&mut Heap,r:Option<usize>)->usize{let id=array_id(h,r);let values=match &h.arrays[id]{Array::Strings(v)|Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),_=>error("List.of: array de referencia no soportado")};immutable_list_new(h,values)}
 fn standardlevel_enumset(h:&mut Heap,class:Option<usize>,slot:usize)->usize{let cid=array_id(h,class);if !matches!(h.arrays[cid],Array::Class("org/apache/logging/log4j/spi/StandardLevel")){error("EnumSet.allOf: clase fuera del perfil");}let arr=match h.fields.get(slot){Some(V::R(Some(a)))=>*a,_=>error("EnumSet.allOf: valores aún no preparados")};let values=match &h.arrays[arr]{Array::ProjectRefs("org/apache/logging/log4j/spi/StandardLevel",v)=>v.iter().map(|v|v.unwrap_or_else(||error("EnumSet.allOf: valor nulo"))).collect::<Vec<_>>(),_=>error("EnumSet.allOf: array incompatible")};for (i,id) in values.iter().enumerate(){if h.enum_values.get(id).map(|(_,n)|*n)!=Some(i as i32){error("EnumSet.allOf: ordinal inconsistente");}}if h.arrays.len()>=10000||h.elements.saturating_add(values.len())>1_000_000{error("Límite experimental de heap excedido");}h.elements+=values.len();let out=h.arrays.len();h.arrays.push(Array::EnumSet(values));out}
 fn empty_list(h:&mut Heap)->usize{if let Some(id)=h.empty_list{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::EmptyList);h.empty_list=Some(id);id}
+fn list_item_eq(h:&Heap,a:Option<usize>,b:Option<usize>)->bool{
+  match (a,b){(None,None)=>true,(Some(x),Some(y))=>x==y||matches!((&h.arrays[x],&h.arrays[y]),(Array::Str(u),Array::Str(v))=>u==v),_=>false}
+}
+fn list_index_of(h:&Heap,r:Option<usize>,val:Option<usize>)->i32{
+  let id=array_id(h,r);
+  let items=match &h.arrays[id]{Array::List(v,_)|Array::ImmutableList(v)=>v.clone(),Array::ArraysList(a)=>match &h.arrays[*a]{Array::Strings(v)=>v.iter().map(|u|Some(new_string(h,u.clone()))).collect::<Vec<_>>(),Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),_=>unreachable!()},Array::EmptyList|Array::EmptySet=>Vec::new(),_=>error("List.indexOf: fuente fuera del perfil")};
+  for (i,item) in items.iter().enumerate(){if list_item_eq(h,*item,val){return i as i32;}}
+  -1
+}
+fn list_copy_of(h:&mut Heap,r:Option<usize>)->usize{
+  let id=array_id(h,r);
+  let values=match &h.arrays[id]{
+    Array::List(v,_)|Array::Set(v,_)|Array::ImmutableList(v)|Array::HashSet(v,_)|Array::KeySet(v,_)=>v.clone(),
+    Array::ArraysList(a)=>match &h.arrays[*a]{Array::Strings(v)=>{let mut out=Vec::with_capacity(v.len());for u in v{out.push(Some(new_string(h,u.clone())));}out},Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),_=>error("List.copyOf: array ArraysList fuera del perfil")},
+    Array::Queue(v)|Array::ConcurrentQueue(v)|Array::Deque(v)=>v.iter().copied().map(Some).collect(),
+    Array::EmptyList|Array::EmptySet=>Vec::new(),
+    Array::MapValues(_)=>map_values_snapshot(h,*match &h.arrays[id]{Array::MapValues(m)=>m,_=>unreachable!()}),_=>error("List.copyOf: fuente fuera del perfil")};
+  if values.iter().any(|v|v.is_none()){raise("NullPointerException","element cannot be null");}
+  if h.arrays.len()>=10000||h.elements.checked_add(values.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
+  h.elements+=values.len();let out=h.arrays.len();h.arrays.push(Array::ImmutableList(values));out
+}
+fn map_of_n(h:&mut Heap,pairs:Vec<(Option<usize>,Option<usize>)>)->usize{
+  for (k,v) in &pairs{if k.is_none()||v.is_none(){raise("NullPointerException","key or value cannot be null");}}
+  let mut entries:Vec<(Option<usize>,Option<usize>)>=Vec::with_capacity(pairs.len());
+  for (k,v) in pairs{let dup=entries.iter().any(|(ek,_)|match (ek,&k){(None,None)=>true,(Some(a),Some(b))=>a==b||matches!((&h.arrays[*a],&h.arrays[*b]),(Array::Str(x),Array::Str(y)) if x==y),_=>false});if dup{raise("IllegalArgumentException","duplicate key");}entries.push((k,v));}
+  if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}if h.elements.checked_add(entries.len()*2).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
+  h.elements+=entries.len()*2;let id=h.arrays.len();h.arrays.push(Array::LinkedMap(entries,0));id
+}
+fn enum_map_new(h:&mut Heap)->usize{linked_map_new(h)}
+fn enum_map_put(h:&mut Heap,r:Option<usize>,key:Option<usize>,value:Option<usize>)->Option<usize>{let kid=array_id(h,key);if !h.enum_values.contains_key(&kid){raise("ClassCastException","key is not an enum");}map_put(h,r,key,value,false)}
+fn enum_map_init_class(h:&mut Heap,r:Option<usize>,_keyclass:Option<usize>){let id=array_id(h,r);if !matches!(h.arrays[id],Array::LinkedMap(_,_)){error("EnumMap: receptor fuera del perfil");}}
+fn enum_map_init_map(h:&mut Heap,r:Option<usize>,source:Option<usize>){let rid=array_id(h,r);let sid=array_id(h,source);if !matches!(h.arrays[rid],Array::LinkedMap(_,_)){error("EnumMap: receptor fuera del perfil");}let mut entries:Vec<(Option<usize>,Option<usize>)>=match &h.arrays[sid]{Array::LinkedMap(e,_)|Array::HashMap(e)=>e.clone(),Array::TreeMap(e,_)=>e.clone(),Array::ImmutableMap(e)=>e.clone(),Array::EmptyMap=>Vec::new(),_=>error("EnumMap(Map): fuente no soportada")};if entries.is_empty(){raise("IllegalArgumentException","unable to infer enum class from empty map");}for (k,v) in &entries{match k{None=>raise("NullPointerException","null key"),Some(k)=>{if !h.enum_values.contains_key(&k){raise("ClassCastException","key is not an enum");}}}if v.is_none(){raise("NullPointerException","null value");}}entries.sort_by_key(|(k,_)|k.and_then(|k|h.enum_values.get(&k).map(|(_,n)|*n)).unwrap_or(0));if h.elements.checked_add(entries.len()*2).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}h.elements+=entries.len()*2;h.arrays[rid]=Array::LinkedMap(entries,0);}
+fn immutable_map_copy_of(h:&mut Heap,r:Option<usize>)->usize{let sid=array_id(h,r);let mut entries:Vec<(Option<usize>,Option<usize>)>=match &h.arrays[sid]{Array::LinkedMap(e,_)|Array::HashMap(e)=>e.clone(),Array::TreeMap(e,_)=>e.clone(),Array::ImmutableMap(e)=>e.clone(),Array::EmptyMap=>Vec::new(),_=>error("ImmutableMap.copyOf: fuente no soportada")};for (k,v) in &entries{if k.is_none()||v.is_none(){raise("NullPointerException","null key or value");}}let all_enum=entries.iter().all(|(k,_)|k.is_some_and(|k|h.enum_values.contains_key(&k)));if all_enum{entries.sort_by_key(|(k,_)|k.and_then(|k|h.enum_values.get(&k).map(|(_,n)|*n)).unwrap_or(0));}if h.arrays.len()>=10000||h.elements.checked_add(entries.len()*2).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}h.elements+=entries.len()*2;let id=h.arrays.len();h.arrays.push(Array::ImmutableMap(entries));id}
+fn map_key_eq(h:&Heap,a:Option<usize>,b:Option<usize>)->bool{match (a,b){(None,None)=>true,(Some(x),Some(y))=>{if x==y{true}else{matches!((&h.arrays[x],&h.arrays[y]),(Array::Str(p),Array::Str(q)) if p==q)}},_=>false}}
+fn map_entry_key(h:&mut Heap,r:Option<usize>)->Option<usize>{match r.and_then(|id|h.arrays.get(id)){Some(Array::TreeEntry(_,_,_))=>tree_entry_key(h,r),_=>error("Map.Entry.getKey: entrada no modelada")}}
+fn map_entry_value(h:&mut Heap,r:Option<usize>)->Option<usize>{match r.and_then(|id|h.arrays.get(id)){Some(Array::TreeEntry(_,_,_))=>tree_entry_value(h,r),_=>error("Map.Entry.getValue: entrada no modelada")}}
+fn collectors_to_map(h:&mut Heap,kf:Option<usize>,vf:Option<usize>)->usize{
+  let k=array_id(h,kf);let v=array_id(h,vf);
+  for id in [k,v]{if !matches!(h.arrays[id],Array::Lambda(_,"java/util/function/Function",_)|Array::IdentityFunction){error("Collectors.toMap: Function fuera del perfil");}}
+  if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ToMapMarker(k,v));id
+}
+fn scoped_value_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ScopedValue(false,None));id}
+fn scoped_value_is_bound(h:&Heap,r:Option<usize>)->bool{let id=array_id(h,r);match h.arrays[id]{Array::ScopedValue(bound,_)=>bound,_=>error("ScopedValue: receptor fuera del perfil")}}
+fn scoped_value_get(h:&mut Heap,r:Option<usize>)->Option<usize>{let id=array_id(h,r);match h.arrays[id]{Array::ScopedValue(true,Some(v))=>Some(v),Array::ScopedValue(_,_)=>raise("NoSuchElementException","ScopedValue is not bound"),_=>error("ScopedValue: receptor fuera del perfil")}}
+fn scoped_value_where(h:&mut Heap,r:Option<usize>,value:Option<usize>)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::ScopedValue(_,_)){error("ScopedValue.where: receptor fuera del perfil");}if value.is_none(){raise("NullPointerException","value cannot be null");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id2=h.arrays.len();h.arrays.push(Array::ScopedCarrier(id,value));id2}
+fn scoped_carrier_run(h:&mut Heap,r:Option<usize>,runnable:Option<usize>,
+    run:fn(&mut Heap,Option<usize>)) {
+  let id=array_id(h,r);let f=runnable.unwrap_or_else(||raise("NullPointerException","runnable cannot be null"));
+  let (svid,value)=match h.arrays[id]{Array::ScopedCarrier(s,v)=>(s,v),_=>error("ScopedValue.Carrier: receptor fuera del perfil")};
+  let previous=h.arrays.get(svid).cloned();
+  if value.is_none(){raise("NullPointerException","value cannot be null");}
+  h.arrays[svid]=Array::ScopedValue(true,value);
+  {let _opaque=call_guard("<jdk-callback>");run(h,Some(f));}
+  match previous{Some(Array::ScopedValue(b,v))=>h.arrays[svid]=Array::ScopedValue(b,v),_=>h.arrays[svid]=Array::ScopedValue(false,None)}
+}
+fn java_min_d(a:f64,b:f64)->f64{if a.is_nan()||b.is_nan(){return f64::NAN;}if a==0.0&&b==0.0{return if a.is_sign_negative(){a}else{b};}if a<b{a}else{b}}
+fn java_max_d(a:f64,b:f64)->f64{if a.is_nan()||b.is_nan(){return f64::NAN;}if a==0.0&&b==0.0{return if !a.is_sign_negative(){a}else{b};}if a>b{a}else{b}}
+fn java_min_f(a:f32,b:f32)->f32{if a.is_nan()||b.is_nan(){return f32::NAN;}if a==0.0&&b==0.0{return if a.is_sign_negative(){a}else{b};}if a<b{a}else{b}}
+fn java_max_f(a:f32,b:f32)->f32{if a.is_nan()||b.is_nan(){return f32::NAN;}if a==0.0&&b==0.0{return if !a.is_sign_negative(){a}else{b};}if a>b{a}else{b}}
+fn set_of_n(h:&mut Heap,values:Vec<Option<usize>>)->usize{
+  // java.util.Set.of: nulls lanzan NullPointerException; duplicados lanzan
+  // IllegalArgumentException. Igualdad plena para String por unidades; para el
+  // resto de objetos, identidad (los equals completos fuera del perfil quedan
+  // rechazados al aplicarlos, no en silencio).
+  for v in &values{if v.is_none(){raise("NullPointerException","element cannot be null");}}
+  let mut seen:Vec<usize>=Vec::with_capacity(values.len());
+  for v in &values{if let Some(id)=v{let dup=seen.iter().any(|&x|{if x==id{true}else{matches!((&h.arrays[x],&h.arrays[id]),(Array::Str(a),Array::Str(b))=>a==b)}});if dup{raise("IllegalArgumentException","duplicate element");}seen.push(id);}}
+  if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}if h.elements.checked_add(values.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
+  let id=h.arrays.len();h.elements+=values.len();h.arrays.push(Array::Set(values,0));id
+}
+fn set_of_array(h:&mut Heap,r:Option<usize>)->usize{
+  let id=array_id(h,r);
+  match &h.arrays[id]{Array::Refs(_,v)|Array::ProjectRefs(_,v)=>{let cloned=v.clone();set_of_n(h,cloned)},Array::Strings(v)=>{let items:Vec<Option<usize>>=v.iter().map(|u|Some(new_string(h,u.clone()))).collect();set_of_n(h,items)},_=>error("Set.of(A[]): array fuente fuera del perfil")}
+}
 fn empty_set(h:&mut Heap)->usize{if let Some(id)=h.empty_set{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::EmptySet);h.empty_set=Some(id);id}
 fn empty_iterator(h:&mut Heap)->usize{if let Some(id)=h.empty_iterator{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::EmptyIterator);h.empty_iterator=Some(id);id}
 fn empty_map(h:&mut Heap)->usize{if let Some(id)=h.empty_map{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::EmptyMap);h.empty_map=Some(id);id}
@@ -1085,13 +1371,13 @@ fn hashmap_id(h:&Heap,r:Option<usize>)->usize{let id=array_id(h,r);if !matches!(
 fn hashmap_init_capacity(h:&mut Heap,r:Option<usize>,n:i32){hashmap_id(h,r);if n<0{let message=new_string(h,format!("Illegal initial capacity: {n}").encode_utf16().collect());let ex=new_exception(h,"IllegalArgumentException");init_exception(h,Some(ex),"IllegalArgumentException",Some(message));throw_ref(h,Some(ex));}if n>1_000_000{error("HashMap: capacidad experimental excedida");}}
 fn hashmap_init_map(h:&Heap,r:Option<usize>,source:Option<usize>){hashmap_id(h,r);let id=map_id(h,source);if map_size(h,Some(id))!=0{error("HashMap(Map): copia no vacía no soportada");}}
 fn hashmap_key_ok(h:&Heap,key:Option<usize>){if let Some(id)=key{if !matches!(h.arrays.get(id),Some(Array::Str(_)|Array::Class(_)))&&!h.enum_values.contains_key(&id){error("HashMap: solo claves String, Class, enum o null");}}}
-fn hashmap_pos(h:&Heap,id:usize,key:Option<usize>)->Option<usize>{hashmap_key_ok(h,key);let entries=match &h.arrays[id]{Array::HashMap(v)|Array::LinkedMap(v,_)=>v,_=>unreachable!()};entries.iter().position(|(k,_)|match (*k,key){(None,None)=>true,(Some(a),Some(b)) if a==b=>true,(Some(a),Some(b))=>matches!((&h.arrays[a],&h.arrays[b]),(Array::Str(x),Array::Str(y)) if x==y),_=>false})}
+fn hashmap_pos(h:&Heap,id:usize,key:Option<usize>)->Option<usize>{hashmap_key_ok(h,key);let entries=match &h.arrays[id]{Array::HashMap(v)|Array::LinkedMap(v,_)|Array::ImmutableMap(v)=>v,_=>unreachable!()};entries.iter().position(|(k,_)|match (*k,key){(None,None)=>true,(Some(a),Some(b)) if a==b=>true,(Some(a),Some(b))=>matches!((&h.arrays[a],&h.arrays[b]),(Array::Str(x),Array::Str(y)) if x==y),_=>false})}
 // IdentityHashMap usa referencias (incluido null), no equals/hashCode.
 fn identity_map_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::IdentityMap(Vec::new()));id}
 fn identity_map_id(h:&Heap,r:Option<usize>)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::IdentityMap(_)){error("IdentityHashMap: receptor incompatible");}id}
 fn identity_pos(h:&Heap,id:usize,key:Option<usize>)->Option<usize>{match &h.arrays[id]{Array::IdentityMap(v)=>v.iter().position(|(k,_)|*k==key),_=>error("IdentityHashMap: receptor incompatible")}}
 fn identity_set_new(h:&mut Heap,r:Option<usize>)->usize{let id=array_id(h,r);let entries=match &h.arrays[id]{Array::IdentityMap(v)=>v,_=>error("newSetFromMap: solo IdentityHashMap soportado")};if !entries.is_empty(){raise("IllegalArgumentException","Map is non-empty");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::IdentitySet(id));out}
-fn map_id(h:&Heap,r:Option<usize>)->usize {let id=array_id(h,r);if !matches!(h.arrays[id],Array::Map(_,_,_)|Array::HashMap(_)|Array::IdentityMap(_)|Array::LinkedMap(_,_)|Array::TreeMap(_,_)|Array::EmptyMap){error("Map concreto no soportado");}id}
+fn map_id(h:&Heap,r:Option<usize>)->usize {let id=array_id(h,r);if !matches!(h.arrays[id],Array::Map(_,_,_)|Array::HashMap(_)|Array::IdentityMap(_)|Array::LinkedMap(_,_)|Array::TreeMap(_,_)|Array::EmptyMap|Array::ImmutableMap(_)){error("Map concreto no soportado");}id}
 fn queue_id(h:&Heap,r:Option<usize>)->usize {let id=array_id(h,r);if !matches!(h.arrays[id],Array::Queue(_)|Array::ConcurrentQueue(_)|Array::Deque(_)){error("Queue concreta no soportada");}id}
 fn map_position(h:&Heap,id:usize,key:Option<usize>)->Option<usize> {
     let key=key.unwrap_or_else(||raise("NullPointerException",""));
@@ -1099,9 +1385,9 @@ fn map_position(h:&Heap,id:usize,key:Option<usize>)->Option<usize> {
     match &h.arrays[id] {Array::Map(entries,_,_)=>entries.iter().position(|(k,_)|matches!(&h.arrays[*k],Array::Str(v) if v==units)),_=>unreachable!()}
 }
 fn map_get(h:&Heap,r:Option<usize>,key:Option<usize>)->Option<usize> {
-    let id=map_id(h,r);if let Array::IdentityMap(v)=&h.arrays[id]{return identity_pos(h,id,key).and_then(|i|v[i].1);}if matches!(h.arrays[id],Array::EmptyMap){return None;}if matches!(h.arrays[id],Array::HashMap(_)|Array::LinkedMap(_,_)){let pos=hashmap_pos(h,id,key);return match &h.arrays[id]{Array::HashMap(v)|Array::LinkedMap(v,_)=>pos.and_then(|p|v[p].1),_=>unreachable!()};}if matches!(h.arrays[id],Array::TreeMap(_,_)){let pos=tree_search(h,id,key).ok();return match &h.arrays[id]{Array::TreeMap(v,_)=>pos.and_then(|p|v[p].1),_=>unreachable!()};}let pos=map_position(h,id,key);match &h.arrays[id]{Array::Map(v,_,_)=>pos.map(|i|v[i].1),_=>unreachable!()}
+    let id=map_id(h,r);if let Array::IdentityMap(v)=&h.arrays[id]{return identity_pos(h,id,key).and_then(|i|v[i].1);}if matches!(h.arrays[id],Array::EmptyMap){return None;}if matches!(h.arrays[id],Array::HashMap(_)|Array::LinkedMap(_,_)|Array::ImmutableMap(_)){let pos=hashmap_pos(h,id,key);return match &h.arrays[id]{Array::HashMap(v)|Array::LinkedMap(v,_)|Array::ImmutableMap(v)=>pos.and_then(|p|v[p].1),_=>unreachable!()};}if matches!(h.arrays[id],Array::TreeMap(_,_)){let pos=tree_search(h,id,key).ok();return match &h.arrays[id]{Array::TreeMap(v,_)=>pos.and_then(|p|v[p].1),_=>unreachable!()};}let pos=map_position(h,id,key);match &h.arrays[id]{Array::Map(v,_,_)=>pos.map(|i|v[i].1),_=>unreachable!()}
 }
-fn map_contains(h:&Heap,r:Option<usize>,key:Option<usize>)->bool{let id=map_id(h,r);if matches!(h.arrays[id],Array::IdentityMap(_)){return identity_pos(h,id,key).is_some();}if matches!(h.arrays[id],Array::EmptyMap){return false;}if matches!(h.arrays[id],Array::HashMap(_)|Array::LinkedMap(_,_)){return hashmap_pos(h,id,key).is_some();}if matches!(h.arrays[id],Array::TreeMap(_,_)){return tree_search(h,id,key).is_ok();}map_get(h,r,key).is_some()}
+fn map_contains(h:&Heap,r:Option<usize>,key:Option<usize>)->bool{let id=map_id(h,r);if matches!(h.arrays[id],Array::IdentityMap(_)){return identity_pos(h,id,key).is_some();}if matches!(h.arrays[id],Array::EmptyMap){return false;}if matches!(h.arrays[id],Array::HashMap(_)|Array::LinkedMap(_,_)|Array::ImmutableMap(_)){return hashmap_pos(h,id,key).is_some();}if matches!(h.arrays[id],Array::TreeMap(_,_)){return tree_search(h,id,key).is_ok();}map_get(h,r,key).is_some()}
 fn map_hash(h:&Heap,key:usize)->u32 {
     let units=string_units(h,Some(key));let mut hash=0u32;for c in units{hash=hash.wrapping_mul(31).wrapping_add(*c as u32);} (hash^(hash>>16))&0x7fffffff
 }
@@ -1120,7 +1406,7 @@ fn map_resize(h:&mut Heap,id:usize,cap:usize){
     if let Array::Map(entries,table,_)=&mut h.arrays[id]{*entries=next.into_iter().flatten().collect();*table=cap*2;}
 }
 fn map_put(h:&mut Heap,r:Option<usize>,key:Option<usize>,value:Option<usize>,absent:bool)->Option<usize> {
-    let id=map_id(h,r);if matches!(h.arrays[id],Array::IdentityMap(_)){let pos=identity_pos(h,id,key);if let Array::IdentityMap(v)=&mut h.arrays[id]{if let Some(i)=pos{let old=v[i].1;if !absent||old.is_none(){v[i].1=value;}return old;}if h.elements>=1_000_000{error("Límite experimental de heap excedido");}h.elements+=1;v.push((key,value));return None;}unreachable!()}if matches!(h.arrays[id],Array::EmptyMap){raise("UnsupportedOperationException","");}if h.active_maps.contains(&id){error("ConcurrentHashMap.computeIfAbsent: mutación reentrante no soportada");}if matches!(h.arrays[id],Array::LinkedMap(_,_)){let pos=hashmap_pos(h,id,key);if let Array::LinkedMap(entries,version)=&mut h.arrays[id]{if let Some(i)=pos{let old=entries[i].1;if !absent||old.is_none(){entries[i].1=value;}return old;}if h.elements>=1_000_000{error("Límite experimental de heap excedido");}h.elements+=1;entries.push((key,value));*version=version.wrapping_add(1);return None;}unreachable!()}if matches!(h.arrays[id],Array::TreeMap(_,_)){let search=tree_search(h,id,key);let key=key.unwrap();if let Array::TreeMap(entries,version)=&mut h.arrays[id]{match search{Ok(i)=>{let old=entries[i].1;if !absent||old.is_none(){entries[i].1=value;}return old;},Err(i)=>{if h.elements>=1_000_000{error("Límite experimental de heap excedido");}h.elements+=1;entries.insert(i,(key,value));*version=version.wrapping_add(1);return None;}}}unreachable!()}if matches!(h.arrays[id],Array::HashMap(_)){let pos=hashmap_pos(h,id,key);if let Array::HashMap(entries)=&mut h.arrays[id]{if let Some(i)=pos{let old=entries[i].1;if !absent||old.is_none(){entries[i].1=value;}return old;}if h.elements>=1_000_000{error("Límite experimental de heap excedido");}h.elements+=1;entries.push((key,value));return None;}unreachable!()}let v=value.unwrap_or_else(||raise("NullPointerException",""));let pos=map_position(h,id,key);
+    let id=map_id(h,r);if matches!(h.arrays[id],Array::ImmutableMap(_)){raise("UnsupportedOperationException","");}if matches!(h.arrays[id],Array::IdentityMap(_)){let pos=identity_pos(h,id,key);if let Array::IdentityMap(v)=&mut h.arrays[id]{if let Some(i)=pos{let old=v[i].1;if !absent||old.is_none(){v[i].1=value;}return old;}if h.elements>=1_000_000{error("Límite experimental de heap excedido");}h.elements+=1;v.push((key,value));return None;}unreachable!()}if matches!(h.arrays[id],Array::EmptyMap){raise("UnsupportedOperationException","");}if h.active_maps.contains(&id){error("ConcurrentHashMap.computeIfAbsent: mutación reentrante no soportada");}if matches!(h.arrays[id],Array::LinkedMap(_,_)){let pos=hashmap_pos(h,id,key);if let Array::LinkedMap(entries,version)=&mut h.arrays[id]{if let Some(i)=pos{let old=entries[i].1;if !absent||old.is_none(){entries[i].1=value;}return old;}if h.elements>=1_000_000{error("Límite experimental de heap excedido");}h.elements+=1;entries.push((key,value));*version=version.wrapping_add(1);return None;}unreachable!()}if matches!(h.arrays[id],Array::TreeMap(_,_)){let search=tree_search(h,id,key);let key=key.unwrap();if let Array::TreeMap(entries,version)=&mut h.arrays[id]{match search{Ok(i)=>{let old=entries[i].1;if !absent||old.is_none(){entries[i].1=value;}return old;},Err(i)=>{if h.elements>=1_000_000{error("Límite experimental de heap excedido");}h.elements+=1;entries.insert(i,(key,value));*version=version.wrapping_add(1);return None;}}}unreachable!()}if matches!(h.arrays[id],Array::HashMap(_)){let pos=hashmap_pos(h,id,key);if let Array::HashMap(entries)=&mut h.arrays[id]{if let Some(i)=pos{let old=entries[i].1;if !absent||old.is_none(){entries[i].1=value;}return old;}if h.elements>=1_000_000{error("Límite experimental de heap excedido");}h.elements+=1;entries.push((key,value));return None;}unreachable!()}let v=value.unwrap_or_else(||raise("NullPointerException",""));let pos=map_position(h,id,key);
     if let Some(i)=pos {if let Array::Map(entries,_,_)=&mut h.arrays[id]{let old=entries[i].1;if !absent{entries[i].1=v;}return Some(old);}unreachable!()}
     if h.elements>=1_000_000{error("Límite experimental de heap excedido");}h.elements+=1;
     let k=key.unwrap();let (cap,collisions,position)=match &h.arrays[id]{Array::Map(entries,cap,_)=>{let cap=if *cap==0{16}else{*cap};let bin=map_hash(h,k) as usize&(cap-1);let position=entries.iter().position(|(old,_)|map_hash(h,*old) as usize&(cap-1)>bin).unwrap_or(entries.len());(cap,entries.iter().filter(|(old,_)|map_hash(h,*old) as usize&(cap-1)==bin).count(),position)},_=>unreachable!()};
@@ -1131,13 +1417,44 @@ fn map_compute(h:&mut Heap,r:Option<usize>,key:Option<usize>,fun:Option<usize>,c
     let id=map_id(h,r);if matches!(h.arrays[id],Array::IdentityMap(_)){error("IdentityHashMap.computeIfAbsent: no soportado");}if matches!(h.arrays[id],Array::EmptyMap){raise("UnsupportedOperationException","");}if fun.is_none()||(key.is_none()&&!matches!(h.arrays[id],Array::HashMap(_)|Array::LinkedMap(_,_))){raise("NullPointerException","");}if let Some(v)=map_get(h,r,key){return Some(v);}if h.active_maps.contains(&id){error("ConcurrentHashMap.computeIfAbsent: llamada reentrante no soportada");}
     h.active_maps.push(id);let result=std::panic::catch_unwind(std::panic::AssertUnwindSafe(||{let _opaque=call_guard("<jdk-callback>");callback(h,fun,key)}));h.active_maps.pop();let v=match result{Ok(v)=>v,Err(p)=>std::panic::resume_unwind(p)};if v.is_some(){map_put(h,r,key,v,true);}v
 }
+fn map_for_each(h:&mut Heap,r:Option<usize>,action:Option<usize>,accept:fn(&mut Heap,Option<usize>,Option<usize>,Option<usize>)->()){if action.is_none(){raise("NullPointerException","");}let id=map_id(h,r);let entries:Vec<(Option<usize>,Option<usize>)>=match &h.arrays[id]{Array::HashMap(v)|Array::LinkedMap(v,_)|Array::ImmutableMap(v)=>v.clone(),Array::TreeMap(v,_)=>v.iter().map(|(k,value)|(Some(*k),*value)).collect(),Array::Map(v,_,_)=>v.iter().map(|(k,value)|(Some(*k),Some(*value))).collect(),Array::EmptyMap=>Vec::new(),_=>error("Map.forEach: mapa fuera del perfil")};for (key,value) in entries{let f=action;{let _opaque=call_guard("<jdk-callback>");accept(h,f,key,value);}}}
 fn map_values(h:&mut Heap,r:Option<usize>)->usize{let id=map_id(h,r);if matches!(h.arrays[id],Array::IdentityMap(_)){error("IdentityHashMap.values: vista no soportada");}if let Some(v)=h.map_views.get(&id){return *v;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let view=h.arrays.len();h.arrays.push(Array::MapValues(id));h.map_views.insert(id,view);view}
 fn map_values_snapshot(h:&Heap,id:usize)->Vec<Option<usize>> {
-    if matches!(h.arrays[id],Array::EmptyMap){return Vec::new();}if let Array::TreeMap(entries,_)=&h.arrays[id]{return entries.iter().map(|(_,v)|*v).collect();}if let Array::LinkedMap(entries,_)=&h.arrays[id]{return entries.iter().map(|(_,v)|*v).collect();}if let Array::HashMap(entries)=&h.arrays[id]{if entries.len()>1{error("HashMap.values: orden no verificado para varios elementos");}return entries.iter().map(|(_,v)|*v).collect();}let (entries,cap,complex)=match &h.arrays[id]{Array::Map(v,c,x)=>(v,*c,*x),_=>panic!("Map inválido")};if complex{error("ConcurrentHashMap.values: colisiones complejas no soportadas");}
+    if let Array::ImmutableMap(entries)=&h.arrays[id]{return entries.iter().map(|(_,v)|*v).collect();}if matches!(h.arrays[id],Array::EmptyMap){return Vec::new();}if let Array::TreeMap(entries,_)=&h.arrays[id]{return entries.iter().map(|(_,v)|*v).collect();}if let Array::LinkedMap(entries,_)=&h.arrays[id]{return entries.iter().map(|(_,v)|*v).collect();}if let Array::HashMap(entries)=&h.arrays[id]{if entries.len()>1{error("HashMap.values: orden no verificado para varios elementos");}return entries.iter().map(|(_,v)|*v).collect();}let (entries,cap,complex)=match &h.arrays[id]{Array::Map(v,c,x)=>(v,*c,*x),_=>panic!("Map inválido")};if complex{error("ConcurrentHashMap.values: colisiones complejas no soportadas");}
     entries.iter().map(|(_,v)|Some(*v)).collect()
 }
 fn list_construct_capacity(h:&Heap,r:Option<usize>,n:i32){list_id(h,r);if n<0{raise("IllegalArgumentException","");}if n>1_000_000{error("ArrayList: capacidad experimental excedida");}}
 fn list_sort_strings(h:&mut Heap,r:Option<usize>){let id=list_id(h,r);let mut values=match &h.arrays[id]{Array::List(v,_)=>v.clone(),_=>error("Collections.sort: solo ArrayList")};if values.len()>1{for v in &values{let value=v.unwrap_or_else(||raise("NullPointerException",""));if !matches!(h.arrays[value],Array::Str(_)){error("Collections.sort: solo String")}}values.sort_by(|a,b|string_units(h,*a).cmp(string_units(h,*b)));}if let Array::List(v,version)=&mut h.arrays[id]{*v=values;*version=version.wrapping_add(1);}}
+fn collection_to_array_gen(h:&mut Heap,r:Option<usize>,generator:Option<usize>,
+    apply:fn(&mut Heap,Option<usize>,i32)->Option<usize>)->usize {
+  let id=array_id(h,r);
+  let items:Vec<Option<usize>>=match &h.arrays[id]{
+    Array::List(v,_)|Array::ImmutableList(v)|Array::Set(v,_)|Array::HashSet(v,_)|Array::KeySet(v,_)=>v.clone(),
+    Array::ArraysList(a)=>match &h.arrays[*a]{Array::Strings(u)=>u.iter().map(|u|u.as_ref().map(|s|new_string(h,s.clone()))).collect(),Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),_=>unreachable!()},
+    Array::EmptyList|Array::EmptySet=>Vec::new(),
+    Array::Queue(v)|Array::ConcurrentQueue(v)|Array::Deque(v)=>v.iter().copied().map(Some).collect(),
+    _=>error("toArray(IntFunction): fuente no modelada")};
+  let n=items.len() as i32;
+  let g=generator.unwrap_or_else(||raise("NullPointerException","generator returned null"));
+  let arr={let _opaque=call_guard("<jdk-callback>");apply(h,Some(g),n)}.unwrap_or_else(||raise("NullPointerException","generator returned null"));
+  let aid=array_id(h,Some(arr));
+  if !matches!(h.arrays[aid],Array::ProjectRefs(_,_)|Array::Refs(_,_)|Array::Strings(_)){error("toArray(IntFunction): el generador no produjo un array de referencias");}
+  for (i,value) in items.into_iter().enumerate(){array_store(h,Some(aid),i as i32,V::R(value),0x53);}
+  aid
+}
+fn collection_to_array(h:&mut Heap,r:Option<usize>)->usize{
+  let id=array_id(h,r);
+  let items:Vec<Option<usize>>=match &h.arrays[id]{
+    Array::List(v,_)|Array::ImmutableList(v)|Array::Set(v,_)|Array::HashSet(v,_)|Array::KeySet(v,_)=>v.clone(),
+    Array::ArraysList(a)=>match &h.arrays[*a]{Array::Strings(u)=>u.iter().map(|u|u.as_ref().map(|s|new_string(h,s.clone()))).collect(),Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),_=>unreachable!()},
+    Array::EmptyList|Array::EmptySet=>Vec::new(),
+    Array::Queue(v)|Array::ConcurrentQueue(v)|Array::Deque(v)=>v.iter().copied().map(Some).collect(),
+    Array::MapValues(map)=>map_values_snapshot(h,*map),
+    _=>error("Collection.toArray: fuente no modelada")};
+  let n=items.len();
+  if h.arrays.len()>=10000||h.elements.checked_add(n).map_or(true,|v|v>1_000_000){error("Límite experimental de heap excedido");}
+  let a=h.arrays.len();h.arrays.push(Array::Refs(13,items));h.elements+=n;a
+}
 fn collection_add_all(h:&mut Heap,target:Option<usize>,source:Option<usize>)->bool{let id=array_id(h,target);let src=array_id(h,source);if let Array::IdentitySet(_)=h.arrays[id]{let values=match &h.arrays[src]{Array::IdentitySet(map)=>match &h.arrays[*map]{Array::IdentityMap(v)=>v.iter().map(|(k,_)|*k).collect::<Vec<_>>(),_=>unreachable!()},Array::List(v,_)|Array::ImmutableList(v)=>v.clone(),Array::EmptyList|Array::EmptySet=>Vec::new(),_=>error("IdentitySet.addAll: fuente fuera del perfil")};let mut changed=false;for v in values{changed|=collection_add(h,Some(id),v);}return changed;}let values=match &h.arrays[src]{Array::List(v,_)|Array::Set(v,_)|Array::ImmutableList(v)=>v.clone(),Array::ArraysList(a)=>match &h.arrays[*a]{Array::Strings(v)|Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),_=>unreachable!()},Array::Queue(v)|Array::ConcurrentQueue(v)|Array::Deque(v)=>v.iter().copied().map(Some).collect(),Array::EmptyList|Array::EmptySet=>Vec::new(),Array::MapValues(map)=>map_values_snapshot(h,*map),_=>error("addAll: colección fuente no soportada")};if matches!(h.arrays[id],Array::ImmutableList(_)){raise("UnsupportedOperationException","");}if matches!(h.arrays[id],Array::EmptyList|Array::EmptySet|Array::ArraysList(_)){if values.is_empty(){return false;}raise("UnsupportedOperationException","");}if !matches!(h.arrays[id],Array::List(_,_)){error("addAll: colección destino no soportada");}if h.elements.checked_add(values.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}let changed=!values.is_empty();h.elements+=values.len();if let Array::List(v,version)=&mut h.arrays[id]{*version=version.wrapping_add(1);v.extend(values);}changed}
 fn list_construct_collection(h:&mut Heap,r:Option<usize>,collection:Option<usize>){
     let id=list_id(h,r);let source=array_id(h,collection);let values=match &h.arrays[source]{Array::List(v,_)|Array::Set(v,_)|Array::ImmutableList(v)=>v.clone(),Array::ArraysList(a)=>match &h.arrays[*a]{Array::Strings(v)|Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),_=>unreachable!()},Array::Queue(v)|Array::ConcurrentQueue(v)|Array::Deque(v)=>v.iter().copied().map(Some).collect(),Array::EmptyList|Array::EmptySet=>Vec::new(),Array::MapValues(map)=>map_values_snapshot(h,*map),_=>error("ArrayList(Collection): colección no soportada")};
@@ -1145,10 +1462,10 @@ fn list_construct_collection(h:&mut Heap,r:Option<usize>,collection:Option<usize
     if let Array::List(v,_)=&mut h.arrays[id]{*v=values;}
 }
 fn map_remove(h:&mut Heap,r:Option<usize>,key:Option<usize>)->Option<usize> {
-    let id=map_id(h,r);if matches!(h.arrays[id],Array::IdentityMap(_)){let pos=identity_pos(h,id,key);return match &mut h.arrays[id]{Array::IdentityMap(v)=>pos.and_then(|i|v.remove(i).1),_=>unreachable!()};}if matches!(h.arrays[id],Array::EmptyMap){return None;}if h.active_maps.contains(&id){error("ConcurrentHashMap.computeIfAbsent: mutación reentrante no soportada");}if matches!(h.arrays[id],Array::LinkedMap(_,_)){let pos=hashmap_pos(h,id,key);return match &mut h.arrays[id]{Array::LinkedMap(v,version)=>pos.and_then(|p|{*version=version.wrapping_add(1);v.remove(p).1}),_=>unreachable!()};}if matches!(h.arrays[id],Array::TreeMap(_,_)){let pos=tree_search(h,id,key).ok();return match &mut h.arrays[id]{Array::TreeMap(v,version)=>pos.and_then(|p|{*version=version.wrapping_add(1);v.remove(p).1}),_=>unreachable!()};}if matches!(h.arrays[id],Array::HashMap(_)){let pos=hashmap_pos(h,id,key);return match &mut h.arrays[id]{Array::HashMap(v)=>pos.and_then(|p|v.remove(p).1),_=>unreachable!()};}let pos=map_position(h,id,key);match &mut h.arrays[id] {Array::Map(v,_,_)=>pos.map(|i|v.remove(i).1),_=>unreachable!()}
+    let id=map_id(h,r);if matches!(h.arrays[id],Array::ImmutableMap(_)){raise("UnsupportedOperationException","");}if matches!(h.arrays[id],Array::IdentityMap(_)){let pos=identity_pos(h,id,key);return match &mut h.arrays[id]{Array::IdentityMap(v)=>pos.and_then(|i|v.remove(i).1),_=>unreachable!()};}if matches!(h.arrays[id],Array::EmptyMap){return None;}if h.active_maps.contains(&id){error("ConcurrentHashMap.computeIfAbsent: mutación reentrante no soportada");}if matches!(h.arrays[id],Array::LinkedMap(_,_)){let pos=hashmap_pos(h,id,key);return match &mut h.arrays[id]{Array::LinkedMap(v,version)=>pos.and_then(|p|{*version=version.wrapping_add(1);v.remove(p).1}),_=>unreachable!()};}if matches!(h.arrays[id],Array::TreeMap(_,_)){let pos=tree_search(h,id,key).ok();return match &mut h.arrays[id]{Array::TreeMap(v,version)=>pos.and_then(|p|{*version=version.wrapping_add(1);v.remove(p).1}),_=>unreachable!()};}if matches!(h.arrays[id],Array::HashMap(_)){let pos=hashmap_pos(h,id,key);return match &mut h.arrays[id]{Array::HashMap(v)=>pos.and_then(|p|v.remove(p).1),_=>unreachable!()};}let pos=map_position(h,id,key);match &mut h.arrays[id] {Array::Map(v,_,_)=>pos.map(|i|v.remove(i).1),_=>unreachable!()}
 }
-fn map_size(h:&Heap,r:Option<usize>)->i32 {let id=map_id(h,r);match &h.arrays[id]{Array::Map(v,_,_)=>v.len() as i32,Array::HashMap(v)|Array::IdentityMap(v)|Array::LinkedMap(v,_)=>v.len() as i32,Array::TreeMap(v,_)=>v.len() as i32,Array::EmptyMap=>0,_=>unreachable!()}}
-fn map_clear(h:&mut Heap,r:Option<usize>){let id=map_id(h,r);if h.active_maps.contains(&id){error("ConcurrentHashMap.computeIfAbsent: mutación reentrante no soportada");}match &mut h.arrays[id]{Array::Map(v,_,_)=>v.clear(),Array::HashMap(v)|Array::IdentityMap(v)=>v.clear(),Array::LinkedMap(v,version)=>{v.clear();*version=version.wrapping_add(1)},Array::TreeMap(v,version)=>{v.clear();*version=version.wrapping_add(1)},Array::EmptyMap=>{},_=>unreachable!()}}
+fn map_size(h:&Heap,r:Option<usize>)->i32 {let id=map_id(h,r);match &h.arrays[id]{Array::Map(v,_,_)=>v.len() as i32,Array::HashMap(v)|Array::IdentityMap(v)|Array::LinkedMap(v,_)|Array::ImmutableMap(v)=>v.len() as i32,Array::TreeMap(v,_)=>v.len() as i32,Array::EmptyMap=>0,_=>unreachable!()}}
+fn map_clear(h:&mut Heap,r:Option<usize>){let id=map_id(h,r);if h.active_maps.contains(&id){error("ConcurrentHashMap.computeIfAbsent: mutación reentrante no soportada");}if matches!(h.arrays[id],Array::ImmutableMap(_)){raise("UnsupportedOperationException","");}match &mut h.arrays[id]{Array::Map(v,_,_)=>v.clear(),Array::HashMap(v)|Array::IdentityMap(v)=>v.clear(),Array::LinkedMap(v,version)=>{v.clear();*version=version.wrapping_add(1)},Array::TreeMap(v,version)=>{v.clear();*version=version.wrapping_add(1)},Array::EmptyMap=>{},_=>unreachable!()}}
 fn queue_offer(h:&mut Heap,r:Option<usize>,value:Option<usize>){let id=queue_id(h,r);let v=value.unwrap_or_else(||raise("NullPointerException",""));if h.elements>=1_000_000{error("Límite experimental de heap excedido");}h.elements+=1;match &mut h.arrays[id]{Array::Queue(q)|Array::ConcurrentQueue(q)|Array::Deque(q)=>q.push_back(v),_=>unreachable!()}}
 fn queue_poll(h:&mut Heap,r:Option<usize>,remove:bool)->Option<usize>{let id=queue_id(h,r);match &mut h.arrays[id]{Array::Queue(q)|Array::ConcurrentQueue(q)|Array::Deque(q)=>if remove {q.pop_front()}else{q.front().copied()},_=>unreachable!()}}
 fn deque_add_first(h:&mut Heap,r:Option<usize>,value:Option<usize>){let id=queue_id(h,r);let value=value.unwrap_or_else(||raise("NullPointerException",""));if h.elements>=1_000_000{error("Límite experimental de heap excedido");}h.elements+=1;match &mut h.arrays[id]{Array::Deque(v)=>v.push_front(value),_=>error("Deque concreto no soportado")}}
@@ -1162,6 +1479,83 @@ fn queue_drain_to(h:&mut Heap,r:Option<usize>,dst:Option<usize>,max:i32)->i32{
 fn queue_size(h:&Heap,r:Option<usize>)->i32{let id=queue_id(h,r);match &h.arrays[id]{Array::Queue(q)|Array::ConcurrentQueue(q)|Array::Deque(q)=>q.len() as i32,_=>unreachable!()}}
 fn queue_clear(h:&mut Heap,r:Option<usize>){let id=queue_id(h,r);match &mut h.arrays[id]{Array::Queue(q)|Array::ConcurrentQueue(q)|Array::Deque(q)=>q.clear(),_=>unreachable!()}}
 
+// Arrays.sort(Object[],Comparator): merge estable con despacho Comparator como callback;
+// el comparador se consulta siempre (contrato de total orden); los objetos Comparator
+// proyecto y las lambdas Comparator se resuelven por el mismo despacho invokeinterface.
+fn object_array_sort_comparator(h:&mut Heap,r:Option<usize>,comparator:Option<usize>,
+    compare:fn(&mut Heap,Option<usize>,Option<usize>,Option<usize>)->i32){
+  let id=array_id(h,r);let cmp=array_id(h,comparator);
+  let (refs_kind,project_kind,mut items):(Option<u8>,Option<&'static str>,Vec<Option<usize>>)=match &mut h.arrays[id]{
+    Array::Refs(k,v)=>(Some(*k),None,std::mem::take(v)),
+    Array::Strings(v)=>(None,None,std::mem::take(v)),
+    Array::ProjectRefs(c,v)=>(None,Some(c),std::mem::take(v)),
+    _=>error("Arrays.sort: se esperaba array de referencias")};
+  let n=items.len();let mut order:Vec<usize>=(0..n).collect();
+  { let items=&items;
+    order.sort_by(|&a,&b|{let ord={let _opaque=call_guard("<jdk-callback>");compare(h,Some(cmp),items[a],items[b])};ord.cmp(&0)});
+  }
+  let mut out:Vec<Option<usize>>=Vec::with_capacity(n);for i in order{out.push(items[i]);}
+  h.arrays[id]=match (refs_kind,project_kind){(Some(k),_)=>Array::Refs(k,out),(None,Some(c))=>Array::ProjectRefs(c,out),_=>Array::Strings(out)};
+}
+fn list_random_access_instance(h:&Heap,r:Option<usize>)->bool{let id=array_id(h,r);matches!(h.arrays[id],Array::List(_,_)|Array::ArraysList(_)|Array::ImmutableList(_))}
+// DecimalFormat mínimo: el patrón se almacena tal cual (sin validar); el formateo
+// aún no está modelado y aborta explícitamente si se alcanza. Los símbolos deben
+// proceder de DecimalFormatSymbols.getInstance para el locale dado.
+fn decimal_format_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::DecimalFormat(Vec::new(),None));id}
+fn decimal_symbols_get_instance(h:&mut Heap,locale:Option<usize>)->usize{let id=array_id(h,locale);if !matches!(h.arrays[id],Array::RootLocale){error("DecimalFormatSymbols.getInstance: solo Locale.ROOT soportado en el perfil");}if let Some(id)=h.decimal_symbols_root{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::DecimalFormatSymbols(id));h.decimal_symbols_root=Some(out);out}
+fn decimal_format_init(h:&mut Heap,r:Option<usize>,pattern:Option<usize>,symbols:Option<usize>){let id=array_id(h,r);let sid=array_id(h,symbols);if !matches!(h.arrays[sid],Array::DecimalFormatSymbols(_)){error("DecimalFormat.<init>: símbolos fuera del perfil");}let p=string_units(h,pattern);match &mut h.arrays[id]{Array::DecimalFormat(v,s)=>{*v=p;*s=Some(sid);},_=>error("DecimalFormat: receptor fuera del perfil")}}
+fn list_copy_of(h:&mut Heap,r:Option<usize>)->usize{
+  let id=array_id(h,r);
+  let values:Vec<Option<usize>>=match &h.arrays[id]{
+    Array::List(v,_)|Array::ImmutableList(v)|Array::Set(v,_)|Array::HashSet(v,_)|Array::KeySet(v,_)=>v.clone(),
+    Array::ArraysList(a)=>match &h.arrays[*a]{Array::Strings(u)=>u.iter().map(|u|u.as_ref().map(|s|new_string(h,s.clone()))).collect(),Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),_=>unreachable!()},
+    Array::EmptyList|Array::EmptySet=>Vec::new(),
+    Array::Queue(v)|Array::ConcurrentQueue(v)|Array::Deque(v)=>v.iter().copied().map(Some).collect(),
+    Array::MapValues(map)=>map_values_snapshot(h,*map),
+    _=>error("List.copyOf: colección fuente no soportada")};
+  immutable_list_new(h,values)
+}
+// Hash de List según el contrato java.util (1; 31*h + (e==null ? 0 : e.hashCode())).
+// Builtins se resuelven de forma determinista; objetos proyecto despacha a su
+// Object.hashCode precompilado (o a identidad si no lo sobre-escribe nadie).
+fn list_element_hash(h:&Heap,e:Option<usize>,project_hash:&dyn Fn(&Heap,Option<usize>)->i32)->i32{
+  let id=match e{Some(i)=>i,None=>return 0};
+  match &h.arrays[id]{
+    Array::Str(v)=>{let mut n=0i32;for c in v{n=n.wrapping_mul(31).wrapping_add(*c as i32);}n},
+    Array::Integer(n)=>*n,
+    Array::Long(n)=>(*n ^ (*n >>> 32)) as i32,
+    Array::Boolean(b)=>if *b{1231}else{1237},
+    Array::Byte(b)=>*b as i32,
+    Array::Character(c)=>*c as i32,
+    Array::Short(s)=>*s as i32,
+    Array::Float(f)=>{let b=if f.is_nan(){0x7fc00000u32}else{f.to_bits()};b as i32},
+    Array::Double(d)=>{let b=if d.is_nan(){0x7ff8000000000000u64}else{d.to_bits()};((b ^ (b>>>32)) as i32)},
+    Array::List(v,_)|Array::ImmutableList(v)=>{let mut n=1i32;for item in v{n=n.wrapping_mul(31).wrapping_add(list_element_hash(h,*item,project_hash));}n},
+    Array::EmptyList=>1,
+    Array::ArraysList(a)=>match &h.arrays[*a]{Array::Refs(_,v)|Array::ProjectRefs(_,v)=>{let mut n=1i32;for item in v{n=n.wrapping_mul(31).wrapping_add(list_element_hash(h,*item,project_hash));}n},Array::Strings(v)=>{let mut n=1i32;for item in v{n=n.wrapping_mul(31).wrapping_add(match item{Some(u)=>{let mut m=0i32;for c in u{m=m.wrapping_mul(31).wrapping_add(*c as i32);}m},None=>0});}n},_=>unreachable!()},
+    _=>project_hash(h,Some(id)),
+  }
+}
+fn string_units_hash(u:&[u16])->i32{let mut n=0i32;for c in u{n=n.wrapping_mul(31).wrapping_add(*c as i32);}n}
+fn list_hash(h:&Heap,r:Option<usize>,project_hash:fn(&Heap,Option<usize>)->i32)->i32{
+  let id=array_id(h,r);let ph=&|h,e|project_hash(h,e);
+  let mut n=1i32;
+  match &h.arrays[id]{
+    Array::List(v,_)|Array::ImmutableList(v)|Array::Set(v,_)|Array::HashSet(v,_)|Array::KeySet(v,_)=>{for item in v.iter(){n=n.wrapping_mul(31).wrapping_add(list_element_hash(h,*item,ph));}},
+    Array::ArraysList(a)=>match &h.arrays[*a]{
+      Array::Strings(u)=>{for item in u.iter(){n=n.wrapping_mul(31).wrapping_add(match item{Some(u)=>string_units_hash(u),None=>0});}},
+      Array::Refs(_,v)|Array::ProjectRefs(_,v)=>{for item in v.iter(){n=n.wrapping_mul(31).wrapping_add(list_element_hash(h,*item,ph));}},
+      _=>unreachable!()},
+    Array::EmptyList|Array::EmptySet=>{},
+    Array::Queue(v)|Array::ConcurrentQueue(v)|Array::Deque(v)=>{for item in v.iter(){n=n.wrapping_mul(31).wrapping_add(list_element_hash(h,Some(*item),ph));}},
+    _=>error("List.hashCode: receptor fuera del perfil")}
+  n
+}
+fn hex_format_of(h:&mut Heap)->usize{if let Some(id)=h.hex_default{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::HexFormat(false));h.hex_default=Some(id);id}
+fn hex_format_with_upper_case(h:&mut Heap,r:Option<usize>)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::HexFormat(_)){error("HexFormat: receptor fuera del perfil");}if let Some(id)=h.hex_upper{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::HexFormat(true));h.hex_upper=Some(out);out}
+fn hex_digits_byte(h:&mut Heap,r:Option<usize>,v:i32)->usize{let id=array_id(h,r);let upper=match h.arrays[id]{Array::HexFormat(u)=>u,_=>error("HexFormat: receptor fuera del perfil")};let b=(v&0xff) as u8;let (hi,lo)=(b>>4,b&0x0f);let unit=|d:u8|->u16{let c=if d<10{b'0'+d}else if upper{b'A'+d-10}else{b'a'+d-10};c as u16};new_string(h,vec![unit(hi),unit(lo)])}
+fn hex_from_digits(h:&mut Heap,s:Option<usize>)->i32{let units=string_units(h,s);if units.len()!=2{raise("NumberFormatException","String must contain exactly two hex digits");}let digit=|c:u16|->i32{match c{0x30..=0x39=>(c-0x30) as i32,0x41..=0x46=>(c-0x41+10) as i32,0x61..=0x66=>(c-0x61+10) as i32,_=>raise("NumberFormatException","not a hex digit")}};digit(units[0])*16+digit(units[1])}
+fn char_is_valid_code_point(h:&Heap,v:i32)->bool{let _=h;v>=0&&v<=0x10ffff&&(v<0xd800||v>0xdfff)}
 // ThreadLocal exacto por defecto en un único hilo; sin subclases ni withInitial.
 fn threadlocal_new(h:&mut Heap)->usize {if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Local(None));id}
 fn threadlocal_id(h:&Heap,r:Option<usize>)->usize {let id=array_id(h,r);if !matches!(h.arrays[id],Array::Local(_)|Array::LocalObj(_,_,_)|Array::SuppliedLocal(_,_)){error("ThreadLocal concreto no soportado");}id}
@@ -1297,6 +1691,14 @@ fn reentrant_count(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match h.ar
 fn reentrant_lock(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);match h.arrays[id]{Array::ReentrantLock(_)=>if let Array::ReentrantLock(n)=&mut h.arrays[id]{*n=n.checked_add(1).unwrap_or_else(||error("ReentrantLock: profundidad excedida"));},Array::ReadLock(parent)=>if let Array::ReadWriteLock(read,_,_,_)=&mut h.arrays[parent]{*read=read.checked_add(1).unwrap_or_else(||error("ReadLock: profundidad excedida"));},Array::WriteLock(parent)=>if let Array::ReadWriteLock(read,write,_,_)=&mut h.arrays[parent]{if *read>0&&*write==0{error("ReadWriteLock: upgrade bloquearía el hilo");}*write=write.checked_add(1).unwrap_or_else(||error("WriteLock: profundidad excedida"));},_=>error("Lock concreto no soportado")}}
 fn reentrant_unlock(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);let target=match h.arrays[id]{Array::ReentrantLock(_)=>(id,0),Array::ReadLock(p)=>(p,1),Array::WriteLock(p)=>(p,2),_=>error("Lock concreto no soportado")};let n=match (&mut h.arrays[target.0],target.1){(Array::ReentrantLock(n),0)=>n,(Array::ReadWriteLock(n,_,_,_),1)=>n,(Array::ReadWriteLock(_,n,_,_),2)=>n,_=>unreachable!()};if *n==0{raise("IllegalMonitorStateException","");}*n-=1;}
 fn atomic_integer_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::AtomicInteger(0));id}
+// ForkJoinPool: objeto de configuración real (parallelism validado 1..=32767, modo async),
+// sin hilos ni robo de trabajo en el backend multi-static. NO es un pool ejecutable:
+// cualquier envío a ejecutor sigue abortando explícitamente hasta M2/M6.
+fn forkjoin_pool_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ForkJoinPool(ForkJoinPoolState{parallelism:0,async_mode:false,factory:None,handler:None}));id}
+fn forkjoin_pool_init(h:&mut Heap,r:Option<usize>,parallelism:i32,factory:Option<usize>,handler:Option<usize>,async_mode:i32){let id=array_id(h,r);if parallelism<1||parallelism>32767{raise("IllegalArgumentException","parallelism fuera de 1..=32767");}array_id(h,factory);array_id(h,handler);match &mut h.arrays[id]{Array::ForkJoinPool(s)=>{s.parallelism=parallelism;s.async_mode=async_mode!=0;s.factory=factory;s.handler=handler;},_=>error("ForkJoinPool: receptor fuera del perfil")}}
+fn forkjoin_pool_parallelism(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match &h.arrays[id]{Array::ForkJoinPool(s)=>s.parallelism,_=>error("ForkJoinPool: receptor fuera del perfil")}}
+// ThreadPoolExecutor (newCachedThreadPool): objeto de datos con su factory; no arranca hilos.
+fn cached_thread_pool_new(h:&mut Heap,factory:Option<usize>)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}array_id(h,factory);let id=h.arrays.len();h.arrays.push(Array::ThreadPoolExecutor(factory));id}
 fn atomic_integer_get(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match h.arrays[id]{Array::AtomicInteger(v)=>v,_=>error("AtomicInteger concreto no soportado")}}
 fn atomic_integer_set(h:&mut Heap,r:Option<usize>,v:i32){let id=array_id(h,r);match &mut h.arrays[id]{Array::AtomicInteger(n)=>*n=v,_=>error("AtomicInteger concreto no soportado")}}
 fn atomic_long_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::AtomicLong(0));id}
@@ -1357,11 +1759,11 @@ fn class_as_subclass(h:&mut Heap,source:Option<usize>,target:Option<usize>,relat
 fn object_get_class(h:&mut Heap,r:Option<usize>)->usize {
     let id=array_id(h,r);let name=match &h.arrays[id]{
         Array::Obj(n,_)|Array::SharedObj(n,_)|Array::LocalObj(n,_,_)=>*n,Array::Str(_)=>"java/lang/String",Array::Boolean(_)=>"java/lang/Boolean",Array::Integer(_)=>"java/lang/Integer",Array::Short(_)=>"java/lang/Short",Array::Double(_)=>"java/lang/Double",Array::Builder(_)=>"java/lang/StringBuilder",
-        Array::CompletedFuture(_)=>"java/util/concurrent/CompletableFuture",Array::TimeUnit(_)=>"java/util/concurrent/TimeUnit",Array::RuntimePermission(_)=>"java/lang/RuntimePermission",Array::Stdout|Array::Stderr=>"java/io/PrintStream",Array::Class(_)=>"java/lang/Class",Array::Local(_)=>"java/lang/ThreadLocal",
+        Array::CompletedFuture(_)=>"java/util/concurrent/CompletableFuture",Array::TimeUnit(_)=>"java/util/concurrent/TimeUnit",Array::RuntimePermission(_)=>"java/lang/RuntimePermission",Array::Stdout|Array::Stderr=>"java/io/PrintStream",Array::Class(_)=>"java/lang/Class",Array::Local(_)=>"java/lang/ThreadLocal",Array::ForkJoinPool(_)=>"java/util/concurrent/ForkJoinPool",Array::ThreadPoolExecutor(_)=>"java/util/concurrent/ThreadPoolExecutor",
         Array::Map(_,_,_)=>"java/util/concurrent/ConcurrentHashMap",Array::Queue(_)=>"java/util/concurrent/LinkedBlockingQueue",Array::ConcurrentQueue(_)=>"java/util/concurrent/ConcurrentLinkedQueue",Array::Deque(_)=>"java/util/ArrayDeque",Array::HashMap(_)=>"java/util/HashMap",Array::LinkedMap(_,_)=>"java/util/LinkedHashMap",Array::TreeMap(_,_)=>"java/util/TreeMap",Array::Character(_)=>"java/lang/Character",Array::List(_,_)=>"java/util/ArrayList",Array::Set(_,_)=>"java/util/LinkedHashSet",Array::HashSet(_,_)=>"java/util/HashSet",
         Array::Z(_)=>"[Z",Array::B(_)=>"[B",Array::C(_)=>"[C",Array::S(_)=>"[S",Array::I(_)=>"[I",Array::J(_)=>"[J",Array::F(_)=>"[F",Array::D(_)=>"[D",Array::Strings(_)=>"[Ljava/lang/String;",Array::Refs(13,_)=>"[Ljava/lang/Object;",Array::Refs(14,_)=>"[Ljava/lang/Class;",
         Array::Exception(k,_,_) if k.contains('/')=>*k,
-        Array::Exception(k,_,_)=>match *k {"FileNotFoundException"=>"java/io/FileNotFoundException","NoSuchFileException"=>"java/nio/file/NoSuchFileException","AccessDeniedException"=>"java/nio/file/AccessDeniedException","FileSystemException"=>"java/nio/file/FileSystemException","Exception"=>"java/lang/Exception","RuntimeException"=>"java/lang/RuntimeException","IllegalArgumentException"=>"java/lang/IllegalArgumentException","IllegalStateException"=>"java/lang/IllegalStateException","NullPointerException"=>"java/lang/NullPointerException","ServiceConfigurationError"=>"java/util/ServiceConfigurationError",_=>error("Object.getClass: excepción no soportada")},
+        Array::Exception(k,_,_)=>match *k {"FileNotFoundException"=>"java/io/FileNotFoundException","NoSuchFileException"=>"java/nio/file/NoSuchFileException","AccessDeniedException"=>"java/nio/file/AccessDeniedException","FileSystemException"=>"java/nio/file/FileSystemException","Exception"=>"java/lang/Exception","RuntimeException"=>"java/lang/RuntimeException","IllegalArgumentException"=>"java/lang/IllegalArgumentException","IllegalStateException"=>"java/lang/IllegalStateException","NullPointerException"=>"java/lang/NullPointerException","ServiceConfigurationError"=>"java/util/ServiceConfigurationError","MatchException"=>"java/lang/MatchException","BitSet"=>"java/util/BitSet","ZipFsProvider"=>"java/nio/file/spi/FileSystemProvider",_=>error("Object.getClass: excepción no soportada")},
         _=>error("Object.getClass: tipo no soportado"),
     };class_literal(h,name)
 }
@@ -1584,7 +1986,7 @@ fn stream_map(h:&mut Heap,r:Option<usize>,fun:Option<usize>)->usize {let id=arra
 // Sequential max for a direct ArrayList source and the Integer-key comparator only.
 fn stream_max_list(h:&mut Heap,r:Option<usize>,cmp:Option<usize>,apply:fn(&mut Heap,Option<usize>,Option<usize>)->Option<usize>)->usize {let id=array_id(h,r);let cmpid=array_id(h,cmp);if !matches!(h.arrays[cmpid],Array::Comparing(_)){error("Stream.max: comparador fuera del perfil");}let source=match h.arrays[id]{Array::LazyStream(source,false,None,false)=>source,Array::LazyStream(_,true,_,_)|Array::SortedStream(_,true,_)|Array::MappedStream(_,true,_)=>raise("IllegalStateException","stream has already been operated upon or closed"),_=>error("Stream.max: solo fuente ArrayList directa")};let (length,version)=match &h.arrays[source]{Array::List(values,version)=>(values.len(),*version),_=>error("Stream.max: solo fuente ArrayList directa")};if let Array::LazyStream(_,linked,_,taken)=&mut h.arrays[id]{*linked=true;*taken=true;}let mut best=None;for i in 0..length{let value=match &h.arrays[source]{Array::List(values,v) if *v==version=>values[i],_=>error("Stream.max: modificación estructural durante recorrido no soportada")};if i==0{best=value;}else{let c=comparator_compare(h,Some(cmpid),best,value,apply);if let Array::List(_,v)=h.arrays[source]{if v!=version{error("Stream.max: modificación estructural durante recorrido no soportada");}}if c<0{best=value;}}}if length!=0&&best.is_none(){raise("NullPointerException","");}optional_new(h,best)}
 // Java links the previous stage before checking the comparator for null.
-fn stream_sorted(h:&mut Heap,r:Option<usize>,comparator:Option<usize>)->usize {let id=array_id(h,r);match &mut h.arrays[id]{Array::LazyStream(_,linked,_,_)|Array::SortedStream(_,linked,_)|Array::MappedStream(_,linked,_)=>{if *linked{raise("IllegalStateException","stream has already been operated upon or closed");}*linked=true;},_=>error("Stream.sorted: fuente fuera del perfil")};let cmp=array_id(h,comparator);if !matches!(h.arrays[cmp],Array::Comparing(_)){error("Stream.sorted: comparador fuera del perfil");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::SortedStream(id,false,cmp));out}
+fn stream_sorted(h:&mut Heap,r:Option<usize>,comparator:Option<usize>)->usize {let id=array_id(h,r);match &mut h.arrays[id]{Array::LazyStream(_,linked,_,_)|Array::SortedStream(_,linked,_)|Array::MappedStream(_,linked,_)=>{if *linked{raise("IllegalStateException","stream has already been operated upon or closed");}*linked=true;},_=>error("Stream.sorted: fuente fuera del perfil")};let cmp=array_id(h,comparator);if !matches!(h.arrays[cmp],Array::Comparing(_)|Array::ComparingInt(_)){error("Stream.sorted: comparador fuera del perfil");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::SortedStream(id,false,cmp));out}
 fn set_pos(h:&Heap,id:usize,val:Option<usize>)->Option<usize>{
     if matches!(h.arrays[id],Array::EmptySet){return None;}
     let keyset=matches!(h.arrays[id],Array::KeySet(_,_));if keyset&&val.is_none(){raise("NullPointerException","");}
