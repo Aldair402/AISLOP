@@ -178,7 +178,7 @@ programa generado.
 | `future.obtrude` | `obtrudeValue`/`obtrudeException` fuerzan el resultado | guarda: `CompletableFuture: operación no soportada` | `check-numeric-completed-future.py` | B-03 |
 | `future.complete-exceptionally` | `completeExceptionally` → `join`/`get` con la misma causa | guarda: `CompletableFuture: operación no soportada` | oráculo `cf` | B-03 |
 | `future.optin-rayon` | La semántica de futuro no depende de variables de entorno | guarda: `completedFuture: requiere MC_AOT_RAYON_COMPLETED_FUTURE=1` | `check-rayon-completed-future.py` | B-03 |
-| `future.optin-numeric` | Ídem para el backend principal monohilo | guarda: `CompletableFuture: requiere MC_AOT_NUMERIC_COMPLETED_FUTURE=1` | `check-numeric-completed-future.py` | B-03 |
+| `future.optin-numeric` | Ídem para el backend principal monohilo | guarda: `CompletableFuture: requiere MC_AOT_FUTURES=restricted (alias histórico MC_AOT_FUTURES=completed-only o MC_AOT_NUMERIC_COMPLETED_FUTURE=1)` | `check-numeric-completed-future.py` | B-03 |
 | `future.capture-final` | Java permite capturar referencias mutables | guarda: `captura CompletableFuture debe ser final` | `check-rayon-shared-completed-future.py` | B-03 |
 | `future.only-completed-heap` | Un `CompletableFuture` Java puede estar en cualquier estado | guarda: `solo completado normal del perfil` | `check-numeric-completed-future.py` | B-03 |
 

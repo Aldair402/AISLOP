@@ -553,7 +553,7 @@
       "operation": "perfil",
       "status": "guard",
       "java_semantics": "Igual que future.optin-rayon, para el backend principal monohilo.",
-      "guard_message": "CompletableFuture: requiere MC_AOT_NUMERIC_COMPLETED_FUTURE=1",
+      "guard_message": "CompletableFuture: requiere MC_AOT_FUTURES=restricted (alias histórico MC_AOT_FUTURES=completed-only o MC_AOT_NUMERIC_COMPLETED_FUTURE=1)",
       "logs": [
         "analysis/check-numeric-completed-future-latest.log"
       ],
