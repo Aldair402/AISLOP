@@ -30,7 +30,7 @@ real antes de considerarse evidencia.
 | Clases completas certificadas | **1/7.762** (`FeatureFlagUniverse`) |
 | Evidencia registrada | `analysis/class-registry.json` (gate: `mc-aot/tools/check-class-registry.py`) |
 | Arranque del servidor | No arranca; `Main` bloqueado en `ForkJoinPool` |
-| Suite integral de referencia | **334 etapas, exit 0** — `analysis/full-regressions-a11.log` |
+| Suite integral de referencia | **334 etapas, exit 0** — `analysis/full-regressions-a12.log` (post-limpieza, sobre este árbol; `analysis/full-regressions-a11.log` es la referencia previa) |
 | Futuros | Opt-in `MC_AOT_FUTURES=restricted` (solo futuros ya completados normalmente; `completed-only` es alias histórico) |
 | Rayon | Prototipo desconectado del backend principal |
 | log4rs | Aparcado (ver `PLAN-ARRANQUE.md`); no se simula logging |
