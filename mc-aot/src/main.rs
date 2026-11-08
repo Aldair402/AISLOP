@@ -7,6 +7,8 @@ mod concurrent_compile;
 mod concurrent_heap;
 mod executor_runtime;
 #[allow(dead_code)]
+mod forkjoin;
+#[allow(dead_code)]
 mod frame_vm;
 #[allow(dead_code)]
 mod rayon_scheduler;
