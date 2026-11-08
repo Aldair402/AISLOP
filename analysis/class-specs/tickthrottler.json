@@ -1,0 +1,17 @@
+{
+  "schema": "class-spec-v1",
+  "class": "net/minecraft/util/TickThrottler",
+  "test": "mc-aot/tests/check-tickthrottler-class-surface.py",
+  "log": "analysis/tickthrottler-static-surface.log",
+  "manifest": "analysis/class-evidence/tickthrottler.json",
+  "classfile_manifest": "analysis/class-evidence/tickthrottler-classfile.json",
+  "report": "analysis/tickthrottler-evidence-report.json",
+  "date_verified": "2026-11-07",
+  "limitations": [
+    "La clase no expone accesor ni toString: el efecto del constructor y de los campos incrementStep, threshold y count solo se puede observar a través de isUnderThreshold()Z. Si ese método tradujera mal, fallarían los tres campos y el constructor a la vez; está declarado como dependencia cruzada, no como evidencia separada.",
+    "El diferencial cubre 1.680 casos: constructor con 80 pares (paso, umbral) en los límites de i32, 720 secuencias de incremento (1 a 9 pasos), 720 de incremento+tick (incluidos m > k y count <= 0 con pasos negativos o cero) y 160 umbrales de borde. No cubre secuencias arbitrarias ni más repeticiones.",
+    "La salida observable por caso es un bit (isUnderThreshold). El diferencial demuestra igualdad en los casos medidos; no demuestra equivalencia universal ni el comportamiento bajo concurrencia (la clase no hace anuncios de sincronización; su uso compartido entre hilos sigue sin modelo).",
+    "El arnés expone un único punto de entrada estático (run(I)I); no se ejercita el uso de la clase como valor de retorno de otro método traducido ni su publicación entre hilos.",
+    "tick() sobre count <= 0 no decrementa (rama ifle). Está cubierto mediante pasos negativos y cero, pero no se verifica ningún invariante sobre secuencias con count negativo mantenido tras ticks arbitrarios más allá de los 720 casos medidos."
+  ]
+}

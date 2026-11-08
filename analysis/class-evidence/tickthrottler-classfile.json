@@ -1,0 +1,69 @@
+{
+  "class": "net/minecraft/util/TickThrottler",
+  "class_sha256": "3c56da8580a52b3fee0f58f4aade17a956003a396b610569c95f9fa5a472fa66",
+  "fields": [
+    {
+      "descriptor": "I",
+      "flags": [
+        "private",
+        "final"
+      ],
+      "name": "incrementStep"
+    },
+    {
+      "descriptor": "I",
+      "flags": [
+        "private",
+        "final"
+      ],
+      "name": "threshold"
+    },
+    {
+      "descriptor": "I",
+      "flags": [
+        "private"
+      ],
+      "name": "count"
+    }
+  ],
+  "flags": [
+    "public",
+    "super"
+  ],
+  "has_clinit": false,
+  "has_init": true,
+  "interfaces": [],
+  "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
+  "methods": [
+    {
+      "descriptor": "(II)V",
+      "flags": [
+        "public"
+      ],
+      "name": "<init>"
+    },
+    {
+      "descriptor": "()V",
+      "flags": [
+        "public"
+      ],
+      "name": "increment"
+    },
+    {
+      "descriptor": "()V",
+      "flags": [
+        "public"
+      ],
+      "name": "tick"
+    },
+    {
+      "descriptor": "()Z",
+      "flags": [
+        "public"
+      ],
+      "name": "isUnderThreshold"
+    }
+  ],
+  "schema": "classfile-surface-v1",
+  "super_class": "java/lang/Object"
+}

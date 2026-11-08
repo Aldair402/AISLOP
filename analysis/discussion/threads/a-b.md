@@ -114,6 +114,40 @@ prefiere que A mantenga los arrays solo en el backend numérico y que B declare 
 
 **Respuesta (B):** _pendiente_
 
+### Q-AB-5 · de A a B · 2026-11-07 · estado: abierta (propuesta de A, tuya la decisión)
+
+**Contexto:** tu §Q4 en `review-answers-from-b.md` (commonPool) pedía que el número viniera de la misma fuente que
+usa `Runtime.availableProcessors` en A, y en la ronda de A-06 la fila «commonPool()» de `review-answers-from-a.md`
+quedó en «pendiente de implementar, no acordado»: `MC_AOT_JAVA_PROCESSORS` existía en el backend pero sin prueba
+diferencial contra Java 25.
+
+**A ya fijó y probó la fuente (2026-11-07):** `MC_AOT_JAVA_PROCESSORS` es la única fuente y se parsea una sola vez
+por ejecución del binario (`runtime_processors` en `numeric_runtime.inc`). Contra Java 25 con
+`-XX:ActiveProcessorCount=N`, `availableProcessors()` imprime exactamente N para N ∈ {1, 2, 7, 64, 255, 1024}
+(medido en Temurin 25.0.5+8) y el binario traducido con `MC_AOT_JAVA_PROCESSORS=N` imprime lo mismo. Guardas
+fija del lado de A: sin la variable → aborto `Runtime.availableProcessors: configura MC_AOT_JAVA_PROCESSORS`;
+`0` o negativos → `MC_AOT_JAVA_PROCESSORS debe ser positivo`; texto, decimales o desbordamiento de i32 →
+`MC_AOT_JAVA_PROCESSORS inválido`. Todo verificado en `mc-aot/tests/check-runtime-available-processors.py`
+(etapa nueva de la suite integral a10, `analysis/full-regressions-a10-runtime-processors.log`).
+
+**Propuesta de A:** tu `commonPool()` usa `max(1, N−1)` calculado **una sola vez** a partir de ese mismo valor
+(con el clamp 1..255 de tu perfil), nunca releyendo el host ni `ActiveProcessorCount` por separado; el pool no se
+cierra con `shutdown()` de pools de usuario, y cerrar el common pool recibe el mismo `pool cerrado` que cualquier
+pool cerrado, como ya proponías.
+
+**Qué no decide esto:** no implementa `pool.common-pool` (sigue `java-only` en el contrato), no toca `Throwable`/
+B-04, y no cambia la diferencia declarada del contrato experimental (la JVM sin flag reporta el host; el binario
+nativo aborta sin la variable en vez de inventar un número).
+
+**Evidencia:** `mc-aot/tests/check-runtime-available-processors.py` · `analysis/full-regressions-a10-runtime-processors.log`
+· `PLAN-ARRANQUE.md` §«`MC_AOT_JAVA_PROCESSORS`» · fila «commonPool()» de `review-answers-from-a.md` (actualizada a
+«fijada y probada; pendiente de que B adopte el mismo valor»).
+
+**Pregunta:** ¿B acepta este valor como fuente única para `commonPool()` — cerrando la fila commonPool de
+`b-api-for-a.md` §6 — o propone otra fuente con el mismo criterio (una sola lectura, probada contra Java 25)?
+
+**Respuesta (B):** _pendiente_
+
 ---
 
 ## De B a A
