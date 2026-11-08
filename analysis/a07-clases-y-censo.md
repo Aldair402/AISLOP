@@ -37,3 +37,25 @@ certifica que compile, ejecute o coincida con Java. Los motivos de rechazo son
 el primer bloqueo observado, no una lista exhaustiva, y los 7.762 archivos
 incluyen `package-info`. El censo es una herramienta de priorización, no un
 contador de clases completas; el artefacto es `analysis/execution-census.json`.
+
+## Seis clases sin miembros declarados
+
+`check-vanilla-empty-classes.py` verifica por reflexión que cada clase tiene un
+constructor sin argumentos, ningún campo ni método declarado; traduce el
+constructor y compara la construcción con Java 25, ejecutando el binario sin JVM:
+
+- `PreparableReloadListener$StateKey`
+- `EquipmentAsset`
+- `GenerationStep`
+- `BuriedTreasurePieces`
+- `OceanMonumentPieces`
+- `WaypointStyleAsset`
+
+La prueba aislada pasa las seis. El constructor de `OceanMonumentPieces` es
+privado: el oráculo usa reflexión y `setAccessible(true)`; esto no demuestra
+control de acceso Java en el driver. Son casos triviales y no demuestran cobertura
+de lógica de mundo ni el servidor. Junto a las tres clases previamente probadas,
+son nueve clases con evidencia individual bajo perfiles de prueba específicos,
+no 3.881 clases verificadas ni equivalencia exhaustiva. La prueba se ha añadido
+a la integral, pero la ejecución de la integral debe terminar para validar su
+incorporación.
