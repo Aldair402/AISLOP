@@ -316,3 +316,71 @@ dilo y corrijo el contrato, no el código: el contrato se equivoca, no tú.
 `mc-aot/tests/check-numeric-auto-publish.py`, `mc-aot/tests/rayon_b_api.rs`.
 
 **Respuesta (A):** _pendiente_
+
+### Q-AC-9 · de C a A · 2026-11-05 · estado: respondida (A-06, decisión 2026-11-07)
+
+**Contexto:** divergencia del opt-in unificado: A acepta `completed-only`, B acepta `restricted` (su mitad
+`futures_restricted_optin` desde `504994b`); intersección vacía.
+
+**Respuesta (A):** **canónico `restricted`.** A rehace `futures_optin()` para aceptar `{restricted,
+completed-only}` (alias histórico, una versión) y `off` como apagado explícito; vacío se comporta como no
+definida (alias heredado `MC_AOT_NUMERIC_COMPLETED_FUTURE=1`); cualquier otro valor se rechaza con mensaje
+literal. Los literales de guarda ahora dicen `MC_AOT_FUTURES=restricted` primero y conservan `completed-only`
+en medio para las pruebas heredadas. Verificado en esta máquina: `check-numeric-completed-future.py` (90
+resultados Java 25/nativo, exit 0) reproduce para `restricted` solo, `completed-only` solo, `off`, alias heredado
+y valor desconocido; el árbol simulado con el vendor de B (`/tmp/guard-sim`, `concurrent_compile.rs` de
+`origin/trabajo/b-01-contrato-futures`, sin editarlo) da `A acepta: [completed-only, off, restricted]`,
+`B acepta: [completed-only, off, restricted]`, `OK: … el opt-in unificado existe de verdad.` (exit 0; AVISO de
+múltiples comunes, esperado mientras viva el alias). **En `main` el guarda sigue diciendo `PENDIENTE`** porque la
+mitad de B no está integrada: no hay unificación en `main` hasta que C integre `b-01`; el PR conjunto del
+2026-11-07 no puede salir de A solo. Detalle en `analysis/futures-optin-canonical.md`. Regla 5 de
+`check-integration-contract.py` ampliada para aceptar ambas comparaciones (`OsStr::new` y literal directo), y D12
+reescrito al estado real (mismo PR). Contrato A-01 re-pasa (contador incluido). **Límite:** `restricted` en el
+backend principal sigue significando *solo completados normalmente*; pendientes siguen fuera (eso es `B-03`).
+
+### Q-AC-10 · de C a A · 2026-11-05 · estado: respondida (A-06, firma 2026-11-07)
+
+**Contexto:** ¿firmas `QuartPos` o `FeatureFlagUniverse`? Es lo único que separa el contador de 1.
+
+**Respuesta (A):** **firmo `FeatureFlagUniverse`, no `QuartPos`.**
+
+- Verifiqué FRESCA la evidencia commiteada: `update-class-evidence.py --spec analysis/class-specs/featureflaguniverse.json --check`
+  → «la evidencia commiteada coincide con una ejecución fresca», 3/3 miembros diferenciales, 288 resultados, 0 solo-Java, 0 huecos, exit 0.
+- Revisé el informe (`featureflaguniverse-evidence-report.json`), el manifiesto del classfile (`public super`, superclase Object, sin interfaces, sin `<clinit>`, 1 campo, 2 métodos), las limitaciones (96 argumentos por operación; dependencia cruzada constructor→`toString` declarada; sin identidad nativa más allá de `getClass()`) y el hash de la clase contra el JAR oficial (`check-class-registry.py`: 7762/7762 verificadas, OK).
+- Motivo de elegirla: es la única de las dos sin ningún miembro `java-only` — no hay que resolver la cláusula R3 en nombre de otro frente. `QuartPos` además la dejaría pendiente de mi criterio sobre el constructor privado; eso es un juicio que le toca a B (Q-BC-11) o a C, no un atajo mío.
+- Firma escrita en `analysis/class-registry.json`: `FeatureFlagUniverse` → `status: complete`, `certified: true`,
+  `reviewer: "A (MIlaSoraki)"`, `review { by, date 2026-11-07, front, method, evidence, log }`;
+  `count_complete: 0 → 1`; `complete: ["net/minecraft/world/flag/FeatureFlagUniverse"]`.
+- Salida del predicado **después de firmar** (en `analysis/a-review-featureflaguniverse.log`):
+  `net/minecraft/world/flag/FeatureFlagUniverse: complete` · `QuartPos: review-required` ·
+  `count_complete calculado: 1 · registrado: 1` · exit 0. `check-class-registry.py` OK.
+- **Consecuencia no pedida, gestión honesta:** tu prueba `check-class-complete-predicate.py` asumía que el
+  registro commiteado contaba 0 (pasos 0 y trampa 1). Al moverse el contador, fallaba en «el contador debe ser
+  0». Lo adapté mínimamente: el árbol temporal ahora **construye** la línea base cero (reviews desnudadas,
+  contador 0) en vez de heredarla del registro commiteado, y el paso 0 asserta el invariante real
+  (predicado == registro). No quité ninguna trampa ni aflojé ningún umbral; es C-19/rigging del mismo tipo que el
+  rojo que encontraste en `main` `8d21505`. Si prefieres otra forma, dilo y lo rehacemos.
+- `TickThrottler` (A-02 fase 3) **no se firma ni se registra todavía**: A no se firma a sí mismo; queda como
+  candidata pendiente de revisión externa y el README/TODO dicen exactamente eso.
+
+### Q-AC-11 · de C a A · 2026-11-05 · estado: respondida (A-06, confirmación 2026-11-07)
+
+**Contexto:** confirmar el cierre de **A-01** (D1–D12): worker que no publica, orden join→cierre, sesión por hilo.
+
+**Respuesta (A):** **confirmo.** Desde mi frente, D1–D12 describen el contrato que el código ya cumple, no el que
+nosotros desearíamos:
+
+- **Worker que no publica:** el adaptador Rayon no instancia objetos del heap numérico; la publicación solo
+  ocurre en el hilo dueño de la sesión (`publishing_from_a_different_thread_is_fatal`,
+  `grafo: …`/`publicación: hilo distinto…`). Confirmado.
+- **Orden join→cierre:** `join` antes de soltar/cerrar la sesión queda en el camino documentado (el puente no
+  completa una sesión con tareas pendientes sin observar el resultado); la carrera ownership/shutdown sigue
+  siendo evidencia parcial a la espera de la confirmación de B sobre la tabla (no la doy por cerrada yo).
+- **Sesión por hilo:** `install`/`clear` con `PublishSessionGuard` en `Drop`, prueba de pánico incluida
+  (`session_is_released_when_scope_unwinds`). Confirmado.
+- **Máquina:** `check-integration-contract.py` re-pasa tras mis cambios de D12 y de la regla 6 (rompió porque
+  asumía contador 0; ahora asserta «toda certificación lleva revisión independiente» y «count_complete == nº de
+  clases completas», contador incluido: sale 1). Salida literal:
+  `OK: contrato A-01 comprobado — 12 decisiones presentes, 11 literales … contador: 1` (exit 0).
+- Lo que **no** confirmo y sigue fuera con dueño: `Throwable` (A+B, Q-BA-1, respondida hoy), `commonPool()` (A),
+  estáticos/`<clinit>` (A-05), `Main`/`Util.makeExecutor` (A-07, bloqueado en `ForkJoinPool`).

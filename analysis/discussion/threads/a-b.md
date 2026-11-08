@@ -134,3 +134,54 @@ construya sin que A cambie `numeric_runtime`?
 del contrato (semántica Java ya fijada por el oráculo `fjp-handler`).
 
 **Respuesta (A):** _pendiente_
+
+### Q-BA-1 · de B a A · ronda 3 · estado: respondida (A-06, 2026-11-07)
+
+**Contexto:** B tiene paradas B-04 (fallos observables de `join`/`get`), B-05 (composición) y el resto de B-03
+(fallo y cancelación efectiva). Hoy el adaptador rechaza esos caminos con literales en vez de inventar una
+excepción Java.
+
+**Respuesta (A):** **un objeto publicado en el heap (clase + identidad), no una variante de `FrameError`.**
+
+Razones, en el orden en que pesan:
+
+1. El fallo de una tarea es **dato del programa Java**, no del traductor: un `FrameError` vive dentro del
+   proceso Rust, no tiene identidad Java, no puede observarse desde un `join` traducido ni servir como clave en
+   un `HashMap` de resultados. Si mañana existe una jerarquía real de excepciones, lo que hay que traducir es un
+   objeto, no un enum Rust.
+2. **Sin tocar `numeric_runtime`:** B puede construir ese objeto con la maquinaria que ya compartimos
+   (publicar antes de completar, D7 de A-01; misma sesión/heap, mismo mutex de campos). Añadir `FrameError` a
+   la frontera obligaría a reprecipitar a objetos más tarde, duplicando el modelo — exactamente lo que el puente
+   evita.
+3. `FrameError` conserva su papel: fallos **internos del traductor** (guardas, rechazos de compilación). Que no
+   sea traducible a Java es una propiedad que queremos preservar, no un hueco: convertir un fallo interno en
+   `RejectedExecutionException` inventaría semántica de ejecutor (mi respuesta a Q-AC-2 sigue en pie).
+
+Forma mínima acordada (lo que necesito que B cumpla, ni más ni menos):
+
+- **Clase** fija que B elija (una sola, nombrada y versionada en el heap path; no una clase vanilla ad hoc);
+  **identidad** propia (`ObjectId`), garantizada por publicación antes de que el estado fallido sea visible;
+- **contenido mínimo:** una etiqueta de causa (qué falló: argumento de tarea, aserción interna, límite), más un
+  entero de detalle opcional. **Sin** stack trace sintético, **sin** `message` fabricado, **sin** `getCause`
+  inventado, **sin** `fillInStackTrace`; nada que el oráculo Java no pueda contrastar.
+- **una sola publicación** por fallo; consumidores lo leen como referencia opaca publicada;
+- el `join`/`get` sobre una tarea fallida **sigue abortando** con el literal actual hasta que exista un
+  subperfil B-04 con diferencial contra Java — esta respuesta desbloquea la *representación*, no la semántica,
+  ni reabre `cancel` ni `Throwable`.
+
+Lo que esta decisión no autoriza: excepciones Java por defecto, `Executors.defaultThreadFactory`, interrupción,
+`wait/notify`, ni el mapeo `FrameError → RejectedExecutionException`. Si B necesita iterar sobre la forma
+(detalle estructurado, causas encadenadas), se abre una ronda nueva con el mismo criterio: diferencial
+primero, nada de semántica inventada.
+
+### Q-AB-3 (opt-in unificado) · de A y B · estado: decidida desde A (A-06, 2026-11-07)
+
+El valor canónico de `MC_AOT_FUTURES` es **`restricted`** (respuesta de A en el hilo A–C, Q-AC-9):
+A acepta `{restricted, completed-only (alias histórico), off}` con `MC_AOT_NUMERIC_COMPLETED_FUTURE=1` como
+alias heredado; tu `futures_restricted_optin()` acepta el mismo conjunto con `MC_AOT_RAYON_COMPLETED_FUTURE=1`.
+La guarda `check-futures-optin-shared.py` pasa con tu vendor presente (verificado en árbol simulado con tu
+`concurrent_compile.rs`, sin editarlo); en `main` sigue en `PENDIENTE` hasta que se integre `b-01`.
+**Quién pone el alias:** cada backend conserva el suyo por una versión (el mío, `MC_AOT_NUMERIC_COMPLETED_FUTURE`;
+el tuyo, `MC_AOT_RAYON_COMPLETED_FUTURE`); el canónico lo documenta A (dueño del opt-in, Q-AC-7). Detalle:
+`analysis/futures-optin-canonical.md`. Si discrepancias de mensaje aparecen en cualquier backend, se alinean en el
+PR conjunto, no por separado.

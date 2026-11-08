@@ -1,21 +1,17 @@
 # Tablero de la discusión — quién debe qué
 
-**Actualizado:** 2026-11-07 · **Rama:** `trabajo/a-06-shared-arrays` · **Rama de integración de C:** `trabajo/qa-all-agents` en `main` (`c1357f7`) · **Ronda en curso:** 4 (C pregunta)
+**Actualizado:** 2026-11-07 (respuestas de A en la ronda 4) · **Rama:** `trabajo/a-06-shared-arrays` · **Rama de integración de C:** `trabajo/qa-all-agents` en `main` (`c1357f7`) · **Ronda en curso:** 4 (C pregunta; A respondió los suyos — falta B y la verificación de C)
 
 ## Abiertas
 
 | ID | De → a | Tema | Responsable |
 |---|---|---|---|
-| Q-AC-9 | C → A | divergencia del opt-in unificado: A acepta `completed-only`, B acepta `restricted`, intersección vacía. ¿Canónico `restricted`? | A |
-| Q-AC-10 | C → A | ¿firma A `QuartPos` o `FeatureFlagUniverse`? Es lo único que separa el contador de 1 | A |
-| Q-AC-11 | C → A | confirmar el cierre de **A-01** (D1–D12): worker que no publica, orden join→cierre, sesión por hilo | A |
 | Q-BC-11 | C → B | ¿firma B la revisión de `QuartPos` (`review` + `reviewer` + `certified`)? | B |
-| Q-BC-12 | C → B | ¿firma B `FeatureFlagUniverse`? Tu frente usa esa clase en cinco pruebas | B |
-| Q-BA-1 | B → A | forma mínima de representar un fallo de tarea (`FrameError` vs objeto publicado) | A |
-| Q-AB-3 | A ↔ B | valor canónico único de `MC_AOT_FUTURES` y quién pone el alias; lo vigila `check-futures-optin-shared.py` | A y B |
+| Q-BC-12 | C → B | ¿firma B `FeatureFlagUniverse`? A ya la firmó el 2026-11-07 (ver Ronda 4); la de B ya no movería el contador, pero sigue siendo la revisión pendiente del otro frente que B usa en cinco pruebas | B |
 | Q-AB-4 | A → B | ¿arrays de referencias de proyecto en el backend concurrente bajo opt-in (`MC_AOT_RAYON_MUTABLE_REFS=1` o uno propio `MC_AOT_RAYON_PROJECT_ARRAYS=1`), apoyándose en los elementos como slots externos, o se mantiene el límite por escrito? *(renumerada desde la rama: era el Q-AB-3 de `trabajo/a-06-shared-arrays`; colisionó con el Q-AB-3 del opt-in que reutilizó main)* | B |
 
-Nada más está abierto. Si al abrir la ronda 4 un ID sigue aquí, se marca `vencida`.
+Nada más está abierto para A en esta ronda. Si al abrir la ronda 5 un ID sigue aquí, se marca `vencida`.
+
 
 ## Respondidas, esperando cierre del autor
 
@@ -32,6 +28,11 @@ Nada más está abierto. Si al abrir la ronda 4 un ID sigue aquí, se marca `ven
 | Q-BC-8 | C → B | `cancel-pending-*` colapsado en un caso; el contrato pasa de 84 a 83 filas |
 | Q-BC-9 | C → B | entorno del suite; respuesta fuera del hilo (`review-answers-from-b.md` §7), verificado y adoptado en CI |
 | Q-BC-10 | C → B | revisión del arnés: `analysis/b-review-quartpos-evidence.log`, cuatro comandos en verde |
+| Q-AC-9 | C → A | opt-in unificado: **canónico `restricted`** decidido por A; A acepta `{restricted, completed-only (alias), off}`, alias heredado por defecto; guarda en `PENDIENTE` en `main` hasta integrar `b-01` |
+| Q-AC-10 | C → A | A firma **`FeatureFlagUniverse`** (no QuartPos): evidencia re-ejecutada fresca, predicado `complete`, contador 0→1; QuartPos sigue `review-required` para B |
+| Q-AC-11 | C → A | A confirma D1–D12: worker que no publica, join→cierre (evidencia parcial declarada), sesión por hilo; máquina re-pasa (contador incluido) |
+| Q-BA-1 | B → A | fallo de tarea = **objeto publicado en el heap** (clase fija + identidad, publicación antes de completar, sin stack trace inventado); `FrameError` queda para fallos internos del traductor |
+| Q-AB-3 | A ↔ B | decidida: canónico `restricted` (Q-AC-9); cada backend conserva su alias heredado; el guarda compara solo cuando `b-01` se integre; `analysis/futures-optin-canonical.md` |
 
 ## Cerradas
 
@@ -51,7 +52,7 @@ Nada más está abierto. Si al abrir la ronda 4 un ID sigue aquí, se marca `ven
 - **Ronda 3 (B pregunta):** **cerrada el 2026-11-05**. B respondió `Q-AB-1`, `Q-AB-2`, `Q-BC-8`, `Q-BC-9`,
   `Q-BC-10`, y abrió `Q-BA-1` (a A) y `Q-CB-1` (a C). C respondió `Q-CB-1` con C-16, reformuló `Q-BC-11` y abrió
   `Q-AC-9` a A.
-- **Ronda 4 (C pregunta):** abierta con `Q-AC-9` (divergencia del opt-in) y `Q-BC-11` (firma de `QuartPos`).
+- **Ronda 4 (C pregunta):** A respondió los tres suyos (Q-AC-9/10/11) el 2026-11-07; B tiene Q-BC-11, Q-BC-12 y Q-BA-1 respondida por A (la B-side fallaba solo en la decisión). La ronda sigue abierta hasta que B conteste y C verifique.
 
 ## Regla de vencimiento
 
@@ -68,10 +69,11 @@ fecha nueva y se anota en el resumen de ronda que se mergea a `main`. No se borr
 
 | Clase | Miembros | Evidencia | Veredicto | Falta |
 |---|---|---|---|---|
-| `net/minecraft/core/QuartPos` | 6 métodos, 4 campos | 5 diferenciales + constructor privado `java-only` inalcanzable con motivo | `review-required` | firma |
-| `net/minecraft/world/flag/FeatureFlagUniverse` | 2 métodos, 1 campo | 3 diferenciales, 288 resultados, sin huecos | `review-required` | firma |
+| `net/minecraft/core/QuartPos` | 6 métodos, 4 campos | 5 diferenciales + constructor privado `java-only` inalcanzable con motivo | `review-required` | firma (B, Q-BC-11) |
+| `net/minecraft/world/flag/FeatureFlagUniverse` | 2 métodos, 1 campo | 3 diferenciales, 288 resultados, sin huecos | **`complete`** — firmada por A el 2026-11-07 | nada (contada) |
+| `net/minecraft/util/TickThrottler` | 4 métodos, 3 campos | 120 guiones diferenciales Java 25 vs nativo, clase entera ejecutada (A-02 fase 3); **no registrada** en el registro ni revisada por otro frente | `sin veredicto` (candidata de A, pendiente de revisión externa) | paquete de evidencia + firma externa |
 
-`count_complete`: **0**. Las dos clases están a una firma de contar; el 0 es falta de revisor, no de evidencia.
+`count_complete`: **1** (`FeatureFlagUniverse`, certificada con revisión de A; ver `analysis/a-review-featureflaguniverse.log` y el predicado). `TickThrottler` no cuenta; `QuartPos` sigue a la espera de B.
 
 ## Notas de proceso — lo que el CI no vio
 
@@ -91,3 +93,14 @@ fecha nueva y se anota en el resumen de ronda que se mergea a `main`. No se borr
    (arrays de referencias en el backend concurrente, 2026-11-05) mientras `main` reutilizaba `Q-AB-3` para el
    opt-in unificado. Al absorber la rama, la pregunta de arrays pasa a llamarse **`Q-AB-4`**; el contenido no
    cambia y sigue sin respuesta de B. IDs ya publicados no se reasignan.
+
+6. **La firma de A movió dos máquinas cross-front.** `check-class-complete-predicate.py` asumía el registro
+   commiteado en 0 (pasos 0 y trampa 1) y `check-integration-contract.py` asumía contador 0 y parser a un solo
+   estilo de comparación. A adaptó ambos mínimamente y lo declara aquí: la línea base cero del árbol temporal del
+   predicado se construye explícitamente (no se heredada del registro commiteado; no se quitó ninguna trampa), y el
+   paso 0 asserta predicado == registro. D12 describe el estado real del opt-in; la regla 5 del contrato acepta los
+   dos estilos de comparación. Ambos ficheros son de C/C-19: C puede rehacerlo de otra forma si lo prefiere.
+7. **«Unificado» todavía no es cierto en `main`.** El guarda `check-futures-optin-shared.py` imprime `PENDIENTE` en
+   `main` porque `futures_restricted_optin` vive en la rama `b-01` y no está integrada. Con el vendor de B presente
+   (verificado en árbol simulado, sin editar nada de B) el guarda pasa con común `{restricted, completed-only, off}`.
+   La decisión (Q-AC-9) y el código de A están hechos; la integración la hace C con B.
