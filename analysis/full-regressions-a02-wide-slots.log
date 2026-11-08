@@ -150,6 +150,7 @@
 ==> check-numeric-concurrent-graph-ticktask
 ==> check-numeric-bridge-layout
 ==> check-numeric-wide-slots
+==> check-vanilla-first-class
 ==> check-vanilla-layout-profile
 ==> check-numeric-auto-publish
 ==> check-numeric-shared-arrays
@@ -320,3 +321,4 @@
 ==> sweep-static-references
 ==> sweep-static-float-preparation
 Todas las regresiones terminaron correctamente. Ninguna certifica el servidor completo.
+INTEGRAL_RC=0

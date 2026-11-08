@@ -1,0 +1,1 @@
+OK: net/minecraft/util/TickThrottler completa (constructor + 3 métodos) traducida y ejecutada sin JVM; 120 guiones idénticos a Java 25; campos leídos ['count', 'threshold', 'incrementStep']; guardas de paso/campo/orden; cuatro bloqueos del censo rechazados con su nombre; no Main
