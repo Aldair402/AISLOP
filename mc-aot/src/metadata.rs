@@ -147,6 +147,11 @@ pub(super) struct Method {
     pub branches: usize,
     pub argument_slots: u32,
 }
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(super) struct RecordComponent {
+    pub name: String,
+    pub descriptor: String,
+}
 #[derive(Debug)]
 pub(super) struct Class {
     pub name: String,
@@ -157,6 +162,8 @@ pub(super) struct Class {
     pub flags: u16,
     /// InnerClasses del propio tipo, si existe; relevante para Class.getModifiers.
     pub inner_flags: Option<u16>,
+    /// None si no hay atributo Record; Some(vec![]) para un record sin componentes.
+    pub record_components: Option<Vec<RecordComponent>>,
     pub fields: Vec<Field>,
     pub methods: Vec<Method>,
 }
@@ -330,11 +337,28 @@ pub(super) fn parse(data: &[u8]) -> Result<Class> {
     let attrs=r.u2()?;
     let mut inner_flags=None;
     let mut seen_inner=false;
+    let mut record_components: Option<Vec<RecordComponent>> = None;
     for _ in 0..attrs {
         let attr=utf(&cp,r.u2()?)?;
         let len=r.u4()? as usize;
         let bytes=r.take(len)?;
-        if attr=="InnerClasses" {
+        if attr=="Record" {
+            if record_components.is_some() { return Err("Record duplicado".into()); }
+            let mut sub=Reader{data:bytes,pos:0};
+            let count=sub.u2()?;
+            let mut components=Vec::with_capacity(count as usize);
+            for _ in 0..count {
+                let component_name=utf(&cp,sub.u2()?)?.to_owned();
+                let descriptor=utf(&cp,sub.u2()?)?.to_owned();
+                let ty=field_descriptor(&descriptor)
+                    .map_err(|e| format!("componente record {component_name}{descriptor}: {e}"))?;
+                add_type_dependencies(&ty, &mut dependencies);
+                skip_raw_attrs(&mut sub, &cp)?;
+                components.push(RecordComponent{name:component_name,descriptor});
+            }
+            if sub.pos!=bytes.len(){return Err("Record: longitud inválida".into());}
+            record_components=Some(components);
+        } else if attr=="InnerClasses" {
             if seen_inner {return Err("InnerClasses duplicado".into());}
             seen_inner=true;
             let mut sub=Reader{data:bytes,pos:0};
@@ -365,6 +389,7 @@ pub(super) fn parse(data: &[u8]) -> Result<Class> {
         major,
         flags,
         inner_flags,
+        record_components,
         fields,
         methods,
     })
@@ -455,6 +480,21 @@ pub(super) fn graph_dir(path: &Path) -> Result<()> {
         Ok(())
     }
 }
+/// Superficie estructural de Record; no comprueba bootstrap ni ejecuta métodos.
+pub(super) fn inspect_record(data: &[u8]) -> Result<()> {
+    let c = parse(data)?;
+    match c.record_components {
+        None => println!("record\tno"),
+        Some(components) => {
+            println!("record\t{}", components.len());
+            for component in components {
+                println!("component\t{}\t{}", safe(&component.name), safe(&component.descriptor));
+            }
+        }
+    }
+    Ok(())
+}
+
 pub(super) fn inspect(data: &[u8]) -> Result<()> {
     let c = parse(data)?;
     println!(

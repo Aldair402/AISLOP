@@ -2448,6 +2448,9 @@ impl NumericCompiler<'_> {
             _ => return Err("bootstrap no es REF_invokeStatic".into()),
         };
         let (owner, method, desc) = method_ref(&m.cp, target)?;
+        if (owner,method,desc)==("java/lang/runtime/ObjectMethods","bootstrap", "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/TypeDescriptor;Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/invoke/MethodHandle;)Ljava/lang/Object;") {
+            return self.record_hash_bootstrap(m,class,nt,&b);
+        }
         if (owner,method,desc)!=("java/lang/invoke/LambdaMetafactory","metafactory","(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;") {return self.string_concat(m,class,index);}
         use super::metadata::Type;
         let (sam_name, factory_desc) = match m.cp.get(nt as usize) {
@@ -2655,6 +2658,61 @@ impl NumericCompiler<'_> {
         let receiver_guard=if impl_kind==7 {"if matches!(captures.first(),Some(V::R(None))){raise(\"NullPointerException\",\"\");}"} else {""};
         Ok(format!("let mut captures=Vec::with_capacity({n});for _ in 0..{n}{{captures.push(stack.pop().expect(\"captura lambda\"));}}captures.reverse();{receiver_guard}stack.push(V::R(Some(lambda_new(heap,{id},{:?},captures))));",self.lambdas[id].interface))
     }
+    // Solo hashCode de records con componentes integrales. Se valida el bootstrap
+    // y cada getter: nunca se sustituye un invokedynamic arbitrario por un hash.
+    fn record_hash_bootstrap(&mut self, m: &Method, class: &str, nt: u16, b: &super::Bootstrap) -> Result<String> {
+        let (name, desc) = match m.cp.get(nt as usize) {
+            Some(CpEntry::NameType(n,d)) => (super::utf(&m.cp,*n)?,super::utf(&m.cp,*d)?),
+            _ => return Err("ObjectMethods: NameAndType inválido".into()),
+        };
+        if name != "hashCode" || desc != format!("(L{class};)I") {
+            return Err(format!("ObjectMethods fuera del perfil hashCode integral: {name}{desc}"));
+        }
+        let data = if class == self.class_name { self.class_data.to_vec() } else { class_from_jar(self.jar,class)? };
+        let meta = super::metadata::parse(&data)?;
+        if meta.parent.as_deref() != Some("java/lang/Record") || meta.flags & 0x10 == 0 {
+            return Err("ObjectMethods: clase no es record final directo".into());
+        }
+        let components = meta.record_components.ok_or("ObjectMethods: falta atributo Record")?;
+        if b.arguments.len() != components.len()+2 || super::object::class_name(&m.cp,b.arguments[0])? != class {
+            return Err("ObjectMethods: clase o número de getters incorrecto".into());
+        }
+        let names_index = match m.cp.get(b.arguments[1] as usize) {
+            Some(CpEntry::String(i)) => *i,
+            _ => return Err("ObjectMethods: nombres no son String".into()),
+        };
+        let names = components.iter().map(|c|c.name.as_str()).collect::<Vec<_>>().join(";");
+        if super::utf(&m.cp,names_index)? != names {return Err("ObjectMethods: nombres no coinciden con Record".into());}
+        let mut out = format!("let r=pop_r(&mut stack);check_object_class(heap,r,{class:?});let mut hash=0i32;");
+        for (i,component) in components.iter().enumerate() {
+            if !matches!(component.descriptor.as_str(),"Z"|"B"|"C"|"S"|"I"|"J") {
+                return Err(format!("ObjectMethods.hashCode: tipo no soportado: {}",component.descriptor));
+            }
+            let field_ref = match m.cp.get(b.arguments[i+2] as usize) {
+                Some(CpEntry::MethodHandle(1,idx)) => *idx,
+                _ => return Err("ObjectMethods: getter no es REF_getField".into()),
+            };
+            let (owner,field,descriptor)=super::object::field_ref(&m.cp,field_ref)?;
+            if (owner,field,descriptor)!=(class,component.name.as_str(),component.descriptor.as_str()) {
+                return Err("ObjectMethods: getter no coincide con componente".into());
+            }
+            let declared=meta.fields.iter().find(|f|f.name==field && f.descriptor==descriptor)
+                .ok_or("ObjectMethods: campo no declarado")?;
+            if declared.flags & 0x0008 != 0 || declared.flags & 0x0010 == 0 {
+                return Err("ObjectMethods: componente no final de instancia".into());
+            }
+            let (declaring,slot,_) = self.resolve_instance_field(owner,field,descriptor)?;
+            let value = match descriptor {
+                "Z" => "match value {V::I(v)=>if v==0 {1237i32}else{1231i32},_=>panic!(\"record boolean inválido\")}",
+                "J" => "match value {V::L(v)=>(v^(v>>32)) as i32,_=>panic!(\"record long inválido\")}",
+                _ => "match value {V::I(v)=>v,_=>panic!(\"record int inválido\")}",
+            };
+            out.push_str(&format!("let value=object_load(heap,r,{declaring:?},{slot});let component={value};hash=hash.wrapping_mul(31).wrapping_add(component);"));
+        }
+        out.push_str("stack.push(V::I(hash));");
+        Ok(out)
+    }
+
     fn string_concat(&mut self, m: &Method, class: &str, index: u16) -> Result<String> {
         use super::metadata::Type;
         let (bootstrap, nt) = match m.cp.get(index as usize) {
