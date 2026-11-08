@@ -47,6 +47,8 @@ run_logged check-numeric-concurrent-graph-ticktask python3 mc-aot/tests/check-nu
 run_logged check-numeric-bridge-layout python3 mc-aot/tests/check-numeric-bridge-layout.py
 run_logged check-numeric-wide-slots python3 mc-aot/tests/check-numeric-wide-slots.py
 run_logged check-vanilla-first-class python3 mc-aot/tests/check-vanilla-first-class.py
+run_logged check-class-demo-signatures python3 mc-aot/tests/check-class-demo-signatures.py
+run_logged check-vanilla-two-more-classes python3 mc-aot/tests/check-vanilla-two-more-classes.py
 run_logged check-vanilla-layout-profile python3 mc-aot/tests/check-vanilla-layout-profile.py
 run_logged check-numeric-auto-publish python3 mc-aot/tests/check-numeric-auto-publish.py
 run_logged check-numeric-shared-arrays python3 mc-aot/tests/check-numeric-shared-arrays.py

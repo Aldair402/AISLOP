@@ -3971,6 +3971,15 @@ pub(super) fn class_demo_admission(jar: &Path, class: &str) -> Result<(super::me
     if ctors.len() != 1 {
         return Err("se requiere exactamente un constructor".into());
     }
+    // El driver solo interpreta e imprime primitivas. No generar Rust inválido
+    // ni aparentar cobertura de String, objetos o arrays en firmas públicas.
+    for m in &meta.methods {
+        let sig = signature_ext(&m.descriptor, true)
+            .map_err(|e| format!("firma no admitida en {} {}: {e}", m.name, m.descriptor))?;
+        if sig.args.iter().any(|t| is_ref(*t)) || is_ref(sig.ret) {
+            return Err(format!("referencia en firma fuera del driver: {} {}", m.name, m.descriptor));
+        }
+    }
     Ok((meta, ctors[0].clone()))
 }
 
