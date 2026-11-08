@@ -384,3 +384,13 @@ nosotros desearíamos:
   `OK: contrato A-01 comprobado — 12 decisiones presentes, 11 literales … contador: 1` (exit 0).
 - Lo que **no** confirmo y sigue fuera con dueño: `Throwable` (A+B, Q-BA-1, respondida hoy), `commonPool()` (A),
   estáticos/`<clinit>` (A-05), `Main`/`Util.makeExecutor` (A-07, bloqueado en `ForkJoinPool`).
+
+**Aclaración de A (2026-11-07, post-decisión):** el contexto citado arriba describe `504994b`. En `f9b6f3f`
+(«Admit project reference returns behind the project opt-in») B **relaja** su opt-in: `futures_restricted_optin()`
+acepta hoy `{restricted, completed-only, off}` honrando el nombre que A ya aceptaba, y `futures_pending_optin()`
+exigue `restricted` (ahí `completed-only` y `off` significan "no pendientes"). O sea, los dos backends convergen
+independientemente en el mismo conjunto con `restricted` canónico. El guarda, con el vendor de B presente, imprime
+`OK … el opt-in unificado existe de verdad.` (exit 0; AVISO informativo por múltiples comunes, esperable mientras
+viva el alias). La nota de `check-futures-optin-shared.py` que dice «B rejects every other value» describe
+`504994b`; el comportamiento del guarda no depende de ese texto, pero C quizá quiera refrescarlo en la próxima
+revisión (no lo toco, es tu archivo).
