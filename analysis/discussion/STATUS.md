@@ -71,9 +71,9 @@ fecha nueva y se anota en el resumen de ronda que se mergea a `main`. No se borr
 |---|---|---|---|---|
 | `net/minecraft/core/QuartPos` | 6 métodos, 4 campos | 5 diferenciales + constructor privado `java-only` inalcanzable con motivo | `review-required` | firma (B, Q-BC-11) |
 | `net/minecraft/world/flag/FeatureFlagUniverse` | 2 métodos, 1 campo | 3 diferenciales, 288 resultados, sin huecos | **`complete`** — firmada por A el 2026-11-07 | nada (contada) |
-| `net/minecraft/util/TickThrottler` | 4 métodos, 3 campos | 120 guiones diferenciales Java 25 vs nativo, clase entera ejecutada (A-02 fase 3); **no registrada** en el registro ni revisada por otro frente | `sin veredicto` (candidata de A, pendiente de revisión externa) | paquete de evidencia + firma externa |
+| `net/minecraft/util/TickThrottler` | 4 métodos, 3 campos | 1.680 casos diferenciales Java 25 vs nativo (constructor 80, incremento 720, incremento+tick 720, umbrales de borde 160); superficie reconciliada classfile↔reflexión; paquete completo medido por A (`e9375a9`, procedimiento C-18); **registrada** como `partial-evidence` | `review-required` (predicado: no-review, no-reviewer, not-certified) — **no cuenta**; pendiente de revisión externa | firma externa (B o C) |
 
-`count_complete`: **1** (`FeatureFlagUniverse`, certificada con revisión de A; ver `analysis/a-review-featureflaguniverse.log` y el predicado). `TickThrottler` no cuenta; `QuartPos` sigue a la espera de B.
+`count_complete`: **1** (`FeatureFlagUniverse`, certificada con revisión de A; ver `analysis/a-review-featureflaguniverse.log` y el predicado). `TickThrottler` tiene paquete de evidencia completo medido por A pero **no cuenta**: el predicado exige revisión de otro frente y A no se firma a sí mismo. `QuartPos` sigue a la espera de B.
 
 ## Notas de proceso — lo que el CI no vio
 
@@ -120,3 +120,12 @@ fecha nueva y se anota en el resumen de ronda que se mergea a `main`. No se borr
    de a07/a08 es evidencia de fallos, no de aprobación. La referencia aprobada pasó a ser **a09**
    (`analysis/full-regressions-a09.log`, **330 etapas, exit 0**, 2026-11-07), corrida íntegra posterior a ambos
    fixes; a06 queda como referencia histórica (319 etapas).
+10. **`TickThrottler` tiene paquete de evidencia; sigue sin contar.** Medida por A (1.680 casos diferenciales
+    Java 25 vs nativo, superficie reconciliada, 7/7 miembros, `e9375a9`), registrada como `partial-evidence`;
+    el predicado la deja en `review-required` (no-review, no-reviewer, not-certified). Solo una revisión de otro
+    frente la sube al contador; A no se firma a sí mismo. La suite ganó `check-runtime-available-processors`
+    (a10, **331 etapas, exit 0**) y las etapas `check-tickthrottler-{class-surface,evidence-audit,evidence-fresh}`;
+    la referencia aprobada pasó a **a11** (`analysis/full-regressions-a11.log`, **334 etapas, exit 0**,
+    2026-11-07, con las etapas nuevas en verde). En paralelo A fijó y
+    probó la fuente única de procesadores (`MC_AOT_JAVA_PROCESSORS`, comparable a `-XX:ActiveProcessorCount`);
+    propuesta `commonPool() = max(1, N-1)` en Q-AB-5, pendiente de B.
