@@ -2449,7 +2449,7 @@ impl NumericCompiler<'_> {
         };
         let (owner, method, desc) = method_ref(&m.cp, target)?;
         if (owner,method,desc)==("java/lang/runtime/ObjectMethods","bootstrap", "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/TypeDescriptor;Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/invoke/MethodHandle;)Ljava/lang/Object;") {
-            return self.record_hash_bootstrap(m,class,nt,&b);
+            return self.record_bootstrap(m,class,nt,index,&b);
         }
         if (owner,method,desc)!=("java/lang/invoke/LambdaMetafactory","metafactory","(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;") {return self.string_concat(m,class,index);}
         use super::metadata::Type;
@@ -2658,21 +2658,40 @@ impl NumericCompiler<'_> {
         let receiver_guard=if impl_kind==7 {"if matches!(captures.first(),Some(V::R(None))){raise(\"NullPointerException\",\"\");}"} else {""};
         Ok(format!("let mut captures=Vec::with_capacity({n});for _ in 0..{n}{{captures.push(stack.pop().expect(\"captura lambda\"));}}captures.reverse();{receiver_guard}stack.push(V::R(Some(lambda_new(heap,{id},{:?},captures))));",self.lambdas[id].interface))
     }
-    // Solo hashCode de records con componentes integrales. Se valida el bootstrap
-    // y cada getter: nunca se sustituye un invokedynamic arbitrario por un hash.
-    fn record_hash_bootstrap(&mut self, m: &Method, class: &str, nt: u16, b: &super::Bootstrap) -> Result<String> {
+    // Solo wrappers generados de records integrales. Verificamos también
+    // el bytecode envolvente para no reinterpretar un sitio arbitrario con null.
+    fn record_bootstrap(&mut self, m: &Method, class: &str, nt: u16, index: u16, b: &super::Bootstrap) -> Result<String> {
         let (name, desc) = match m.cp.get(nt as usize) {
             Some(CpEntry::NameType(n,d)) => (super::utf(&m.cp,*n)?,super::utf(&m.cp,*d)?),
             _ => return Err("ObjectMethods: NameAndType inválido".into()),
         };
-        if name != "hashCode" || desc != format!("(L{class};)I") {
-            return Err(format!("ObjectMethods fuera del perfil hashCode integral: {name}{desc}"));
+        let equals = name == "equals" && desc == format!("(L{class};Ljava/lang/Object;)Z");
+        let hash = name == "hashCode" && desc == format!("(L{class};)I");
+        let text = name == "toString" && desc == format!("(L{class};)Ljava/lang/String;");
+        if !equals && !hash && !text {
+            return Err(format!("ObjectMethods fuera del perfil integral: {name}{desc}"));
+        }
+        let [hi,lo] = index.to_be_bytes();
+        let expected = if equals {vec![0x2a,0x2b,0xba,hi,lo,0,0,0xac]} else {vec![0x2a,0xba,hi,lo,0,0,if text {0xb0}else{0xac}]};
+        if m.code != expected || !m.handlers.is_empty() || m.synchronized {
+            return Err("ObjectMethods: cuerpo no es el wrapper estándar".into());
         }
         let data = if class == self.class_name { self.class_data.to_vec() } else { class_from_jar(self.jar,class)? };
         let meta = super::metadata::parse(&data)?;
+        let wrapper_desc = if equals {"(Ljava/lang/Object;)Z"} else if hash {"()I"} else {"()Ljava/lang/String;"};
+        let wrapper_key = format!("{class}.{name}{wrapper_desc}");
+        let declared = meta.methods.iter().find(|m| m.name == name && m.descriptor == wrapper_desc);
+        if self.active.last() != Some(&wrapper_key) || !matches!(declared, Some(m) if m.flags & 0x0008 == 0) {
+            return Err("ObjectMethods: solo se admiten wrappers de instancia declarados".into());
+        }
         if meta.parent.as_deref() != Some("java/lang/Record") || meta.flags & 0x10 == 0 {
             return Err("ObjectMethods: clase no es record final directo".into());
         }
+        let simple_name = match &meta.inner_simple_name {
+            Some(Some(name)) => name.clone(),
+            Some(None) => String::new(),
+            None => class.rsplit('/').next().unwrap_or(class).to_owned(),
+        };
         let components = meta.record_components.ok_or("ObjectMethods: falta atributo Record")?;
         if b.arguments.len() != components.len()+2 || super::object::class_name(&m.cp,b.arguments[0])? != class {
             return Err("ObjectMethods: clase o número de getters incorrecto".into());
@@ -2683,10 +2702,16 @@ impl NumericCompiler<'_> {
         };
         let names = components.iter().map(|c|c.name.as_str()).collect::<Vec<_>>().join(";");
         if super::utf(&m.cp,names_index)? != names {return Err("ObjectMethods: nombres no coinciden con Record".into());}
-        let mut out = format!("let r=pop_r(&mut stack);check_object_class(heap,r,{class:?});let mut hash=0i32;");
+        let mut out = if hash {
+            format!("let r=pop_r(&mut stack);check_object_class(heap,r,{class:?});let mut hash=0i32;")
+        } else if text {
+            format!("let r=pop_r(&mut stack);check_object_class(heap,r,{class:?});let mut text:Vec<u16>={simple_name:?}.encode_utf16().collect();text.push(91);")
+        } else {
+            format!("let other=pop_r(&mut stack);let r=pop_r(&mut stack);check_object_class(heap,r,{class:?});let compatible=match other.and_then(|id|heap.arrays.get(id)){{Some(Array::Obj(actual,_)|Array::SharedObj(actual,_)|Array::LocalObj(actual,_,_))=>*actual=={class:?},_=>false}};let mut equal=compatible;")
+        };
         for (i,component) in components.iter().enumerate() {
             if !matches!(component.descriptor.as_str(),"Z"|"B"|"C"|"S"|"I"|"J") {
-                return Err(format!("ObjectMethods.hashCode: tipo no soportado: {}",component.descriptor));
+                return Err(format!("ObjectMethods.{name}: tipo no soportado: {}",component.descriptor));
             }
             let field_ref = match m.cp.get(b.arguments[i+2] as usize) {
                 Some(CpEntry::MethodHandle(1,idx)) => *idx,
@@ -2702,14 +2727,28 @@ impl NumericCompiler<'_> {
                 return Err("ObjectMethods: componente no final de instancia".into());
             }
             let (declaring,slot,_) = self.resolve_instance_field(owner,field,descriptor)?;
-            let value = match descriptor {
-                "Z" => "match value {V::I(v)=>if v==0 {1237i32}else{1231i32},_=>panic!(\"record boolean inválido\")}",
-                "J" => "match value {V::L(v)=>(v^(v>>32)) as i32,_=>panic!(\"record long inválido\")}",
-                _ => "match value {V::I(v)=>v,_=>panic!(\"record int inválido\")}",
-            };
-            out.push_str(&format!("let value=object_load(heap,r,{declaring:?},{slot});let component={value};hash=hash.wrapping_mul(31).wrapping_add(component);"));
+            if hash {
+                let value = match descriptor {
+                    "Z" => "match value {V::I(v)=>if v==0 {1237i32}else{1231i32},_=>panic!(\"record boolean inválido\")}",
+                    "J" => "match value {V::L(v)=>(v^(v>>32)) as i32,_=>panic!(\"record long inválido\")}",
+                    _ => "match value {V::I(v)=>v,_=>panic!(\"record int inválido\")}",
+                };
+                out.push_str(&format!("let value=object_load(heap,r,{declaring:?},{slot});let component={value};hash=hash.wrapping_mul(31).wrapping_add(component);"));
+            } else if text {
+                let label = format!("{}{}=", if i==0 {""} else {", "}, component.name);
+                let render = match descriptor {
+                    "Z" => "match value {V::I(v)=>text.extend((if v==0 {\"false\"} else {\"true\"}).encode_utf16()),_=>panic!(\"record boolean inválido\")}",
+                    "C" => "match value {V::I(v)=>text.push(v as u16),_=>panic!(\"record char inválido\")}",
+                    "J" => "match value {V::L(v)=>text.extend(v.to_string().encode_utf16()),_=>panic!(\"record long inválido\")}",
+                    _ => "match value {V::I(v)=>text.extend(v.to_string().encode_utf16()),_=>panic!(\"record int inválido\")}",
+                };
+                out.push_str(&format!("text.extend({label:?}.encode_utf16());let value=object_load(heap,r,{declaring:?},{slot});{render};"));
+            } else {
+                let variant = if descriptor == "J" { "L" } else { "I" };
+                out.push_str(&format!("if equal {{let a=object_load(heap,r,{declaring:?},{slot});let b=object_load(heap,other,{declaring:?},{slot});equal=match(a,b){{(V::{variant}(x),V::{variant}(y))=>x==y,_=>panic!(\"componentes record inválidos\")}};}}"));
+            }
         }
-        out.push_str("stack.push(V::I(hash));");
+        out.push_str(if hash {"stack.push(V::I(hash));"} else if text {"text.push(93);stack.push(V::R(Some(new_string(heap,text))));"} else {"stack.push(V::I(equal as i32));"});
         Ok(out)
     }
 
@@ -3963,7 +4002,8 @@ pub(super) fn compile_jar(jar: &Path, class: &str, method: &str, desc: &str) -> 
 /// seguido de las unidades UTF-16 en hexadecimal, para conservar sustitutos aislados.
 ///
 /// Se rechaza con motivo nombrado lo que el perfil no describe: clase no
-/// pública, base distinta de `Object`, interfaces, campos estáticos, `<clinit>`,
+/// pública, base distinta de `Object` o un `Record` final admitido, interfaces,
+/// campos estáticos, `<clinit>`,
 /// campos no primitivos, `native`/`abstract` y manejadores de excepciones. No se
 /// omite ninguna declaración en silencio: si el driver no sabe ejecutarla, la
 /// clase entera se rechaza.
@@ -3979,7 +4019,9 @@ pub(super) fn class_demo_admission(jar: &Path, class: &str) -> Result<(super::me
     if meta.flags & (0x0200 | 0x0400 | 0x4000) != 0 {
         return Err(format!("interfaz, abstracta o enum fuera del perfil: {class}"));
     }
-    if meta.parent.as_deref() != Some("java/lang/Object") {
+    let is_record = meta.parent.as_deref() == Some("java/lang/Record")
+        && meta.flags & 0x0010 != 0 && meta.record_components.is_some();
+    if meta.parent.as_deref() != Some("java/lang/Object") && !is_record {
         return Err(format!("base no admitida: {:?}", meta.parent));
     }
     if !meta.interfaces.is_empty() {
@@ -4021,7 +4063,7 @@ pub(super) fn class_demo_admission(jar: &Path, class: &str) -> Result<(super::me
                 m.name, m.descriptor
             ));
         }
-        if m.name == "read" || m.name == "new" {
+        if m.name == "read" || m.name == "new" || m.name == "select" {
             return Err(format!("nombre reservado por el driver: {}", m.name));
         }
         if !seen.insert(m.name.clone()) {
@@ -4038,22 +4080,30 @@ pub(super) fn class_demo_admission(jar: &Path, class: &str) -> Result<(super::me
         return Err("se requiere exactamente un constructor".into());
     }
     // El driver admite argumentos primitivos y retornos primitivos o String.
-    // Los String de salida se codifican como unidades UTF-16, incluso null y
-    // sustitutos aislados; otras referencias se rechazan antes de generar Rust.
+    // Solo equals(Object) en records recibe null o un objeto ya creado; otras
+    // referencias se rechazan. String de salida conserva unidades UTF-16.
     for m in &meta.methods {
         let sig = signature_ext(&m.descriptor, true)
             .map_err(|e| format!("firma no admitida en {} {}: {e}", m.name, m.descriptor))?;
-        if sig.args.iter().any(|t| is_ref(*t)) || (is_ref(sig.ret) && sig.ret != 'T') {
+        // Solo equals(Object) de un record permite un argumento de referencia;
+        // el protocolo suministra null o un objeto del mismo registro del driver.
+        let record_equals = is_record && m.name == "equals"
+            && m.descriptor == "(Ljava/lang/Object;)Z" && m.flags & 0x0008 == 0;
+        if (sig.args.iter().any(|t| is_ref(*t)) && !record_equals) || (is_ref(sig.ret) && sig.ret != 'T') {
             return Err(format!("referencia en firma fuera del driver: {} {}", m.name, m.descriptor));
         }
     }
     Ok((meta, ctors[0].clone()))
 }
 
-fn demo_arg_reads(sig: &Sig, offset: usize) -> String {
+fn demo_arg_reads(sig: &Sig, offset: usize, record_equals: bool) -> String {
     let mut out = String::new();
     for (i, t) in sig.args.iter().enumerate() {
         let pos = i + offset;
+        if record_equals && *t == 'o' {
+            out.push_str(&format!("            let a{i}:Option<usize>=step_object(&step,{pos},&objects);\n"));
+            continue;
+        }
         let rust = rt(*t);
         out.push_str(&format!(
             "            let a{i}:{rust}=step_arg(&step,{pos},\"{t}\");\n"
@@ -4113,7 +4163,7 @@ pub(super) fn compile_class_demo(jar: &Path, class: &str) -> Result<String> {
         .collect::<Vec<_>>()
         .join(",");
     let ctor_fn = compiler.compile_instance(class, "<init>", &ctor_descriptor)?;
-    let ctor_reads = demo_arg_reads(&ctor_sig, 1);
+    let ctor_reads = demo_arg_reads(&ctor_sig, 1, false);
     let mut arms = String::new();
     let mut method_counts = Vec::new();
     for m in meta.methods.iter().filter(|m| m.name != "<init>") {
@@ -4130,7 +4180,9 @@ pub(super) fn compile_class_demo(jar: &Path, class: &str) -> Result<String> {
         } else {
             "            let id=object.unwrap_or_else(||error(\"objeto no construido\"));\n".to_string()
         };
-        let reads = demo_arg_reads(&sig, 1);
+        let record_equals = meta.parent.as_deref() == Some("java/lang/Record")
+            && m.name == "equals" && m.descriptor == "(Ljava/lang/Object;)Z" && !is_static;
+        let reads = demo_arg_reads(&sig, 1, record_equals);
         let args = (0..sig.args.len())
             .map(|i| format!(",a{i}"))
             .collect::<String>();
@@ -4178,6 +4230,7 @@ pub(super) fn compile_class_demo(jar: &Path, class: &str) -> Result<String> {
         "// class-demo de {class}: constructor y todas las declaraciones, sin omisiones.\n\
          #![allow(dead_code,unused_variables,unused_mut)]\n{RUNTIME}\n{parents}\n{inits}\n{functions}\n\
          fn step_arg<T:std::str::FromStr>(step:&[String],i:usize,label:&str)->T{{match step.get(i).and_then(|v|v.parse::<T>().ok()){{Some(v)=>v,None=>error(&format!(\"argumento {{i}} inválido para {{label}}\"))}}}}\n\
+         fn step_object(step:&[String],i:usize,objects:&[usize])->Option<usize>{{let value=step.get(i).unwrap_or_else(||error(\"referencia ausente\"));if value==\"null\"{{return None;}}let idx=value.strip_prefix('@').and_then(|s|s.parse::<usize>().ok()).unwrap_or_else(||error(\"referencia inválida: usa null o @índice\"));Some(*objects.get(idx).unwrap_or_else(||error(\"índice de objeto inexistente\")))}}\n\
          fn main(){{run_java(main_inner);}}\n\
          fn main_inner() {{\n\
          \x20   let raw:Vec<String>=std::env::args().skip(1).collect();\n\
@@ -4188,17 +4241,18 @@ pub(super) fn compile_class_demo(jar: &Path, class: &str) -> Result<String> {
          \x20   let mut heap=Heap::default();\n\
          \x20   heap.fields=vec![{static_initial}];\n\
          \x20   heap.init_states=vec![0;{nclasses}];\n\
-         \x20   let mut object:Option<usize>=None;\n\
+         \x20   let mut object:Option<usize>=None;let mut objects:Vec<usize>=Vec::new();\n\
          \x20   for step in steps {{\n\
          \x20       match step[0].as_str() {{\n\
          \x20           \"new\" => {{\n\
          \x20               init_class_{root}(&mut heap);\n\
          \x20               let id=object_new(&mut heap,{class:?},vec![{defaults}],false);\n\
          {ctor_reads}                {ctor_fn}(&mut heap,id{ctor_args});\n\
-         \x20               object=Some(id);\n\
+         \x20               object=Some(id);objects.push(id);\n\
          \x20               println!(\"OK\");\n\
          \x20           }}\n\
          {arms}\
+         \x20           \"select\" => {{object=Some(step_object(&step,1,&objects).unwrap_or_else(||error(\"select no admite null\")));println!(\"OK\");}}\n\
          \x20           \"read\" => {{\n\
          \x20               let name=step.get(1).cloned().unwrap_or_else(||error(\"read requiere un campo\"));\n\
          \x20               match name.as_str() {{\n{read_arms}\

@@ -1,5 +1,7 @@
 # Records: metadatos y `hashCode` integral
 
+**Estado histórico:** `equals` y `toString` para componentes integrales se añadieron después; estado actualizado en `analysis/a12-records-integrales.md`.
+
 El parser lee ahora el atributo `Record` en orden, distingue un record vacío de
 una clase sin el atributo y conserva nombres y descriptores de componentes. El
 comando `inspect-record` expone esa superficie estructural. No valida toda la

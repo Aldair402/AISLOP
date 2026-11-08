@@ -1,0 +1,23 @@
+universo: 7762 clases (todo el JAR)
+generan Rust (sin rustc ni ejecución): 13  (0.2 %)  · bloqueadas: 7749
+de las describibles: 13 de 2611
+
+primeros motivos de bloqueo:
+   1772  base no admitida: <clase>
+   1422  interfaz, abstracta o enum fuera del perfil: <clase>
+   1351  clase no pública: <clase>
+   1235  interfaces fuera del perfil: <clase>
+    852  inicializador estático <clinit> fuera del perfil
+    414  campo no primitivo fuera del perfil: <campo> <clase>
+    326  ruta de clase inválida
+    123  campo estático fuera del perfil: <campo>
+     75  interfaces fuera del perfil: <clase>,<clase>
+     32  referencia en firma fuera del driver: <miembro> (<clase>)<clase>
+     30  sobrecarga fuera del driver: <miembro>
+     26  referencia en firma fuera del driver: <miembro> (<clase>)V
+     21  referencia en firma fuera del driver: <miembro> ()<clase>
+      6  referencia en firma fuera del driver: <miembro> (<clase><clase>)<clase>
+      3  clase no encontrada en versiones ni bibliotecas: <clase>.class
+
+JSON: analysis/execution-census-a12.json
+CENSO_RC=0

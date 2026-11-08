@@ -70,9 +70,7 @@ with tempfile.TemporaryDirectory(prefix='record-hash-') as tmp:
     assert java.returncode == native.returncode == 0, (java.stderr,native.stderr)
     assert len(java.stdout.splitlines()) == len(cases), (len(cases),java.stdout)
     assert java.stdout == native.stdout, (java.stdout,native.stdout)
-    for name, descriptor, error in [('decimal','(I)I','ObjectMethods.hashCode: tipo no soportado: F'),
-                                     ('equal','(II)I','ObjectMethods fuera del perfil hashCode integral: equals'),
-                                     ('text','(I)I','ObjectMethods fuera del perfil hashCode integral: toString')]:
+    for name, descriptor, error in [('decimal','(I)I','ObjectMethods.hashCode: tipo no soportado: F')]:
         target = d/f'reject-{name}'
         rejected = run([compiler,'multi-static-demo',fixture,'net/minecraft/test/RecordsHash',target,name,descriptor])
         assert rejected.returncode != 0 and error in rejected.stderr and not target.exists(), (name,rejected.stderr)
@@ -89,4 +87,17 @@ with tempfile.TemporaryDirectory(prefix='record-hash-') as tmp:
     bad = d/'bad-bootstrap'
     rejected = run([compiler,'multi-static-demo',tampered,'net/minecraft/test/RecordsHash',bad,'mixed','(IJIIII)I'])
     assert rejected.returncode != 0 and 'nombres no coinciden con Record' in rejected.stderr and not bad.exists(), rejected.stderr
+    # El mismo bootstrap en un cuerpo modificado no es el wrapper estándar.
+    oddjar=d/'odd-wrapper.jar'
+    with zipfile.ZipFile(fixture) as inp, zipfile.ZipFile(oddjar,'w') as out:
+        for entry in inp.infolist():
+            raw=inp.read(entry.filename)
+            if entry.filename=='net/minecraft/test/RecordsHash$Mixed.class':
+                found=[i for i in range(len(raw)-7) if raw[i:i+2]==b'\x2a\xba' and raw[i+4:i+7]==b'\x00\x00\xac']
+                assert len(found)==1, found
+                altered=bytearray(raw); altered[found[0]]=0x01; raw=bytes(altered)
+            out.writestr(entry.filename,raw)
+    bad=d/'bad-wrapper'
+    rejected=run([compiler,'multi-static-demo',oddjar,'net/minecraft/test/RecordsHash',bad,'mixed','(IJIIII)I'])
+    assert rejected.returncode!=0 and 'cuerpo no es el wrapper estándar' in rejected.stderr and not bad.exists(), rejected.stderr
     print(f'OK: {len(cases)} hashCode de records (vacío, primitivos, DeltaStep vanilla); Java 25 == nativo sin JVM; guardas de tipo, operaciones y bootstrap')

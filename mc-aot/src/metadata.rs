@@ -162,6 +162,8 @@ pub(super) struct Class {
     pub flags: u16,
     /// InnerClasses del propio tipo, si existe; relevante para Class.getModifiers.
     pub inner_flags: Option<u16>,
+    /// None sin entrada propia; Some(None) anónima; Some(Some(nombre)) anidada/local.
+    pub inner_simple_name: Option<Option<String>>,
     /// None si no hay atributo Record; Some(vec![]) para un record sin componentes.
     pub record_components: Option<Vec<RecordComponent>>,
     pub fields: Vec<Field>,
@@ -336,6 +338,7 @@ pub(super) fn parse(data: &[u8]) -> Result<Class> {
     }
     let attrs=r.u2()?;
     let mut inner_flags=None;
+    let mut inner_simple_name=None;
     let mut seen_inner=false;
     let mut record_components: Option<Vec<RecordComponent>> = None;
     for _ in 0..attrs {
@@ -372,6 +375,7 @@ pub(super) fn parse(data: &[u8]) -> Result<Class> {
                 if inner_name==name {
                     if inner_flags.is_some(){return Err("InnerClasses: clase duplicada".into());}
                     inner_flags=Some(access);
+                    inner_simple_name=Some(if name_index == 0 {None} else {Some(utf(&cp,name_index)?.to_owned())});
                 }
             }
             if sub.pos!=bytes.len(){return Err("InnerClasses: longitud inválida".into());}
@@ -389,6 +393,7 @@ pub(super) fn parse(data: &[u8]) -> Result<Class> {
         major,
         flags,
         inner_flags,
+        inner_simple_name,
         record_components,
         fields,
         methods,

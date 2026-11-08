@@ -52,6 +52,8 @@ run_logged check-class-demo-static-methods python3 mc-aot/tests/check-class-demo
 run_logged check-execution-census-batch python3 mc-aot/tests/check-execution-census-batch.py
 run_logged check-record-metadata python3 mc-aot/tests/check-record-metadata.py
 run_logged check-record-hash python3 mc-aot/tests/check-record-hash.py
+run_logged check-record-equals python3 mc-aot/tests/check-record-equals.py
+run_logged check-vanilla-record-classes python3 mc-aot/tests/check-vanilla-record-classes.py
 run_logged check-vanilla-two-more-classes python3 mc-aot/tests/check-vanilla-two-more-classes.py
 run_logged check-vanilla-empty-classes python3 mc-aot/tests/check-vanilla-empty-classes.py
 run_logged check-vanilla-intbounds python3 mc-aot/tests/check-vanilla-intbounds.py
