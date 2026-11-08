@@ -49,7 +49,13 @@ jobs:
           python3 mc-aot/tools/classfile-surface.py net.minecraft.core.QuartPos --registry analysis/class-registry.json
           python3 mc-aot/tools/class-surface-evidence.py analysis/class-evidence/quartpos.json
           python3 mc-aot/tools/update-quartpos-evidence.py --check
+          python3 mc-aot/tests/check-class-surface-evidence.py
+          python3 mc-aot/tests/check-class-complete-predicate.py
+          python3 mc-aot/tools/class-surface-evidence.py analysis/class-evidence/featureflaguniverse.json
+          python3 mc-aot/tools/update-class-evidence.py --spec analysis/class-specs/featureflaguniverse.json --check
+          python3 mc-aot/tests/check-update-class-evidence.py
           python3 mc-aot/tools/check-class-registry.py
+          python3 mc-aot/tests/check-integration-contract.py
           python3 mc-aot/tools/check-family-partition.py
       - name: baseline guard
         run: |

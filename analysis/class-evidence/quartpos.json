@@ -1,5 +1,17 @@
 {
   "schema": "partial-surface-v1",
+  "members_classification": {
+    "fromBlock(I)I": "differential",
+    "quartLocal(I)I": "differential",
+    "toBlock(I)I": "differential",
+    "fromSection(I)I": "differential",
+    "toSection(I)I": "differential",
+    "BITS:I": "differential",
+    "SIZE:I": "differential",
+    "MASK:I": "differential",
+    "SECTION_TO_QUARTS_BITS:I": "differential",
+    "<init>()V": "java-only"
+  },
   "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
   "class": "net/minecraft/core/QuartPos",
   "class_sha256": "0821d686ee83185e5af97bbfbf384e768c23be925da4edfece98e9a4bb83b62c",

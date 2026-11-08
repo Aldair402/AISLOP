@@ -33,6 +33,46 @@
         ],
         "methods_java_only": [
           "<init>()V"
+        ],
+        "differential_members": [
+          {
+            "member": "fromBlock(I)I"
+          },
+          {
+            "member": "quartLocal(I)I"
+          },
+          {
+            "member": "toBlock(I)I"
+          },
+          {
+            "member": "fromSection(I)I"
+          },
+          {
+            "member": "toSection(I)I"
+          },
+          {
+            "member": "BITS:I"
+          },
+          {
+            "member": "SIZE:I"
+          },
+          {
+            "member": "MASK:I"
+          },
+          {
+            "member": "SECTION_TO_QUARTS_BITS:I"
+          }
+        ],
+        "java_only_members": [
+          {
+            "member": "<init>()V"
+          }
+        ],
+        "unreachable_java_only": [
+          {
+            "member": "<init>()V",
+            "reason": "constructor privado de una clase final con solo métodos estáticos: ningún bytecode traducido puede invocarlo; solo la reflexión con setAccessible lo alcanza, y esa ruta es java-only, no un camino del programa"
+          }
         ]
       },
       "evidence": {
@@ -51,6 +91,58 @@
         "La comparación de los cinco métodos usa 515 entradas int por método y cuatro lecturas de campo; no prueba todo el dominio, solo límites de int, vecindad y 500 valores aleatorios con semilla fija.",
         "El constructor privado se mide por reflexión en Java (IllegalAccessException sin setAccessible, instancia con setAccessible) y su bytecode es el constructor por defecto; el traductor no implementa reflexión, así que no hay contraste nativo equivalente y no puede contar como diferencial.",
         "La superficie se reconcilia con el classfile y con la reflexión (flags, superclase, interfaces, campos, constructores), pero no se verifica comportamiento heredado de Object ni identidad de la clase en nativo."
+      ],
+      "certified": false,
+      "review": null,
+      "reviewer": null,
+      "date_verified": "2026-11-05"
+    },
+    {
+      "class": "net/minecraft/world/flag/FeatureFlagUniverse",
+      "status": "partial-evidence",
+      "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
+      "class_sha256": "61e490913ad43b3f0137a8fd3f310856ef8b06c32051cbc80bc3bfb7c211e2c0",
+      "surface": {
+        "methods_declared": 2,
+        "fields_declared": 1,
+        "methods_with_evidence": 2,
+        "fields_with_evidence": 1,
+        "methods_without_evidence": [],
+        "fields_without_evidence": [],
+        "differential_members": [
+          {
+            "member": "<init>(Ljava/lang/String;)V",
+            "cases": 96
+          },
+          {
+            "member": "toString()Ljava/lang/String;",
+            "cases": 96
+          },
+          {
+            "member": "id:Ljava/lang/String;",
+            "cases": 96
+          }
+        ],
+        "java_only_members": [],
+        "unreachable_java_only": []
+      },
+      "evidence": {
+        "manifest": "analysis/class-evidence/featureflaguniverse.json",
+        "classfile_manifest": "analysis/class-evidence/featureflaguniverse-classfile.json",
+        "report": "analysis/featureflaguniverse-evidence-report.json",
+        "tests": [
+          "mc-aot/tests/check-featureflaguniverse-class-surface.py",
+          "mc-aot/tools/classfile-surface.py"
+        ],
+        "logs": [
+          "analysis/featureflaguniverse-static-surface.log"
+        ]
+      },
+      "limitations": [
+        "El diferencial cubre 96 argumentos por operación (longitudes 0..64, unicode, pares sustitutos fuera del BMP, controles, comillas y null) contra Java 25; no cubre cadenas arbitrarias ni el dominio completo de String.",
+        "El efecto del constructor y del campo se observa a través de toString() de la propia clase: si toString tradujera mal, la operación de campo fallaría también. Está declarado como dependencia cruzada, no como evidencia separada.",
+        "No se mide identidad de la clase en el heap nativo más allá de getClass()==FeatureFlagUniverse.class, ni igualdad/hash de instancias: la clase no declara equals ni hashCode, así que hereda los de Object y esa parte no es de esta clase.",
+        "El arnés expone un único punto de entrada estático (run(I)I); no se ejercita el uso de la clase como valor de retorno de otro método traducido ni su publicación entre hilos."
       ],
       "certified": false,
       "review": null,

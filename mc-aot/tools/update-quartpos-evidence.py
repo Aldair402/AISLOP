@@ -100,8 +100,22 @@ def main():
         "constructores), pero no se verifica comportamiento heredado de Object ni identidad de la clase en nativo.",
     ]
 
+    differential_members = [{"member": f"{n}{d}"} for n, d in STATIC_METHODS]
+    differential_members += [{"member": f"{n}:{d}"} for n, d in FIELDS]
+    java_only_members = [{"member": "<init>()V"}]
+    unreachable_java_only = [{
+        "member": "<init>()V",
+        "reason": ("constructor privado de una clase final con solo métodos estáticos: ningún bytecode "
+                   "traducido puede invocarlo; solo la reflexión con setAccessible lo alcanza, y esa ruta es "
+                   "java-only, no un camino del programa"),
+    }]
+
+    classification = {m["member"]: "differential" for m in differential_members}
+    classification.update({m["member"]: "java-only" for m in java_only_members})
+
     manifest = {
         "schema": "partial-surface-v1",
+        "members_classification": classification,
         "jar_sha256": classfile["jar_sha256"],
         "class": CLASS,
         "class_sha256": classfile["class_sha256"],
@@ -109,6 +123,7 @@ def main():
         "limitations": limitations,
     }
     MANIFEST.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
+
 
     report = {
         "class": CLASS,
@@ -123,6 +138,9 @@ def main():
         "fields_with_partial_evidence": len(classfile["fields"]),
         "methods_without_evidence": [],
         "fields_without_evidence": [],
+        "differential_members": differential_members,
+        "java_only_members": java_only_members,
+        "unreachable_java_only": unreachable_java_only,
         "classfile_surface": {
             "flags": classfile["flags"],
             "super_class": classfile["super_class"],
@@ -152,6 +170,9 @@ def main():
         "fields_with_evidence": len(classfile["fields"]),
         "methods_without_evidence": [],
         "fields_without_evidence": [],
+        "differential_members": differential_members,
+        "java_only_members": java_only_members,
+        "unreachable_java_only": unreachable_java_only,
         "methods_differential": [f"{n}{d}" for n, d in STATIC_METHODS],
         "methods_java_only": ["<init>()V"],
     })

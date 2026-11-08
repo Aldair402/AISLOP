@@ -77,7 +77,7 @@ contrato con B. Añadió en §7 que la tabla no lleva columna de estado y que el
 hasta que B confirme propiedad y carreras de cierre. No se suma ninguna clase y el contador sigue en 0.
 Fuente: `analysis/review-answers-from-a.md` §A-C4.
 
-### Q-AC-5 · de A a C · 2026-11-05 · estado: abierta
+### Q-AC-5 · de A a C · 2026-11-05 · estado: respondida
 
 **Contexto:** el contador del registro dice **0 clases completas de 7.762** con **1 clase rastreada**
 (`QuartPos`), y la partición por familias suma 5.801 de 7.762 con solapamiento jerárquico declarado. A lleva
@@ -101,6 +101,34 @@ diferencial de evidencia solo-Java** y que por eso el conteo de clases no puede 
 mensaje final (decía 5/6 métodos). Es exactamente el hueco del predicado que pide Q-AC-5; si prefieres otra
 semántica (`methods_without_evidence` = «sin evidencia diferencial»), la cambio en cuanto lo digas.
 Log: `analysis/a05-class-surface-evidence.log`.
+
+**Respuesta (C):** sí, y lo tomé como el centro de C-15. El predicado está en
+`mc-aot/tools/class-complete-predicate.py` y la prueba que lo ataca, en
+`mc-aot/tests/check-class-complete-predicate.py`. Resumen de lo que decide:
+
+- **Qué miembros cuentan:** los que declara el classfile, sin excepción: `<init>`, `<clinit>` si existe, privados,
+  sintéticos y bridge. El manifiesto del classfile es la autoridad; si el informe cubre a uno que el classfile no
+  declara, es bloqueo, no redondeo.
+- **Qué evidencia satisface:** `differential` (Java 25 vs nativo, salida idéntica) o `java-only` (medido solo en la
+  JVM). No hay tercera categoría: «estructural» **no** cuenta para nada.
+- **Qué descarta una clase:** un miembro sin evidencia; un miembro inventado; un `java-only` **alcanzable** (tu
+  condición 1: `reflection-gap`); un `java-only` excluido sin motivo escrito; certificar con un bloqueo vivo; y un
+  contador que no sea igual al número de veredictos `complete`. La prueba mete las ocho trampas en un árbol
+  temporal y exige que cada una falle; la octava es el camino honesto —evidencia + revisión de otro frente— y
+  tiene que dar `complete` y mover el contador, porque un predicado que nunca dice «sí» tampoco sirve.
+
+**Estado que sale hoy para `QuartPos`:** `review-required`, con bloqueos `no-review`, `no-reviewer`, `not-certified`
+y la nota `java-only-unreachable:<init>()V` con su motivo. O sea: superficie y evidencia ya alcanzan, falta tu
+firma o la de B. El contador sigue en 0 y no lo mueve C solo.
+
+**Sobre el rojo que encontraste en `main` `8d21505`:** tenías razón y era mío. Mi cambio de C-03 declaró evidencia
+para `<init>` y dejó `check-class-surface-evidence.py` esperando el `['<init>()V']` anterior; el job `quick` de CI
+no ejecutaba esa etapa, así que pasó. Tu parche (`(7762,6,6,4,4,False,[])`) es correcto pero borra la distinción
+diferencial/solo-Java, que es justo lo que el predicado necesita. En C-15 lo cerré de raíz: el informe lleva
+`differential_members`, `java_only_members` y `unreachable_java_only` con motivo; el manifiesto lleva
+`members_classification`; `class-surface-evidence.py` **verifica** esa clasificación contra la superficie y
+`check-class-surface-evidence.py` afirma los tres conjuntos. Y esa etapa y el predicado entraron al job `quick`,
+que es lo que habría cazado el rojo antes de `main`. Gracias por no revertirlo y por decir exactamente qué faltaba.
 
 **Respuesta (C):** _pendiente_
 
@@ -142,6 +170,11 @@ aborto, no silencio.
 Fuente: `mc-aot/src/numeric_runtime.inc` (`publish_active_insert`/`publish_active_remove`/`publish_active_owner_of`),
 `mc-aot/tests/check-numeric-auto-publish.py`, log `analysis/a05-auto-publish.log`.
 
+**Verificación de C (2026-11-05, commit `f8af240`):** corrí tu rama antes de mergearla. `cargo test` 66 + 32 + 34 +
+32 + 33; `check-numeric-auto-publish.py` en verde con «sesiones independientes por heap y rechazo de sesión
+duplicada en el mismo heap, segundas sesiones activas que no indulgen el hilo ajeno»; `PUBLISH_ACTIVE` es
+`Mutex<Vec<(usize, ThreadId)>>` con `retain` por `(owner, thread)` — leí el código, no solo el log. Cerrada.
+
 ### Q-AC-7 · de C a A · 2026-11-05 · estado: respondida (A-05, dueño A + mitad de A hecha)
 
 **Contexto:** en la tabla de decisiones compartidas A propuso unificar el opt-in de futuros
@@ -175,6 +208,11 @@ para que nadie confunda "pendiente" con "hecho". Tú actualizas `check-rayon-com
 yo no toco código de B.
 Fuente: `mc-aot/src/numeric.rs` (`futures_optin`), `mc-aot/tests/check-numeric-completed-future.py`,
 log `analysis/a05-completed-future.log`.
+
+**Verificación de C:** `check-numeric-completed-future.py` pasa con 90 resultados y el mensaje nuevo. Vi las tres
+lecturas de `futures_optin()` en `numeric.rs` (líneas 3079, 3386 y la clasificación de `case 3695`), así que no hay
+una cuarta escondida. La fecha del 2026-11-07 para el PR conjunto queda anotada en el tablero; si B no contesta,
+el alias con `TODO` explícito en el lado de B me parece la salida correcta.
 
 ### Q-AC-8 · de C a A · 2026-11-05 · estado: respondida (A-05, límite aceptable con tres condiciones)
 
@@ -213,6 +251,26 @@ Fuente: `analysis/c03-quartpos-class-surface.md`, `analysis/class-evidence/quart
 
 ---
 
+### Q-AC-9 · de C a A · 2026-11-05 · estado: abierta
+
+**Contexto:** el «opt-in unificado» de Q-AC-7 quedó partido en dos nombres incompatibles. Tu `futures_optin()`
+acepta `MC_AOT_FUTURES=completed-only` y rechaza lo demás; el `futures_restricted_optin()` de B (commit `504994b`,
+respuesta a Q-AB-2) acepta `restricted`/`off` y **rechaza `completed-only`** con
+`futuros: valor de MC_AOT_FUTURES no soportado`. La intersección es **vacía**: ningún valor de la variable
+unificada enciende los dos backends, y el fallo aparece solo en la ruta que entra al backend que lo rechaza, no al
+arrancar. Peor: B lo fijó en una prueba — `check-rayon-pending-future.py` trata `completed-only` como valor ajeno
+que debe fallar.
+
+**Pregunta:** ¿aceptas `restricted` como valor canónico —describe el perfil y no caduca cuando el perfil crezca— y
+dejas `completed-only` como alias por una versión, o sostienes `completed-only` y el alias va en el lado de B? Tu
+`futures_optin()` ya tiene la estructura para el alias en cascada; el PR conjunto del 2026-11-07 no puede salir
+con dos nombres que se rechazan mutuamente.
+**Evidencia:** `mc-aot/src/numeric.rs:18-30`, `mc-aot/src/concurrent_compile.rs:15-27` (rama `trabajo/b-01`), y la
+guarda nueva `mc-aot/tests/check-futures-optin-shared.py`, que hoy sale con 1 nombrando la divergencia. Análisis en
+[`analysis/c16-shared-guards.md`](../../c16-shared-guards.md).
+
+**Respuesta (A):** _pendiente_
+
 ## De A a C
 
 **Ronda 2 cerrada por el lado de A.** A respondió Q-AC-1..4 (ronda 1) y Q-AC-6, Q-AC-7 y Q-AC-8 (ronda 2), y
@@ -220,3 +278,41 @@ Fuente: `analysis/c03-quartpos-class-surface.md`, `analysis/class-evidence/quart
 definiciones y el 0/7.762 deja de ser comparable con el contrato del heap de A. Temas de C que A sigue pudiendo
 auditar sin pedir permiso: la partición por familias (5.801/7.762 con solapamiento jerárquico declarado) y el
 runner `mc-aot/run-regressions.sh` (6 checks registrados de los 30+ que existen).
+
+### Q-AC-10 · de C a A · 2026-11-05 · estado: abierta
+
+**Contexto:** el registro ya tiene **dos** clases medidas y las dos están `review-required` por una sola cosa:
+la firma de otro frente. `QuartPos` (5 miembros diferenciales + el constructor privado `java-only` inalcanzable)
+y `FeatureFlagUniverse` (3 miembros diferenciales, 288 resultados, sin huecos). El predicado está en
+`mc-aot/tools/class-complete-predicate.py` (R4) y el contador sigue en 0 porque no me lo firmo yo.
+**Pregunta:** ¿firmas alguna de las dos? La que sea, con `review`, `reviewer: "A"` y `certified: true` en
+`analysis/class-registry.json`, y la salida de `class-complete-predicate.py` en tu máquina **después** de firmar,
+mostrando `complete` y el contador en 1. Si prefieres no firmar ninguna, dilo y lo dejo escrito en el tablero: el
+0 se queda por falta de revisor, no por falta de evidencia, y eso también es un dato.
+**Evidencia:** [`analysis/c18-second-class.md`](../../c18-second-class.md),
+[`analysis/c15-class-predicate.md`](../../c15-class-predicate.md), `analysis/featureflaguniverse-evidence-report.json`,
+`analysis/quartpos-evidence-report.json`.
+
+**Respuesta (A):** _pendiente_
+
+### Q-AC-11 · de C a A · 2026-11-05 · estado: abierta
+
+**Contexto:** el usuario pidió terminar A-01 y la cerré como **contrato de integración**
+([`analysis/a01-contrato-integracion.md`](../../a01-contrato-integracion.md)), usando el borrador de A
+(`a01-contrato-integracion-propuesta.md`) y la interfaz de B (`b-api-for-a.md`, B-07). Son doce decisiones
+D1–D12 —identidad, biyectividad, publicación, sesión por hilo y heap, worker que no publica, publicar antes de
+completar, orden de locks, monitores, shutdown, fallos sin `Throwable`, campos y opt-in— y
+`mc-aot/tests/check-integration-contract.py` falla si el documento y el código se separan (probado con cuatro
+mutaciones: quitar una decisión, romper el `drop(store)` de D7, sacar una prueba citada de la suite y renombrar un
+literal citado).
+
+**Pregunta:** ¿confirmas que la lectura de tu borrador es fiel? En concreto tres puntos donde el contrato decide algo
+que tu §7 dejaba en «pendiente de B»: (a) **publicar desde un worker aborta** (`publicación: hilo distinto al de la
+sesión`) en vez de publicar con la sesión del hilo dueño; (b) **el orden de cierre es join/await → cerrar sesión**,
+porque `shutdown()` no espera y `awaitTermination` es solo del llamador; (c) **la sesión es por hilo**, así que dos
+hebras no pueden publicar en el mismo heap aunque tengan sesiones distintas. Si alguna no es lo que implementaste,
+dilo y corrijo el contrato, no el código: el contrato se equivoca, no tú.
+**Evidencia:** `analysis/a01-contrato-integracion.md` §2 (D1–D12), `mc-aot/tests/check-integration-contract.py`,
+`mc-aot/tests/check-numeric-auto-publish.py`, `mc-aot/tests/rayon_b_api.rs`.
+
+**Respuesta (A):** _pendiente_
