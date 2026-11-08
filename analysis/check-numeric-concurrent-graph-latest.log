@@ -12,10 +12,11 @@ test concurrent_heap::tests::workers_update_shared_fields_via_cas_and_wrapping_a
 test executor_runtime::tests::completed_future_does_not_keep_shutdown_pool_alive ... ok
 test executor_runtime::tests::constructor_and_unused_shutdown_do_not_start_workers ... ok
 test executor_runtime::tests::never_started_pool_is_terminated_after_shutdown ... ok
+test executor_runtime::tests::pool_queries_reflect_lifecycle ... ok
 test executor_runtime::tests::pool_queries_reject_unknown_objects ... ok
 test executor_runtime::tests::racing_first_use_creates_only_one_pool ... ok
 test executor_runtime::tests::rejected_hooks_never_fall_back_to_default_pool ... ok
-test executor_runtime::tests::pool_queries_reflect_lifecycle ... ok
+test executor_runtime::tests::completed_future_does_not_keep_shutdown_pool_alive ... ok
 test frame_vm::tests::synchronized_frame_releases_monitor_on_step_error ... ok
 test frame_vm::tests::worker_frames_share_heap_without_sharing_operand_stacks ... ok
 test executor_runtime::tests::shutdown_does_not_wait_for_a_running_task ... ok
@@ -29,5 +30,5 @@ test scheduler::tests::shutdown_timeout_rejection_and_panic ... ok
 test scheduler::tests::weak_helper_does_not_keep_closed_pool_alive ... ok
 test graph_tests::graph_traversal_between_backends ... ok
 
-test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.97s
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.84s
 OK: 20 rondas Java y Rust; dos backends traducidos, navegación de referencia final entre dos objetos y monitor compartido; cuatro tareas ForkJoinPool Java en Rayon, QuartPos oficial, alias y guardas de identidad, registro y tipo, ejecución sin Java en PATH; layout generado de classfile; harness externo opt-in, no Main

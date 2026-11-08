@@ -1,6 +1,6 @@
 running 1 test
 test bridge_tests::actual_numeric_heap_shared_with_rayon ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s
 OK: 64 resultados Java/nativo con y sin compartir; 20 rondas Rayon × 4000 incrementos y oráculo Java sincronizado sobre objeto del heap numérico; identidad, alias, campo separado, guardas y pertenencia; no ejecuta tareas Java en Rayon
 OK: 64 resultados Java/nativo con y sin compartir un FeatureFlagUniverse oficial, hash verificado; campo String accedido por toString oficial, no por el handle

@@ -1,2 +1,2 @@
-    Finished `release` profile [optimized] target(s) in 0.01s
+    Finished `release` profile [optimized] target(s) in 0.02s
 Candidatas: 99 clases (11 con <clinit>); programas compilados: 96 (8 con <clinit>); 0 clases completas certificadas. Informe: /home/user/minecraft-rust/analysis/audit-static-references.json

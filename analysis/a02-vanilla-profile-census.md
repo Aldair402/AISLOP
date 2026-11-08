@@ -64,7 +64,7 @@ Lo que **sí** sigue siendo fatal, porque el layout no puede representarlo:
 | Bloqueo fatal | Clases |
 |---|---|
 | referencia a un tipo del que no hay bytes en el JAR (`String`, `Map`, `List`, `Codec`…) | 2.238 |
-| ~~sin ranura~~ (`int`/`boolean`/`byte`/`char`/`short`/`long`/`float`/`double`) | **0**: las ocho ranuras existen desde el 2026-11-07 |
+| ~~sin ranura~~ (`int`/`boolean`/`byte`/`char`/`short`/`long`/`float`/`double`) | **0**: las ocho ranuras existen desde el 2026-11-06 |
 | arrays (`[B`, `[J`, `[F`…) | 40 |
 | cadena de superclases fuera del JAR (`DataFix` 275, `Schema` 122, `RuntimeException` 29, `jfr/Event` 12, Guava 11) | 449 |
 | referencia no final (sin el opt-in `MutRef`) | 569 |
@@ -87,7 +87,7 @@ etiqueta informativa (`closed_by`: `final`, `no-subclasses` o `has-subclasses`) 
 lo que el traductor puede asumir, pero ya no rechaza. La prueba lo fija: compilar una subclase real
 de `SleepStatus` contra el classfile oficial **no cambia el layout**, solo la etiqueta.
 
-## 3 bis. Las ocho ranuras primitivas (implementadas el 2026-11-07)
+## 3 bis. Las ocho ranuras primitivas (implementadas el 2026-11-06)
 
 `NumericGraphSlot` tenía `Int`, `Ref` y `MutRef`. Ahora tiene una ranura por tipo
 declarado — `Int`, `Bool`, `Byte`, `Char`, `Short`, `Long`, `Float`, `Double`, `Ref`,
@@ -154,7 +154,7 @@ referencias, `closed_by` en sus tres valores.
 
 ## 7. Qué se implementa después, en orden de coste medido
 
-1. ~~**Ranuras nuevas**~~ — **hecho el 2026-11-07**: 2.161 → **2.611** describibles, 1.114 → **1.564**
+1. ~~**Ranuras nuevas**~~ — **hecho el 2026-11-06**: 2.161 → **2.611** describibles, 1.114 → **1.564**
    con campos, 2.469 → **4.048** campos; con prueba diferencial contra Java 25.
 2. **Referencias a tipos del JAR de librería** (`java/lang/String`, `Map`, `List`, `Codec`): 1.839
    clases. No es un cambio de perfil: es *soportar* esos tipos (colecciones, cadenas como valor,

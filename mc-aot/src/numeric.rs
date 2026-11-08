@@ -3886,6 +3886,243 @@ pub(super) fn compile_jar(jar: &Path, class: &str, method: &str, desc: &str) -> 
     Ok(format!("// Generado por mc-aot: {class}.{method}{desc}\n#![allow(dead_code,unused_variables,unused_mut)]\n{RUNTIME}\n{}\n{}\nfn main() {{run_java(main_inner);}}\nfn main_inner() {{\n    let args:Vec<String>=std::env::args().skip(1).collect();\n{count_check}    let mut heap=Heap::default(); let mut array_args:Vec<(char,Option<usize>)>=Vec::new();\n{reads}    {result}\n}}\n",compiler.exception_parent_source(),compiler.functions.join("\n")))
 }
 
+/// A-02 fase 3 · driver de una clase vanilla **completa**.
+///
+/// Compila el constructor y todas las declaraciones de instancia de una clase
+/// admitida por el perfil y emite un binario que ejecuta un guion de llamadas:
+///
+/// ```text
+/// bin new 2 5 -- increment -- increment -- read count -- isUnderThreshold
+/// ```
+///
+/// Cada paso escribe una línea: `OK` para `void`, el entero tal cual (los
+/// booleanos como `1`/`0`, igual que el driver Java) y `fbits:`/`dbits:` para
+/// coma flotante, que es la representación que usan las demás pruebas.
+///
+/// Se rechaza con motivo nombrado lo que el perfil no describe: clase no
+/// pública, base distinta de `Object`, interfaces, campos estáticos, `<clinit>`,
+/// campos no primitivos, `native`/`abstract` y manejadores de excepciones. No se
+/// omite ninguna declaración en silencio: si el driver no sabe ejecutarla, la
+/// clase entera se rechaza.
+pub(super) fn class_demo_admission(jar: &Path, class: &str) -> Result<(super::metadata::Class, String)> {
+    let data = class_from_jar(jar, class)?;
+    let meta = super::metadata::parse(&data)?;
+    if meta.name != class {
+        return Err("nombre de clase no coincide con la ruta".into());
+    }
+    if meta.flags & 0x0001 == 0 {
+        return Err(format!("clase no pública: {class}"));
+    }
+    if meta.flags & (0x0200 | 0x0400 | 0x4000) != 0 {
+        return Err(format!("interfaz, abstracta o enum fuera del perfil: {class}"));
+    }
+    if meta.parent.as_deref() != Some("java/lang/Object") {
+        return Err(format!("base no admitida: {:?}", meta.parent));
+    }
+    if !meta.interfaces.is_empty() {
+        return Err(format!("interfaces fuera del perfil: {}", meta.interfaces.join(",")));
+    }
+    // El orden importa para el diagnóstico: 413 clases del JAR tienen estáticos
+    // con `ConstantValue` y sin `<clinit>`, y 3.308 tienen inicializador.
+    if meta.methods.iter().any(|m| m.name == "<clinit>") {
+        return Err("inicializador estático <clinit> fuera del perfil".into());
+    }
+    if let Some(f) = meta.fields.iter().find(|f| f.flags & 0x0008 != 0) {
+        return Err(format!("campo estático fuera del perfil: {}", f.name));
+    }
+    if let Some(f) = meta.fields.iter().find(|f| {
+        f.flags & 0x0008 == 0 && !matches!(f.descriptor.as_str(), "I" | "J" | "F" | "D" | "Z" | "B" | "C" | "S")
+    }) {
+        return Err(format!(
+            "campo no primitivo fuera del perfil: {} {}",
+            f.name, f.descriptor
+        ));
+    }
+    let mut seen = BTreeSet::new();
+    for m in &meta.methods {
+        if m.name.starts_with('<') {
+            if m.name != "<init>" {
+                return Err(format!("método especial no soportado: {}", m.name));
+            }
+            continue;
+        }
+        if m.flags & 0x0008 != 0 {
+            return Err(format!("método estático fuera del perfil: {}", m.name));
+        }
+        if m.flags & (0x0100 | 0x0400) != 0 {
+            return Err(format!("método native/abstract fuera del perfil: {}", m.name));
+        }
+        if m.exception_handlers != 0 {
+            return Err(format!(
+                "manejador de excepciones fuera del driver: {} {}",
+                m.name, m.descriptor
+            ));
+        }
+        if !seen.insert(m.name.clone()) {
+            return Err(format!("sobrecarga fuera del driver: {}", m.name));
+        }
+    }
+    let ctors = meta
+        .methods
+        .iter()
+        .filter(|m| m.name == "<init>")
+        .map(|m| m.descriptor.clone())
+        .collect::<Vec<_>>();
+    if ctors.len() != 1 {
+        return Err("se requiere exactamente un constructor".into());
+    }
+    Ok((meta, ctors[0].clone()))
+}
+
+fn demo_arg_reads(sig: &Sig, offset: usize) -> String {
+    let mut out = String::new();
+    for (i, t) in sig.args.iter().enumerate() {
+        let pos = i + offset;
+        let rust = rt(*t);
+        out.push_str(&format!(
+            "            let a{i}:{rust}=step_arg(&step,{pos},\"{t}\");\n"
+        ));
+        let range = match t {
+            'Z' => Some("0..=1"),
+            'B' => Some("-128..=127"),
+            'C' => Some("0..=65535"),
+            'S' => Some("-32768..=32767"),
+            _ => None,
+        };
+        if let Some(range) = range {
+            out.push_str(&format!(
+                "            if !({range}).contains(&a{i}) {{error(\"argumento fuera del rango Java\");}}\n"
+            ));
+        }
+    }
+    out
+}
+
+pub(super) fn compile_class_demo(jar: &Path, class: &str) -> Result<String> {
+    let (meta, ctor_descriptor) = class_demo_admission(jar, class)?;
+    let ctor_sig = signature_ext(&ctor_descriptor, true)?;
+    let data = class_from_jar(jar, class)?;
+    let mut compiler = NumericCompiler {
+        jar,
+        class_name: class,
+        class_data: &data,
+        active: Vec::new(),
+        compiled_methods: std::collections::HashMap::new(),
+        functions: Vec::new(),
+        serial: 0,
+        static_fields: None,
+        exception_parents: BTreeMap::new(),
+        multi_classes: Some(Vec::new()),
+        multi_fields: Vec::new(),
+        class_literals: BTreeSet::new(),
+        uses_service_loader: false,
+        uses_resource_lookup: false,
+        uses_enum_valueof: false,
+        interface_calls: Vec::new(),
+        virtual_calls: Vec::new(),
+        bootstrap_cache: BTreeMap::new(),
+        lambdas: Vec::new(),
+    };
+    let root = compiler.ensure_multi_class(class)?;
+    let layout = compiler.instance_layout(class)?;
+    if let Some(f) = layout
+        .iter()
+        .find(|f| !matches!(f.ty, 'I' | 'J' | 'F' | 'D' | 'Z' | 'B' | 'C' | 'S'))
+    {
+        return Err(format!("campo no primitivo fuera del perfil: {}", f.name));
+    }
+    let defaults = layout
+        .iter()
+        .map(|f| f.initial.clone())
+        .collect::<Vec<_>>()
+        .join(",");
+    let ctor_fn = compiler.compile_instance(class, "<init>", &ctor_descriptor)?;
+    let ctor_reads = demo_arg_reads(&ctor_sig, 1);
+    let mut arms = String::new();
+    let mut method_counts = Vec::new();
+    for m in meta.methods.iter().filter(|m| m.name != "<init>") {
+        let sig = signature_ext(&m.descriptor, true)?;
+        let func = compiler.compile_instance(class, &m.name, &m.descriptor)?;
+        let reads = demo_arg_reads(&sig, 1);
+        let args = (0..sig.args.len())
+            .map(|i| format!(",a{i}"))
+            .collect::<String>();
+        let call = match sig.ret {
+            'V' => format!("            {func}(&mut heap,id{args});\n            println!(\"OK\");\n"),
+            'F' => format!(
+                "            let r={func}(&mut heap,id{args});\n            println!(\"fbits:{{:08x}}\",r.to_bits());\n"
+            ),
+            'D' => format!(
+                "            let r={func}(&mut heap,id{args});\n            println!(\"dbits:{{:016x}}\",r.to_bits());\n"
+            ),
+            _ => format!("            println!(\"{{}}\",{func}(&mut heap,id{args}));\n"),
+        };
+        method_counts.push(m.name.clone());
+        arms.push_str(&format!(
+            "        {:?} => {{\n            let id=object.unwrap_or_else(||error(\"objeto no construido\"));\n{reads}{call}        }}\n",
+            m.name
+        ));
+    }
+    let mut read_arms = String::new();
+    for (slot, f) in layout.iter().enumerate() {
+        let render = match f.ty {
+            'J' => format!("V::L(v)=>println!(\"{{}}\",v)"),
+            'F' => format!("V::F(v)=>println!(\"fbits:{{:08x}}\",v.to_bits())"),
+            'D' => format!("V::D(v)=>println!(\"dbits:{{:016x}}\",v.to_bits())"),
+            _ => format!("V::I(v)=>println!(\"{{}}\",v)"),
+        };
+        read_arms.push_str(&format!(
+            "{:?} => {{\n                let id=object.unwrap_or_else(||error(\"objeto no construido\"));\n                match heap.arrays.get(id) {{\n                    Some(Array::Obj(_,fields))=>match fields[{slot}]{{{render},_=>panic!(\"campo de tipo inesperado\")}},\n                    _=>error(\"objeto inexistente o de tipo inesperado\"),\n                }}\n            }}\n",
+            f.name
+        ));
+    }
+    let ctor_args = (0..ctor_sig.args.len())
+        .map(|i| format!(",a{i}"))
+        .collect::<String>();
+    let nclasses = compiler.multi_classes.as_ref().map(|c| c.len()).unwrap_or(1);
+    let source = format!(
+        "// class-demo de {class}: constructor y todas las declaraciones, sin omisiones.\n\
+         #![allow(dead_code,unused_variables,unused_mut)]\n{RUNTIME}\n{parents}\n{inits}\n{functions}\n\
+         fn step_arg<T:std::str::FromStr>(step:&[String],i:usize,label:&str)->T{{match step.get(i).and_then(|v|v.parse::<T>().ok()){{Some(v)=>v,None=>error(&format!(\"argumento {{i}} inválido para {{label}}\"))}}}}\n\
+         fn main(){{run_java(main_inner);}}\n\
+         fn main_inner() {{\n\
+         \x20   let raw:Vec<String>=std::env::args().skip(1).collect();\n\
+         \x20   let mut steps:Vec<Vec<String>>=Vec::new();let mut cur:Vec<String>=Vec::new();\n\
+         \x20   for t in raw {{ if t==\"--\" {{ if !cur.is_empty(){{steps.push(cur);cur=Vec::new();}} }} else {{ cur.push(t); }} }}\n\
+         \x20   if !cur.is_empty(){{steps.push(cur);}}\n\
+         \x20   if steps.is_empty(){{error(\"sin pasos: usa new y métodos separados por --\");}}\n\
+         \x20   let mut heap=Heap::default();\n\
+         \x20   heap.init_states=vec![0;{nclasses}];\n\
+         \x20   let mut object:Option<usize>=None;\n\
+         \x20   for step in steps {{\n\
+         \x20       match step[0].as_str() {{\n\
+         \x20           \"new\" => {{\n\
+         \x20               init_class_{root}(&mut heap);\n\
+         \x20               let id=object_new(&mut heap,{class:?},vec![{defaults}],false);\n\
+         {ctor_reads}                {ctor_fn}(&mut heap,id{ctor_args});\n\
+         \x20               object=Some(id);\n\
+         \x20               println!(\"OK\");\n\
+         \x20           }}\n\
+         {arms}\
+         \x20           \"read\" => {{\n\
+         \x20               let name=step.get(1).cloned().unwrap_or_else(||error(\"read requiere un campo\"));\n\
+         \x20               match name.as_str() {{\n{read_arms}\
+         \x20                   _=>error(\"campo inexistente\"),\n\
+         \x20               }}\n\
+         \x20           }}\n\
+         \x20           _=>error(\"paso desconocido\"),\n\
+         \x20       }}\n\
+         \x20   }}\n\
+         }}\n",
+        RUNTIME = RUNTIME,
+        parents = compiler.exception_parent_source(),
+        inits = compiler.multi_init_source(),
+        functions = compiler.functions.join("\n"),
+    );
+    let _ = method_counts;
+    Ok(source)
+}
+
 /// Genera un programa de una sola clase con sus campos estáticos y <clinit>.
 /// Rechaza herencia, interfaces y campos/referencias externos para no omitir init dependientes.
 pub(super) fn compile_static_demo(

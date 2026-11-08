@@ -807,6 +807,11 @@ fn run() -> Result<()> {
         let program = object::compile_object(&class, &args[3], selected)?;
         return emit_binary(&args[4], &program.source);
     }
+    if args.len() == 5 && args[1] == "class-demo" {
+        // A-02 fase 3: una clase vanilla completa, todas sus declaraciones.
+        let source = numeric::compile_class_demo(Path::new(&args[2]), &args[3])?;
+        return emit_binary(&args[4], &source);
+    }
     if args.len() == 6 && args[1] == "reference-demo" {
         let class = class_from_jar(Path::new(&args[2]), &args[3])?;
         let source = reference::compile_reference(&class, &args[3], &args[4])?;
