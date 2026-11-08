@@ -2,7 +2,7 @@
 
 > **Trabajo en equipo:** ver [`TODO.md`](TODO.md) para repartir tareas, archivos y revisiones sin duplicar trabajo.
 
-> **Roadmap activo:** ver [`ROADMAP.md`](ROADMAP.md). La integración de log4rs queda aparcada; no se cambia el criterio de no simular logging. Suite integral más reciente: **319 etapas, exit 0**, `analysis/full-regressions-a06.log`. **1/7.762 clases completas certificadas** (`net/minecraft/world/flag/FeatureFlagUniverse`, firmada por A el 2026-11-07 sobre evidencia de C; ver `analysis/a-review-featureflaguniverse.log`; `QuartPos` sigue `review-required`); sin servidor nativo. Opt-in de futuros con canónico `MC_AOT_FUTURES=restricted` (`completed-only` queda como alias histórico): `analysis/futures-optin-canonical.md`. Sesiones de publicación por heap: `analysis/a05-round2.md`.
+> **Roadmap activo:** ver [`ROADMAP.md`](ROADMAP.md). La integración de log4rs queda aparcada; no se cambia el criterio de no simular logging. Suite integral más reciente: **330 etapas, exit 0**, `analysis/full-regressions-a09.log`. **1/7.762 clases completas certificadas** (`net/minecraft/world/flag/FeatureFlagUniverse`, firmada por A el 2026-11-07 sobre evidencia de C; ver `analysis/a-review-featureflaguniverse.log`; `QuartPos` sigue `review-required`); sin servidor nativo. Opt-in de futuros con canónico `MC_AOT_FUTURES=restricted` (`completed-only` queda como alias histórico): `analysis/futures-optin-canonical.md`. Sesiones de publicación por heap: `analysis/a05-round2.md`.
 
 ## Preparación tras clonar
 

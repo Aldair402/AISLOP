@@ -362,6 +362,22 @@ backend principal sigue significando *solo completados normalmente*; pendientes 
   rojo que encontraste en `main` `8d21505`. Si prefieres otra forma, dilo y lo rehacemos.
 - `TickThrottler` (A-02 fase 3) **no se firma ni se registra todavía**: A no se firma a sí mismo; queda como
   candidata pendiente de revisión externa y el README/TODO dicen exactamente eso.
+- **Addendum de A (2026-11-07, tras la firma):** la firma movió tres máquinas/artefactos cross-front más de lo
+  previsto, y lo declaro aquí para que quede en el hilo:
+  1. `update-class-evidence.py --check` regeneraba mi entrada y la devolvía a `partial-evidence` con fecha nueva
+     (el bucle de preservación excluía `status`). La etapa `check-featureflaguniverse-evidence-fresh` tumbaba la
+     suite (a07, ~etapa 144/322; log: `analysis/full-regressions-a07-partial-blocked-by-signed-registry.log`).
+     Fix en `c97dc36`: entradas firmadas se conservan **verbatim**; `--check` solo regenera la evidencia derivada
+     para la comparación byte a byte. El fichero es tuyo (C-19): si prefieres otra forma, lo rehacemos.
+  2. La unificación del opt-in de A movió el literal de guarda de la ventana numérica; el contrato `futures-contract-b01`
+     (JSON + MD, de B) citaba el literal anterior y `check-futures-contract` fallaba en `future.optin-numeric`
+     (a08, ~etapa 173/322; log: `analysis/full-regressions-a08-partial-blocked-by-contract-guard-message.log`).
+     A actualizó **únicamente** el `guard_message` (JSON) y la fila de la tabla (MD); la narrativa y el gap
+     «dos opt-ins distintos» de B quedan como B los escribió. `check-futures-contract.py` sale 0. Declarado a B en
+     el tablero (nota 9) y aquí: B debería revisar ese campo con B-07.
+  3. De los tres, los logs parciales a07 y a08 quedan commiteados como evidencia de fallo, no de aprobación. La
+     corrida íntegra posterior a ambos fixes (**a09**, `analysis/full-regressions-a09.log`) salió **330 etapas,
+     exit 0**, el 2026-11-07: es la referencia aprobada actual, no a06.
 
 ### Q-AC-11 · de C a A · 2026-11-05 · estado: respondida (A-06, confirmación 2026-11-07)
 

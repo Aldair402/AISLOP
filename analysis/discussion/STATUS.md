@@ -104,3 +104,19 @@ fecha nueva y se anota en el resumen de ronda que se mergea a `main`. No se borr
    `main` porque `futures_restricted_optin` vive en la rama `b-01` y no está integrada. Con el vendor de B presente
    (verificado en árbol simulado, sin editar nada de B) el guarda pasa con común `{restricted, completed-only, off}`.
    La decisión (Q-AC-9) y el código de A están hechos; la integración la hace C con B.
+8. **`update-class-evidence.py --check` rompía la firma del registro.** La regeneración fresca reescribía la entrada
+   de `FeatureFlagUniverse` como `partial-evidence` y volvía a fechar `date_verified`, porque el bucle de preservación
+   excluía `status`. La etapa `check-featureflaguniverse-evidence-fresh` tumbaba la suite entera (a07, ~etapa 144/322;
+   log conservado como `analysis/full-regressions-a07-partial-blocked-by-signed-registry.log`). Fix en `c97dc36`:
+   una entrada firmada (estado no-parcial, o `certified`/`review`/`reviewer`) se conserva **verbatim**; `--check` solo
+   regenera la evidencia derivada (reporte/manifiesto/log) para la comparación byte a byte. Verificado en aislado
+   (exit 0, contador intacto). El fichero es de C/C-19: C puede rehacerlo si lo prefiere.
+9. **La unificación del opt-in movió el literal que vigila B-01.** El mensaje de guarda de la ventana numérica pasó a
+   ser el unificado (`MC_AOT_FUTURES=restricted` con alias históricos); el contrato `futures-contract-b01.json/.md`
+   citaba el literal anterior y `check-futures-contract` lo daba por inexistente (a08, etapa ~173/322; log conservado
+   como `analysis/full-regressions-a08-partial-blocked-by-contract-guard-message.log`). A actualizó solo el campo
+   `guard_message` (JSON) y la fila correspondiente (MD) — la narrativa de B y el gap «dos opt-ins distintos» quedan
+   como B los escribió; B los revisará con B-07. Verificado: `check-futures-contract.py` sale 0. Todo el material
+   de a07/a08 es evidencia de fallos, no de aprobación. La referencia aprobada pasó a ser **a09**
+   (`analysis/full-regressions-a09.log`, **330 etapas, exit 0**, 2026-11-07), corrida íntegra posterior a ambos
+   fixes; a06 queda como referencia histórica (319 etapas).
