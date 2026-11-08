@@ -1,5 +1,0 @@
-Error: invokevirtual no soportado: java/lang/String.contains(Ljava/lang/CharSequence;)Z
-  al compilar org/apache/logging/log4j/core/util/internal/SystemUtils.isOsAndroid()Z
-  al compilar org/apache/logging/log4j/core/impl/Log4jContextFactory.createContextSelector()Lorg/apache/logging/log4j/core/selector/ContextSelector;
-  al compilar org/apache/logging/log4j/core/impl/Log4jContextFactory.<init>()V
-compile_exit= 1

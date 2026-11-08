@@ -1,1 +1,0 @@
-OK: el proveedor real de Log4j se descubre e instancia desde META-INF/services; getClass, versión y tres getters previos a initialize coinciden con Java. Sin registro se aborta; initialize no probado.

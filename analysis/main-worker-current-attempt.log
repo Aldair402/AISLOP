@@ -1,8 +1,0 @@
-Error: new no soportado: java/util/concurrent/ForkJoinPool
-  al compilar net/minecraft/util/Util.makeExecutor(Ljava/lang/String;)Lnet/minecraft/TracingExecutor;
-  al compilar net/minecraft/util/Util.<clinit>()V
-  al compilar net/minecraft/core/MappedRegistry.<init>(Lnet/minecraft/resources/ResourceKey;Lcom/mojang/serialization/Lifecycle;Z)V
-  al compilar net/minecraft/core/MappedRegistry.<init>(Lnet/minecraft/resources/ResourceKey;Lcom/mojang/serialization/Lifecycle;)V
-  al compilar net/minecraft/core/registries/BuiltInRegistries.<clinit>()V
-  al compilar net/minecraft/server/Bootstrap.bootStrap()V
-  al compilar net/minecraft/server/Main.main([Ljava/lang/String;)V

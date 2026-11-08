@@ -1,3 +1,0 @@
-Error: checkcast/instanceof no soportado: java/util/Optional
-  al compilar org/apache/logging/log4j/util/StackLocator.getCallerClass(I)Ljava/lang/Class;
-compile_exit= 1

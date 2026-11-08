@@ -1,3 +1,0 @@
-Error: new no soportado: java/util/WeakHashMap
-  al compilar org/apache/logging/log4j/spi/LoggerRegistry.createLoggerRefByMessageFactoryMap(Ljava/lang/String;)Ljava/util/Map;
-compile_exit= 1

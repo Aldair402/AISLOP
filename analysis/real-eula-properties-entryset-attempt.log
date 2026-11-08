@@ -1,3 +1,0 @@
-Error: invokeinterface no soportado: java/util/Map$Entry.getKey()Ljava/lang/Object;
-  al compilar org/apache/logging/log4j/util/PropertiesPropertySource.forEach(Lorg/apache/logging/log4j/util/BiConsumer;)V
-compile_exit= 1

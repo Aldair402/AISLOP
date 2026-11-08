@@ -1,4 +1,0 @@
-Error: checkcast/instanceof no soportado: java/lang/CharSequence
-  al compilar org/apache/logging/log4j/util/PropertySource$Util.joinAsCamelCase(Ljava/lang/Iterable;)Ljava/lang/CharSequence;
-  al compilar org/apache/logging/log4j/util/PropertiesPropertySource.getNormalForm(Ljava/lang/Iterable;)Ljava/lang/CharSequence;
-compile_exit= 1

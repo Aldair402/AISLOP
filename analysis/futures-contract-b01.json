@@ -744,7 +744,7 @@
         "analysis/b02-futures-suite-jdk25.log"
       ],
       "owner": "B-02",
-      "note": "Consulta no bloqueante; se permite desde un worker porque no espera, a diferencia de awaitTermination. Medido ademas en 40 rondas (ver analysis/review-answers-from-b.md): un pool nunca usado queda isShutdown e isTerminated en true tras shutdown (40/40); un pool usado que se cierra devuelve isTerminated false de inmediato (0/40), y por eso ese caso NO se compara como diferencial: depende de cuando termina el worker, no de una garantia."
+      "note": "Consulta no bloqueante; se permite desde un worker porque no espera, a diferencia de awaitTermination. Medido ademas en 40 rondas: un pool nunca usado queda isShutdown e isTerminated en true tras shutdown (40/40); un pool usado que se cierra devuelve isTerminated false de inmediato (0/40), y por eso ese caso NO se compara como diferencial: depende de cuando termina el worker, no de una garantia."
     },
     {
       "id": "pool.query-parallelism",

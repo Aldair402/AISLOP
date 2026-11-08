@@ -1,8 +1,0 @@
-Error: clase no encontrada en versiones ni bibliotecas: org/osgi/framework/FrameworkUtil.class
-  al compilar org/apache/logging/log4j/util/OsgiServiceLocator.loadServices(Ljava/lang/Class;Ljava/lang/Class;Lorg/apache/logging/log4j/Logger;)Ljava/util/stream/Stream;
-  al compilar org/apache/logging/log4j/util/ServiceLoaderUtil.safeStream(Ljava/lang/Class;Ljava/util/ServiceLoader;Lorg/apache/logging/log4j/Logger;)Ljava/util/stream/Stream;
-  al compilar org/apache/logging/log4j/util/ProviderUtil.lazyInit()V
-  al compilar org/apache/logging/log4j/util/ProviderUtil.getProvider()Lorg/apache/logging/log4j/spi/Provider;
-  al compilar org/apache/logging/log4j/LogManager.<clinit>()V
-  al compilar org/apache/logging/slf4j/Log4jLoggerFactory.getContext()Lorg/apache/logging/log4j/spi/LoggerContext;
-compile_exit= 1

@@ -13,3 +13,7 @@
 /analysis/generated-examples-binaries.tar.gz
 /analysis/sample/
 /logs/
+
+# Salidas regenerables de la suite (no commitear churn)
+analysis/*-latest.log
+analysis/*-partial.log

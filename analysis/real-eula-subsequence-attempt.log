@@ -1,7 +1,0 @@
-Error: invokevirtual no soportado: java/lang/String.split(Ljava/lang/String;I)[Ljava/lang/String;
-  al compilar org/apache/logging/log4j/util/Constants.getMajorVersion(Ljava/lang/String;)I
-  al compilar org/apache/logging/log4j/util/Constants.getMajorVersion()I
-  al compilar org/apache/logging/log4j/util/Constants.<clinit>()V
-  al compilar org/apache/logging/log4j/message/ParameterizedMessage.<clinit>()V
-  al compilar org/apache/logging/log4j/message/ParameterizedMessageFactory.newMessage(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)Lorg/apache/logging/log4j/message/Message;
-compile_exit= 1

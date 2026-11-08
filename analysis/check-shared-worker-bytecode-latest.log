@@ -1,2 +1,0 @@
-OK: 32 comparaciones Java 25 con Runnable.run y método synchronized traducidos; 4 tareas Rayon + hilo principal, desbordamiento int, sin JVM externa; 18 guardas de clase/captura/bytecode y 5 de CLI; ForkJoinPool Java no traducido
-OK: 31 resultados Java/nativo ejecutando Runnable acotado con QuartPos.toBlock oficial; hash verificado y bytecode alterado rechazado; sin certificar clases completas

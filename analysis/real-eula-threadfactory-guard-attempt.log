@@ -1,4 +1,0 @@
-Error: clase estática externa no soportada: java/util/concurrent/TimeUnit
-  al compilar org/apache/logging/log4j/core/AbstractLifeCycle.<clinit>()V
-  al compilar org/apache/logging/log4j/core/impl/Log4jContextFactory.getContext(Ljava/lang/String;Ljava/lang/ClassLoader;Ljava/lang/Object;ZLjava/net/URI;Ljava/lang/String;)Lorg/apache/logging/log4j/core/LoggerContext;
-compile_exit= 1

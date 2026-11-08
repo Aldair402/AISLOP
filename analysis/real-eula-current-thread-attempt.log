@@ -1,3 +1,0 @@
-Error: checkcast/instanceof no soportado: java/util/concurrent/ConcurrentMap
-  al compilar org/apache/logging/log4j/spi/AbstractLoggerAdapter.getLoggersInContext(Lorg/apache/logging/log4j/spi/LoggerContext;)Ljava/util/concurrent/ConcurrentMap;
-compile_exit= 1

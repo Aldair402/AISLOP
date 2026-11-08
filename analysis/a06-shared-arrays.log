@@ -1,1 +1,0 @@
-OK: array de proyecto compartido con el puente (4 elementos, null, sustituto publicado); Java 25 y nativo coinciden en sum=1043 y longitud 4; guardas de clase, longitud, índice, tipo y elemento no publicado; adjuntar es idempotente y el array no se publica solo; harness opt-in, no Main

@@ -1,9 +1,0 @@
-Error: tipo catch no soportado: java/net/URISyntaxException
-  al compilar org/apache/logging/log4j/core/util/Source.toURI(Ljava/net/URL;)Ljava/net/URI;
-  al compilar org/apache/logging/log4j/core/util/Source.<init>(Ljava/net/URL;)V
-  al compilar org/apache/logging/log4j/core/config/ConfigurationSource.<init>([BLjava/net/URL;J)V
-  al compilar org/apache/logging/log4j/core/config/ConfigurationSource.<clinit>()V
-  al compilar org/apache/logging/log4j/core/config/NullConfiguration.<init>()V
-  al compilar org/apache/logging/log4j/core/LoggerContext.<clinit>()V
-  al compilar org/apache/logging/log4j/core/impl/Log4jContextFactory.getContext(Ljava/lang/String;Ljava/lang/ClassLoader;Ljava/lang/Object;ZLjava/net/URI;Ljava/lang/String;)Lorg/apache/logging/log4j/core/LoggerContext;
-compile_exit= 1

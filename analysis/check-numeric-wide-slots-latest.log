@@ -1,1 +1,0 @@
-OK: ocho ranuras primitivas (long float double boolean byte char short int) en el layout, huellas Java 25 == Rust (256, 1073872896, 1069547520, -2844), escritura de long/float/int observada por el bytecode numérico, rechazo de tipos cruzados y de layout alterado; sin Java en PATH; harness opt-in, no Main

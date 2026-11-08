@@ -1,3 +1,0 @@
-Error: lambda REF_7: solo método privado sintético de su propia clase con receptor capturado
-  al compilar org/apache/logging/log4j/spi/LoggerRegistry.putIfAbsent(Ljava/lang/String;Lorg/apache/logging/log4j/message/MessageFactory;Lorg/apache/logging/log4j/spi/ExtendedLogger;)V
-compile_exit= 1

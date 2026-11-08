@@ -1,8 +1,0 @@
-OK: 103 resultados de AbstractSpliterator estimateSize/characteristics/getExactSizeIfKnown/hasCharacteristics, Java 25; guardas de override y trySplit
-OK: 43 resultados StreamSupport secuencial, laziness, cierre, null/SORTED y guardia paralelo; no filter ni operaciones terminales
-OK: 13 operaciones Java ServiceLoader y despacho Iterable.iterator: recursos reales en orden, comentarios, duplicados, caché, instanciación, causa y configuración inválida; proveedor no registrado aborta
-OK: 180 resultados Java StackWalker: llamantes, recursión, inicialización, identidad, opciones y null
-OK: 41 resultados Class.forName OSGi ausente/null frente a Java; guardas de classpath, clase presente y nombre distinto
-OK: identidad de loader de clases/interfaz y bootstrap Java coincide; literal de interfaz no inicializa; null coincide
-OK: 81 operaciones HashSet con Class/String/null y getClass de objetos, add por Collection, frente a Java; rechazo de claves arbitrarias
-OK: 96 invocaciones Java, null, parámetros, retorno y causa; métodos desconocidos y registros inválidos se rechazan

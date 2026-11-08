@@ -1,1 +1,0 @@
-OK: 2579 resultados diferenciales de los cinco métodos estáticos y cuatro campos; superficie reconciliada classfile↔reflexión (6 métodos, 4 campos, sin <clinit>); constructor privado medido como solo-Java (IllegalAccessException sin setAccessible, instancia con setAccessible) y declarado como límite porque el traductor no implementa reflexión; no certifica la clase

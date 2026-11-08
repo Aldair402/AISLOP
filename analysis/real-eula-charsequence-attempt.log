@@ -1,4 +1,0 @@
-Error: invokevirtual no soportado: java/lang/Thread.getId()J
-  al compilar org/apache/logging/log4j/internal/DefaultLogBuilder.<init>(Lorg/apache/logging/log4j/spi/ExtendedLogger;Lorg/apache/logging/log4j/Level;)V
-  al compilar org/apache/logging/log4j/internal/DefaultLogBuilder.<init>()V
-compile_exit= 1

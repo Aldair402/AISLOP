@@ -1,1 +1,0 @@
-OK: 20 rondas Java y Rust; publicación automática desde object_new del bytecode numérico, 20 valores comparados, guardas de sesión duplicada, clase fuera del perfil, referencia final nula, liberación tras pánico y cierre, aborto por heap ajeno y por hilo distinto, cuatro tareas ForkJoinPool en Rayon con QuartPos oficial y ejecución sin Java en PATH; harness opt-in, no Main

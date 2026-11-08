@@ -1,3 +1,0 @@
-Error: checkcast/instanceof no soportado: java/lang/StackTraceElement
-  al compilar org/apache/logging/log4j/util/StackLocator.calcLocation(Ljava/lang/String;)Ljava/lang/StackTraceElement;
-compile_exit= 1

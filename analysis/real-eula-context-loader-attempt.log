@@ -1,3 +1,0 @@
-Error: invokestatic no soportado: java/util/Objects.toString(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/String;
-  al compilar org/apache/logging/log4j/util/PropertiesUtil$Environment.lambda$get$1(Ljava/util/List;Ljava/lang/String;Lorg/apache/logging/log4j/util/PropertySource;)Ljava/lang/String;
-compile_exit= 1

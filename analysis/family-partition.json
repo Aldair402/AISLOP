@@ -2,7 +2,7 @@
   "schema": "family-partition-v1",
   "jar_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
   "jar_classes_total": 7762,
-  "policy": "No overlap between batches. Static reachability != runtime. No percentage distributed without verified classes. See analysis/family-partition.md",
+  "policy": "No overlap between batches. Static reachability != runtime. No percentage distributed without verified classes.",
   "batches": [
     {
       "id": "batch-01-primitives-coords",

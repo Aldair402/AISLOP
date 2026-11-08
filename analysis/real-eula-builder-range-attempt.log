@@ -1,3 +1,0 @@
-Error: invokestatic no soportado: java/util/Arrays.copyOf([Ljava/lang/Object;I)[Ljava/lang/Object;
-  al compilar org/apache/logging/log4j/MarkerManager$Log4jMarker.getParents()[Lorg/apache/logging/log4j/Marker;
-compile_exit= 1

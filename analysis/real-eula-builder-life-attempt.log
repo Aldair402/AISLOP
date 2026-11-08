@@ -1,9 +1,0 @@
-Error: checkcast/instanceof no soportado: java/lang/Double
-  al compilar org/apache/logging/log4j/util/StringBuilders.appendSpecificTypes(Ljava/lang/StringBuilder;Ljava/lang/Object;)Z
-  al compilar org/apache/logging/log4j/message/ParameterFormatter.appendSpecialTypes(Ljava/lang/Object;Ljava/lang/StringBuilder;)Z
-  al compilar org/apache/logging/log4j/message/ParameterFormatter.recursiveDeepToString(Ljava/lang/Object;Ljava/lang/StringBuilder;Ljava/util/Set;)V
-  al compilar org/apache/logging/log4j/message/ParameterFormatter.recursiveDeepToString(Ljava/lang/Object;Ljava/lang/StringBuilder;)V
-  al compilar org/apache/logging/log4j/message/ParameterFormatter.formatMessageContainingEscapes(Ljava/lang/StringBuilder;Ljava/lang/String;[Ljava/lang/Object;ILorg/apache/logging/log4j/message/ParameterFormatter$MessagePatternAnalysis;)V
-  al compilar org/apache/logging/log4j/message/ParameterFormatter.formatMessage(Ljava/lang/StringBuilder;Ljava/lang/String;[Ljava/lang/Object;ILorg/apache/logging/log4j/message/ParameterFormatter$MessagePatternAnalysis;)V
-  al compilar org/apache/logging/log4j/message/ParameterizedMessage.formatTo(Ljava/lang/StringBuilder;)V
-compile_exit= 1

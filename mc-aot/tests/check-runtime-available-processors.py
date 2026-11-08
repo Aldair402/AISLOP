@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """`Runtime.availableProcessors`: una sola fuente (`MC_AOT_JAVA_PROCESSORS`).
 
-Fija la fuente única que A le debe a B para la decisión de `commonPool()` (hilo A↔B,
-`review-answers-from-a.md` §«Decisiones que B me pide», y `review-answers-from-b.md`
-§Q4: «MC_AOT_JAVA_PROCESSORS must not silently change it — if A needs a processor count
-for Runtime, it reads the same number once and both must come from a single place»).
+Fija la fuente única de procesadores que A le debe a B para la decisión de `commonPool()`:
+un único valor leído una sola vez por ejecución del binario, el mismo para
+`Runtime.availableProcessors` y para cualquier pool derivado (criterio acordado en la
+discusión del perfil de futuros: nunca una segunda lectura del host).
 
 Comprueba, contra Java 25 y contra el binario nativo:
 

@@ -1,8 +1,0 @@
-==> cargo-test
-==> build-examples
-==> casefold-oracle-compile
-==> casefold-oracle
-==> check-guards
-==> check-index
-==> check-inspect
-==> check-graph

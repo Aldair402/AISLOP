@@ -1,7 +1,0 @@
-OK: evidencia regenerada para net/minecraft/core/QuartPos — 10 miembros (5 diferenciales + 1 constructor solo-Java + 4 campos)
-  log: analysis/quartpos-static-surface.log
-  manifiesto: analysis/class-evidence/quartpos.json
-  manifiesto de classfile: analysis/class-evidence/quartpos-classfile.json
-  informe: analysis/quartpos-evidence-report.json
-  contador: 0 (sin cambios)
-OK: la evidencia commiteada coincide con una ejecución fresca

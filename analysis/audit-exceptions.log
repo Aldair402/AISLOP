@@ -1,3 +1,0 @@
-   Compiling mc-aot v0.1.0 (/home/user/minecraft-rust/mc-aot)
-    Finished `release` profile [optimized] target(s) in 3.06s
-7762 clases leídas; 10 métodos con handlers y firma acotada; 6 con tipos catch admitidos; 0 compilan en 0 clases; 0 clases completas certificadas. Informe: /home/user/minecraft-rust/analysis/audit-exceptions.json

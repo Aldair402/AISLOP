@@ -10,7 +10,7 @@
     "quarter": 1941,
     "half": 3881
   },
-  "policy": "A class counts as complete only when it satisfies all 5 criteria in ROADMAP.md §5 (surface, translation, differential evidence, explicit assumptions/hashes, rerunnable review). Partial inventoried evidence NEVER auto-increments the counter. See analysis/class-registry.md",
+  "policy": "A class counts as complete only when it satisfies all 5 criteria in ROADMAP.md §5 (surface, translation, differential evidence, explicit assumptions/hashes, rerunnable review). Partial inventoried evidence NEVER auto-increments the counter.",
   "classes": [
     {
       "class": "net/minecraft/core/QuartPos",
