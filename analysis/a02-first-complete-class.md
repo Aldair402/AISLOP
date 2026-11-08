@@ -114,3 +114,18 @@ existe en el JAR ninguna clase con `<clinit>` sin campos estáticos** (3.308 con
 traducida y ejecutada, con la misma salida que Java 25 en los guiones generados y rechazos
 nombrados. **Cumplido** con 120 guiones (el listón de ≥200 se dejó en 120 por tiempo de la
 suite; ampliarlo es cambiar una constante, no el método).
+
+## Corrección (2026-11-07)
+
+Este documento y el registro cerraban con «el contador honesto pasa de 0/7.762 a 1/7.762». Esa frase
+**mezclaba dos cosas distintas** y queda corregida:
+
+- `TickThrottler` está **traducida y ejecutada** con 120 guiones diferenciales contra Java 25 (eso es real,
+  con `check-vanilla-first-class.py` en la integral).
+- El **contador oficial** (`analysis/class-registry.json`) solo se mueve con revisión de otro frente. En ese
+  momento el contador seguía en **0/7.762** y `TickThrottler` no estaba registrada como clase rastreada.
+
+El contador oficial pasa a **1/7.762** el mismo día por otro camino legítimo: C tenía `FeatureFlagUniverse`
+medida y en `review-required`, A la revisó y la firmó con el predicado en verde (ver
+`analysis/a-review-featureflaguniverse.log`); `QuartPos` sigue `review-required` a la espera de B.
+`TickThrottler` continúa como **candidata pendiente de revisión externa**: no está registrada y no cuenta.

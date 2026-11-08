@@ -2,7 +2,7 @@
 
 > **Trabajo en equipo:** ver [`TODO.md`](TODO.md) para repartir tareas, archivos y revisiones sin duplicar trabajo.
 
-> **Roadmap activo:** ver [`ROADMAP.md`](ROADMAP.md). La integración de log4rs queda aparcada; no se cambia el criterio de no simular logging. Suite integral más reciente: **319 etapas, exit 0**, `analysis/full-regressions-a06.log`; no certifica clases. Sesiones de publicación por heap y opt-in unificado de futuros (`MC_AOT_FUTURES=completed-only`) con su alias: `analysis/a05-round2.md`.
+> **Roadmap activo:** ver [`ROADMAP.md`](ROADMAP.md). La integración de log4rs queda aparcada; no se cambia el criterio de no simular logging. Suite integral más reciente: **319 etapas, exit 0**, `analysis/full-regressions-a06.log`. **1/7.762 clases completas certificadas** (`net/minecraft/world/flag/FeatureFlagUniverse`, firmada por A el 2026-11-07 sobre evidencia de C; ver `analysis/a-review-featureflaguniverse.log`; `QuartPos` sigue `review-required`); sin servidor nativo. Opt-in de futuros con canónico `MC_AOT_FUTURES=restricted` (`completed-only` queda como alias histórico): `analysis/futures-optin-canonical.md`. Sesiones de publicación por heap: `analysis/a05-round2.md`.
 
 ## Preparación tras clonar
 
@@ -62,7 +62,7 @@ Se integraron 26 tests adicionales en `mc-aot/run-regressions.sh`. La primera in
 
 > **Estado actual:** el servidor aún no arranca ni hay un binario nativo completo. El último intento de `Main`, con `MC_AOT_DISABLE_JFR=1`, se detiene al compilar `ForkJoinPool`. Los prototipos de hilos y heap compartido no están integrados en el backend. Véase `PLAN-ARRANQUE.md` en la raíz y `analysis/main-multi-static-attempt.log`.
 
-**Cobertura:** hay 7 762 clases en el JAR interno; la meta es validar completamente 3 881. Actualmente hay **0 clases completas certificadas**: las pruebas parciales por método no equivalen a una clase completa. El adaptador experimental de `ForkJoinPool` usa Rayon, pero aún no está conectado al backend principal ni reproduce todo el ciclo de vida de los workers. Un intento anterior de compilar Eula con bibliotecas reales se detuvo en `new java/io/PrintStream` del logger; las pruebas con stubs no demuestran el arranque.
+**Cobertura:** hay 7 762 clases en el JAR interno; la meta es validar completamente 3 881. Actualmente hay **1 clase completa certificada de 7.762** (`net/minecraft/world/flag/FeatureFlagUniverse`, revisión del frente A sobre evidencia medida por C, 2026-11-07; ver el registro y `analysis/a-review-featureflaguniverse.log`). Las pruebas parciales por método no equivalen a una clase completa, y un diferencial parcial no certifica por sí solo. El adaptador experimental de `ForkJoinPool` usa Rayon, pero aún no está conectado al backend principal ni reproduce todo el ciclo de vida de los workers. Un intento anterior de compilar Eula con bibliotecas reales se detuvo en `new java/io/PrintStream` del logger; las pruebas con stubs no demuestran el arranque.
 
 Esta carpeta prepara el análisis del servidor oficial **Minecraft Java Edition 26.3**, la última versión estable indicada por el manifiesto oficial consultado el 31 de octubre de 2026. Incluye ahora `mc-aot/`, un primer traductor experimental para métodos muy simples de Minecraft. Todavía no es un servidor nativo; consulta [su guía](mc-aot/README.md).
 

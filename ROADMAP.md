@@ -27,7 +27,7 @@ Traducir el JAR oficial del servidor Minecraft 26.3 a un ejecutable nativo **sin
 3. Empezar con `QuartPos`: `analysis/quartpos-evidence-report.json` registra evidencia parcial de **5/6 métodos y 4/4 campos**; el constructor privado no está contrastado. El script `mc-aot/tools/class-surface-evidence.py` comprueba hashes y correspondencia con miembros declarados, pero **no certifica semántica**. Un hash solo identifica un archivo, no demuestra que su contenido sea verdadero.
 4. Diseñar un registro de clases completas verificadas con revisión y reproducibilidad; no alimentar el contador a partir de este inventario parcial.
 
-**Puerta:** reconstrucción, pruebas y reportes reproducibles; el contador permanece 0 hasta que una clase cumpla el criterio de clase completa de abajo.
+**Puerta:** reconstrucción, pruebas y reportes reproducibles; el contador permanece 0 hasta que una clase cumpla el criterio de clase completa de abajo. *(2026-11-07: la primera clase lo cumplió — `net/minecraft/world/flag/FeatureFlagUniverse`, revisión del frente A sobre evidencia de C; `check-class-complete-predicate.py` en verde; contador 1.)*
 
 ### 2. Unificar el runtime concurrente y el backend principal
 
