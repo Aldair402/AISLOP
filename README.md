@@ -1,9 +1,9 @@
-# AISLOP — Minecraft Java → binario nativo (experimental)
+# minecraft-aot
 
-Compilador AOT experimental que traduce el bytecode del servidor oficial de Minecraft
+**Minecraft Java → binario nativo (experimental).** Compilador AOT experimental que traduce el bytecode del servidor oficial de Minecraft
 (`server.jar` 26.3 de Mojang) a Rust y de ahí a ejecutables nativos, con **Java 25 como
 oráculo diferencial** para validar cada perfil traducido. No es un servidor funcional
-nini certifica nada por sí mismo: cada resultado se contrasta caso a caso contra una JVM
+ni certifica nada por sí mismo: cada resultado se contrasta caso a caso contra una JVM
 real antes de considerarse evidencia.
 
 > **Estado honesto (2026-11-07):** el servidor **no arranca**. Hay **1 de 7.762 clases
