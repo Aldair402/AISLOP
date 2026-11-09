@@ -4110,6 +4110,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/lang/System","getenv","()Ljava/util/Map;") if self.multi_classes.is_some()=>"Some(system_getenv_map(heap))".into(),
                         ("java/security/KeyStore","getInstance","(Ljava/lang/String;)Ljava/security/KeyStore;") if self.multi_classes.is_some()=>"{let _=x0;error(\"KeyStore.getInstance: no soportado (TLS auth chain; rama no modelada en el perfil AOT)\")}".into(),
                         ("javax/net/ssl/KeyManagerFactory","getDefaultAlgorithm","()Ljava/lang/String;") if self.multi_classes.is_some()=>"new_string(heap,[83,117,110,88,53,48,57].iter().copied().map(u16::from).collect())".into(),
+                        ("javax/net/ssl/KeyManagerFactory","getInstance","(Ljava/lang/String;)Ljavax/net/ssl/KeyManagerFactory;") if self.multi_classes.is_some()=>"{let _=x0;error(\"KeyManagerFactory.getInstance: no soportado (TLS auth chain)\")}".into(),
                         ("java/lang/System","getenv","(Ljava/lang/String;)Ljava/lang/String;") if self.multi_classes.is_some()=>"system_getenv(heap,x0)".into(),
                         ("java/nio/ByteBuffer","wrap","([B)Ljava/nio/ByteBuffer;") if self.multi_classes.is_some()=>"Some(byte_buffer_wrap(heap,x0))".into(),
                         ("java/util/HexFormat","fromHexDigits","(Ljava/lang/CharSequence;)I") if self.multi_classes.is_some()=>"let s=pop_r(&mut stack);stack.push(V::I(hex_from_digits(heap,s)));".into(),
