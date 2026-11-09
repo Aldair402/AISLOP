@@ -456,6 +456,34 @@ fn system_getenv(h:&mut Heap,name:Option<usize>)->Option<usize>{
   let key=String::from_utf16(string_units(h,name)).unwrap_or_default();
   match std::env::var(&key){Ok(v)=>Some(new_string(h,v.encode_utf16().collect())),Err(_)=>None}
 }
+fn file_input_pending_new(h:&mut Heap)->usize{new_arrays_push(h,Array::FileInput(None))}
+fn file_input_open_path(h:&mut Heap,path:&str)->Option<std::fs::File>{
+  match std::fs::File::open(if path.is_empty(){"."}else{path}){
+    Ok(f)=>Some(f),
+    Err(e)=>{
+      let kind=match e.kind(){std::io::ErrorKind::NotFound=>"FileNotFoundException",std::io::ErrorKind::PermissionDenied=>"FileNotFoundException",_=>error(&format!("FileInputStream: E/S no traducida: {e}"))};
+      let msg=new_string(h,path.encode_utf16().collect());let ex=new_exception(h,kind);init_exception(h,Some(ex),kind,Some(msg));throw_ref(h,Some(ex))
+    }
+  }
+}
+fn file_input_init_from_file(h:&mut Heap,r:Option<usize>,f:Option<usize>){
+  let id=array_id(h,r);let fid=array_id(h,f);
+  let path=match &h.arrays[fid]{Array::File(Some(p),_)=>p.clone(),_=>error("FileInputStream(File): ruta no modelada")};
+  let file=file_input_open_path(h,&path);
+  match &mut h.arrays[id]{Array::FileInput(slot)=>*slot=file,_=>error("FileInputStream concreto no soportado")}
+}
+fn file_input_init_from_text(h:&mut Heap,r:Option<usize>,s:Option<usize>){
+  let id=array_id(h,r);
+  let text=String::from_utf16(string_units(h,s)).unwrap_or_else(|_|error("FileInputStream: UTF-16 no representable"));
+  let file=file_input_open_path(h,&text);
+  match &mut h.arrays[id]{Array::FileInput(slot)=>*slot=file,_=>error("FileInputStream concreto no soportado")}
+}
+fn file_input_init_from_path(h:&mut Heap,r:Option<usize>,p:Option<usize>){
+  let id=array_id(h,r);let pid=array_id(h,p);
+  let text=match &h.arrays[pid]{Array::Path(s,_)=>s.clone(),_=>error("FileInputStream(Path): ruta no modelada")};
+  let file=file_input_open_path(h,&text);
+  match &mut h.arrays[id]{Array::FileInput(slot)=>*slot=file,_=>error("FileInputStream concreto no soportado")}
+}
 fn logger_new(h:&mut Heap,name:Option<usize>)->usize{new_arrays_push(h,Array::Logger(name))}
 fn file_init_child(h:&mut Heap,r:Option<usize>,parent:Option<usize>,child:Option<usize>){
   let id=array_id(h,r);
