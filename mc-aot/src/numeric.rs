@@ -3890,7 +3890,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         format!("let cap=pop_i(&mut stack);let r=pop_r(&mut stack);let _=cap;collection_init(heap,r,{owner:?});")
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/Spliterators$AbstractSpliterator","(JI)V") {
                         "let flags=pop_i(&mut stack);let estimate=pop_l(&mut stack);let r=pop_r(&mut stack);spliterator_init(heap,r,estimate,flags);".into()
-                    } else if self.multi_classes.is_some() && matches!((owner,desc),("java/lang/Object"|"java/lang/Record"|"java/lang/Number"|"java/util/AbstractCollection"|"java/util/AbstractList"|"java/util/AbstractSequentialList"|"java/util/AbstractMap"|"java/util/AbstractSet","()V")) {
+                    } else if self.multi_classes.is_some() && matches!((owner,desc),("java/lang/Object"|"java/lang/Record"|"java/lang/Number"|"java/util/AbstractCollection"|"java/util/AbstractList"|"java/util/AbstractSequentialList"|"java/util/AbstractMap"|"java/util/AbstractSet"|"java/util/concurrent/AbstractExecutorService","()V")) {
                         "let r=pop_r(&mut stack);check_any_object(heap,r);".into()
                     } else if owner=="net/minecraft/IdentifierException" && matches!(desc,"(Ljava/lang/String;)V"|"(Ljava/lang/String;Ljava/lang/Throwable;)V") && self.multi_classes.is_some() {
                         self.validate_exception_class(owner)?;
