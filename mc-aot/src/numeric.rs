@@ -3457,6 +3457,9 @@ impl NumericCompiler<'_> {
                         "stack.push(V::R(Some(stderr_ref(heap))));".to_owned()
                     } else if self.multi_classes.is_some() && op==0xb2 && owner=="java/util/logging/Level" && desc=="Ljava/util/logging/Level;" && matches!(field,"ALL"|"FINEST"|"FINER"|"FINE"|"CONFIG"|"INFO"|"WARNING"|"SEVERE"|"OFF") {
                         format!("stack.push(V::R(Some(level_of(heap,{field:?}))));")
+                    } else if self.multi_classes.is_some() && op==0xb2 && owner=="java/util/Locale" && desc=="Ljava/util/Locale;" && matches!(field,"US"|"ROOT"|"ENGLISH") {
+                        // ASCII case mapping == Locale.ROOT; el receptor esta protegido por la guarda ASCII en el helper.
+                        "stack.push(V::R(Some(locale_root(heap))));".into()
                     } else if self.multi_classes.is_some() {
                     let (id,slot,f)=self.resolve_static_field(owner,field,desc)?;
                     if op==0xb2 {format!("init_class_{id}(heap); stack.push(heap.fields[{slot}]);")}
