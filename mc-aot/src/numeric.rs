@@ -4208,7 +4208,8 @@ impl NumericCompiler<'_> {
                 0xbd => {
                     let idx=u16::from_be_bytes([read()?,read()?]);
                     let name=match m.cp.get(idx as usize) {Some(CpEntry::Class(u))=>super::utf(&m.cp,*u)?,_=>return Err("anewarray Class inválida".into())};
-                    if self.multi_classes.is_some() && project_class(name) {
+                    if self.multi_classes.is_some() && name=="[I" {format!("let n=pop_i(&mut stack);stack.push(V::R(Some(ref_array_new(heap,n))));")
+                    } else if self.multi_classes.is_some() && project_class(name) {
                         self.verify_project_cast_target(name)?;let data=class_from_jar(self.jar,name)?;let meta=super::metadata::parse(&data)?;
                         if name!="org/apache/logging/log4j/Marker" && meta.flags&0x0010==0 && !(meta.flags&0x4000!=0&&meta.parent.as_deref()==Some("java/lang/Enum")) {format!("let n=pop_i(&mut stack);stack.push(V::R(Some(project_empty_array_new(heap,{name:?},n))));")}
                         else {format!("let n=pop_i(&mut stack);stack.push(V::R(Some(project_array_new(heap,{name:?},n))));")}

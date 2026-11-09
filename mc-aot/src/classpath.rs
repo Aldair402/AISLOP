@@ -232,7 +232,7 @@ impl Index {
 }
 pub(super) fn class_from_jar(jar: &Path, class: &str) -> Result<Vec<u8>> {
     if !valid_class(class) {
-        return Err("ruta de clase inválida".into());
+        return Err(format!("ruta de clase inválida: {class}"));
     }
     let key =
         fs::canonicalize(jar).map_err(|e| format!("no se pudo abrir {}: {e}", jar.display()))?;
@@ -245,7 +245,7 @@ pub(super) fn class_from_jar(jar: &Path, class: &str) -> Result<Vec<u8>> {
 }
 pub(super) fn has_class(jar: &Path, class: &str) -> Result<bool> {
     if !valid_class(class) {
-        return Err("ruta de clase inválida".into());
+        return Err(format!("ruta de clase inválida: {class}"));
     }
     let key =
         fs::canonicalize(jar).map_err(|e| format!("no se pudo abrir {}: {e}", jar.display()))?;

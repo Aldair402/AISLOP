@@ -348,6 +348,7 @@ fn ref_array_clone(h:&mut Heap,r:Option<usize>)->usize {
     let id=h.arrays.len();h.elements+=n;h.arrays.push(a);id
 }
 fn jdk_empty_array_new(h:&mut Heap,class:&'static str,n:i32)->usize{if n<0{raise("NegativeArraySizeException","");}if n!=0{error("array JDK tipado: solo longitud cero soportada");}project_array_new(h,class,n)}
+fn ref_array_new(h:&mut Heap,outer:i32)->usize{if outer<0{raise("NegativeArraySizeException","");}let outer=outer as usize;if h.arrays.len()>=10000{error("Límite experimental de arrays excedido");}if h.elements.checked_add(outer).map_or(true,|v|v>1_000_000){error("Límite experimental de arrays excedido");}h.elements+=outer;let id=h.arrays.len();h.arrays.push(Array::Refs(13,vec![None;outer]));id}
 fn multi_project_ref_array_new_2d(h:&mut Heap,class:&'static str,outer:i32,inner:i32)->usize{
   if outer<0||inner<0{raise("NegativeArraySizeException","");}
   let outer=outer as usize;let inner=inner as usize;
