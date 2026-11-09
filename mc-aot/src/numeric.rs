@@ -3853,6 +3853,8 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/BitSet","(I)V") {"let n=pop_i(&mut stack);let r=pop_r(&mut stack);bitset_init_checked(heap,r,n);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/BitSet","()V") {"let r=pop_r(&mut stack);let r=r;".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/atomic/AtomicInteger","()V") {"let r=pop_r(&mut stack);atomic_integer_set(heap,r,0);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/atomic/AtomicBoolean","()V") {"let r=pop_r(&mut stack);atomic_boolean_set(heap,r,false);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/atomic/AtomicBoolean","(Z)V") {"let v=pop_i(&mut stack);let r=pop_r(&mut stack);atomic_boolean_set(heap,r,v!=0);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/atomic/AtomicInteger","(I)V") {"let v=pop_i(&mut stack);let r=pop_r(&mut stack);atomic_integer_set(heap,r,v);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/atomic/AtomicLong","()V") {"let r=pop_r(&mut stack);atomic_long_set(heap,r,0);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/atomic/AtomicLong","(J)V") {"let v=pop_l(&mut stack);let r=pop_r(&mut stack);atomic_long_set(heap,r,v);".into()
