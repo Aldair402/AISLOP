@@ -424,6 +424,13 @@ fn logger_log(h:&mut Heap,level:Option<usize>,msg:Option<usize>,throwable:Option
 }
 fn aru_new(h:&mut Heap,name:Option<usize>)->usize{new_arrays_push(h,Array::UpdaterMarker(name))}
 fn selector_provider_singleton(h:&mut Heap)->usize{new_arrays_push(h,Array::SelectorProviderMarker)}
+fn stack_element_new(h:&mut Heap)->usize{
+  if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}
+  let id=h.arrays.len();h.arrays.push(Array::Obj("java/lang/StackTraceElement",vec![V::R(None),V::R(None),V::R(None),V::I(-1)]));h.elements+=4;id
+}
+fn stack_element_init(h:&mut Heap,r:Option<usize>,declaring:Option<usize>,method:Option<usize>,file:Option<usize>,line:i32){
+  let id=array_id(h,r);match &mut h.arrays[id]{Array::Obj("java/lang/StackTraceElement",f)=>{f[0]=V::R(declaring);f[1]=V::R(method);f[2]=V::R(file);f[3]=V::I(line)},_=>error("StackTraceElement concreto no soportado")}
+}
 fn logger_new(h:&mut Heap,name:Option<usize>)->usize{new_arrays_push(h,Array::Logger(name))}
 fn file_init_child(h:&mut Heap,r:Option<usize>,parent:Option<usize>,child:Option<usize>){
   let id=array_id(h,r);

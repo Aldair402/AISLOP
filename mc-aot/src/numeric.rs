@@ -3823,6 +3823,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/lang/RuntimePermission","(Ljava/lang/String;)V") {"let name=pop_r(&mut stack);let r=pop_r(&mut stack);runtime_permission_init(heap,r,name);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/Properties","()V") {"let r=pop_r(&mut stack);java_properties_id(heap,r);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/File","(Ljava/lang/String;)V") {"let s=pop_r(&mut stack);let r=pop_r(&mut stack);file_init(heap,r,s);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/lang/StackTraceElement","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V") {"let line=pop_i(&mut stack);let file=pop_r(&mut stack);let method=pop_r(&mut stack);let declaring=pop_r(&mut stack);let r=pop_r(&mut stack);stack_element_init(heap,r,declaring,method,file,line);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/File","(Ljava/io/File;Ljava/lang/String;)V") {"let child=pop_r(&mut stack);let parent=pop_r(&mut stack);let r=pop_r(&mut stack);file_init_child(heap,r,parent,child);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/locks/ReentrantReadWriteLock","(Z)V") {"let _fair=pop_i(&mut stack);let r=pop_r(&mut stack);rw_lock_id(heap,r);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/locks/ReentrantReadWriteLock","()V") {"let r=pop_r(&mut stack);rw_lock_id(heap,r);".into()
@@ -4295,6 +4296,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         format!("stack.push(V::R(Some(collection_new(heap,{class:?}))));")
                     } else if self.multi_classes.is_some() && class=="java/lang/Object" {
                         "stack.push(V::R(Some(object_new(heap,\"java/lang/Object\",vec![],false))));".into()
+                    } else if self.multi_classes.is_some() && class=="java/lang/StackTraceElement" {"stack.push(V::R(Some(stack_element_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/util/EnumMap" {"stack.push(V::R(Some(enum_map_new(heap))));".into()
                     } else if self.multi_classes.is_some() && project_class(class) {
                         let id=self.ensure_multi_class(class)?;
