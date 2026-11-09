@@ -628,6 +628,25 @@ fn string_index_str(h:&Heap,a:Option<usize>,b:Option<usize>,from:i32)->i32 {
     if from as i64>hay.len() as i64 || needle.len()>hay.len().saturating_sub(start){return -1;}
     hay[start..].windows(needle.len()).position(|x|x==needle).map_or(-1,|i|(i+start) as i32)
 }
+// String.split(regex) with regex literals only (no metacharacters). Java semantics: intermediate empties kept, trailing empties removed.
+fn string_split_literal(h:&mut Heap,r:Option<usize>,regex:Option<usize>)->usize{
+  let input=string_units(h,r).to_vec();
+  let pat=string_units(h,regex);
+  if pat.is_empty(){raise("PatternSyntaxException","empty pattern");}
+  if pat.iter().any(|&c|matches!(c,0x5c|0x5b|0x5d|0x28|0x29|0x7b|0x7d|0x2b|0x2a|0x3f|0x5e|0x24|0x7c|0x2e)){error("String.split: regex fuera del perfil (sólo literales)");}
+  let mut spans:Vec<(usize,usize)> = Vec::new();
+  let mut start=0;
+  let mut i=0;
+  while i+pat.len()<=input.len() {
+    if input[i..i+pat.len()]==pat[..] {spans.push((start,i));i+=pat.len();start=i;} else {i+=1;}
+  }
+  let mut parts:Vec<&[u16]> = spans.iter().map(|&(a,b)|&input[a..b]).collect();
+  parts.push(&input[start..]);
+  while parts.len()>1 && parts.last().map_or(false,|s|s.is_empty()) { parts.pop(); }
+  let arr:Vec<Option<usize>> = parts.iter().map(|p|Some(if p.is_empty(){string_literal(h,&[])}else{new_string(h,p.to_vec())})).collect();
+  if h.arrays.len()>=10000||h.elements.saturating_add(arr.len())>1_000_000{error("Límite experimental de heap excedido");}
+  h.elements+=arr.len();let result=h.arrays.len();h.arrays.push(Array::Strings(arr));result
+}
 fn string_split_version(h:&mut Heap,r:Option<usize>,pattern:Option<usize>,limit:i32)->usize{let id=array_id(h,r);let input=string_units(h,r).to_vec();let regex=string_units(h,pattern);if !regex.iter().copied().eq(r"-|\.".encode_utf16())||limit!=3{error("String.split: solo patrón y límite de versión Log4j");}let mut spans=Vec::new();let mut start=0;for (pos,c) in input.iter().enumerate(){if (*c==45||*c==46)&&spans.len()<2{spans.push((start,pos));start=pos+1;}}let out=if spans.is_empty(){vec![Some(id)]}else{spans.push((start,input.len()));let mut v=Vec::with_capacity(spans.len());for (a,b) in spans{let part=if a==b{string_literal(h,&[])}else{new_string(h,input[a..b].to_vec())};v.push(Some(part));}v};if h.arrays.len()>=10000||h.elements.saturating_add(out.len())>1_000_000{error("Límite experimental de heap excedido");}h.elements+=out.len();let result=h.arrays.len();h.arrays.push(Array::Strings(out));result}
 fn string_contains_sequence(h:&Heap,r:Option<usize>,seq:Option<usize>)->bool{let hay=string_units(h,r);let id=array_id(h,seq);let needle=match &h.arrays[id]{Array::Str(v)|Array::Builder(v)=>v,_=>error("String.contains: CharSequence fuera del perfil")};needle.is_empty()||(needle.len()<=hay.len()&&hay.windows(needle.len()).any(|v|v==needle))}
 fn string_last_index_char(h:&Heap,a:Option<usize>,c:i32,from:i32)->i32 {

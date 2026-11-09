@@ -3757,6 +3757,7 @@ impl NumericCompiler<'_> {
                         ("java/lang/String","indexOf","(I)I")=>"let c=pop_i(&mut stack); let a=pop_r(&mut stack); stack.push(V::I(string_index_char(heap,a,c,0)));".into(),
                         ("java/lang/String","indexOf","(II)I")=>"let from=pop_i(&mut stack); let c=pop_i(&mut stack); let a=pop_r(&mut stack); stack.push(V::I(string_index_char(heap,a,c,from)));".into(),
                         ("java/lang/String","split","(Ljava/lang/String;I)[Ljava/lang/String;") if self.multi_classes.is_some()=>"let limit=pop_i(&mut stack);let pattern=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(string_split_version(heap,r,pattern,limit))));".into(),
+                        ("java/lang/String","split","(Ljava/lang/String;)[Ljava/lang/String;") if self.multi_classes.is_some()=>"let regex=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(string_split_literal(heap,r,regex))));".into(),
                         ("java/lang/String","toCharArray","()[C") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(string_to_char_array(heap,r))));".into(),
                         ("java/lang/String","contains","(Ljava/lang/CharSequence;)Z") if self.multi_classes.is_some()=>"let q=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::I(string_contains_sequence(heap,r,q) as i32));".into(),
                         ("java/lang/String","lastIndexOf","(Ljava/lang/String;)I")=>"let b=pop_r(&mut stack); let a=pop_r(&mut stack); stack.push(V::I(string_last_index_str(heap,a,b)));".into(),
