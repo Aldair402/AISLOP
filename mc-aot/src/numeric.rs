@@ -1129,6 +1129,15 @@ impl NumericCompiler<'_> {
                         | "java/io/Externalizable"
                         | "java/util/EventListener"
                         | "java/lang/AutoCloseable"
+                        | "java/lang/reflect/Type"
+                        | "java/lang/reflect/ParameterizedType"
+                        | "java/lang/reflect/GenericArrayType"
+                        | "java/lang/reflect/WildcardType"
+                        | "java/lang/reflect/TypeVariable"
+                        | "java/lang/reflect/TypeVariable$GenericDeclaration"
+                        | "java/lang/reflect/GenericDeclaration"
+                        | "java/lang/reflect/AnnotatedType"
+                        | "java/lang/reflect/AnnotatedElement"
                 )
             {
                 active.remove(name);
@@ -1268,6 +1277,15 @@ impl NumericCompiler<'_> {
                         | "java/io/Externalizable"
                         | "java/util/EventListener"
                         | "java/lang/AutoCloseable"
+                        | "java/lang/reflect/Type"
+                        | "java/lang/reflect/ParameterizedType"
+                        | "java/lang/reflect/GenericArrayType"
+                        | "java/lang/reflect/WildcardType"
+                        | "java/lang/reflect/TypeVariable"
+                        | "java/lang/reflect/TypeVariable$GenericDeclaration"
+                        | "java/lang/reflect/GenericDeclaration"
+                        | "java/lang/reflect/AnnotatedType"
+                        | "java/lang/reflect/AnnotatedElement"
                 )
             {
                 active.remove(name);
