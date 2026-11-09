@@ -2509,7 +2509,18 @@ impl NumericCompiler<'_> {
                     String::new()
                 };
                 let target = format!("{owner}.{method}{desc}");
-                source.push_str(&format!("fn {prefix}_dispatch_{index}(heap:&mut Heap,r:Option<usize>{params})->{}{{let id=array_id(heap,r);{identity}{compound_predicate}{sink}if let Array::Lambda(n,_,values)=&heap.arrays[id]{{let n=*n;let captures=values.clone();return match n{{{lambdas}_=>error(\"{label}: lambda no precompilada\")}};}}let class=match &heap.arrays[id]{{Array::Obj(c,_)|Array::SharedObj(c,_)|Array::LocalObj(c,_,_)=>*c,_=>error(\"despacho: objeto no soportado\")}};match class{{{cases}_=>error(&format!(\"{label}: tipo o método no precompilado: {{class}} para {{}}\",{target:?}))}}}}\n",rt(sig.ret)));
+                let default = if prefix == "virtual"
+                    && (owner.as_str(), method.as_str(), desc.as_str())
+                        == (
+                            "java/lang/Object",
+                            "hashCode",
+                            "()I",
+                        ) {
+                    "_=>object_identity_hash(r),".to_string()
+                } else {
+                    format!("_=>error(&format!(\"{label}: tipo o método no precompilado: {{class}} para {{}}\",{target:?}))")
+                };
+                source.push_str(&format!("fn {prefix}_dispatch_{index}(heap:&mut Heap,r:Option<usize>{params})->{}{{let id=array_id(heap,r);{identity}{compound_predicate}{sink}if let Array::Lambda(n,_,values)=&heap.arrays[id]{{let n=*n;let captures=values.clone();return match n{{{lambdas}_=>error(\"{label}: lambda no precompilada\")}};}}let class=match &heap.arrays[id]{{Array::Obj(c,_)|Array::SharedObj(c,_)|Array::LocalObj(c,_,_)=>*c,_=>error(\"despacho: objeto no soportado\")}};match class{{{cases}{default}}}}}\n",rt(sig.ret)));
             }
             Ok(source)
         }
@@ -3755,7 +3766,8 @@ impl NumericCompiler<'_> {
                         ("java/io/PrintStream","println","()V") if self.static_fields.is_none()=>"let out=pop_r(&mut stack); print_line(heap,out,\"\");".into(),
                         _ if self.multi_classes.is_some() && matches!(owner,"java/util/HashMap"|"java/util/concurrent/ConcurrentHashMap"|"java/util/concurrent/ConcurrentMap"|"java/util/Map") && name=="computeIfAbsent" && desc=="(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;"=>self.map_compute_if_absent()?,
                         _ if self.multi_classes.is_some() && collection_intrinsic(owner,name,desc).is_some()=>collection_intrinsic(owner,name,desc).unwrap().into(),
-                        _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(owner,name,desc)?,
+                        ("java/lang/Object","hashCode","()I") if self.multi_classes.is_some()=>{let id=self.register_object_hashcode();format!("let r=pop_r(&mut stack);stack.push(V::I(virtual_dispatch_{id}(heap,r)));").into()},
+_ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(owner,name,desc)?,
                         ("java/lang/ScopedValue","isBound","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(scoped_value_is_bound(heap,r) as i32));".into(),
                         ("java/lang/ScopedValue","get","()Ljava/lang/Object;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(scoped_value_get(heap,r)));".into(),
                         ("java/lang/ScopedValue$Carrier","run","(Ljava/lang/Runnable;)V") if self.multi_classes.is_some()=>{self.interface_call("java/lang/Runnable","run","()V")?;let id=self.interface_calls.iter().position(|v|v.0=="java/lang/Runnable"&&v.1=="run"&&v.2=="()V").ok_or("Runnable.run no registrada")?;format!("let f=pop_r(&mut stack);let r=pop_r(&mut stack);scoped_carrier_run(heap,r,f,interface_dispatch_{id});").into()},

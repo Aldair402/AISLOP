@@ -834,6 +834,8 @@ fn resource_read(h:&mut Heap,r:Option<usize>)->i32{let id=array_id(h,r);if match
 fn resource_close(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);if matches!(h.arrays[id],Array::ByteInput(_,_,_,_)){return;}match &mut h.arrays[id]{Array::ResourceStream(_,_,closed)=>*closed=true,Array::FileInput(file)=>{*file=None;},Array::GzipIn(_,_,pos)=>*pos=usize::MAX,Array::DeflateIn(_,_,pos)=>*pos=usize::MAX,_=>error("InputStream concreto no soportado")}}
 fn byte_buffer_wrap(h:&mut Heap,r:Option<usize>)->usize{if r.is_none(){raise("NullPointerException","array");}let id=array_id(h,r);let bytes=match &h.arrays[id]{Array::B(v)=>v.clone(),_=>error("ByteBuffer.wrap: array fuente no soportado")};if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::ByteBuffer(bytes));out}
 // --- Predicate.negate(): composición perezosa (tag Obj propio con el interior en campos) ---
+// Identity hashCode for Object: heap index is address-like and stable during the run.
+fn object_identity_hash(r:Option<usize>)->i32{match r{Some(id)=>{let mut h=0x9E3779B1u32.wrapping_mul(id as u32);h^=h>>16;h=h.wrapping_mul(0x85EBCA6Bu32);h as i32},None=>0}}
 fn predicate_negate(h:&mut Heap,r:Option<usize>)->usize{
   let inner=array_id(h,r);
   if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}
