@@ -444,6 +444,18 @@ fn atomic_boolean_get(h:&Heap,r:Option<usize>)->bool{let id=array_id(h,r);match 
 fn atomic_boolean_set(h:&mut Heap,r:Option<usize>,v:bool){let id=array_id(h,r);match &mut h.arrays[id]{Array::AtomicBoolean(b)=>*b=v,_=>error("AtomicBoolean concreto no soportado")}}
 fn atomic_boolean_compare_and_set(h:&mut Heap,r:Option<usize>,expect:bool,update:bool)->bool{let id=array_id(h,r);match &mut h.arrays[id]{Array::AtomicBoolean(b)=>{if *b==expect{*b=update;true}else{false}},_=>error("AtomicBoolean concreto no soportado")}}
 fn atomic_boolean_get_and_set(h:&mut Heap,r:Option<usize>,v:bool)->bool{let id=array_id(h,r);match &mut h.arrays[id]{Array::AtomicBoolean(b)=>{let old=*b;*b=v;old},_=>error("AtomicBoolean concreto no soportado")}}
+// System.getenv() snapshot into ImmutableMap (Java returns unmodifiable map).
+fn system_getenv_map(h:&mut Heap)->usize{
+  let mut pairs:Vec<(Option<usize>,Option<usize>)> = Vec::new();
+  for (k,v) in std::env::vars(){let ks=new_string(h,k.encode_utf16().collect());let vs=new_string(h,v.encode_utf16().collect());pairs.push((Some(ks),Some(vs)));}
+  if h.elements.checked_add(pairs.len().saturating_mul(2)).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
+  h.elements+=pairs.len().saturating_mul(2);
+  new_arrays_push(h,Array::ImmutableMap(pairs))
+}
+fn system_getenv(h:&mut Heap,name:Option<usize>)->Option<usize>{
+  let key=String::from_utf16(string_units(h,name)).unwrap_or_default();
+  match std::env::var(&key){Ok(v)=>Some(new_string(h,v.encode_utf16().collect())),Err(_)=>None}
+}
 fn logger_new(h:&mut Heap,name:Option<usize>)->usize{new_arrays_push(h,Array::Logger(name))}
 fn file_init_child(h:&mut Heap,r:Option<usize>,parent:Option<usize>,child:Option<usize>){
   let id=array_id(h,r);
