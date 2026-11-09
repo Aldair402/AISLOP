@@ -3690,6 +3690,11 @@ impl NumericCompiler<'_> {
                         ("java/util/Optional","orElseThrow","(Ljava/util/function/Supplier;)Ljava/lang/Object;") if self.multi_classes.is_some()=>{self.interface_call("java/util/function/Supplier","get","()Ljava/lang/Object;")?;let id=self.interface_calls.iter().position(|v|v.0=="java/util/function/Supplier"&&v.1=="get"&&v.2=="()Ljava/lang/Object;").ok_or("Supplier.get no registrada")?;format!("let f=pop_r(&mut stack);let r=pop_r(&mut stack);let v=match optional_value(heap,r){{Some(v)=>v,None=>{{let _opaque=call_guard(\"<jdk-callback>\");let ex=interface_dispatch_{id}(heap,f);throw_ref(heap,ex)}}}};stack.push(V::R(Some(v)));")},
                         ("java/lang/Long","longValue","()J") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::L(long_value(heap,r)));".into(),
                         ("java/lang/Long","intValue","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(long_int_value(heap,r)));".into(),
+                        ("java/util/concurrent/atomic/AtomicBoolean","get","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(atomic_boolean_get(heap,r) as i32));".into(),
+                        ("java/util/concurrent/atomic/AtomicBoolean","set","(Z)V") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);atomic_boolean_set(heap,r,v!=0);".into(),
+                        ("java/util/concurrent/atomic/AtomicBoolean","compareAndSet","(ZZ)Z") if self.multi_classes.is_some()=>"let update=pop_i(&mut stack);let expect=pop_i(&mut stack);let r=pop_r(&mut stack);stack.push(V::I(atomic_boolean_compare_and_set(heap,r,expect!=0,update!=0) as i32));".into(),
+                        ("java/util/concurrent/atomic/AtomicBoolean","weakCompareAndSet","(ZZ)Z") if self.multi_classes.is_some()=>"let update=pop_i(&mut stack);let expect=pop_i(&mut stack);let r=pop_r(&mut stack);stack.push(V::I(atomic_boolean_compare_and_set(heap,r,expect!=0,update!=0) as i32));".into(),
+                        ("java/util/concurrent/atomic/AtomicBoolean","getAndSet","(Z)Z") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);let old=atomic_boolean_get_and_set(heap,r,v!=0);stack.push(V::I(old as i32));".into(),
                         ("java/lang/Integer","intValue","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(integer_value(heap,r)));".into(),
                         ("java/lang/Byte","byteValue","()B") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(byte_value(heap,r)));".into(),
                         ("java/lang/Boolean","booleanValue","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(boolean_value(heap,r) as i32));".into(),
@@ -4272,6 +4277,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && class=="java/util/concurrent/locks/ReentrantLock" {"stack.push(V::R(Some(reentrant_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/util/concurrent/atomic/AtomicInteger" {"stack.push(V::R(Some(atomic_integer_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/util/concurrent/atomic/AtomicLong" {"stack.push(V::R(Some(atomic_long_new(heap))));".into()
+                    } else if self.multi_classes.is_some() && class=="java/util/concurrent/atomic/AtomicBoolean" {"stack.push(V::R(Some(atomic_boolean_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/util/concurrent/atomic/AtomicReference" {
                         "stack.push(V::R(Some(atomic_ref_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/util/LinkedHashMap" {"stack.push(V::R(Some(linked_map_new(heap))));".into()
