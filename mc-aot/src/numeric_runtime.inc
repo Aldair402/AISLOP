@@ -618,6 +618,13 @@ fn string_index_str(h:&Heap,a:Option<usize>,b:Option<usize>,from:i32)->i32 {
 }
 fn string_split_version(h:&mut Heap,r:Option<usize>,pattern:Option<usize>,limit:i32)->usize{let id=array_id(h,r);let input=string_units(h,r).to_vec();let regex=string_units(h,pattern);if !regex.iter().copied().eq(r"-|\.".encode_utf16())||limit!=3{error("String.split: solo patrón y límite de versión Log4j");}let mut spans=Vec::new();let mut start=0;for (pos,c) in input.iter().enumerate(){if (*c==45||*c==46)&&spans.len()<2{spans.push((start,pos));start=pos+1;}}let out=if spans.is_empty(){vec![Some(id)]}else{spans.push((start,input.len()));let mut v=Vec::with_capacity(spans.len());for (a,b) in spans{let part=if a==b{string_literal(h,&[])}else{new_string(h,input[a..b].to_vec())};v.push(Some(part));}v};if h.arrays.len()>=10000||h.elements.saturating_add(out.len())>1_000_000{error("Límite experimental de heap excedido");}h.elements+=out.len();let result=h.arrays.len();h.arrays.push(Array::Strings(out));result}
 fn string_contains_sequence(h:&Heap,r:Option<usize>,seq:Option<usize>)->bool{let hay=string_units(h,r);let id=array_id(h,seq);let needle=match &h.arrays[id]{Array::Str(v)|Array::Builder(v)=>v,_=>error("String.contains: CharSequence fuera del perfil")};needle.is_empty()||(needle.len()<=hay.len()&&hay.windows(needle.len()).any(|v|v==needle))}
+fn string_last_index_char(h:&Heap,a:Option<usize>,c:i32,from:i32)->i32 {
+    let hay=string_units(h,a);
+    let needle:Vec<u16>=if (0..=0xffff).contains(&c) {vec![c as u16]} else if (0x10000..=0x10ffff).contains(&c) {let n=(c-0x10000) as u32;vec![(0xd800+(n>>10)) as u16,(0xdc00+(n&1023)) as u16]} else {return -1};
+    if from<0{return -1;}
+    let limit=from as usize;
+    hay.windows(needle.len()).enumerate().filter(|(i,_)|*i<=limit).last().map_or(-1,|(i,_)|i as i32)
+}
 fn string_last_index_str(h:&Heap,a:Option<usize>,b:Option<usize>)->i32{let hay=string_units(h,a);let needle=string_units(h,b);if needle.is_empty(){return hay.len() as i32;}if needle.len()>hay.len(){return -1;}hay.windows(needle.len()).rposition(|x|x==needle).map_or(-1,|i|i as i32)}
 fn character_whitespace_char(v:i32)->bool{let c=v as u16;WHITESPACE_CHAR_JAVA25.iter().any(|(lo,hi)|*lo<=c&&c<=*hi)}
 fn character_upper_char(v:i32)->i32{let c=v as u16;match UPPER_CHAR_JAVA25.binary_search_by_key(&c,|e|e.0){Ok(i)=>UPPER_CHAR_JAVA25[i].1 as i32,Err(_)=>c as i32}}

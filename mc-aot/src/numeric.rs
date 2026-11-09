@@ -3759,6 +3759,8 @@ impl NumericCompiler<'_> {
                         ("java/lang/String","toCharArray","()[C") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(string_to_char_array(heap,r))));".into(),
                         ("java/lang/String","contains","(Ljava/lang/CharSequence;)Z") if self.multi_classes.is_some()=>"let q=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::I(string_contains_sequence(heap,r,q) as i32));".into(),
                         ("java/lang/String","lastIndexOf","(Ljava/lang/String;)I")=>"let b=pop_r(&mut stack); let a=pop_r(&mut stack); stack.push(V::I(string_last_index_str(heap,a,b)));".into(),
+                        ("java/lang/String","lastIndexOf","(I)I") if self.multi_classes.is_some()=>"let c=pop_i(&mut stack);let a=pop_r(&mut stack);stack.push(V::I(string_last_index_char(heap,a,c,2147483647)));".into(),
+                        ("java/lang/String","lastIndexOf","(II)I") if self.multi_classes.is_some()=>"let from=pop_i(&mut stack);let c=pop_i(&mut stack);let a=pop_r(&mut stack);stack.push(V::I(string_last_index_char(heap,a,c,from)));".into(),
                         ("java/lang/String","indexOf","(Ljava/lang/String;)I")=>"let b=pop_r(&mut stack); let a=pop_r(&mut stack); stack.push(V::I(string_index_str(heap,a,b,0)));".into(),
                         ("java/lang/String","indexOf","(Ljava/lang/String;I)I")=>"let from=pop_i(&mut stack); let b=pop_r(&mut stack); let a=pop_r(&mut stack); stack.push(V::I(string_index_str(heap,a,b,from)));".into(),
                         ("java/io/PrintStream","println","(Ljava/lang/String;)V") if self.static_fields.is_none()=>"let s=pop_r(&mut stack); let out=pop_r(&mut stack); print_string_line(heap,out,s);".into(),
