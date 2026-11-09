@@ -3769,6 +3769,7 @@ impl NumericCompiler<'_> {
                         _ if self.multi_classes.is_some() && matches!(owner,"java/util/HashMap"|"java/util/concurrent/ConcurrentHashMap"|"java/util/concurrent/ConcurrentMap"|"java/util/Map") && name=="computeIfAbsent" && desc=="(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;"=>self.map_compute_if_absent()?,
                         _ if self.multi_classes.is_some() && collection_intrinsic(owner,name,desc).is_some()=>collection_intrinsic(owner,name,desc).unwrap().into(),
                         ("java/lang/Object","hashCode","()I") if self.multi_classes.is_some()=>{let id=self.register_object_hashcode();format!("let r=pop_r(&mut stack);stack.push(V::I(virtual_dispatch_{id}(heap,r)));").into()},
+("java/util/logging/Logger","log","(Ljava/util/logging/Level;Ljava/lang/String;Ljava/lang/Throwable;)V") if self.multi_classes.is_some()=>"let th=pop_r(&mut stack);let msg=pop_r(&mut stack);let level=pop_r(&mut stack);let r=pop_r(&mut stack);logger_log(heap,level,msg,th);".into(),
 _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(owner,name,desc)?,
                         ("java/lang/ScopedValue","isBound","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(scoped_value_is_bound(heap,r) as i32));".into(),
                         ("java/lang/ScopedValue","get","()Ljava/lang/Object;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(scoped_value_get(heap,r)));".into(),

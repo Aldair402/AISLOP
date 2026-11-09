@@ -406,6 +406,11 @@ fn level_of(h:&mut Heap,raw:&str)->usize{
   let tag:u8=match raw{"ALL"=>1,"FINEST"=>2,"FINER"=>3,"FINE"=>4,"CONFIG"=>5,"INFO"=>6,"WARNING"=>7,"SEVERE"=>8,"OFF"=>9,_=>error("Level fuera del perfil")};
   new_arrays_push(h,Array::Level(tag))
 }
+fn logger_log(h:&mut Heap,level:Option<usize>,msg:Option<usize>,throwable:Option<usize>){
+  let _=level;
+  print_string_line(h,Some(stderr_ref(h)),msg);
+  if throwable.is_some(){let s=new_string(h,"[exception suppressed]".encode_utf16().collect());print_string_line(h,Some(stderr_ref(h)),Some(s));}
+}
 fn logger_new(h:&mut Heap,name:Option<usize>)->usize{new_arrays_push(h,Array::Logger(name))}
 fn file_init_child(h:&mut Heap,r:Option<usize>,parent:Option<usize>,child:Option<usize>){
   let id=array_id(h,r);
