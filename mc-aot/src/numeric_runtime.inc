@@ -677,6 +677,9 @@ fn string_last_index_char(h:&Heap,a:Option<usize>,c:i32,from:i32)->i32 {
 }
 fn string_last_index_str(h:&Heap,a:Option<usize>,b:Option<usize>)->i32{let hay=string_units(h,a);let needle=string_units(h,b);if needle.is_empty(){return hay.len() as i32;}if needle.len()>hay.len(){return -1;}hay.windows(needle.len()).rposition(|x|x==needle).map_or(-1,|i|i as i32)}
 fn character_whitespace_char(v:i32)->bool{let c=v as u16;WHITESPACE_CHAR_JAVA25.iter().any(|(lo,hi)|*lo<=c&&c<=*hi)}
+// isLowerCase = clave presente; isUpperCase(v"java25") = valor presente (tabla ordenada por clave).
+fn character_is_lower_case(v:i32)->bool{let c=v as u16;UPPER_CHAR_JAVA25.binary_search_by_key(&c,|e|e.0).is_ok()}
+fn character_is_upper_case(v:i32)->bool{static UP:std::sync::LazyLock<std::collections::HashSet<u16>>=std::sync::LazyLock::new(||UPPER_CHAR_JAVA25.iter().map(|e|e.1).collect());UP.contains(&(v as u16))}
 fn character_upper_char(v:i32)->i32{let c=v as u16;match UPPER_CHAR_JAVA25.binary_search_by_key(&c,|e|e.0){Ok(i)=>UPPER_CHAR_JAVA25[i].1 as i32,Err(_)=>c as i32}}
 fn box_character(h:&mut Heap,v:i32)->usize{let c=v as u16;if c<=127{if let Some(id)=h.characters.get(&c){return *id;}}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Character(c));if c<=127{h.characters.insert(c,id);}id}
 fn unbox_character(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match h.arrays[id]{Array::Character(c)=>c as i32,_=>error("Character concreto no soportado")}}
