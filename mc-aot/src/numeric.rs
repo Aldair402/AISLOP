@@ -1384,6 +1384,7 @@ impl NumericCompiler<'_> {
                         | "java/lang/Exception"
                         | "java/lang/RuntimeException"
                         | "java/util/concurrent/CancellationException"
+                        | "java/util/concurrent/AbstractExecutorService"
                         | "java/lang/Error"
                         | "java/lang/Throwable"
                         | "java/lang/Record"
@@ -1437,6 +1438,9 @@ impl NumericCompiler<'_> {
         let abstract_list = meta.parent.as_deref() == Some("java/util/AbstractList");
         let abstract_sequential_list =
             meta.parent.as_deref() == Some("java/util/AbstractSequentialList");
+        // netty MultithreadEventExecutorGroup: ejecutor abstracto JDK; herencia transparente.
+        let abstract_executor_service =
+            meta.parent.as_deref() == Some("java/util/concurrent/AbstractExecutorService");
         let abstract_spliterator =
             meta.parent.as_deref() == Some("java/util/Spliterators$AbstractSpliterator");
         if abstract_spliterator
@@ -1484,6 +1488,7 @@ impl NumericCompiler<'_> {
                 && !print_stream
                 && !abstract_list
                 && !abstract_sequential_list
+                && !abstract_executor_service
                 && !abstract_spliterator
                 && !foreign_exception
                 && !number_class
