@@ -463,6 +463,7 @@ fn reflect_array_length(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match
 // fallan en el primer elemento, conservando las escrituras anteriores.
 fn array_sort_char(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);match &mut h.arrays[id]{Array::C(v)=>v.sort_unstable(),_=>error("Arrays.sort: char[] concreto no soportado")}}
 fn array_fill_char(h:&mut Heap,r:Option<usize>,value:i32){let id=array_id(h,r);match &mut h.arrays[id]{Array::C(v)=>v.fill(value as u16),_=>error("Arrays.fill: char[] concreto no soportado")}}
+fn array_fill_byte(h:&mut Heap,r:Option<usize>,value:i32){let id=array_id(h,r);match &mut h.arrays[id]{Array::B(v)=>v.fill(value as i8),_=>error("Arrays.fill: byte[] concreto no soportado")}}
 fn system_arraycopy(h:&mut Heap,src:Option<usize>,sp:i32,dst:Option<usize>,dp:i32,n:i32){
     let a=array_id(h,src);let b=array_id(h,dst);
     let kind=|v:&Array|match v{Array::Z(_)=>4,Array::C(_)=>5,Array::F(_)=>6,Array::D(_)=>7,Array::B(_)=>8,Array::S(_)=>9,Array::I(_)=>10,Array::J(_)=>11,Array::Strings(_)|Array::Refs(_,_)|Array::ProjectRefs(_,_)=>12,_=>0};

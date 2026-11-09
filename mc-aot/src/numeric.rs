@@ -3955,6 +3955,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/lang/Runtime","getRuntime","()Ljava/lang/Runtime;") if self.multi_classes.is_some()=>"Some(runtime_singleton(heap))".into(),
                         ("java/util/Arrays","sort","([C)V") if self.multi_classes.is_some()=>"array_sort_char(heap,x0)".into(),
                         ("java/util/Arrays","fill","([CC)V") if self.multi_classes.is_some()=>"array_fill_char(heap,x0,x1)".into(),
+                        ("java/util/Arrays","fill","([BB)V") if self.multi_classes.is_some()=>"array_fill_byte(heap,x0,x1)".into(),
                         ("java/lang/Thread","holdsLock","(Ljava/lang/Object;)Z") if self.multi_classes.is_some()=>"monitor_holds(heap,x0) as i32".into(),
                         ("java/lang/System","arraycopy","(Ljava/lang/Object;ILjava/lang/Object;II)V") if self.multi_classes.is_some()=>"system_arraycopy(heap,x0,x1,x2,x3,x4)".into(),
                         ("net/minecraft/util/Util","startTimerHackThread","()V") if self.multi_classes.is_some()=>"util_start_timer_hack_thread_noop(heap)".into(),
