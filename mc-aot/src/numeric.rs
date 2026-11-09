@@ -3513,6 +3513,7 @@ impl NumericCompiler<'_> {
                         ("java/io/InputStreamReader"|"java/io/Reader"|"java/io/StringReader","read","([CII)I") if self.multi_classes.is_some()=>"let len=pop_i(&mut stack);let off=pop_i(&mut stack);let dst=pop_r(&mut stack);let r=pop_r(&mut stack);let n=reader_read_chars(heap,r,dst,off,len);stack.push(V::I(n));".into(),
                         ("java/io/InputStreamReader"|"java/io/Reader","close","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);reader_close(heap,r);".into(),
                         ("java/io/StringReader","close","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);reader_close_string(heap,r);".into(),
+                        ("java/io/BufferedReader","close","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);reader_close_string(heap,r);".into(),
                         ("java/io/BufferedOutputStream","write","(I)V") if self.multi_classes.is_some()=>"let b=pop_i(&mut stack);let r=pop_r(&mut stack);stream_write_byte(heap,r,b);".into(),
                         ("java/io/BufferedOutputStream","write","([B)V") if self.multi_classes.is_some()=>"let buf=pop_r(&mut stack);let r=pop_r(&mut stack);stream_write_array(heap,r,buf,0,-1);".into(),
                         ("java/io/BufferedOutputStream","write","([BII)V") if self.multi_classes.is_some()=>"let len=pop_i(&mut stack);let off=pop_i(&mut stack);let buf=pop_r(&mut stack);let r=pop_r(&mut stack);stream_write_array(heap,r,buf,off,len);".into(),
