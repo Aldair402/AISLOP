@@ -1338,6 +1338,13 @@ fn new_exception(h:&mut Heap,kind:&'static str)->usize {
     if h.arrays.len()>=10000 {error("Límite experimental de heap excedido");}
     let id=h.arrays.len();h.arrays.push(Array::Exception(kind,"",None));id
 }
+fn exception_set_stack_trace(h:&mut Heap,r:Option<usize>,trace:Option<usize>){
+  let id=array_id(h,r);let arr=match trace{Some(a)=>a,None=>raise("NullPointerException","")};
+  match &mut h.arrays[id]{Array::Exception(_,_,st)=>*st=Some(arr),_=>error("setStackTrace: receptor fuera del perfil")}
+}
+fn exception_get_stack_trace(h:&Heap,r:Option<usize>)->Option<usize>{
+  let id=array_id(h,r);match &h.arrays[id]{Array::Exception(_,_,st)=>*st,_=>error("getStackTrace: receptor fuera del perfil")}
+}
 fn init_exception(h:&mut Heap,r:Option<usize>,kind:&str,message:Option<usize>) {
     let id=array_id(h,r);if let Some(m)=message {let _=string_units(h,Some(m));}
     match &mut h.arrays[id] {Array::Exception(k,_,m) if *k==kind=>*m=message,_=>panic!("constructor de excepción con tipo incompatible")};h.exception_messages.insert(id,message);
