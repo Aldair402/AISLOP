@@ -402,6 +402,16 @@ fn path_absolute(h:&mut Heap,r:Option<usize>)->usize{let p=path_text(h,r);if p.s
 fn path_parent(h:&mut Heap,r:Option<usize>)->Option<usize>{let p=path_text(h,r);if p=="/"{return None;}let pos=p.rfind('/')?;let parent=if pos==0{"/"}else{&p[..pos]};Some(path_new(h,parent.to_owned()))}
 fn file_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::File(None,None));id}
 fn file_init(h:&mut Heap,r:Option<usize>,s:Option<usize>){let id=array_id(h,r);let value=String::from_utf16(string_units(h,s)).unwrap_or_else(|_|error("File: UTF-16 no representable"));let value=path_normalize_slashes(&value);match &mut h.arrays[id]{Array::File(p,cache)=>{*p=Some(value);*cache=None},_=>error("File concreto no soportado")}}
+fn file_init_child(h:&mut Heap,r:Option<usize>,parent:Option<usize>,child:Option<usize>){
+  let id=array_id(h,r);
+  let pid=array_id(h,parent);
+  let parent_text=match &h.arrays[pid]{Array::File(Some(p),_)=>p.clone(),_=>error("File(File, String): padre no modelado")};
+  let child_text=String::from_utf16(string_units(h,child)).unwrap_or_else(|_|error("File: UTF-16 no representable"));
+  let child_text=path_normalize_slashes(&child_text);
+  let joined=if parent_text.is_empty(){child_text}else if parent_text.ends_with('/')||child_text.starts_with('/'){format!("{parent_text}{child_text}")}else{format!("{parent_text}/{child_text}")};
+  let joined=path_normalize_slashes(&joined);
+  match &mut h.arrays[id]{Array::File(p,cache)=>{*p=Some(joined);*cache=None},_=>error("File concreto no soportado")}
+}
 fn file_to_path(h:&mut Heap,r:Option<usize>)->usize{let id=array_id(h,r);let (text,cached)=match &h.arrays[id]{Array::File(Some(s),c)=>(s.clone(),*c),_=>error("File no inicializado")};if let Some(v)=cached{return v;}if text.contains('\0'){error("File.toPath: NUL no soportado");}let out=path_new(h,text);if let Array::File(_,c)=&mut h.arrays[id]{*c=Some(out);}out}
 fn files_kind(h:&Heap,r:Option<usize>,options:Option<usize>,kind:&str)->bool{let p=path_text(h,r);let id=array_id(h,options);if !matches!(&h.arrays[id],Array::ProjectRefs("java/nio/file/LinkOption",v) if v.is_empty()){error("Files: solo opciones de enlace predeterminadas");}match std::fs::metadata(if p.is_empty(){"."}else{&p}){Ok(meta)=>match kind{"exists"=>true,"isDirectory"=>meta.is_dir(),"isRegularFile"=>meta.is_file(),_=>unreachable!()},Err(_)=>false}}
 fn files_symbolic_link(h:&Heap,r:Option<usize>)->bool{{let p=path_text(h,r);std::fs::symlink_metadata(if p.is_empty(){"."}else{&p}).map(|m|m.file_type().is_symlink()).unwrap_or(false)}}

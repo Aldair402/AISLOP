@@ -3799,6 +3799,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/lang/RuntimePermission","(Ljava/lang/String;)V") {"let name=pop_r(&mut stack);let r=pop_r(&mut stack);runtime_permission_init(heap,r,name);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/Properties","()V") {"let r=pop_r(&mut stack);java_properties_id(heap,r);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/File","(Ljava/lang/String;)V") {"let s=pop_r(&mut stack);let r=pop_r(&mut stack);file_init(heap,r,s);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/io/File","(Ljava/io/File;Ljava/lang/String;)V") {"let child=pop_r(&mut stack);let parent=pop_r(&mut stack);let r=pop_r(&mut stack);file_init_child(heap,r,parent,child);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/locks/ReentrantReadWriteLock","(Z)V") {"let _fair=pop_i(&mut stack);let r=pop_r(&mut stack);rw_lock_id(heap,r);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/locks/ReentrantReadWriteLock","()V") {"let r=pop_r(&mut stack);rw_lock_id(heap,r);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/locks/ReentrantLock","()V") {"let r=pop_r(&mut stack);reentrant_count(heap,r);".into()
