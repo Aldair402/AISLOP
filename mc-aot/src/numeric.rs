@@ -4089,6 +4089,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/util/Collections","unmodifiableSet","(Ljava/util/Set;)Ljava/util/Set;") if self.multi_classes.is_some()=>"Some(set_copy_of(heap,x0))".into(),
                         ("java/util/Collections","singletonList","(Ljava/lang/Object;)Ljava/util/List;") if self.multi_classes.is_some()=>"Some(singleton_list(heap,x0))".into(),
                         ("java/util/Collections","singleton","(Ljava/lang/Object;)Ljava/util/Set;") if self.multi_classes.is_some()=>"Some(set_of_n(heap,vec![x0]))".into(),
+                        ("java/util/concurrent/Executors","callable","(Ljava/lang/Runnable;Ljava/lang/Object;)Ljava/util/concurrent/Callable;") if self.multi_classes.is_some()=>"Some(callable_result_new(heap,x0,x1))".into(),
                         ("java/nio/ByteBuffer","wrap","([B)Ljava/nio/ByteBuffer;") if self.multi_classes.is_some()=>"Some(byte_buffer_wrap(heap,x0))".into(),
                         ("java/util/HexFormat","fromHexDigits","(Ljava/lang/CharSequence;)I") if self.multi_classes.is_some()=>"let s=pop_r(&mut stack);stack.push(V::I(hex_from_digits(heap,s)));".into(),
                         ("java/time/Instant","now","()Ljava/time/Instant;") if self.multi_classes.is_some()=>"Some(instant_now(heap))".into(),
