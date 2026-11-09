@@ -3582,6 +3582,7 @@ impl NumericCompiler<'_> {
                         ("java/io/File","toPath","()Ljava/nio/file/Path;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(file_to_path(heap,r))));".into(),
                         ("java/io/File","exists","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(file_exists(heap,r) as i32));".into(),
                         ("java/security/KeyStore","load","(Ljava/io/InputStream;[C)V") if self.multi_classes.is_some()=>"let pw=pop_r(&mut stack);let in_=pop_r(&mut stack);let r=pop_r(&mut stack);let _=(pw,in_,r);error(\"KeyStore.load: no soportado (TLS auth chain; getInstance trapa antes)\");".into(),
+                        ("javax/net/ssl/KeyManagerFactory","init","(Ljava/security/KeyStore;[C)V") if self.multi_classes.is_some()=>"let pw=pop_r(&mut stack);let ks=pop_r(&mut stack);let r=pop_r(&mut stack);let _=(pw,ks,r);error(\"KeyManagerFactory.init: no soportado (TLS auth chain)\");".into(),
                         ("java/io/File","isFile","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(file_is_file(heap,r) as i32));".into(),
                         ("java/io/File","isDirectory","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(file_is_directory(heap,r) as i32));".into(),
                         ("java/util/concurrent/locks/ReentrantLock","lock","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);reentrant_lock(heap,r);".into(),
