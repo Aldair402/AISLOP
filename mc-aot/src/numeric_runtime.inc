@@ -282,7 +282,7 @@ fn floor_div_l(a:i64,b:i64)->i64 {let q=div_l(a,b);let r=rem_l(a,b);if r!=0 && (
 fn floor_mod_l(a:i64,b:i64)->i64 {let r=rem_l(a,b);if r!=0 && (a^b)<0 {r.wrapping_add(b)} else {r}}
 
 struct ForkJoinPoolState{parallelism:i32,async_mode:bool,factory:Option<usize>,handler:Option<usize>}
-enum Array { Z(Vec<bool>), B(Vec<i8>), C(Vec<u16>), S(Vec<i16>), I(Vec<i32>), J(Vec<i64>), F(Vec<f32>), D(Vec<f64>), Strings(Vec<Option<usize>>), Str(Vec<u16>), Boolean(bool), Integer(i32), Long(i64), Byte(i8), Short(i16), Character(u16), Float(f32), Double(f64), StackOption, TimeUnit(u8), StackWalker(bool), StackWalkStream(Vec<&'static str>,usize,bool,usize,bool), StackStage(usize,bool,u8,usize), StackFrame(&'static str,bool), Duration(i64,i32), CompletedFuture(Option<usize>), AtomicRef(Option<usize>), AtomicLong(i64), AtomicInteger(i32), ReentrantLock(i32), ReadWriteLock(i32,i32,Option<usize>,Option<usize>), ReadLock(usize), WriteLock(usize), CurrentProcess, CurrentThread(bool,usize), RuntimeSingleton, RuntimePermission(Option<usize>), WeakLoader(Option<usize>), Collector(usize,usize,usize), JoinCollector(Option<usize>,Option<usize>,Option<usize>), Comparing(usize), ComparingThen(usize,usize), ComparingKey(usize,usize), BaseModule, BootLayer, JfrModule, Lambda(usize,&'static str,Vec<V>), IdentityFunction, IsoInstantFormatter, RootLocale, Path(String,Option<usize>), File(Option<String>,Option<usize>), CrashDateFormatter, Optional(Option<usize>), Pattern(usize,i32), Matcher(usize,usize,Option<(usize,usize,Option<(usize,usize)>)>), Uuid([u8;16]), Date(i64), Zoned(i64,i32), Instant(i64,i32), ResourceStream(&'static [u8],usize,bool), ByteInput(Option<usize>,usize,usize,usize), FileInput(Option<std::fs::File>), FileOutput(Option<std::fs::File>), Uri(usize), Properties(std::collections::HashMap<Vec<u16>,usize>), PropertiesEntries(usize), PropertiesEmptyIter(usize), Utf8Charset, Reader(Option<usize>,Option<Vec<u16>>,usize,bool), Builder(Vec<u16>), Stdout, Stderr, Exception(&'static str,&'static str,Option<usize>), Obj(&'static str,Vec<V>), SharedObj(&'static str,NumericObjectHandle), LocalObj(&'static str,Vec<V>,Option<usize>), Map(Vec<(usize,usize)>,usize,bool), HashMap(Vec<(Option<usize>,Option<usize>)>), IdentityMap(Vec<(Option<usize>,Option<usize>)>), IdentitySet(usize), LinkedMap(Vec<(Option<usize>,Option<usize>)>,i32), LinkedIter(usize,Vec<Option<usize>>,usize,i32), TreeMap(Vec<(usize,Option<usize>)>,i32), TreeEntries(usize), TreeEntry(usize,usize,i32), TreeIter(usize,Vec<usize>,usize,i32,bool), EmptyMap, EnumSet(Vec<usize>), EnumSetIter(Vec<usize>,usize), EmptyList, EmptySet, ImmutableSet(Vec<Option<usize>>), ImmutableList(Vec<Option<usize>>), EmptyIterator, MapValues(usize), Queue(std::collections::VecDeque<usize>), ConcurrentQueue(std::collections::VecDeque<usize>), Deque(std::collections::VecDeque<usize>), Local(Option<usize>), SuppliedLocal(usize,Option<Option<usize>>), Class(&'static str), List(Vec<Option<usize>>,i32), ArraysList(usize), ArraysListIter(usize,usize), Set(Vec<Option<usize>>,i32), HashSet(Vec<Option<usize>>,i32), KeySet(Vec<Option<usize>>,i32), AppLoader, PlatformLoader, Refs(u8,Vec<Option<usize>>), ProjectRefs(&'static str,Vec<Option<usize>>), SharedRefs(&'static str,NumericArrayHandle), Constructor(&'static str), ReflectMethod(usize), Service(&'static str,&'static [&'static str],usize,Vec<usize>), ServiceIter(usize,usize), LazyStream(usize,bool,Option<usize>,bool), SortedStream(usize,bool,usize), MappedStream(usize,bool,usize), StreamSink(Vec<usize>,usize), ListIter(usize,usize,i32), SetIter(usize,Vec<Option<usize>>,usize,i32), EmptyEnumeration, ForkJoinPool(ForkJoinPoolState), ThreadPoolExecutor(Option<usize>), ZipFsProvider, ComparingInt(usize), BitSet(Vec<u64>), ToListMarker, ToImmutableListMarker, IntStream(i32,i32), IntStreamClosed, ImmutableMap(Vec<(Option<usize>,Option<usize>)>), ToMapMarker(usize,usize), ToUnmodifiableMapMarker(usize,usize), ScopedValue(bool,Option<usize>), ScopedCarrier(usize,Option<usize>), DecimalFormat(Vec<u16>,Option<usize>), DecimalFormatSymbols(usize), HexFormat(bool), ByteBuffer(Vec<i8>) }
+enum Array { Z(Vec<bool>), B(Vec<i8>), C(Vec<u16>), S(Vec<i16>), I(Vec<i32>), J(Vec<i64>), F(Vec<f32>), D(Vec<f64>), Strings(Vec<Option<usize>>), Str(Vec<u16>), Boolean(bool), Integer(i32), Long(i64), Byte(i8), Short(i16), Character(u16), Float(f32), Double(f64), StackOption, TimeUnit(u8), StackWalker(bool), StackWalkStream(Vec<&'static str>,usize,bool,usize,bool), StackStage(usize,bool,u8,usize), StackFrame(&'static str,bool), Duration(i64,i32), CompletedFuture(Option<usize>), AtomicRef(Option<usize>), AtomicLong(i64), AtomicInteger(i32), ReentrantLock(i32), ReadWriteLock(i32,i32,Option<usize>,Option<usize>), ReadLock(usize), WriteLock(usize), CurrentProcess, CurrentThread(bool,usize), RuntimeSingleton, RuntimePermission(Option<usize>), WeakLoader(Option<usize>), Collector(usize,usize,usize), JoinCollector(Option<usize>,Option<usize>,Option<usize>), Comparing(usize), ComparingThen(usize,usize), ComparingKey(usize,usize), BaseModule, BootLayer, JfrModule, Lambda(usize,&'static str,Vec<V>), IdentityFunction, IsoInstantFormatter, RootLocale, Path(String,Option<usize>), File(Option<String>,Option<usize>), CrashDateFormatter, Optional(Option<usize>), Pattern(usize,i32), Matcher(usize,usize,Option<(usize,usize,Option<(usize,usize)>)>), Uuid([u8;16]), Date(i64), Zoned(i64,i32), Instant(i64,i32), ResourceStream(&'static [u8],usize,bool), ByteInput(Option<usize>,usize,usize,usize), FileInput(Option<std::fs::File>), FileOutput(Option<std::fs::File>), Uri(usize), Properties(std::collections::HashMap<Vec<u16>,usize>), PropertiesEntries(usize), PropertiesEmptyIter(usize), Utf8Charset, Reader(Option<usize>,Option<Vec<u16>>,usize,bool), Builder(Vec<u16>), Stdout, Stderr, Exception(&'static str,&'static str,Option<usize>), Obj(&'static str,Vec<V>), SharedObj(&'static str,NumericObjectHandle), LocalObj(&'static str,Vec<V>,Option<usize>), Map(Vec<(usize,usize)>,usize,bool), HashMap(Vec<(Option<usize>,Option<usize>)>), IdentityMap(Vec<(Option<usize>,Option<usize>)>), IdentitySet(usize), LinkedMap(Vec<(Option<usize>,Option<usize>)>,i32), LinkedIter(usize,Vec<Option<usize>>,usize,i32), TreeMap(Vec<(usize,Option<usize>)>,i32), TreeEntries(usize), TreeEntry(usize,usize,i32), TreeIter(usize,Vec<usize>,usize,i32,bool), EmptyMap, EnumSet(Vec<usize>), EnumSetIter(Vec<usize>,usize), EmptyList, EmptySet, ImmutableSet(Vec<Option<usize>>), ImmutableList(Vec<Option<usize>>), EmptyIterator, MapValues(usize), Queue(std::collections::VecDeque<usize>), ConcurrentQueue(std::collections::VecDeque<usize>), Deque(std::collections::VecDeque<usize>), Local(Option<usize>), SuppliedLocal(usize,Option<Option<usize>>), Class(&'static str), List(Vec<Option<usize>>,i32), ArraysList(usize), ArraysListIter(usize,usize), Set(Vec<Option<usize>>,i32), HashSet(Vec<Option<usize>>,i32), KeySet(Vec<Option<usize>>,i32), AppLoader, PlatformLoader, Refs(u8,Vec<Option<usize>>), ProjectRefs(&'static str,Vec<Option<usize>>), SharedRefs(&'static str,NumericArrayHandle), Constructor(&'static str), ReflectMethod(usize), Service(&'static str,&'static [&'static str],usize,Vec<usize>), ServiceIter(usize,usize), LazyStream(usize,bool,Option<usize>,bool), SortedStream(usize,bool,usize), MappedStream(usize,bool,usize), StreamSink(Vec<usize>,usize), ListIter(usize,usize,i32), SetIter(usize,Vec<Option<usize>>,usize,i32), EmptyEnumeration, ForkJoinPool(ForkJoinPoolState), ThreadPoolExecutor(Option<usize>), ZipFsProvider, ComparingInt(usize), BitSet(Vec<u64>), ToListMarker, ToImmutableListMarker, ToSetMarker, IntStream(i32,i32), IntStreamClosed, ImmutableMap(Vec<(Option<usize>,Option<usize>)>), ToMapMarker(usize,usize), ToUnmodifiableMapMarker(usize,usize), ScopedValue(bool,Option<usize>), ScopedCarrier(usize,Option<usize>), DecimalFormat(Vec<u16>,Option<usize>), DecimalFormatSymbols(usize), HexFormat(bool), ByteBuffer(Vec<i8>), HashFn(&'static str), HashCode([u8;16]), BufferedOutput(usize,Vec<u8>), GzipOut(usize,flate2::write::GzEncoder<Vec<u8>>), DeflateOut(usize,flate2::write::DeflateEncoder<Vec<u8>>), GzipIn(usize,Option<Vec<u8>>,usize), DeflateIn(usize,Option<Vec<u8>>,usize) }
 impl Array {
     fn len(&self)->usize {match self {Self::Z(v)=>v.len(),Self::B(v)=>v.len(),Self::C(v)=>v.len(),Self::S(v)=>v.len(),Self::I(v)=>v.len(),Self::J(v)=>v.len(),Self::F(v)=>v.len(),Self::D(v)=>v.len(),Self::Strings(v)=>v.len(),Self::Refs(_,v)=>v.len(),Self::ProjectRefs(_,v)=>v.len(),Self::SharedRefs(_,a)=>a.slots.lock().map(|s|s.len()).unwrap_or(0),_=>panic!("se esperaba array")}}
 }
@@ -396,7 +396,7 @@ fn files_kind(h:&Heap,r:Option<usize>,options:Option<usize>,kind:&str)->bool{let
 fn files_symbolic_link(h:&Heap,r:Option<usize>)->bool{{let p=path_text(h,r);std::fs::symlink_metadata(if p.is_empty(){"."}else{&p}).map(|m|m.file_type().is_symlink()).unwrap_or(false)}}
 fn path_to_string(h:&mut Heap,r:Option<usize>)->usize{let id=array_id(h,r);let (text,cached)=match &h.arrays[id]{Array::Path(s,c)=>(s.clone(),*c),_=>error("Path concreto no soportado")};if let Some(c)=cached{return c;}let value=new_string(h,text.encode_utf16().collect());if let Array::Path(_,c)=&mut h.arrays[id]{*c=Some(value);}value}
 fn files_new_output(h:&mut Heap,path:Option<usize>,options:Option<usize>)->usize{let text=path_text(h,path);let o=array_id(h,options);if !matches!(&h.arrays[o],Array::ProjectRefs("java/nio/file/OpenOption",v) if v.is_empty()){error("Files.newOutputStream: opciones no soportadas");}let file=match std::fs::OpenOptions::new().write(true).create(true).truncate(true).open(if text.is_empty(){"."}else{&text}){Ok(f)=>f,Err(e)=>{let kind=match e.kind(){std::io::ErrorKind::NotFound=>"NoSuchFileException",std::io::ErrorKind::PermissionDenied=>"AccessDeniedException",_=>error(&format!("Files.newOutputStream: E/S no traducida: {e}"))};let msg=new_string(h,text.encode_utf16().collect());let ex=new_exception(h,kind);init_exception(h,Some(ex),kind,Some(msg));throw_ref(h,Some(ex));}};if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::FileOutput(Some(file)));id}
-fn file_output_close(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);match &mut h.arrays[id]{Array::FileOutput(file)=>{*file=None;},_=>error("OutputStream concreto no soportado")}}
+fn file_output_close(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);if matches!(h.arrays[id],Array::FileOutput(_)){match &mut h.arrays[id]{Array::FileOutput(file)=>{*file=None;},_=>unreachable!()}}else{output_close(h,Some(id));}}
 fn files_new_input(h:&mut Heap,path:Option<usize>,options:Option<usize>)->usize{let text=path_text(h,path);let o=array_id(h,options);if !matches!(&h.arrays[o],Array::ProjectRefs("java/nio/file/OpenOption",v) if v.is_empty()){error("Files.newInputStream: opciones no soportadas");}let file=match std::fs::File::open(if text.is_empty(){"."}else{&text}){Ok(f)=>f,Err(e)=>{let kind=match e.kind(){std::io::ErrorKind::NotFound=>"NoSuchFileException",std::io::ErrorKind::PermissionDenied=>"AccessDeniedException",_=>error(&format!("Files.newInputStream: E/S no traducida: {e}"))};let msg=new_string(h,text.encode_utf16().collect());let ex=new_exception(h,kind);init_exception(h,Some(ex),kind,Some(msg));throw_ref(h,Some(ex));}};if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::FileInput(Some(file)));id}
 fn files_write_string(h:&mut Heap,path:Option<usize>,text:Option<usize>,options:Option<usize>)->Option<usize>{
     let p=array_id(h,path);let content=array_id(h,text);let opts=array_id(h,options);
@@ -649,7 +649,7 @@ fn parse_string_array(h:&mut Heap,text:&str,prior:&[(char,Option<usize>)])->Opti
 
 fn builtin_instance(h:&Heap,r:Option<usize>,kind:&str)->bool {
     if matches!(kind,"map"|"concurrentmap"|"number"|"list"|"stream"|"stackframe")&&matches!(r.and_then(|id|h.arrays.get(id)),Some(Array::Obj(_,_)|Array::SharedObj(_,_)|Array::LocalObj(_,_,_))){error("Map/Number/List: objeto proyecto no verificado");}
-    match (kind,r.and_then(|id|h.arrays.get(id))) {("list",Some(Array::List(_,_)|Array::ArraysList(_)|Array::ImmutableList(_)|Array::EmptyList))|("number",Some(Array::Byte(_)|Array::Short(_)|Array::Integer(_)|Array::Long(_)|Array::Float(_)|Array::Double(_)))|("stream",Some(Array::LazyStream(_,_,_,_)|Array::SortedStream(_,_,_)|Array::MappedStream(_,_,_)|Array::StackWalkStream(_,_,_,_,_)|Array::StackStage(_,_,_,_)))|("stackframe",Some(Array::StackFrame(_,_)))|("concurrentmap",Some(Array::Map(_,_,_)))|("map",Some(Array::Map(_,_,_)|Array::HashMap(_)|Array::IdentityMap(_)|Array::LinkedMap(_,_)|Array::TreeMap(_,_)|Array::EmptyMap|Array::ImmutableMap(_)))|("completedfuture",Some(Array::CompletedFuture(_)))|("optional",Some(Array::Optional(_)))|("class",Some(Array::Class(_)))|("classloader",Some(Array::AppLoader|Array::PlatformLoader))|("printstream",Some(Array::Stdout|Array::Stderr))|("builder",Some(Array::Builder(_)))|("reader",Some(Array::Reader(_,_,_,_)))|("inputstream",Some(Array::ResourceStream(_,_,_)|Array::FileInput(_)|Array::ByteInput(_,_,_,_)))|("uuid",Some(Array::Uuid(_)))|("bitset",Some(Array::BitSet(_)))|("zipfsprovider",Some(Array::ZipFsProvider))|("uri",Some(Array::Uri(_)))|("pattern",Some(Array::Pattern(_,_)))|("long",Some(Array::Long(_)))|("float",Some(Array::Float(_)))|("double",Some(Array::Double(_)))|("byte",Some(Array::Byte(_)))|("short",Some(Array::Short(_)))|("character",Some(Array::Character(_)))|("integer",Some(Array::Integer(_)))|("boolean",Some(Array::Boolean(_)))|("s",Some(Array::Str(_)))|("t",Some(Array::Strings(_)))|("o",Some(_))|("A",Some(Array::Strings(_)))|("A",Some(Array::Refs(_, _)))|("A",Some(Array::ProjectRefs(_, _)))|("C",Some(Array::Refs(14,_)))=>true,(kind,Some(Array::Obj(actual,_)|Array::SharedObj(actual,_)|Array::LocalObj(actual,_,_))) if kind=="enum"=>project_subtype(h,actual,"java/lang/Enum")||interfaces.iter().any(|(c,i)|*c==actual&&*i=="java/lang/Enum"),(kind,Some(Array::TimeUnit(_))) if kind=="enum"=>project_subtype(h,"java/time/TimeUnit","java/lang/Enum")||true,_=>false}
+    match (kind,r.and_then(|id|h.arrays.get(id))) {("list",Some(Array::List(_,_)|Array::ArraysList(_)|Array::ImmutableList(_)|Array::EmptyList))|("number",Some(Array::Byte(_)|Array::Short(_)|Array::Integer(_)|Array::Long(_)|Array::Float(_)|Array::Double(_)))|("stream",Some(Array::LazyStream(_,_,_,_)|Array::SortedStream(_,_,_)|Array::MappedStream(_,_,_)|Array::StackWalkStream(_,_,_,_,_)|Array::StackStage(_,_,_,_)))|("stackframe",Some(Array::StackFrame(_,_)))|("concurrentmap",Some(Array::Map(_,_,_)))|("map",Some(Array::Map(_,_,_)|Array::HashMap(_)|Array::IdentityMap(_)|Array::LinkedMap(_,_)|Array::TreeMap(_,_)|Array::EmptyMap|Array::ImmutableMap(_)))|("set",Some(Array::Set(_,_)|Array::HashSet(_)|Array::EmptySet|Array::ImmutableSet(_)|Array::EnumSet(_)|Array::IdentitySet(_)))|("completedfuture",Some(Array::CompletedFuture(_)))|("optional",Some(Array::Optional(_)))|("class",Some(Array::Class(_)))|("classloader",Some(Array::AppLoader|Array::PlatformLoader))|("printstream",Some(Array::Stdout|Array::Stderr))|("builder",Some(Array::Builder(_)))|("reader",Some(Array::Reader(_,_,_,_)))|("inputstream",Some(Array::ResourceStream(_,_,_)|Array::FileInput(_)|Array::ByteInput(_,_,_,_)|Array::GzipIn(_,_,_)|Array::DeflateIn(_,_,_)))|("uuid",Some(Array::Uuid(_)))|("bitset",Some(Array::BitSet(_)))|("zipfsprovider",Some(Array::ZipFsProvider))|("uri",Some(Array::Uri(_)))|("pattern",Some(Array::Pattern(_,_)))|("long",Some(Array::Long(_)))|("float",Some(Array::Float(_)))|("double",Some(Array::Double(_)))|("byte",Some(Array::Byte(_)))|("short",Some(Array::Short(_)))|("character",Some(Array::Character(_)))|("integer",Some(Array::Integer(_)))|("boolean",Some(Array::Boolean(_)))|("s",Some(Array::Str(_)))|("t",Some(Array::Strings(_)))|("o",Some(_))|("A",Some(Array::Strings(_)))|("A",Some(Array::Refs(_, _)))|("A",Some(Array::ProjectRefs(_, _)))|("C",Some(Array::Refs(14,_)))=>true,(kind,Some(Array::Obj(actual,_)|Array::SharedObj(actual,_)|Array::LocalObj(actual,_,_))) if kind=="enum"=>project_subtype(h,actual,"java/lang/Enum")||interfaces.iter().any(|(c,i)|*c==actual&&*i=="java/lang/Enum"),(kind,Some(Array::TimeUnit(_))) if kind=="enum"=>project_subtype(h,"java/time/TimeUnit","java/lang/Enum")||true,_=>false}
 }
 fn serializable_instance(h:&Heap,r:Option<usize>,interfaces:&[(&str,&str)])->bool{let Some(id)=r else{return false};if h.enum_values.contains_key(&id){return true;}match h.arrays.get(id){
  Some(Array::Obj(_,_)|Array::SharedObj(_,_)|Array::LocalObj(_,_,_)|Array::Lambda(_,_,_)|Array::IdentityFunction)=>project_instance(h,r,"java/io/Serializable",interfaces),
@@ -658,6 +658,12 @@ fn serializable_instance(h:&Heap,r:Option<usize>,interfaces:&[(&str,&str)])->boo
  Some(_)=>error("Serializable: tipo JDK no inspeccionado"),None=>panic!("referencia inválida")}}
 fn project_subtype(h:&Heap,mut actual:&str,target:&str)->bool{loop{if actual==target{return true;}match h.parents.get(actual){Some(parent)=>actual=parent,None=>return false}}}
 fn utf8_charset(h:&mut Heap)->usize{if let Some(id)=h.utf8_charset{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Utf8Charset);h.utf8_charset=Some(id);id}
+fn string_reader_init(h:&mut Heap,r:Option<usize>,value:Option<usize>){
+  let rid=array_id(h,r);let units=string_units(h,value);
+  let total=h.elements.saturating_add(units.len());if total>1_000_000{error("Límite experimental de heap excedido");}h.elements=total;
+  h.arrays[rid]=Array::Reader(None,Some(units),0,false);
+}
+fn reader_close_string(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);match &mut h.arrays[id]{Array::Reader(_,_,_,closed)=>*closed=true,_=>error("StringReader inválido")}}
 fn reader_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Reader(None,None,0,false));id}
 fn reader_init(h:&mut Heap,r:Option<usize>,stream:Option<usize>,charset:Option<usize>){let rid=array_id(h,r);let sid=array_id(h,stream);let cid=array_id(h,charset);if !matches!(h.arrays[cid],Array::Utf8Charset)||!matches!(h.arrays[sid],Array::ResourceStream(_,_,_)){error("InputStreamReader: solo recurso y UTF-8 verificados");}match &mut h.arrays[rid]{Array::Reader(source,_,_,_)=>*source=Some(sid),_=>error("InputStreamReader inválido")}}
 fn reader_ready(h:&mut Heap,id:usize){let stream=match &h.arrays[id]{Array::Reader(Some(s),None,_,false)=>*s,Array::Reader(_,_,_,true)=>raise("IOException","Stream closed"),Array::Reader(_,Some(_),_,false)=>return,_=>error("InputStreamReader no inicializado")};let (bytes,pos)=match &h.arrays[stream]{Array::ResourceStream(bytes,pos,false)=>(*bytes,*pos),Array::ResourceStream(_,_,true)=>raise("IOException","Stream closed"),_=>unreachable!()};if bytes.len().saturating_sub(pos)>8192{error("InputStreamReader: recurso mayor al buffer verificado");}let text=std::str::from_utf8(&bytes[pos..]).unwrap_or_else(|_|error("InputStreamReader: UTF-8 inválido no soportado"));let units:Vec<u16>=text.encode_utf16().collect();if h.elements.saturating_add(units.len())>1_000_000{error("Límite experimental de heap excedido");}h.elements+=units.len();if let Array::ResourceStream(_,p,_)=&mut h.arrays[stream]{*p=bytes.len();}if let Array::Reader(_,buffer,_,_)=&mut h.arrays[id]{*buffer=Some(units);}}
@@ -673,8 +679,148 @@ fn byte_input_available(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match
 fn byte_input_skip(h:&mut Heap,r:Option<usize>,n:i64)->i64{let id=array_id(h,r);let (p,c)=match h.arrays[id]{Array::ByteInput(Some(_),p,_,c)=>(p,c),_=>error("InputStream.skip: solo ByteArrayInputStream soportado")};let amount=n.max(0).min((c-p) as i64) as usize;if let Array::ByteInput(_,pos,_,_)=&mut h.arrays[id]{*pos+=amount;}amount as i64}
 fn byte_input_mark(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);match &mut h.arrays[id]{Array::ByteInput(Some(_),p,mark,_)=>*mark=*p,_=>error("InputStream.mark: solo ByteArrayInputStream soportado")}}
 fn byte_input_reset(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);match &mut h.arrays[id]{Array::ByteInput(Some(_),p,mark,_)=>*p=*mark,_=>error("InputStream.reset: solo ByteArrayInputStream soportado")}}
-fn resource_read(h:&mut Heap,r:Option<usize>)->i32{let id=array_id(h,r);if matches!(h.arrays[id],Array::ByteInput(_,_,_,_)){return byte_input_read(h,id);}match &mut h.arrays[id]{Array::ResourceStream(bytes,pos,closed)=>{if *closed{raise("IOException","Stream closed");}if *pos>=bytes.len(){return -1;}let b=bytes[*pos];*pos+=1;b as i32},Array::FileInput(file)=>{use std::io::Read;let file=file.as_mut().unwrap_or_else(||raise("IOException","Stream Closed"));let mut b=[0u8;1];match file.read(&mut b){Ok(0)=>-1,Ok(_)=>b[0] as i32,Err(e)=>error(&format!("InputStream.read: E/S no traducida: {e}"))}},_=>error("InputStream concreto no soportado")}}
-fn resource_close(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);if matches!(h.arrays[id],Array::ByteInput(_,_,_,_)){return;}match &mut h.arrays[id]{Array::ResourceStream(_,_,closed)=>*closed=true,Array::FileInput(file)=>{*file=None;},_=>error("InputStream concreto no soportado")}}
+fn read_all_inner(h:&mut Heap,inner:Option<usize>)->Vec<u8>{
+  // Drena el stream interno por completo (los region files son pequeños y el heap ya
+  // acumula todo en memoria). Se apoya en resource_read/read para todos los tipos.
+  let mut out=Vec::new();let mut guard=0usize;
+  loop {
+    guard+=1;if guard>16_000_000{error("stream comprimido: lee más de 16 MiB");}
+    let b=resource_read(h,inner);if b<0{break;}out.push(b as u8);
+  }
+  out
+}
+fn gzip_in_ready(h:&mut Heap,id:usize){
+  if matches!(h.arrays[id],Array::GzipIn(_,_,usize::MAX)){raise("IOException","Stream closed");}
+  let out_some=matches!(h.arrays[id],Array::GzipIn(_,Some(_),_));if out_some {return;}
+  let inner_id=match &h.arrays[id]{Array::GzipIn(i,_,_)=>*i,_=>panic!()};
+  let inner=Some(inner_id);
+  let raw=read_all_inner(h,inner);
+  let decoded:Vec<u8>={use std::io::{Cursor,Read};let mut out=Vec::new();let mut d=flate2::read::GzDecoder::new(Cursor::new(raw));d.read_to_end(&mut out).unwrap_or_else(|_|raise("IOException","GZIPInputStream: cabecera o CRC inválidos"));out};
+  if let Array::GzipIn(_,outp,pos)=&mut h.arrays[id]{*outp=Some(decoded);*pos=0;}
+}
+fn deflate_in_ready(h:&mut Heap,id:usize){
+  if matches!(h.arrays[id],Array::DeflateIn(_,_,usize::MAX)){raise("IOException","Stream closed");}
+  let out_some=matches!(h.arrays[id],Array::DeflateIn(_,Some(_),_));if out_some {return;}
+  let inner_id=match &h.arrays[id]{Array::DeflateIn(i,_,_)=>*i,_=>panic!()};
+  let inner=Some(inner_id);
+  let raw=read_all_inner(h,inner);
+  let decoded:Vec<u8>={use std::io::{Cursor,Read};let mut out=Vec::new();let mut d=flate2::read::DeflateDecoder::new(Cursor::new(raw));d.read_to_end(&mut out).unwrap_or_else(|_|raise("IOException","InflaterInputStream: bloque deflate inválido"));out};
+  if let Array::DeflateIn(_,outp,pos)=&mut h.arrays[id]{*outp=Some(decoded);*pos=0;}
+}
+fn gzip_in_materialized(h:&mut Heap,id:usize)->Vec<u8>{gzip_in_ready(h,id);match &h.arrays[id]{Array::GzipIn(_,Some(v),_)=>v.clone(),_=>unreachable!()}}
+fn deflate_in_materialized(h:&mut Heap,id:usize)->Vec<u8>{deflate_in_ready(h,id);match &h.arrays[id]{Array::DeflateIn(_,Some(v),_)=>v.clone(),_=>unreachable!()}}
+fn output_write_bytes(h:&mut Heap,inner:Option<usize>,bytes:&[u8]){
+  let id=array_id(h,inner);
+  let kind=match &h.arrays[id]{Array::FileOutput(_)=>0u8,Array::BufferedOutput(..)=>1,Array::GzipOut(..)=>2,Array::DeflateOut(..)=>3,_=>error("OutputStream concreto no soportado")};
+  match kind{
+    0=>{use std::io::Write;let file=match &mut h.arrays[id]{Array::FileOutput(f)=>f.as_mut().unwrap_or_else(||raise("IOException","Stream closed")),_=>unreachable!()};file.write_all(bytes).unwrap_or_else(|_|error("OutputStream.write: E/S no traducida"))}
+    1=>buffered_output_append(h,Some(id),bytes),
+    2=>gzip_out_write_all(h,Some(id),bytes),
+    3=>deflate_out_write_all(h,Some(id),bytes),
+    _=>unreachable!(),
+  }
+}
+fn output_flush(h:&mut Heap,inner:Option<usize>){
+  let id=array_id(h,inner);
+  let kind=match &h.arrays[id]{Array::FileOutput(_)=>0u8,Array::BufferedOutput(..)=>1,Array::GzipOut(..)=>2,Array::DeflateOut(..)=>3,_=>error("OutputStream concreto no soportado")};
+  match kind{
+    0=>{use std::io::Write;let file=match &mut h.arrays[id]{Array::FileOutput(f)=>f.as_mut().unwrap_or_else(||raise("IOException","Stream closed")),_=>unreachable!()};file.flush().unwrap_or_else(|_|error("OutputStream.flush: E/S no traducida"))}
+    1=>buffered_output_flush(h,Some(id)),
+    2=>gzip_out_flush(h,Some(id)),
+    3=>deflate_out_flush(h,Some(id)),
+    _=>unreachable!(),
+  }
+}
+fn output_close(h:&mut Heap,inner:Option<usize>){
+  let id=array_id(h,inner);
+  let kind=match &h.arrays[id]{Array::FileOutput(_)=>0u8,Array::BufferedOutput(..)=>1,Array::GzipOut(..)=>2,Array::DeflateOut(..)=>3,_=>error("OutputStream concreto no soportado")};
+  match kind{
+    0=>file_output_close(h,Some(id)),
+    1=>buffered_output_close(h,Some(id)),
+    2=>gzip_out_close(h,Some(id)),
+    3=>deflate_out_close(h,Some(id)),
+    _=>unreachable!(),
+  }
+}
+fn inner_check(h:&mut Heap,inner:Option<usize>)->usize{
+  let id=array_id(h,inner);
+  match h.arrays[id]{Array::FileOutput(_)|Array::BufferedOutput(..)|Array::GzipOut(..)|Array::DeflateOut(..)|Array::FileInput(_)|Array::ResourceStream(..)|Array::ByteInput(..)|Array::GzipIn(_,_,_)|Array::DeflateIn(_,_,_)=>id,_=>error("stream interno concreto no soportado")}
+}
+fn buffered_output_new(h:&mut Heap)->usize{new_arrays_push(h,Array::BufferedOutput(usize::MAX,Vec::new()))}
+fn buffered_output_init(h:&mut Heap,r:Option<usize>,inner:Option<usize>){if inner.is_none(){raise("NullPointerException","");}let rid=array_id(h,r);let inner=inner_check(h,inner);if !matches!(h.arrays[rid],Array::BufferedOutput(_,_)){error("BufferedOutputStream inválido");}h.arrays[rid]=Array::BufferedOutput(inner,Vec::new());}
+fn buffered_output_wrapped(h:&mut Heap,inner:Option<usize>)->usize{if inner.is_none(){raise("NullPointerException","");}let inner=inner_check(h,inner);new_arrays_push(h,Array::BufferedOutput(inner,Vec::new()))}
+fn buffered_output_append(h:&mut Heap,r:Option<usize>,bytes:&[u8]){
+  let id=array_id(h,r);let inner=match h.arrays[id]{Array::BufferedOutput(i,_)=>i,_=>panic!("BufferedOutput inválido")};
+  {let buf=match &mut h.arrays[id]{Array::BufferedOutput(_,b)=>b,_=>unreachable!()};buf.extend_from_slice(bytes);}
+  let len=match &h.arrays[id]{Array::BufferedOutput(_,b)=>b.len(),_=>unreachable!()};
+  if len>=8192{let taken=match &mut h.arrays[id]{Array::BufferedOutput(_,b)=>std::mem::take(b),_=>unreachable!()};output_write_bytes(h,Some(inner),&taken);}
+}
+fn buffered_output_flush(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);let inner=match h.arrays[id]{Array::BufferedOutput(i,_)=>i,_=>panic!("BufferedOutput inválido")};let taken=match &mut h.arrays[id]{Array::BufferedOutput(_,b)=>std::mem::take(b),_=>unreachable!()};output_write_bytes(h,Some(inner),&taken);output_flush(h,Some(inner));}
+fn buffered_output_close(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);let inner=match h.arrays[id]{Array::BufferedOutput(i,_)=>i,_=>panic!("BufferedOutput inválido")};let taken=match &mut h.arrays[id]{Array::BufferedOutput(_,b)=>std::mem::take(b),_=>unreachable!()};output_write_bytes(h,Some(inner),&taken);output_close(h,Some(inner));}
+fn gzip_out_new(h:&mut Heap)->usize{new_arrays_push(h,Array::GzipOut(usize::MAX,flate2::write::GzEncoder::new(Vec::new(),flate2::Compression::default())))}
+fn gzip_out_init(h:&mut Heap,r:Option<usize>,inner:Option<usize>){if inner.is_none(){raise("NullPointerException","");}let rid=array_id(h,r);let inner=inner_check(h,inner);if !matches!(h.arrays[rid],Array::GzipOut(_,_)){error("GZIPOutputStream inválido");}h.arrays[rid]=Array::GzipOut(inner,flate2::write::GzEncoder::new(Vec::new(),flate2::Compression::default()));}
+fn gzip_out_write_all(h:&mut Heap,r:Option<usize>,bytes:&[u8]){
+  let id=array_id(h,r);let (inner,sink)={let a=&mut h.arrays[id];match a{Array::GzipOut(i,enc)=>(*i,enc.get_mut()),_=>panic!()}};
+  use std::io::Write;sink.write_all(bytes).unwrap_or_else(|_|error("GZIPOutputStream.write: fallo de deflate"));let mut drained=Vec::new();std::mem::swap(&mut drained,sink);
+  if !drained.is_empty(){output_write_bytes(h,Some(inner),&drained);}
+}
+fn gzip_out_flush(h:&mut Heap,r:Option<usize>){
+  let id=array_id(h,r);let inner=match h.arrays[id]{Array::GzipOut(i,_)=>i,_=>panic!("GZIPOutputStream inválido")};let drained={let enc=match &mut h.arrays[id]{Array::GzipOut(_,enc)=>enc,_=>unreachable!()};use std::io::Write;enc.flush().unwrap_or_else(|_|error("GZIPOutputStream.flush: fallo de deflate"));let mut drained=Vec::new();std::mem::swap(&mut drained,enc.get_mut());drained};
+  output_write_bytes(h,Some(inner),&drained);output_flush(h,Some(inner));
+}
+fn gzip_out_close(h:&mut Heap,r:Option<usize>){
+  let id=array_id(h,r);let inner=match h.arrays[id]{Array::GzipOut(i,_)=>i,_=>panic!("GZIPOutputStream inválido")};let drained={let enc=match &mut h.arrays[id]{Array::GzipOut(_,enc)=>enc,_=>unreachable!()};use std::io::Write;enc.try_finish().unwrap_or_else(|_|error("GZIPOutputStream.close: fallo de deflate"));let mut drained=Vec::new();std::mem::swap(&mut drained,enc.get_mut());drained};
+  output_write_bytes(h,Some(inner),&drained);output_close(h,Some(inner));
+}
+fn deflate_out_new(h:&mut Heap)->usize{new_arrays_push(h,Array::DeflateOut(usize::MAX,flate2::write::DeflateEncoder::new(Vec::new(),flate2::Compression::default())))}
+fn deflate_out_init(h:&mut Heap,r:Option<usize>,inner:Option<usize>){if inner.is_none(){raise("NullPointerException","");}let rid=array_id(h,r);let inner=inner_check(h,inner);if !matches!(h.arrays[rid],Array::DeflateOut(_,_)){error("DeflaterOutputStream inválido");}h.arrays[rid]=Array::DeflateOut(inner,flate2::write::DeflateEncoder::new(Vec::new(),flate2::Compression::default()));}
+fn deflate_out_write_all(h:&mut Heap,r:Option<usize>,bytes:&[u8]){
+  let id=array_id(h,r);let (inner,sink)={let a=&mut h.arrays[id];match a{Array::DeflateOut(i,enc)=>(*i,enc.get_mut()),_=>panic!()}};
+  use std::io::Write;sink.write_all(bytes).unwrap_or_else(|_|error("DeflaterOutputStream.write: fallo de deflate"));let mut drained=Vec::new();std::mem::swap(&mut drained,sink);
+  if !drained.is_empty(){output_write_bytes(h,Some(inner),&drained);}
+}
+fn deflate_out_flush(h:&mut Heap,r:Option<usize>){
+  let id=array_id(h,r);let inner=match h.arrays[id]{Array::DeflateOut(i,_)=>i,_=>panic!("DeflaterOutputStream inválido")};let drained={let enc=match &mut h.arrays[id]{Array::DeflateOut(_,enc)=>enc,_=>unreachable!()};use std::io::Write;enc.flush().unwrap_or_else(|_|error("DeflaterOutputStream.flush: fallo de deflate"));let mut drained=Vec::new();std::mem::swap(&mut drained,enc.get_mut());drained};
+  output_write_bytes(h,Some(inner),&drained);output_flush(h,Some(inner));
+}
+fn deflate_out_close(h:&mut Heap,r:Option<usize>){
+  let id=array_id(h,r);let inner=match h.arrays[id]{Array::DeflateOut(i,_)=>i,_=>panic!("DeflaterOutputStream inválido")};let drained={let enc=match &mut h.arrays[id]{Array::DeflateOut(_,enc)=>enc,_=>unreachable!()};use std::io::Write;enc.try_finish().unwrap_or_else(|_|error("DeflaterOutputStream.close: fallo de deflate"));let mut drained=Vec::new();std::mem::swap(&mut drained,enc.get_mut());drained};
+  output_write_bytes(h,Some(inner),&drained);output_close(h,Some(inner));
+}
+fn compressed_available(h:&mut Heap,r:Option<usize>,gzip:bool)->i32{
+  let id=array_id(h,r);if gzip{gzip_in_ready(h,id)}else{deflate_in_ready(h,id)};
+  let rem=match h.arrays[id]{Array::GzipIn(_,Some(ref v),pos)|Array::DeflateIn(_,Some(ref v),pos)=>v.len().saturating_sub(pos),_=>unreachable!()};
+  rem.min(1) as i32
+}
+fn stream_write_byte(h:&mut Heap,r:Option<usize>,b:i32){output_write_bytes(h,r,&[b as u8])}
+fn stream_write_array(h:&mut Heap,r:Option<usize>,src:Option<usize>,off:i32,len:i32){
+  let id=array_id(h,src);let bytes=match &h.arrays[id]{Array::B(v)=>v,_=>error("OutputStream.write(byte[]): solo byte[] soportado")};
+  let len=if len==-1{bytes.len() as i32}else{len};
+  if off<0||len<0||(off as usize).saturating_add(len as usize)>bytes.len(){raise("IndexOutOfBoundsException","");}
+  let bytes:Vec<u8>=bytes[off as usize..off as usize+len as usize].iter().map(|b|*b as u8).collect();output_write_bytes(h,r,&bytes);
+}
+fn gzip_in_new(h:&mut Heap)->usize{new_arrays_push(h,Array::GzipIn(usize::MAX,None,0))}
+fn gzip_in_init(h:&mut Heap,r:Option<usize>,inner:Option<usize>){if inner.is_none(){raise("NullPointerException","");}let rid=array_id(h,r);let inner_id={let id=array_id(h,inner);inner_check(h,inner);id};if !matches!(h.arrays[rid],Array::GzipIn(_,_,_)){error("GZIPInputStream inválido");}h.arrays[rid]=Array::GzipIn(inner_id,None,0);}
+fn deflate_in_new(h:&mut Heap)->usize{new_arrays_push(h,Array::DeflateIn(usize::MAX,None,0))}
+fn deflate_in_init(h:&mut Heap,r:Option<usize>,inner:Option<usize>){if inner.is_none(){raise("NullPointerException","");}let rid=array_id(h,r);let inner_id={let id=array_id(h,inner);inner_check(h,inner);id};if !matches!(h.arrays[rid],Array::DeflateIn(_,_,_)){error("InflaterInputStream inválido");}h.arrays[rid]=Array::DeflateIn(inner_id,None,0);}
+fn gzip_in_read(h:&mut Heap,r:Option<usize>)->i32{let id=array_id(h,r);gzip_in_ready(h,id);match h.arrays[id]{Array::GzipIn(_,Some(ref v),pos)=>{if pos>=v.len(){return -1;}let b=v[pos];if let Array::GzipIn(_,_,p)=&mut h.arrays[id]{*p=pos+1;}b as i32},_=>unreachable!()}}
+fn deflate_in_read(h:&mut Heap,r:Option<usize>)->i32{let id=array_id(h,r);deflate_in_ready(h,id);match h.arrays[id]{Array::DeflateIn(_,Some(ref v),pos)=>{if pos>=v.len(){return -1;}let b=v[pos];if let Array::DeflateIn(_,_,p)=&mut h.arrays[id]{*p=pos+1;}b as i32},_=>unreachable!()}}
+fn deflate_read_into(h:&mut Heap,r:Option<usize>,dst:Option<usize>,off:i32,len:i32,gzip:bool)->i32{
+  let id=array_id(h,r);if gzip{gzip_in_ready(h,id)}else{deflate_in_ready(h,id)};
+  let (pos,len_out)=match (if gzip {&h.arrays[id]} else {&h.arrays[id]}) {Array::GzipIn(_,Some(v),pos)|Array::DeflateIn(_,Some(v),pos)=>(*pos,v.len()),_=>unreachable!()};
+  if len==0{return 0;}
+  let want=(len as usize).min(len_out.saturating_sub(pos));
+  if want==0{return -1;}
+  let did=array_id(h,dst);let size=match &h.arrays[did]{Array::B(v)=>v.len(),_=>error("InputStream.read: destino no byte[]")};
+  let len=if len==-1{(size as i32).saturating_sub(off)}else{len};
+  if off<0||len<0||(off as usize).saturating_add(len as usize)>size{raise("IndexOutOfBoundsException","");}
+  let data=if gzip {let v=match &h.arrays[id]{Array::GzipIn(_,Some(v),_)=>v,_=>unreachable!()};v[pos..pos+want].to_vec()}else{let v=match &h.arrays[id]{Array::DeflateIn(_,Some(v),_)=>v,_=>unreachable!()};v[pos..pos+want].to_vec()};
+  if let Array::B(v)=&mut h.arrays[did]{for (i,b) in data.iter().enumerate(){v[off as usize+i]=*b as i8;}}
+  if gzip{if let Array::GzipIn(_,_,p)=&mut h.arrays[id]{*p=pos+want;}}else{if let Array::DeflateIn(_,_,p)=&mut h.arrays[id]{*p=pos+want;}}
+  want as i32
+}
+fn resource_read(h:&mut Heap,r:Option<usize>)->i32{let id=array_id(h,r);if matches!(h.arrays[id],Array::GzipIn(_,_,usize::MAX)|Array::DeflateIn(_,_,usize::MAX)){raise("IOException","Stream closed");}if matches!(h.arrays[id],Array::GzipIn(_,_,_)){return gzip_in_read(h,r);}if matches!(h.arrays[id],Array::DeflateIn(_,_,_)){return deflate_in_read(h,r);}if matches!(h.arrays[id],Array::ByteInput(_,_,_,_)){return byte_input_read(h,id);}match &mut h.arrays[id]{Array::ResourceStream(bytes,pos,closed)=>{if *closed{raise("IOException","Stream closed");}if *pos>=bytes.len(){return -1;}let b=bytes[*pos];*pos+=1;b as i32},Array::FileInput(file)=>{use std::io::Read;let file=file.as_mut().unwrap_or_else(||raise("IOException","Stream Closed"));let mut b=[0u8;1];match file.read(&mut b){Ok(0)=>-1,Ok(_)=>b[0] as i32,Err(e)=>error(&format!("InputStream.read: E/S no traducida: {e}"))}},_=>error("InputStream concreto no soportado")}}
+fn resource_close(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);if matches!(h.arrays[id],Array::ByteInput(_,_,_,_)){return;}match &mut h.arrays[id]{Array::ResourceStream(_,_,closed)=>*closed=true,Array::FileInput(file)=>{*file=None;},Array::GzipIn(_,_,pos)=>*pos=usize::MAX,Array::DeflateIn(_,_,pos)=>*pos=usize::MAX,_=>error("InputStream concreto no soportado")}}
 fn byte_buffer_wrap(h:&mut Heap,r:Option<usize>)->usize{if r.is_none(){raise("NullPointerException","array");}let id=array_id(h,r);let bytes=match &h.arrays[id]{Array::B(v)=>v.clone(),_=>error("ByteBuffer.wrap: array fuente no soportado")};if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::ByteBuffer(bytes));out}
 fn list_construct_from_collection(h:&mut Heap,source:Option<usize>)->usize{let id=array_id(h,source);let items=match &h.arrays[id]{Array::List(v,_)|Array::ImmutableList(v)|Array::Set(v,_)|Array::ImmutableSet(v)|Array::HashSet(v,_)|Array::KeySet(v,_)|Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),Array::EmptyList|Array::EmptySet=>Vec::new(),Array::ArraysList(a)=>match &h.arrays[*a]{Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),Array::Strings(u)=>{let mut items=Vec::with_capacity(u.len());for item in u{items.push(match item{Some(units)=>Some(new_string(h,units.clone())),None=>None});}items},_=>unreachable!()},_=>error("ArrayList(Collection) como lambda: colección fuera del perfil")};if h.elements.checked_add(items.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}h.elements+=items.len();if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::List(items,0));out}
 fn integer_highest_one_bit(v:i32)->i32{let u=v as u32;if u==0{0}else{(1u32<<(31 - u.leading_zeros())) as i32}}
@@ -685,6 +831,18 @@ fn integer_highest_one_bit(v:i32)->i32{let u=v as u32;if u==0{0}else{(1u32<<(31 
 fn system_set_stream(h:&mut Heap,s:Option<usize>){let id=s.unwrap_or_else(||raise("NullPointerException",""));if !matches!(h.arrays[id],Array::Stdout|Array::Stderr|Array::Obj(_,_)|Array::SharedObj(_,_)|Array::LocalObj(_,_,_)){error("System.setOut/setErr: PrintStream fuera del perfil");}}
 fn collectors_joining_delimiter(h:&mut Heap,delimiter:Option<usize>)->usize{if delimiter.is_none(){raise("NullPointerException","The delimiter must not be null");}if !matches!(h.arrays[delimiter.unwrap()],Array::Str(_)){error("Collectors.joining: solo String/null soportados");}let prefix=new_string(h,Vec::new());let suffix=new_string(h,Vec::new());if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::JoinCollector(delimiter,Some(prefix),Some(suffix)));id}
 fn collectors_joining(h:&mut Heap,delimiter:Option<usize>,prefix:Option<usize>,suffix:Option<usize>)->usize {for v in [delimiter,prefix,suffix].into_iter().flatten(){if !matches!(h.arrays[v],Array::Str(_)){error("Collectors.joining: solo String/null soportados");}}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::JoinCollector(delimiter,prefix,suffix));id}
+fn nano_time()->i64{
+  // System.nanoTime(): cronómetro monotónico de origen arbitrario. Se usa un
+  // origen estático relativo al primer uso; basta para unicidad entre llamadas.
+  static ORIGIN:std::sync::OnceLock<std::time::Instant>=std::sync::OnceLock::new();
+  let origin=ORIGIN.get_or_init(std::time::Instant::now);
+  use std::time::Duration;
+  let d:Duration=std::time::Instant::now().duration_since(*origin);
+  // Puede saturar en ejecuciones extremadamente largas; nanoTime nunca tiene
+  // garantías de monotonía global, solo local.
+  let nanos=d.as_secs().saturating_mul(1_000_000_000).saturating_add(d.subsec_nanos() as u64);
+  i64::try_from(nanos).unwrap_or_else(|_|error("System.nanoTime: fuera de rango"))
+}
 fn current_time_millis()->i64{let millis=match std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH){Ok(v)=>i128::try_from(v.as_millis()).unwrap_or_else(|_|error("System.currentTimeMillis: reloj fuera de rango")),Err(e)=>-i128::try_from((e.duration().as_nanos()+999_999)/1_000_000).unwrap_or_else(|_|error("System.currentTimeMillis: reloj fuera de rango"))};i64::try_from(millis).unwrap_or_else(|_|error("System.currentTimeMillis: reloj fuera de rango"))}
 fn current_thread(h:&mut Heap)->usize{if let Some(id)=h.arrays.iter().position(|a|matches!(a,Array::CurrentThread(_,_))){return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let name=new_string(h,vec![109,97,105,110]);if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::CurrentThread(false,name));id}
 fn thread_is_interrupted(h:&Heap,r:Option<usize>)->bool{let id=array_id(h,r);match h.arrays[id]{Array::CurrentThread(flag,_)=>flag,_=>error("Thread: solo hilo principal monohilo soportado")}}
@@ -695,7 +853,15 @@ fn thread_id(h:&Heap,r:Option<usize>)->i64{let id=array_id(h,r);if !matches!(h.a
 fn thread_name(h:&Heap,r:Option<usize>)->usize{let id=array_id(h,r);match h.arrays[id]{Array::CurrentThread(_,name)=>name,_=>error("Thread.getName: solo hilo principal monohilo soportado")}}
 fn thread_set_name_guard(h:&Heap,r:Option<usize>,name:Option<usize>){let _=thread_name(h,r);if name.is_none(){raise("NullPointerException","name cannot be null");}error("Thread.setName: cambio de nombre no soportado")}
 fn thread_interrupted(h:&mut Heap)->bool{let id=current_thread(h);if let Array::CurrentThread(flag,_)=&mut h.arrays[id]{let old=*flag;*flag=false;old}else{unreachable!()}}
-fn collector_of(h:&mut Heap,supplier:Option<usize>,accumulator:Option<usize>,combiner:Option<usize>,characteristics:Option<usize>)->usize{let s=supplier.unwrap_or_else(||raise("NullPointerException",""));let a=accumulator.unwrap_or_else(||raise("NullPointerException",""));let c=combiner.unwrap_or_else(||raise("NullPointerException",""));let id=array_id(h,characteristics);if !matches!(&h.arrays[id],Array::ProjectRefs("java/util/stream/Collector$Characteristics",v) if v.is_empty()){error("Collector.of: solo características vacías");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::Collector(s,a,c));out}
+fn util_start_timer_hack_thread_noop(_h:&mut Heap){
+  // Util.startTimerHackThread existe en el bytecode para arrancar un Thread-Daemon
+  // que duerme Integer.MAX_VALUE e ignora InterruptedException; en el historial de la
+  // JVM solo impide que el proceso termine antes de lo previsto al perder el stdin.
+  // En el binario nativo AOT el main es síncrono y no hay proceso que mantener en
+  // pie: este intrinsic es un no-op documentado, no un atajado general.
+}
+fn collector_characteristic(h:&mut Heap)->usize{boolean_value_of(h,true)}
+fn collector_of(h:&mut Heap,supplier:Option<usize>,accumulator:Option<usize>,combiner:Option<usize>,characteristics:Option<usize>)->usize{let s=supplier.unwrap_or_else(||raise("NullPointerException",""));let a=accumulator.unwrap_or_else(||raise("NullPointerException",""));let c=combiner.unwrap_or_else(||raise("NullPointerException",""));let id=array_id(h,characteristics);match &h.arrays[id]{Array::ProjectRefs(name,v) if *name=="java/util/stream/Collector$Characteristics" && (v.is_empty() || (v.len()==1 && matches!(v[0],Some(e) if matches!(&h.arrays[e],Array::Boolean(_)))))=>{},_=>error("Collector.of: solo características vacías o UNORDERED en este perfil")}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::Collector(s,a,c));out}
 // RuntimePermission es un objeto de datos; no implementa políticas ni checkPermission.
 // Referentes solo null o el loader del sistema, que permanece fuertemente alcanzable.
 fn weak_loader_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::WeakLoader(None));id}
@@ -709,6 +875,14 @@ fn runtime_processors(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);if !mat
 fn system_line_separator(h:&mut Heap)->usize{if let Some(id)=h.line_separator{return id;}let units=if cfg!(windows){vec![13,10]}else{vec![10]};let id=new_string(h,units);h.line_separator=Some(id);id}
 fn process_current(h:&mut Heap)->usize{if let Some(id)=h.current_process{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::CurrentProcess);h.current_process=Some(id);id}
 fn process_pid(h:&Heap,r:Option<usize>)->i64{let id=array_id(h,r);if !matches!(h.arrays[id],Array::CurrentProcess){error("ProcessHandle concreto no soportado");}std::process::id() as i64}
+fn string_join_iterable(h:&mut Heap,delim:Option<usize>,iterable:Option<usize>)->usize{
+  let units=string_units(h,delim);let del:Vec<u16>=units.to_vec();
+  let id=array_id(h,iterable);let values:Vec<Option<usize>>=match h.arrays[id]{Array::List(v,_)|Array::Set(v,_)|Array::ImmutableSet(v)|Array::ImmutableList(v)=>v.clone(),Array::HashSet(v,_)|Array::KeySet(v,_)=>v.clone(),Array::ArraysList(a)=>match h.arrays[a]{Array::Strings(v)|Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),_=>unreachable!()},Array::EmptyList|Array::EmptySet=>Vec::new(),_=>error("String.join: Iterable fuera del perfil")};
+  let mut out=Vec::<u16>::new();
+  let mut push_elem=|out:&mut Vec<u16>,x:Option<usize>|match x{None=>out.extend("null".encode_utf16()),Some(x)=>match &h.arrays[x]{Array::Str(v)=>out.extend_from_slice(v),Array::Integer(n)=>out.extend(n.to_string().encode_utf16()),Array::Long(n)=>out.extend(n.to_string().encode_utf16()),Array::Boolean(b)=>out.extend(if b {"true".encode_utf16().collect::<Vec<u16>>()} else {"false".encode_utf16().collect::<Vec<u16>>()}),Array::Character(c)=>out.push(c),_=>error("String.join: elemento fuera del perfil")}};
+  for (i,item) in values.iter().enumerate(){if i>0{out.extend_from_slice(&del);}push_elem(&mut out,*item);}
+  new_string(h,out)
+}
 fn long_to_string(h:&mut Heap,n:i64)->usize{new_string(h,n.to_string().encode_utf16().collect())}
 fn clock_millis()->i64{let millis=match std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH){Ok(d)=>i128::try_from(d.as_millis()).unwrap_or(i128::MAX),Err(e)=>-i128::try_from(e.duration().as_millis().saturating_add(if e.duration().subsec_nanos()%1_000_000!=0{1}else{0})).unwrap_or(i128::MAX)};i64::try_from(millis).unwrap_or_else(|_|error("reloj fuera de rango Java"))}
 // Perfil explícito: ISO con año de cuatro dígitos, segundos y offset numérico o Z, sin zona nombrada.
@@ -833,6 +1007,7 @@ fn collectors_to_unmodifiable_map(h:&mut Heap,kf:Option<usize>,vf:Option<usize>)
   for id in [k,v]{if !matches!(h.arrays[id],Array::Lambda(_,"java/util/function/Function",_)|Array::IdentityFunction){error("Collectors.toUnmodifiableMap: Function fuera del perfil");}}
   if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ToUnmodifiableMapMarker(k,v));id
 }
+fn collectors_to_set(h:&mut Heap)->usize{let out=h.arrays.len();if out>=10000{error("Límite experimental de heap excedido");}h.arrays.push(Array::ToSetMarker);out}
 fn stream_collect(h:&mut Heap,r:Option<usize>,collector:Option<usize>,
     cmp_int:fn(&mut Heap,Option<usize>,Option<usize>)->i32,
     test:fn(&mut Heap,Option<usize>,Option<usize>)->i32,
@@ -844,6 +1019,12 @@ fn stream_collect(h:&mut Heap,r:Option<usize>,collector:Option<usize>,
     if h.elements.checked_add(elems.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
     h.elements+=elems.len();
     let out=h.arrays.len();h.arrays.push(Array::List(elems,0));return out;
+  }
+  if matches!(h.arrays[cid],Array::ToSetMarker){
+    let (elems,_)=stream_chain_items(h,r,cmp_int,test);
+    let mut out:Vec<Option<usize>>=Vec::with_capacity(elems.len());
+    for e in elems{if out.iter().any(|o|map_key_eq(h,*o,e)){continue;}if h.elements.checked_add(1).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}h.elements+=1;out.push(e);}
+    if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out_id=h.arrays.len();h.arrays.push(Array::Set(out,0));return out_id;
   }
   if matches!(h.arrays[cid],Array::ToImmutableListMarker){
     let (elems,_)=stream_chain_items(h,r,cmp_int,test);
@@ -936,6 +1117,28 @@ fn stream_find_first(h:&mut Heap,r:Option<usize>,apply:fn(&mut Heap,Option<usize
     if ok{return optional_new(h,value);}
   }
   optional_new(h,None)
+}
+fn uuid_from_string(h:&mut Heap,r:Option<usize>)->usize{
+  let units=string_units(h,r);
+  let hexval=|c:u16|->Option<u64>{match c{0x30..=0x39=>Some((c-0x30) as u64),0x41..=0x46=>Some((c-0x41+10) as u64),0x61..=0x66=>Some((c-0x61+10) as u64),_=>None}};
+  let seg=|from:usize,len:usize|->Option<u64>{let mut v:u64=0;if units.len()<from+len{return None;}for i in from..from+len{v=(v<<4)|hexval(units[i])?;}Some(v)};
+  if units.len()!=36||units[8]!=45||units[13]!=45||units[18]!=45||units[23]!=45{raise("IllegalArgumentException","Invalid UUID string");}
+  let (a,b,c,d,e)=((seg(0,8)),(seg(9,4)),(seg(14,4)),(seg(19,4)),(seg(24,12)));
+  let (a,b,c,d,e)=match (a,b,c,d,e){(Some(a),Some(b),Some(c),Some(d),Some(e))=>(a,b,c,d,e),_=>raise("IllegalArgumentException","Invalid UUID string")};
+  let mut bytes=[0u8;16];
+  bytes[0..4].copy_from_slice(&a.to_be_bytes());
+  bytes[4..6].copy_from_slice(&(b as u16).to_be_bytes());
+  bytes[6..8].copy_from_slice(&(c as u16).to_be_bytes());
+  bytes[8..10].copy_from_slice(&(d as u16).to_be_bytes());
+  let eb=e.to_be_bytes();bytes[10..16].copy_from_slice(&eb[2..8]);
+  new_arrays_push(h,Array::Uuid(bytes))
+}
+fn uuid_name_from_bytes(h:&mut Heap,bs:Option<usize>)->usize{
+  let id=array_id(h,bs);let bytes:Vec<u8>=match &h.arrays[id]{Array::B(v)=>v.iter().map(|x|*x as u8).collect(),_=>error("UUID.nameUUIDFromBytes: solo byte[] soportado")};
+  let digest=md5_digest(&bytes);let mut b=[0u8;16];b.copy_from_slice(&digest);
+  // tipo 3 (name-based, MD5): versión 3 en los bits 12-15 y variante 10 en los bits 62-63.
+  b[6]=(b[6]&0x0f)|0x30;b[8]=(b[8]&0x3f)|0x80;
+  new_arrays_push(h,Array::Uuid(b))
 }
 fn uuid_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Uuid([0;16]));id}
 fn uuid_init(h:&mut Heap,r:Option<usize>,most:i64,least:i64){let id=array_id(h,r);let mut b=[0u8;16];b[..8].copy_from_slice(&most.to_be_bytes());b[8..].copy_from_slice(&least.to_be_bytes());if !matches!(h.arrays[id],Array::Uuid(_)){error("UUID inválido");}h.arrays[id]=Array::Uuid(b);}
@@ -1343,6 +1546,13 @@ fn map_of_n(h:&mut Heap,pairs:Vec<(Option<usize>,Option<usize>)>)->usize{
   if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}if h.elements.checked_add(entries.len()*2).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
   h.elements+=entries.len()*2;let id=h.arrays.len();h.arrays.push(Array::LinkedMap(entries,0));id
 }
+fn immutable_map_of_n(h:&mut Heap,pairs:Vec<(Option<usize>,Option<usize>)>)->usize{
+  for (k,v) in &pairs{if k.is_none()||v.is_none(){raise("NullPointerException","key or value cannot be null");}}
+  let mut entries:Vec<(Option<usize>,Option<usize>)>=Vec::with_capacity(pairs.len());
+  for (k,v) in pairs{let dup=entries.iter().any(|(ek,_)|match (ek,&k){(None,None)=>true,(Some(a),Some(b))=>a==b||matches!((&h.arrays[*a],&h.arrays[*b]),(Array::Str(x),Array::Str(y)) if x==y),_=>false});if dup{raise("IllegalArgumentException","duplicate key");}entries.push((k,v));}
+  if h.arrays.len()>=10000||h.elements.checked_add(entries.len()*2).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
+  h.elements+=entries.len()*2;let id=h.arrays.len();h.arrays.push(Array::ImmutableMap(entries));id
+}
 fn enum_map_new(h:&mut Heap)->usize{linked_map_new(h)}
 fn enum_map_put(h:&mut Heap,r:Option<usize>,key:Option<usize>,value:Option<usize>)->Option<usize>{let kid=array_id(h,key);if !h.enum_values.contains_key(&kid){raise("ClassCastException","key is not an enum");}map_put(h,r,key,value,false)}
 fn enum_map_init_class(h:&mut Heap,r:Option<usize>,_keyclass:Option<usize>){let id=array_id(h,r);if !matches!(h.arrays[id],Array::LinkedMap(_,_)){error("EnumMap: receptor fuera del perfil");}}
@@ -1649,6 +1859,91 @@ fn java_properties_store_eula(h:&mut Heap,r:Option<usize>,output:Option<usize>,c
  match &mut h.arrays[out]{Array::FileOutput(file)=>{use std::io::Write;let file=file.as_mut().unwrap_or_else(||raise("IOException","Stream Closed"));if let Err(e)=file.write_all(data.as_bytes()){error(&format!("Properties.store: E/S no traducida: {e}"));}},_=>error("Properties.store: OutputStream concreto no soportado")}
 }
 
+fn optional_long_empty(h:&mut Heap)->usize{optional_new(h,None)}
+fn optional_long_of(h:&mut Heap,n:i64)->usize{let boxed=long_value_of(h,n);optional_new(h,Some(boxed))}
+fn optional_long_or_else(h:&Heap,r:Option<usize>,default:i64)->i64{let v=optional_value(h,r);match v{None=>default,Some(id)=>match h.arrays[id]{Array::Long(n)=>n,_=>error("OptionalLong concreto no soportado")}}}
+fn md5_digest(data:&[u8])->[u8;16]{
+  // RFC 1321. Constantes derivadas en tiempo de compilación del seno: |sin(i+1)| * 2^32.
+  const S:[u32;64]=[7,12,17,22,7,12,17,22,7,12,17,22,7,12,17,22,5,9,14,20,5,9,14,20,5,9,14,20,5,9,14,20,4,11,16,23,4,11,16,23,4,11,16,23,4,11,16,23,6,10,15,21,6,10,15,21,6,10,15,21,6,10,15,21];
+  let mut k=[0u32;64];for i in 0..64{k[i]=(((i as f64)+1.0f64).sin().abs()*4294967296.0f64).floor() as u32;}
+  let mut a0:u32=0x67452301;let mut b0:u32=0xefcdab89;let mut c0:u32=0x98badcfe;let mut d0:u32=0x10325476;
+  let mut msg=data.to_vec();msg.push(0x80);while msg.len()%64!=56{msg.push(0);}let len_bits=(data.len() as u64).wrapping_mul(8);msg.extend_from_slice(&len_bits.to_le_bytes());
+  for chunk in msg.chunks(64){
+    let mut m=[0u32;16];for i in 0..16{m[i]=u32::from_le_bytes([chunk[4*i],chunk[4*i+1],chunk[4*i+2],chunk[4*i+3]]);}
+    let mut a=a0;let mut b=b0;let mut c=c0;let mut d=d0;
+    for i in 0..64{
+      let iu=i as usize;
+      let (f,g):(u32,usize)=if i<16{(((b & c) | ((!b) & d)),iu)}else if i<32{(((d & b) | ((!d) & c)),(5*iu+1)%16)}else if i<48{(b ^ c ^ d,(3*iu+5)%16)}else{(c ^ (b | (!d)),(7*iu)%16)};
+      let adv=f.wrapping_add(a).wrapping_add(k[iu]).wrapping_add(m[g]);
+      a=d;d=c;c=b;b=b.wrapping_add(adv.rotate_left(S[iu]));
+    }
+    a0=a0.wrapping_add(a);b0=b0.wrapping_add(b);c0=c0.wrapping_add(c);d0=d0.wrapping_add(d);
+  }
+  let mut out=[0u8;16];
+  out[0..4].copy_from_slice(&a0.to_le_bytes());out[4..8].copy_from_slice(&b0.to_le_bytes());out[8..12].copy_from_slice(&c0.to_le_bytes());out[12..16].copy_from_slice(&d0.to_le_bytes());
+  out
+}
+fn string_bytes_utf8(h:&mut Heap,r:Option<usize>,charset:Option<usize>)->usize{
+  let cid=array_id(h,charset);if !matches!(h.arrays[cid],Array::Utf8Charset){error("String.getBytes: solo StandardCharsets.UTF_8 soportado");}
+  let units=string_units(h,r);let bytes=units_to_utf8(&units);new_arrays_push(h,Array::B(bytes.into_iter().map(|b|b as i8).collect()))
+}
+fn units_to_utf8(units:&[u16])->Vec<u8>{
+  let mut out=Vec::with_capacity(units.len()+8);let mut i=0usize;
+  while i<units.len(){
+    let u=units[i] as u32;i+=1;
+    let cp:u32=if (0xD800..0xDC00).contains(&u){if i<units.len(){let lo=units[i] as u32;if (0xDC00..0xE000).contains(&lo){i+=1;0x10000+(((u-0xD800)<<10)|(lo-0xDC00))}else{0xFFFD}}else{0xFFFD}}else if (0xDC00..0xE000).contains(&u){0xFFFD}else{u};
+    if cp<=0x7F{out.push(cp as u8);}else if cp<=0x7FF{out.push(0xC0|(cp>>6)as u8);out.push(0x80|(cp&0x3F)as u8);}else if cp<=0xFFFF{out.push((0xE0|(cp>>12)) as u8);out.push(0x80|((cp>>6)&0x3F)as u8);out.push(0x80|(cp&0x3F)as u8);}else{out.push((0xF0|(cp>>18)) as u8);out.push(0x80|((cp>>12)&0x3F)as u8);out.push(0x80|((cp>>6)&0x3F)as u8);out.push(0x80|(cp&0x3F)as u8);}
+  }
+  out
+}
+fn new_arrays_push(h:&mut Heap,a:Array)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(a);id}
+fn hash_fn_md5(h:&mut Heap)->usize{new_arrays_push(h,Array::HashFn("MD5"))}
+fn hash_fn_hash_string(h:&mut Heap,r:Option<usize>,text:Option<usize>,charset:Option<usize>)->usize{
+  let algo={let id=array_id(h,r);match h.arrays[id]{Array::HashFn(s)=>s,_=>error("HashFunction concreto no soportado")}};
+  let units=string_units(h,text);let bytes=units_to_utf8(&units);
+  match algo{
+    "MD5"=>{let digest=md5_digest(&bytes);new_arrays_push(h,Array::HashCode(digest))}
+    other=>error(&format!("HashFunction: algoritmo no soportado: {other} (solo MD5)")),
+  }
+}
+fn hash_code_as_bytes(h:&mut Heap,r:Option<usize>)->usize{
+  let id=array_id(h,r);match h.arrays[id]{Array::HashCode(d)=>new_arrays_push(h,Array::B(d.iter().map(|b|*b as i8).collect())),_=>error("HashCode concreto no soportado")}
+}
+fn security_config_generate_secret_key(h:&mut Heap)->usize{
+  // Replica exacta del método original: 40 chars del alfabeto [A-Za-z0-9]
+  // tomados de SecureRandom (aquí /dev/urandom con muestreo por rechazo, sin
+  // sesgo de módulo). Sin /dev/urandom el arranque falla.
+  const ALPHABET:&[u8]=b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let mut picked:Vec<u16>=Vec::with_capacity(40);
+  while picked.len()<40{
+    let raw=match std::fs::read("/dev/urandom"){Ok(b)=>b,Err(e)=>error(&format!("SecureRandom: /dev/urandom no disponible: {e}"))};
+    for b in raw{if b<248&&picked.len()<40{picked.push(ALPHABET[(b%62) as usize] as u16);}}
+  }
+  new_string(h,picked)
+}
+fn settings_load_from_file(h:&mut Heap,path:Option<usize>)->usize{
+  let id=java_properties_new(h);let text=path_text(h,path);
+  let bytes=match std::fs::read(&text){Ok(b)=>b,Err(e)=>{let kind=match e.kind(){std::io::ErrorKind::NotFound=>"NoSuchFileException",std::io::ErrorKind::PermissionDenied=>"AccessDeniedException",_=>error(&format!("Settings.loadFromFile: E/S no traducida: {e}"))};let msg=new_string(h,text.encode_utf16().collect());let ex=new_exception(h,kind);init_exception(h,Some(ex),kind,Some(msg));throw_ref(h,Some(ex));}};
+  if bytes.len()>1_048_576{error("Settings.loadFromFile: archivo mayor que 1 MiB");}
+  // Intenta UTF-8 estricto (como Haría el CharsetDecoder con CodingErrorAction.REPORT);
+  // si falla, cae en ISO-8859-1, igual que hace net.minecraft.server.dedicated.Settings.
+  let units:Vec<u16> = match std::str::from_utf8(&bytes){Ok(s)=>s.encode_utf16().collect(),Err(_)=>bytes.iter().map(|b|*b as u16).collect()};
+  let mut logical=Vec::<u16>::new();let mut continuing=false;let mut pos=0usize;
+  let white=|c:u16|matches!(c,32|9|12);let hash=35u16;let excl=33u16;
+  while pos<units.len(){
+    let start=pos;while pos<units.len()&&units[pos]!=(b'\r' as u16)&&units[pos]!=(b'\n' as u16){pos+=1;}
+    let end=pos;let terminated=pos<units.len();
+    if terminated{let c=units[pos];pos+=1;if c==(b'\r' as u16)&&pos<units.len()&&units[pos]==(b'\n' as u16){pos+=1;}}
+    let mut begin=start;while begin<end&&white(units[begin]){begin+=1;}
+    if !continuing&&(begin==end||units[begin]==hash||units[begin]==excl){continue;}
+    logical.extend_from_slice(&units[begin..end]);
+    let slashes=logical.iter().rev().take_while(|&&x|x==92).count();
+    if slashes%2==1{logical.pop();if terminated{continuing=true;continue;}}
+    properties_load_line(h,id,&logical);logical.clear();continuing=false;
+  }
+  if continuing||!logical.is_empty(){properties_load_line(h,id,&logical);}
+  id
+}
 fn java_properties_load(h:&mut Heap,r:Option<usize>,stream:Option<usize>){
  let id=java_properties_id(h,r);array_id(h,stream);let mut bytes=Vec::new();loop{let c=resource_read(h,stream);if c<0{break;}if bytes.len()>=1_048_576{error("Properties.load: archivo mayor que 1 MiB");}bytes.push(c as u8);}
  let mut pos=0usize;let mut logical=Vec::<u16>::new();let mut continuing=false;
@@ -1754,6 +2049,10 @@ fn cached_thread_pool_new(h:&mut Heap,factory:Option<usize>)->usize{if h.arrays.
 fn atomic_integer_get(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match h.arrays[id]{Array::AtomicInteger(v)=>v,_=>error("AtomicInteger concreto no soportado")}}
 fn atomic_integer_set(h:&mut Heap,r:Option<usize>,v:i32){let id=array_id(h,r);match &mut h.arrays[id]{Array::AtomicInteger(n)=>*n=v,_=>error("AtomicInteger concreto no soportado")}}
 fn atomic_long_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::AtomicLong(0));id}
+fn atomic_long_update_and_get(h:&mut Heap,r:Option<usize>,f:Option<usize>,op:fn(&mut Heap,Option<usize>,i64)->i64)->i64{
+  let id=array_id(h,r);let cur=match h.arrays[id]{Array::AtomicLong(v)=>v,_=>error("AtomicLong concreto no soportado")};
+  let new=op(h,f,cur);h.arrays[id]=Array::AtomicLong(new);new
+}
 fn atomic_long_get(h:&Heap,r:Option<usize>)->i64{let id=array_id(h,r);match h.arrays[id]{Array::AtomicLong(v)=>v,_=>error("AtomicLong concreto no soportado")}}
 fn atomic_long_set(h:&mut Heap,r:Option<usize>,v:i64){let id=array_id(h,r);match &mut h.arrays[id]{Array::AtomicLong(n)=>*n=v,_=>error("AtomicLong concreto no soportado")}}
 fn instant_now(h:&mut Heap)->usize{let total=match std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH){Ok(d)=>d.as_nanos() as i128,Err(e)=>-(e.duration().as_nanos() as i128)};let secs=i64::try_from(total.div_euclid(1_000_000_000)).unwrap_or_else(|_|error("reloj fuera de rango"));let nanos=total.rem_euclid(1_000_000_000) as i32;if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Instant(secs,nanos));id}
@@ -1766,6 +2065,7 @@ fn duration_parts(h:&Heap,r:Option<usize>)->(i64,i32){let id=array_id(h,r);match
 fn duration_nanos(h:&Heap,r:Option<usize>)->i64{let (s,n)=duration_parts(h,r);let value=(s as i128)*1_000_000_000i128+n as i128;i64::try_from(value).unwrap_or_else(|_|raise("ArithmeticException",""))}
 fn duration_millis(h:&Heap,r:Option<usize>)->i64{let (s,n)=duration_parts(h,r);let value=((s as i128)*1_000_000_000+n as i128)/1_000_000;i64::try_from(value).unwrap_or_else(|_|raise("ArithmeticException",""))}
 fn boolean_parse(h:&mut Heap,r:Option<usize>)->bool{if r.is_none(){return false;}let t=string_literal(h,&[116,114,117,101]);string_equals_ignore_case(h,r,Some(t))}
+fn long_parse(h:&Heap,r:Option<usize>)->i64{if r.is_none(){raise("NumberFormatException","");}let units=string_units(h,r);if units.iter().any(|x|*x>127){error("Long.parseLong: dígitos Unicode no soportados");}let s=units.iter().map(|x|*x as u8 as char).collect::<String>();s.parse::<i64>().unwrap_or_else(|_|raise("NumberFormatException",""))}
 fn integer_parse(h:&Heap,r:Option<usize>)->i32{if r.is_none(){raise("NumberFormatException","");}let units=string_units(h,r);if units.iter().any(|x|*x>127){error("Integer.parseInt: dígitos Unicode no soportados");}let s=units.iter().map(|x|*x as u8 as char).collect::<String>();s.parse::<i32>().unwrap_or_else(|_|raise("NumberFormatException",""))}
 fn integer_value_of(h:&mut Heap,n:i32)->usize{if (-128..=127).contains(&n){if let Some(id)=h.integers.get(&n){return *id;}}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Integer(n));if (-128..=127).contains(&n){h.integers.insert(n,id);}id}
 fn long_value_of(h:&mut Heap,n:i64)->usize{if (-128..=127).contains(&n){if let Some(id)=h.longs.get(&n){return *id;}}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Long(n));if (-128..=127).contains(&n){h.longs.insert(n,id);}id}

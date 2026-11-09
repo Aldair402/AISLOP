@@ -6,3 +6,4 @@ autoexamples = false
 
 [dependencies]
 rayon = "=1.11.0"
+flate2 = { version = "=1.0.35", default-features = false, features = ["rust_backend"] }
