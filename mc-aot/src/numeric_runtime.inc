@@ -401,6 +401,7 @@ fn path_resolve(h:&mut Heap,r:Option<usize>,other:Option<usize>)->usize{let base
 fn path_absolute(h:&mut Heap,r:Option<usize>)->usize{let p=path_text(h,r);if p.starts_with('/'){return array_id(h,r);}let cwd=std::env::current_dir().unwrap_or_else(|e|error(&format!("Path.toAbsolutePath: {e}")));let cwd=cwd.to_str().unwrap_or_else(||error("Path.toAbsolutePath: directorio no UTF-8"));let combined=if p.is_empty(){cwd.to_owned()}else{format!("{cwd}/{p}")};path_new(h,path_normalize_slashes(&combined))}
 fn path_parent(h:&mut Heap,r:Option<usize>)->Option<usize>{let p=path_text(h,r);if p=="/"{return None;}let pos=p.rfind('/')?;let parent=if pos==0{"/"}else{&p[..pos]};Some(path_new(h,parent.to_owned()))}
 fn file_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::File(None,None));id}
+fn file_exists(h:&Heap,r:Option<usize>)->bool{let id=array_id(h,r);match &h.arrays[id]{Array::File(Some(p),_)=>std::fs::metadata(p).map(|m|m.is_file()||m.is_dir()).unwrap_or(false),_=>error("File no inicializado o no soportado")}}
 fn file_init(h:&mut Heap,r:Option<usize>,s:Option<usize>){let id=array_id(h,r);let value=String::from_utf16(string_units(h,s)).unwrap_or_else(|_|error("File: UTF-16 no representable"));let value=path_normalize_slashes(&value);match &mut h.arrays[id]{Array::File(p,cache)=>{*p=Some(value);*cache=None},_=>error("File concreto no soportado")}}
 // Decimal digits (Unicode category Nd) para el perfil: cubre ASCII y los rangos principales.
 fn char_is_digit(c:i32)->bool{

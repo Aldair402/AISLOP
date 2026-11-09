@@ -3580,6 +3580,7 @@ impl NumericCompiler<'_> {
                         ("java/util/Properties","getProperty","(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;") if self.multi_classes.is_some()=>"let fallback=pop_r(&mut stack);let k=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(java_properties_get(heap,r,k,fallback)));".into(),
                         ("java/util/Properties","setProperty","(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;") if self.multi_classes.is_some()=>"let v=pop_r(&mut stack);let k=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(java_properties_set(heap,r,k,v)));".into(),
                         ("java/io/File","toPath","()Ljava/nio/file/Path;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(file_to_path(heap,r))));".into(),
+                        ("java/io/File","exists","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(file_exists(heap,r) as i32));".into(),
                         ("java/util/concurrent/locks/ReentrantLock","lock","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);reentrant_lock(heap,r);".into(),
                         ("java/util/concurrent/locks/ReentrantLock","unlock","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);reentrant_unlock(heap,r);".into(),
                         ("java/util/concurrent/locks/ReentrantLock","getHoldCount","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(reentrant_count(heap,r)));".into(),
