@@ -1151,6 +1151,10 @@ impl NumericCompiler<'_> {
                         | "java/util/concurrent/Future"
                         | "java/util/concurrent/ScheduledFuture"
                         | "java/util/concurrent/RejectedExecutionHandler"
+                        | "java/util/concurrent/RunnableFuture"
+                        | "java/util/concurrent/RunnableScheduledFuture"
+                        | "java/util/concurrent/Callable"
+                        | "java/util/concurrent/CompletionStage"
                 )
             {
                 active.remove(name);
@@ -1305,6 +1309,10 @@ impl NumericCompiler<'_> {
                         | "java/util/concurrent/Future"
                         | "java/util/concurrent/ScheduledFuture"
                         | "java/util/concurrent/RejectedExecutionHandler"
+                        | "java/util/concurrent/RunnableFuture"
+                        | "java/util/concurrent/RunnableScheduledFuture"
+                        | "java/util/concurrent/Callable"
+                        | "java/util/concurrent/CompletionStage"
                 )
             {
                 active.remove(name);
