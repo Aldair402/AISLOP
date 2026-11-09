@@ -833,6 +833,20 @@ fn deflate_read_into(h:&mut Heap,r:Option<usize>,dst:Option<usize>,off:i32,len:i
 fn resource_read(h:&mut Heap,r:Option<usize>)->i32{let id=array_id(h,r);if matches!(h.arrays[id],Array::GzipIn(_,_,usize::MAX)|Array::DeflateIn(_,_,usize::MAX)){raise("IOException","Stream closed");}if matches!(h.arrays[id],Array::GzipIn(_,_,_)){return gzip_in_read(h,r);}if matches!(h.arrays[id],Array::DeflateIn(_,_,_)){return deflate_in_read(h,r);}if matches!(h.arrays[id],Array::ByteInput(_,_,_,_)){return byte_input_read(h,id);}match &mut h.arrays[id]{Array::ResourceStream(bytes,pos,closed)=>{if *closed{raise("IOException","Stream closed");}if *pos>=bytes.len(){return -1;}let b=bytes[*pos];*pos+=1;b as i32},Array::FileInput(file)=>{use std::io::Read;let file=file.as_mut().unwrap_or_else(||raise("IOException","Stream Closed"));let mut b=[0u8;1];match file.read(&mut b){Ok(0)=>-1,Ok(_)=>b[0] as i32,Err(e)=>error(&format!("InputStream.read: E/S no traducida: {e}"))}},_=>error("InputStream concreto no soportado")}}
 fn resource_close(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);if matches!(h.arrays[id],Array::ByteInput(_,_,_,_)){return;}match &mut h.arrays[id]{Array::ResourceStream(_,_,closed)=>*closed=true,Array::FileInput(file)=>{*file=None;},Array::GzipIn(_,_,pos)=>*pos=usize::MAX,Array::DeflateIn(_,_,pos)=>*pos=usize::MAX,_=>error("InputStream concreto no soportado")}}
 fn byte_buffer_wrap(h:&mut Heap,r:Option<usize>)->usize{if r.is_none(){raise("NullPointerException","array");}let id=array_id(h,r);let bytes=match &h.arrays[id]{Array::B(v)=>v.clone(),_=>error("ByteBuffer.wrap: array fuente no soportado")};if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::ByteBuffer(bytes));out}
+fn map_key_set(h:&mut Heap,r:Option<usize>)->usize{
+  let id=array_id(h,r);
+  let keys:Vec<Option<usize>> = match &h.arrays[id]{
+    Array::Map(v,_,_)=>v.iter().map(|(k,_)|Some(*k)).collect(),
+    Array::TreeMap(v,_)=>v.iter().map(|(k,_)|Some(*k)).collect(),
+    Array::HashMap(v)|Array::IdentityMap(v)|Array::LinkedMap(v,_)|Array::ImmutableMap(v)=>v.iter().map(|(k,_)|*k).collect(),
+    Array::EmptyMap=>Vec::new(),
+    _=>error("Map.keySet: receptor no soportado")};
+  if keys.len()>1_000_000{error("Límite experimental de heap excedido");}
+  if h.elements.checked_add(keys.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
+  h.elements+=keys.len();
+  if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}
+  let out=h.arrays.len();h.arrays.push(Array::KeySet(keys,0));out
+}
 fn list_construct_from_collection(h:&mut Heap,source:Option<usize>)->usize{let id=array_id(h,source);let items=match &h.arrays[id]{Array::List(v,_)|Array::ImmutableList(v)|Array::Set(v,_)|Array::ImmutableSet(v)|Array::HashSet(v,_)|Array::KeySet(v,_)|Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),Array::EmptyList|Array::EmptySet=>Vec::new(),Array::ArraysList(a)=>match &h.arrays[*a]{Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),Array::Strings(u)=>{let mut items=Vec::with_capacity(u.len());for item in u{items.push(match item{Some(units)=>Some(new_string(h,units.clone())),None=>None});}items},_=>unreachable!()},_=>error("ArrayList(Collection) como lambda: colección fuera del perfil")};if h.elements.checked_add(items.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}h.elements+=items.len();if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::List(items,0));out}
 fn integer_highest_one_bit(v:i32)->i32{let u=v as u32;if u==0{0}else{(1u32<<(31 - u.leading_zeros())) as i32}}
 // System.setOut/setErr: acepta el envoltorio proyecto (LoggedPrintStream etc.) sin
