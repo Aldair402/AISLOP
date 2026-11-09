@@ -1342,8 +1342,9 @@ fn exception_set_stack_trace(h:&mut Heap,r:Option<usize>,trace:Option<usize>){
   let id=array_id(h,r);let arr=match trace{Some(a)=>a,None=>raise("NullPointerException","")};
   match &mut h.arrays[id]{Array::Exception(_,_,st)=>*st=Some(arr),_=>error("setStackTrace: receptor fuera del perfil")}
 }
-fn exception_get_stack_trace(h:&Heap,r:Option<usize>)->Option<usize>{
-  let id=array_id(h,r);match &h.arrays[id]{Array::Exception(_,_,st)=>*st,_=>error("getStackTrace: receptor fuera del perfil")}
+fn exception_get_stack_trace(h:&mut Heap,r:Option<usize>)->usize{
+  let id=array_id(h,r);match &h.arrays[id]{Array::Exception(_,_,st)=>{if let Some(a)=st{return *a;}},_=>error("getStackTrace: receptor fuera del perfil")}
+  new_arrays_push(h,Array::Refs(15,Vec::new()))
 }
 fn init_exception(h:&mut Heap,r:Option<usize>,kind:&str,message:Option<usize>) {
     let id=array_id(h,r);if let Some(m)=message {let _=string_units(h,Some(m));}
