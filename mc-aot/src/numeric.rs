@@ -480,6 +480,7 @@ fn known_exception(t: &str) -> Option<&'static str> {
         "java/lang/IllegalStateException" => "IllegalStateException",
         "java/lang/IllegalCallerException" => "IllegalCallerException",
         "java/lang/MatchException" => "MatchException",
+        "java/util/concurrent/CancellationException" => "CancellationException",
         "java/lang/NumberFormatException" => "NumberFormatException",
         "java/lang/IndexOutOfBoundsException" => "IndexOutOfBoundsException",
         "java/lang/ArithmeticException" => "ArithmeticException",
@@ -1074,6 +1075,7 @@ impl NumericCompiler<'_> {
                 | "java/lang/RuntimeException"
                 | "java/lang/IllegalStateException"
                 | "java/lang/IllegalArgumentException"
+                | "java/util/concurrent/CancellationException"
                 | "java/lang/MatchException"
                 | "java/lang/InternalError"
         ) {
@@ -1381,6 +1383,7 @@ impl NumericCompiler<'_> {
                         | "java/lang/SecurityManager"
                         | "java/lang/Exception"
                         | "java/lang/RuntimeException"
+                        | "java/util/concurrent/CancellationException"
                         | "java/lang/Error"
                         | "java/lang/Throwable"
                         | "java/lang/Record"
@@ -1462,6 +1465,7 @@ impl NumericCompiler<'_> {
                     | "java/lang/RuntimeException"
                     | "java/lang/Error"
                     | "java/lang/Throwable"
+                    | "java/util/concurrent/CancellationException"
             )
         );
         // Enum directo; las subclases específicas heredan estado del enum base.
