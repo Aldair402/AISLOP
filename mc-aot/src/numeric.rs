@@ -1143,6 +1143,12 @@ impl NumericCompiler<'_> {
                         | "java/lang/reflect/GenericDeclaration"
                         | "java/lang/reflect/AnnotatedType"
                         | "java/lang/reflect/AnnotatedElement"
+                        | "java/util/concurrent/Executor"
+                        | "java/util/concurrent/ExecutorService"
+                        | "java/util/concurrent/ScheduledExecutorService"
+                        | "java/util/concurrent/Future"
+                        | "java/util/concurrent/ScheduledFuture"
+                        | "java/util/concurrent/RejectedExecutionHandler"
                 )
             {
                 active.remove(name);
@@ -1291,6 +1297,12 @@ impl NumericCompiler<'_> {
                         | "java/lang/reflect/GenericDeclaration"
                         | "java/lang/reflect/AnnotatedType"
                         | "java/lang/reflect/AnnotatedElement"
+                        | "java/util/concurrent/Executor"
+                        | "java/util/concurrent/ExecutorService"
+                        | "java/util/concurrent/ScheduledExecutorService"
+                        | "java/util/concurrent/Future"
+                        | "java/util/concurrent/ScheduledFuture"
+                        | "java/util/concurrent/RejectedExecutionHandler"
                 )
             {
                 active.remove(name);
