@@ -4226,6 +4226,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/security/cert/CertificateFactory","getInstance","(Ljava/lang/String;)Ljava/security/cert/CertificateFactory;") if self.multi_classes.is_some()=>"{let _=x0;error(\"CertificateFactory.getInstance: no soportado (TLS auth chain)\")}".into(),
                         ("java/lang/System","getenv","(Ljava/lang/String;)Ljava/lang/String;") if self.multi_classes.is_some()=>"system_getenv(heap,x0)".into(),
                         ("java/nio/ByteBuffer","wrap","([B)Ljava/nio/ByteBuffer;") if self.multi_classes.is_some()=>"Some(byte_buffer_wrap(heap,x0))".into(),
+                        ("java/nio/ByteBuffer","allocateDirect","(I)Ljava/nio/ByteBuffer;") if self.multi_classes.is_some()=>"Some(byte_buffer_alloc_direct(heap,x0))".into(),
                         ("java/util/HexFormat","fromHexDigits","(Ljava/lang/CharSequence;)I") if self.multi_classes.is_some()=>"let s=pop_r(&mut stack);stack.push(V::I(hex_from_digits(heap,s)));".into(),
                         ("java/time/Instant","now","()Ljava/time/Instant;") if self.multi_classes.is_some()=>"Some(instant_now(heap))".into(),
                         ("java/time/Duration","between","(Ljava/time/temporal/Temporal;Ljava/time/temporal/Temporal;)Ljava/time/Duration;") if self.multi_classes.is_some()=>"Some(duration_between_instants(heap,x0,x1))".into(),
