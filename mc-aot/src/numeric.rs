@@ -3547,6 +3547,10 @@ impl NumericCompiler<'_> {
                         "stack.push(V::R(Some(locale_root(heap))));".into()
                     } else if self.multi_classes.is_some() && op==0xb2 && (owner,field,desc)==("java/lang/Boolean","TYPE","Ljava/lang/Class;") {
                         "stack.push(V::R(Some(class_literal(heap,\"Z\"))));".to_owned()
+                    } else if self.multi_classes.is_some() && op==0xb2 && owner=="java/nio/ByteOrder" && field=="LITTLE_ENDIAN" && desc=="Ljava/nio/ByteOrder;" {
+                        "stack.push(V::R(Some(byte_order_little(heap))));".to_owned()
+                    } else if self.multi_classes.is_some() && op==0xb2 && owner=="java/nio/ByteOrder" && field=="BIG_ENDIAN" && desc=="Ljava/nio/ByteOrder;" {
+                        "stack.push(V::R(Some(byte_order_big(heap))));".to_owned()
                     } else if self.multi_classes.is_some() && op==0xb2 && (owner,field,desc)==("java/lang/Byte","TYPE","Ljava/lang/Class;") {
                         "stack.push(V::R(Some(class_literal(heap,\"B\"))));".to_owned()
                     } else if self.multi_classes.is_some() && op==0xb2 && (owner,field,desc)==("java/lang/Short","TYPE","Ljava/lang/Class;") {
@@ -4147,6 +4151,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/lang/Thread","currentThread","()Ljava/lang/Thread;") if self.multi_classes.is_some()=>"Some(current_thread(heap))".into(),
                         ("java/lang/Thread","interrupted","()Z") if self.multi_classes.is_some()=>"thread_interrupted(heap) as i32".into(),
                         ("java/lang/Runtime","getRuntime","()Ljava/lang/Runtime;") if self.multi_classes.is_some()=>"Some(runtime_singleton(heap))".into(),
+                        ("java/nio/ByteOrder","nativeOrder","()Ljava/nio/ByteOrder;") if self.multi_classes.is_some()=>"Some(byte_order_native(heap))".into(),
                         ("java/lang/invoke/MethodHandles","publicLookup","()Ljava/lang/invoke/MethodHandles$Lookup;") if self.multi_classes.is_some()=>"Some(virtual_thread_lookup(heap))".into(),
                         ("java/lang/invoke/MethodHandles","lookup","()Ljava/lang/invoke/MethodHandles$Lookup;") if self.multi_classes.is_some()=>"Some(virtual_thread_lookup(heap))".into(),
                         ("java/lang/invoke/MethodType","methodType","(Ljava/lang/Class;)Ljava/lang/invoke/MethodType;") if self.multi_classes.is_some()=>"Some(method_type_of(heap,x0))".into(),
