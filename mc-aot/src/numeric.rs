@@ -3546,6 +3546,22 @@ impl NumericCompiler<'_> {
                         "stack.push(V::R(Some(locale_root(heap))));".into()
                     } else if self.multi_classes.is_some() && op==0xb2 && (owner,field,desc)==("java/lang/Boolean","TYPE","Ljava/lang/Class;") {
                         "stack.push(V::R(Some(class_literal(heap,\"Z\"))));".to_owned()
+                    } else if self.multi_classes.is_some() && op==0xb2 && (owner,field,desc)==("java/lang/Byte","TYPE","Ljava/lang/Class;") {
+                        "stack.push(V::R(Some(class_literal(heap,\"B\"))));".to_owned()
+                    } else if self.multi_classes.is_some() && op==0xb2 && (owner,field,desc)==("java/lang/Short","TYPE","Ljava/lang/Class;") {
+                        "stack.push(V::R(Some(class_literal(heap,\"S\"))));".to_owned()
+                    } else if self.multi_classes.is_some() && op==0xb2 && (owner,field,desc)==("java/lang/Integer","TYPE","Ljava/lang/Class;") {
+                        "stack.push(V::R(Some(class_literal(heap,\"I\"))));".to_owned()
+                    } else if self.multi_classes.is_some() && op==0xb2 && (owner,field,desc)==("java/lang/Long","TYPE","Ljava/lang/Class;") {
+                        "stack.push(V::R(Some(class_literal(heap,\"J\"))));".to_owned()
+                    } else if self.multi_classes.is_some() && op==0xb2 && (owner,field,desc)==("java/lang/Character","TYPE","Ljava/lang/Class;") {
+                        "stack.push(V::R(Some(class_literal(heap,\"C\"))));".to_owned()
+                    } else if self.multi_classes.is_some() && op==0xb2 && (owner,field,desc)==("java/lang/Float","TYPE","Ljava/lang/Class;") {
+                        "stack.push(V::R(Some(class_literal(heap,\"F\"))));".to_owned()
+                    } else if self.multi_classes.is_some() && op==0xb2 && (owner,field,desc)==("java/lang/Double","TYPE","Ljava/lang/Class;") {
+                        "stack.push(V::R(Some(class_literal(heap,\"D\"))));".to_owned()
+                    } else if self.multi_classes.is_some() && op==0xb2 && (owner,field,desc)==("java/lang/Void","TYPE","Ljava/lang/Class;") {
+                        "stack.push(V::R(Some(class_literal(heap,\"V\"))));".to_owned()
                     } else if self.multi_classes.is_some() {
                     let (id,slot,f)=self.resolve_static_field(owner,field,desc)?;
                     if op==0xb2 {format!("init_class_{id}(heap); stack.push(heap.fields[{slot}]);")}
