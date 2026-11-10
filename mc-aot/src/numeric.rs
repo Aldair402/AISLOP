@@ -4110,6 +4110,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/lang/Thread","interrupted","()Z") if self.multi_classes.is_some()=>"thread_interrupted(heap) as i32".into(),
                         ("java/lang/Runtime","getRuntime","()Ljava/lang/Runtime;") if self.multi_classes.is_some()=>"Some(runtime_singleton(heap))".into(),
                         ("java/lang/invoke/MethodHandles","publicLookup","()Ljava/lang/invoke/MethodHandles$Lookup;") if self.multi_classes.is_some()=>"Some(virtual_thread_lookup(heap))".into(),
+                        ("java/lang/invoke/MethodHandles","lookup","()Ljava/lang/invoke/MethodHandles$Lookup;") if self.multi_classes.is_some()=>"Some(virtual_thread_lookup(heap))".into(),
                         ("java/lang/invoke/MethodType","methodType","(Ljava/lang/Class;)Ljava/lang/invoke/MethodType;") if self.multi_classes.is_some()=>"Some(method_type_of(heap,x0))".into(),
                         ("java/util/Arrays","sort","([C)V") if self.multi_classes.is_some()=>"array_sort_char(heap,x0)".into(),
                         ("java/util/Arrays","fill","([CC)V") if self.multi_classes.is_some()=>"array_fill_char(heap,x0,x1)".into(),
