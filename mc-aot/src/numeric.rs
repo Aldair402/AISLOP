@@ -2364,6 +2364,26 @@ impl NumericCompiler<'_> {
                         format!("Some(boolean_value_of(heap,boolean_parse(heap,{0})))", actual[0])
                     } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Boolean" && lambda.impl_name == "parseBoolean" && lambda.impl_desc == "(Ljava/lang/String;)Z" {
                         format!("boolean_parse(heap,{0}) as i32", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Integer" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(I)Ljava/lang/Integer;" {
+                        format!("Some(integer_value_of(heap,{0}))", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Integer" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(Ljava/lang/String;)Ljava/lang/Integer;" {
+                        format!("Some(integer_value_of(heap,integer_parse(heap,{0})))", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Integer" && lambda.impl_name == "parseInt" && lambda.impl_desc == "(Ljava/lang/String;)I" {
+                        format!("integer_parse(heap,{0})", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Long" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(J)Ljava/lang/Long;" {
+                        format!("Some(long_value_of(heap,{0}))", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Long" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(Ljava/lang/String;)Ljava/lang/Long;" {
+                        format!("Some(long_value_of(heap,long_parse(heap,{0})))", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Long" && lambda.impl_name == "parseLong" && lambda.impl_desc == "(Ljava/lang/String;)J" {
+                        format!("long_parse(heap,{0})", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Short" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(S)Ljava/lang/Short;" {
+                        format!("Some(short_value_of(heap,{0}))", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Byte" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(B)Ljava/lang/Byte;" {
+                        format!("Some(byte_value_of(heap,{0}))", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Float" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(F)Ljava/lang/Float;" {
+                        format!("Some(float_value_of(heap,{0}))", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Double" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(D)Ljava/lang/Double;" {
+                        format!("Some(double_value_of(heap,{0}))", actual[0])
                     } else if lambda.impl_kind == 6 || lambda.impl_kind == 7 {
                         let f = if lambda.impl_kind == 7 {
                             extraction.push_str(&format!(
