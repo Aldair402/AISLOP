@@ -2925,6 +2925,7 @@ impl NumericCompiler<'_> {
                 | (6, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;")
                 | (6, "java/lang/Integer", "parseInt", "(Ljava/lang/String;)I")
                 | (6, "java/lang/Long", "parseLong", "(Ljava/lang/String;)J")
+                | (6, "java/util/Objects", "toString", "(Ljava/lang/Object;)Ljava/lang/String;")
                 | (9, "java/util/Map", "get", "(Ljava/lang/Object;)Ljava/lang/Object;")
                 | (9, "java/util/Map", "containsKey", "(Ljava/lang/Object;)Z")
                 | (9, "java/util/Set", "contains", "(Ljava/lang/Object;)Z")
@@ -4064,6 +4065,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                             "class_for_name_absent_osgi(heap,x0)".into()
                         },
                         ("java/util/Objects","toString","(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/String;") if self.multi_classes.is_some()=>"objects_to_string_default(heap,x0,x1)".into(),
+                        ("java/util/Objects","toString","(Ljava/lang/Object;)Ljava/lang/String;") if self.multi_classes.is_some()=>"{let d=string_literal(heap,&[110,117,108,108]);objects_to_string_default(heap,x0,Some(d))}".into(),
                         ("java/util/Comparator","comparingInt","(Ljava/util/function/ToIntFunction;)Ljava/util/Comparator;") if self.multi_classes.is_some()=>"Some(comparator_comparing_int(heap,x0))".into(),
                         ("java/util/Comparator","comparing","(Ljava/util/function/Function;)Ljava/util/Comparator;") if self.multi_classes.is_some()=>"Some(comparator_comparing(heap,x0))".into(),
                         ("java/util/Comparator","comparing","(Ljava/util/function/Function;Ljava/util/Comparator;)Ljava/util/Comparator;") if self.multi_classes.is_some()=>"Some(comparator_comparing_with(heap,x0,x1))".into(),
