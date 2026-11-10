@@ -4541,6 +4541,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && name=="java/util/Date" {"date_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/time/temporal/Temporal" {"temporal_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/lang/StackTraceElement" {"false".to_owned()
+                    } else if self.multi_classes.is_some() && name=="java/lang/invoke/MethodHandle" {"virtual_thread_handle_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && (name=="java/lang/reflect/Method" || name=="java/lang/reflect/Constructor") {"member_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/lang/reflect/Field" {"false".to_owned() // no hay objetos Field en el perfil (reflexión de campos no modelada)
                     } else if self.multi_classes.is_some() && matches!(name,"sun/misc/Unsafe"|"jdk/internal/misc/Unsafe") {
