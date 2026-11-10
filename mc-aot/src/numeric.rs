@@ -4192,6 +4192,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/lang/Math","addExact","(II)I")=>"x0.checked_add(x1).unwrap_or_else(||raise(\"ArithmeticException\",\"integer overflow\"))".into(),
                         ("java/lang/Math","toIntExact","(J)I")=>"int_exact(x0)".into(),
                         ("java/util/Map","entry","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/Map$Entry;") if self.multi_classes.is_some()=>"Some(map_entry_new(heap,x0,x1))".into(),
+                        ("java/util/Map","ofEntries","([Ljava/util/Map$Entry;)Ljava/util/Map;") if self.multi_classes.is_some()=>"Some(of_entries(heap,x0))".into(),
                         ("java/util/logging/Logger","getLogger","(Ljava/lang/String;)Ljava/util/logging/Logger;") if self.multi_classes.is_some()=>"Some(logger_new(heap,x0))".into(),
                         ("java/nio/channels/spi/SelectorProvider","provider","()Ljava/nio/channels/spi/SelectorProvider;") if self.multi_classes.is_some()=>"Some(selector_provider_singleton(heap))".into(),
                         ("java/util/concurrent/atomic/AtomicReferenceFieldUpdater","newUpdater","(Ljava/lang/Class;Ljava/lang/Class;Ljava/lang/String;)Ljava/util/concurrent/atomic/AtomicReferenceFieldUpdater;") if self.multi_classes.is_some()=>"Some(aru_new(heap,x2))".into(),

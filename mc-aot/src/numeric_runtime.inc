@@ -1723,6 +1723,13 @@ fn immutable_map_of_n(h:&mut Heap,pairs:Vec<(Option<usize>,Option<usize>)>)->usi
   if h.arrays.len()>=10000||h.elements.checked_add(entries.len()*2).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
   h.elements+=entries.len()*2;let id=h.arrays.len();h.arrays.push(Array::ImmutableMap(entries));id
 }
+fn of_entries(h:&mut Heap,entries:Option<usize>)->usize{
+  let eid=array_id(h,entries);
+  let v=match &h.arrays[eid]{Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),_=>error("Map.ofEntries: array de entradas no modelado")};
+  let mut pairs:Vec<(Option<usize>,Option<usize>)>=Vec::with_capacity(v.len());
+  for e in v{let item=match e{None=>raise("NullPointerException",""),Some(id)=>id};let ex=array_id(h,Some(item));match &h.arrays[ex]{Array::Obj("java/util/Map$Entry",fields) if fields.len()==2=>{let k=match &fields[0]{V::R(k)=>*k,_=>error("Map.ofEntries: entrada sin clave modelada")};let val=match &fields[1]{V::R(v)=>*v,_=>error("Map.ofEntries: entrada sin valor modelado")};pairs.push((k,val));},_=>error("Map.ofEntries: entrada no modelada")}}
+  immutable_map_of_n(h,pairs)
+}
 fn enum_map_new(h:&mut Heap)->usize{linked_map_new(h)}
 fn enum_map_put(h:&mut Heap,r:Option<usize>,key:Option<usize>,value:Option<usize>)->Option<usize>{let kid=array_id(h,key);if !h.enum_values.contains_key(&kid){raise("ClassCastException","key is not an enum");}map_put(h,r,key,value,false)}
 fn enum_map_init_class(h:&mut Heap,r:Option<usize>,_keyclass:Option<usize>){let id=array_id(h,r);if !matches!(h.arrays[id],Array::LinkedMap(_,_)){error("EnumMap: receptor fuera del perfil");}}
