@@ -1492,6 +1492,7 @@ impl NumericCompiler<'_> {
                     | "java/util/concurrent/CancellationException"
             )
         );
+        let thread_subclass = meta.parent.as_deref() == Some("java/lang/Thread");
         // Enum directo; las subclases específicas heredan estado del enum base.
         let enum_class =
             meta.parent.as_deref() == Some("java/lang/Enum") && meta.flags & 0x4000 != 0;
@@ -1512,6 +1513,7 @@ impl NumericCompiler<'_> {
                 && !abstract_spliterator
                 && !foreign_exception
                 && !number_class
+                && !thread_subclass
                 && project_parent.is_none())
         {
             return Err(format!("superclase JDK no soportada: {class}"));
@@ -4403,11 +4405,16 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && class=="java/util/EnumMap" {"stack.push(V::R(Some(enum_map_new(heap))));".into()
                     } else if self.multi_classes.is_some() && project_class(class) {
                         let id=self.ensure_multi_class(class)?;
+                        let parent_name=self.multi_classes.as_ref().unwrap()[id].parent.map(|p|self.multi_classes.as_ref().unwrap()[p].name.clone());
+                        if parent_name.as_deref()==Some("java/lang/Thread") {
+                            format!("error({:?})", format!("new {class}: hilo del servidor no soportado (backend AOT monohilo)"))
+                        } else {
                         if self.multi_classes.as_ref().unwrap()[id].flags&0x0400!=0 {return Err(format!("new de clase abstracta no soportado: {class}"));}
                         let fields=self.instance_layout(class)?;
                         let defaults=fields.iter().map(|f|f.initial.as_str()).collect::<Vec<_>>().join(",");
                         let inheritable=self.multi_classes.as_ref().unwrap()[id].inheritable_local;
                         format!("init_class_{id}(heap);stack.push(V::R(Some(object_new(heap,{class:?},vec![{defaults}],{inheritable}))));")
+                        }
                     } else {return Err(format!("new no soportado: {class}"));}
                 },
                 0xbc => {
