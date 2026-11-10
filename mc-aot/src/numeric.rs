@@ -4154,6 +4154,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/nio/ByteOrder","nativeOrder","()Ljava/nio/ByteOrder;") if self.multi_classes.is_some()=>"Some(byte_order_native(heap))".into(),
                         ("java/lang/invoke/MethodHandles","publicLookup","()Ljava/lang/invoke/MethodHandles$Lookup;") if self.multi_classes.is_some()=>"Some(virtual_thread_lookup(heap))".into(),
                         ("java/lang/invoke/MethodHandles","lookup","()Ljava/lang/invoke/MethodHandles$Lookup;") if self.multi_classes.is_some()=>"Some(virtual_thread_lookup(heap))".into(),
+                        ("java/lang/invoke/MethodHandles","filterArguments","(Ljava/lang/invoke/MethodHandle;I[Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;") if self.multi_classes.is_some()=>"{let f=pop_r(&mut stack);let i=pop_i(&mut stack);let mh=pop_r(&mut stack);let _=(mh,i,f);error(\"MethodHandles.filterArguments: composición de manejadores no modelada (handle no construible en el perfil)\")}".into(),
                         ("java/lang/invoke/MethodType","methodType","(Ljava/lang/Class;)Ljava/lang/invoke/MethodType;") if self.multi_classes.is_some()=>"Some(method_type_of(heap,x0))".into(),
                         ("java/security/AccessController","doPrivileged","(Ljava/security/PrivilegedAction;)Ljava/lang/Object;") if self.multi_classes.is_some()=>{
                             self.interface_call("java/security/PrivilegedAction","run","()Ljava/lang/Object;")?;
