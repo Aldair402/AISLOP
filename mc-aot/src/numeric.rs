@@ -1439,6 +1439,10 @@ impl NumericCompiler<'_> {
             return Err(format!("límite experimental de clases estáticas ({class_limit}; MC_AOT_MAX_STATIC_CLASSES)"));
         }
         if !project_class(class) {
+            if std::env::var_os("MC_AOT_DEBUG").is_some() {
+                let trace = std::backtrace::Backtrace::capture();
+                eprintln!("[MC_AOT_DEBUG] ensure_multi_class rechaza {class}:\n{trace}");
+            }
             return Err(format!("clase estática externa no soportada: {class}"));
         }
         let data = if class == self.class_name {
@@ -2354,6 +2358,12 @@ impl NumericCompiler<'_> {
                         format!("pattern_string(heap,{})", actual[0])
                     } else if lambda.impl_owner == "java/lang/Character" {
                         format!("Some(character_to_string(heap,{}))", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Boolean" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(Z)Ljava/lang/Boolean;" {
+                        format!("Some(boolean_value_of(heap,{0}!=0))", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Boolean" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(Ljava/lang/String;)Ljava/lang/Boolean;" {
+                        format!("Some(boolean_value_of(heap,boolean_parse(heap,{0})))", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Boolean" && lambda.impl_name == "parseBoolean" && lambda.impl_desc == "(Ljava/lang/String;)Z" {
+                        format!("boolean_parse(heap,{0}) as i32", actual[0])
                     } else if lambda.impl_kind == 6 || lambda.impl_kind == 7 {
                         let f = if lambda.impl_kind == 7 {
                             extraction.push_str(&format!(
