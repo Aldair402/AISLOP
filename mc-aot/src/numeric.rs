@@ -3791,6 +3791,7 @@ impl NumericCompiler<'_> {
                         ("java/util/regex/Matcher","matches","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);let _=array_id(heap,r);error(\"Matcher.matches: operación fuera del perfil implementado\");".into(),
                         ("java/util/regex/Matcher","replaceAll","(Ljava/lang/String;)Ljava/lang/String;") if self.multi_classes.is_some()=>"let repl=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(matcher_replace_all(heap,r,repl))));".into(),
                         ("java/util/regex/Matcher","find","(I)Z") if self.multi_classes.is_some()=>"let i=pop_i(&mut stack);let r=pop_r(&mut stack);stack.push(V::I(matcher_find(heap,r,i) as i32));".into(),
+                        ("java/util/regex/Matcher","find","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(matcher_find_next(heap,r) as i32));".into(),
                         ("java/util/regex/Matcher","end","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(matcher_end(heap,r)));".into(),
                         ("java/util/regex/Matcher","group","(I)Ljava/lang/String;") if self.multi_classes.is_some()=>"let i=pop_i(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(matcher_group(heap,r,i)));".into(),
                         ("java/util/regex/Pattern","flags","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(pattern_flags(heap,r)));".into(),
