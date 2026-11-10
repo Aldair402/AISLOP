@@ -3925,6 +3925,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/util/HexFormat","toHexDigits","(B)Ljava/lang/String;") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(hex_digits_byte(heap,r,v))));".into(),
                         ("java/lang/invoke/MethodHandles$Lookup","findVirtual","(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;") if self.multi_classes.is_some()=>"let mt=pop_r(&mut stack);let n=pop_r(&mut stack);let c=pop_r(&mut stack);let lookup=pop_r(&mut stack);stack.push(V::R(Some(virtual_thread_find_virtual(heap,lookup,c,n,mt))));".into(),
                         ("java/lang/invoke/MethodHandle","invokeExact","(Ljava/lang/Thread;)Z") if self.multi_classes.is_some()=>"let t=pop_r(&mut stack);let mh=pop_r(&mut stack);stack.push(V::I(virtual_thread_invoke_exact(heap,mh,t)));".into(),
+                        ("sun/misc/Unsafe","arrayIndexScale","(Ljava/lang/Class;)I") if self.multi_classes.is_some()=>"{let c=pop_r(&mut stack);let r=pop_r(&mut stack);let _=(r,c);error(\"Unsafe.arrayIndexScale: acceso nativo no modelado (PlatformDependent solo debe llegar aquí si hasUnsafe()==true, que el perfil siempre informa falso)\")}".into(),
                         _=>return Err(format!("invokevirtual no soportado: {owner}.{name}{desc}")),
                     }
                 },
