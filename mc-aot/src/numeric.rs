@@ -3544,6 +3544,8 @@ impl NumericCompiler<'_> {
                     } else if self.multi_classes.is_some() && op==0xb2 && owner=="java/util/Locale" && desc=="Ljava/util/Locale;" && matches!(field,"US"|"ROOT"|"ENGLISH") {
                         // ASCII case mapping == Locale.ROOT; el receptor esta protegido por la guarda ASCII en el helper.
                         "stack.push(V::R(Some(locale_root(heap))));".into()
+                    } else if self.multi_classes.is_some() && op==0xb2 && (owner,field,desc)==("java/lang/Boolean","TYPE","Ljava/lang/Class;") {
+                        "stack.push(V::R(Some(class_literal(heap,\"Z\"))));".to_owned()
                     } else if self.multi_classes.is_some() {
                     let (id,slot,f)=self.resolve_static_field(owner,field,desc)?;
                     if op==0xb2 {format!("init_class_{id}(heap); stack.push(heap.fields[{slot}]);")}
@@ -4105,6 +4107,8 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/lang/Thread","currentThread","()Ljava/lang/Thread;") if self.multi_classes.is_some()=>"Some(current_thread(heap))".into(),
                         ("java/lang/Thread","interrupted","()Z") if self.multi_classes.is_some()=>"thread_interrupted(heap) as i32".into(),
                         ("java/lang/Runtime","getRuntime","()Ljava/lang/Runtime;") if self.multi_classes.is_some()=>"Some(runtime_singleton(heap))".into(),
+                        ("java/lang/invoke/MethodHandles","publicLookup","()Ljava/lang/invoke/MethodHandles$Lookup;") if self.multi_classes.is_some()=>"Some(virtual_thread_lookup(heap))".into(),
+                        ("java/lang/invoke/MethodType","methodType","(Ljava/lang/Class;)Ljava/lang/invoke/MethodType;") if self.multi_classes.is_some()=>"Some(method_type_of(heap,x0))".into(),
                         ("java/util/Arrays","sort","([C)V") if self.multi_classes.is_some()=>"array_sort_char(heap,x0)".into(),
                         ("java/util/Arrays","fill","([CC)V") if self.multi_classes.is_some()=>"array_fill_char(heap,x0,x1)".into(),
                         ("java/util/Arrays","fill","([BB)V") if self.multi_classes.is_some()=>"array_fill_byte(heap,x0,x1)".into(),
@@ -4371,6 +4375,8 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/concurrent/locks/Lock","lockInterruptibly","()V") {"let r=pop_r(&mut stack);let _=array_id(heap,r);if thread_interrupted(heap){raise(\"InterruptedException\",\"\");}reentrant_lock(heap,r);".into()}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/concurrent/locks/Lock","unlock","()V") {"let r=pop_r(&mut stack);reentrant_unlock(heap,r);".into()}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/lang/ProcessHandle","pid","()J") {"let r=pop_r(&mut stack);stack.push(V::L(process_pid(heap,r)));".into()}
+                    else if self.multi_classes.is_some() && (owner,name,desc)==("java/lang/invoke/MethodHandles$Lookup","findVirtual","(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;") {"let mt=pop_r(&mut stack);let n=pop_r(&mut stack);let c=pop_r(&mut stack);let lookup=pop_r(&mut stack);stack.push(V::R(Some(virtual_thread_find_virtual(heap,lookup,c,n,mt))));".into()}
+                    else if self.multi_classes.is_some() && (owner,name,desc)==("java/lang/invoke/MethodHandle","invokeExact","(Ljava/lang/Thread;)Z") {"let t=pop_r(&mut stack);let mh=pop_r(&mut stack);stack.push(V::I(virtual_thread_invoke_exact(heap,mh,t)));".into()}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/lang/reflect/Member","getModifiers","()I") {"let r=pop_r(&mut stack);stack.push(V::I(member_modifiers(heap,r,REFLECT_CTOR_MODIFIERS,REFLECT_METHOD_MODIFIERS)));".into()}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/lang/reflect/Member","getDeclaringClass","()Ljava/lang/Class;") {"let r=pop_r(&mut stack);stack.push(V::R(Some(member_declaring_class(heap,r,REFLECT_METHODS))));".into()}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/Map$Entry","getKey","()Ljava/lang/Object;") {"let r=pop_r(&mut stack);stack.push(V::R(map_entry_key(heap,r)));".into()}
