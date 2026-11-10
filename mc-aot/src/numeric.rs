@@ -3929,6 +3929,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("sun/misc/Unsafe","arrayIndexScale","(Ljava/lang/Class;)I") if self.multi_classes.is_some()=>"{let c=pop_r(&mut stack);let r=pop_r(&mut stack);let _=(r,c);error(\"Unsafe.arrayIndexScale: acceso nativo no modelado (PlatformDependent solo debe llegar aquí si hasUnsafe()==true, que el perfil siempre informa falso)\")}".into(),
                         ("sun/misc/Unsafe","allocateMemory","(J)J") if self.multi_classes.is_some()=>"{let sz=pop_l(&mut stack);let r=pop_r(&mut stack);let _=(r,sz);error(\"Unsafe.allocateMemory: memoria nativa no modelada (fuera del perfil)\")}".into(),
                         ("sun/misc/Unsafe","freeMemory","(J)V") if self.multi_classes.is_some()=>"{let addr=pop_l(&mut stack);let r=pop_r(&mut stack);let _=(r,addr);error(\"Unsafe.freeMemory: memoria nativa no modelada (fuera del perfil)\")}".into(),
+                        ("sun/misc/Unsafe","objectFieldOffset","(Ljava/lang/reflect/Field;)J") if self.multi_classes.is_some()=>"{let f=pop_r(&mut stack);let r=pop_r(&mut stack);let _=(r,f);error(\"Unsafe.objectFieldOffset: offsets nativos no modelados (fuera del perfil)\")}".into(),
                         _=>return Err(format!("invokevirtual no soportado: {owner}.{name}{desc}")),
                     }
                 },
