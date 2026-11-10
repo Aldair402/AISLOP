@@ -2324,6 +2324,7 @@ fn timeunit_to_nanos(unit:i32)->i64{let mult:i64=match unit {0=>1,1=>1_000,2=>1_
 // drenaje ocurre en scheduled_pool_poll, que la máquina de ticks invoca una vez por ciclo.
 fn scheduled_future_new(h:&mut Heap,done:bool)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ScheduledFuture(done));id}
 fn scheduled_future_is_done(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match h.arrays[id]{Array::ScheduledFuture(done)=>done as i32,_=>error("ScheduledFuture concreto no soportado")}}
+fn scheduled_future_cancel(h:&mut Heap,r:Option<usize>,_may_interrupt:bool)->bool{let id=array_id(h,r);if !matches!(h.arrays[id],Array::ScheduledFuture(_)){error("ScheduledFuture concreto no soportado");}if let Array::ScheduledFuture(done)=&mut h.arrays[id]{if *done{return false;}*done=true;}let len=h.arrays.len();for pool in 0..len{if let Array::ScheduledThreadPool(p)=&mut h.arrays[pool]{p.pending.retain(|t|t.future!=id);}}true}
 fn scheduled_thread_pool_new(h:&mut Heap,core_pool_size:i32,factory:Option<usize>)->usize{if core_pool_size<0{raise("IllegalArgumentException","corePoolSize");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}array_id(h,factory);let id=h.arrays.len();h.arrays.push(Array::ScheduledThreadPool(ScheduledThreadPoolExecutor{core_pool_size,factory,pending:Vec::new()}));id}
 fn scheduled_pool_id(h:&Heap,r:Option<usize>)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::ScheduledThreadPool(_)){error("ScheduledExecutorService no soportado: receptor concreto");}id}
 fn scheduled_pool_schedule(h:&mut Heap,pool:Option<usize>,runnable:Option<usize>,delay_ns:i64,dispatch:fn(&mut Heap,Option<usize>))->usize{
@@ -2341,6 +2342,8 @@ fn scheduled_pool_poll(h:&mut Heap){
         let pending=match &mut h.arrays[pool]{Array::ScheduledThreadPool(p)=>std::mem::take(&mut p.pending),_=>continue};
         let mut keep=Vec::with_capacity(pending.len());
         for task in pending{
+            let canceled=matches!(h.arrays[task.future],Array::ScheduledFuture(true));
+            if canceled{continue;}
             if task.due<=now{
                 if let Array::ScheduledFuture(done)=&mut h.arrays[task.future]{*done=true;}
                 let _opaque=call_guard("<jdk-callback>");
