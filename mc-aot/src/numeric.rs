@@ -3721,6 +3721,8 @@ impl NumericCompiler<'_> {
                         ("java/io/Writer","write","(Ljava/lang/String;)V") if self.multi_classes.is_some()=>"let s=pop_r(&mut stack);let r=pop_r(&mut stack);writer_write_string(heap,r,s);".into(),
                         ("java/io/BufferedWriter","write","(Ljava/lang/String;)V") if self.multi_classes.is_some()=>"let s=pop_r(&mut stack);let r=pop_r(&mut stack);writer_write_string(heap,r,s);".into(),
                         ("java/io/Writer","flush","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);writer_flush(heap,r);".into(),
+                        ("java/io/Writer","close","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);writer_close(heap,r);".into(),
+                        ("java/io/BufferedWriter","close","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);writer_close(heap,r);".into(),
                         ("java/util/Properties","remove","(Ljava/lang/Object;)Ljava/lang/Object;") if self.multi_classes.is_some()=>"let k=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(java_properties_remove(heap,r,k)));".into(),
                         ("java/util/Properties","getProperty","(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;") if self.multi_classes.is_some()=>"let fallback=pop_r(&mut stack);let k=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(java_properties_get(heap,r,k,fallback)));".into(),
                         ("java/util/Properties","setProperty","(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;") if self.multi_classes.is_some()=>"let v=pop_r(&mut stack);let k=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(java_properties_set(heap,r,k,v)));".into(),
