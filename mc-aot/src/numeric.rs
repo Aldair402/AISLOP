@@ -1084,6 +1084,7 @@ impl NumericCompiler<'_> {
                 | "java/util/concurrent/CancellationException"
                 | "java/lang/MatchException"
                 | "java/lang/InternalError"
+                | "java/lang/UnsupportedOperationException"
         ) {
             return Err(format!(
                 "constructor Throwable JDK no verificado: {current}{desc}"
