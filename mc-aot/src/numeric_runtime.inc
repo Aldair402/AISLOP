@@ -405,6 +405,8 @@ fn file_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experime
 fn file_exists(h:&Heap,r:Option<usize>)->bool{let id=array_id(h,r);match &h.arrays[id]{Array::File(Some(p),_)=>std::fs::metadata(p).map(|m|m.is_file()||m.is_dir()).unwrap_or(false),_=>error("File no inicializado o no soportado")}}
 fn file_is_file(h:&Heap,r:Option<usize>)->bool{let id=array_id(h,r);match &h.arrays[id]{Array::File(Some(p),_)=>std::fs::metadata(p).map(|m|m.is_file()).unwrap_or(false),_=>error("File no inicializado o no soportado")}}
 fn file_is_directory(h:&Heap,r:Option<usize>)->bool{let id=array_id(h,r);match &h.arrays[id]{Array::File(Some(p),_)=>std::fs::metadata(p).map(|m|m.is_dir()).unwrap_or(false),_=>error("File no inicializado o no soportado")}}
+fn file_mkdirs(h:&Heap,r:Option<usize>)->bool{let id=array_id(h,r);match &h.arrays[id]{Array::File(Some(p),_)=>std::fs::create_dir_all(p).is_ok(),_=>error("File no inicializado o no soportado")}}
+fn file_mkdir(h:&Heap,r:Option<usize>)->bool{let id=array_id(h,r);match &h.arrays[id]{Array::File(Some(p),_)=>std::fs::create_dir(p).is_ok(),_=>error("File no inicializado o no soportado")}}
 fn file_init(h:&mut Heap,r:Option<usize>,s:Option<usize>){let id=array_id(h,r);let value=String::from_utf16(string_units(h,s)).unwrap_or_else(|_|error("File: UTF-16 no representable"));let value=path_normalize_slashes(&value);match &mut h.arrays[id]{Array::File(p,cache)=>{*p=Some(value);*cache=None},_=>error("File concreto no soportado")}}
 // Decimal digits (Unicode category Nd) para el perfil: cubre ASCII y los rangos principales.
 fn char_is_digit(c:i32)->bool{
