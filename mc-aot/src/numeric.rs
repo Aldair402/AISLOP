@@ -4337,6 +4337,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/util/stream/IntStream","rangeClosed","(II)Ljava/util/stream/IntStream;") if self.multi_classes.is_some()=>"Some(int_stream_range(heap,x0,x1+1i32))".into(),
                         ("java/util/Set","of","([Ljava/lang/Object;)Ljava/util/Set;") if self.multi_classes.is_some()=>"Some(set_of_array(heap,x0))".into(),
                         ("java/util/Collections","emptyList","()Ljava/util/List;") if self.multi_classes.is_some()=>"Some(empty_list(heap))".into(),
+                        ("java/util/Collections","emptyIterator","()Ljava/util/Iterator;") if self.multi_classes.is_some()=>"Some(empty_iterator(heap))".into(),
                         ("java/util/Collections","emptyMap","()Ljava/util/Map;") if self.multi_classes.is_some()=>"Some(empty_map(heap))".into(),
                         ("java/util/Optional","empty","()Ljava/util/Optional;") if self.multi_classes.is_some()=>"Some(optional_new(heap,None))".into(),
                         ("java/util/Optional","ofNullable","(Ljava/lang/Object;)Ljava/util/Optional;") if self.multi_classes.is_some()=>"Some(optional_new(heap,x0))".into(),
