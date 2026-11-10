@@ -4540,6 +4540,9 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && name=="java/util/Date" {"date_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/time/temporal/Temporal" {"temporal_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/lang/StackTraceElement" {"false".to_owned()
+                    } else if self.multi_classes.is_some() && matches!(name,"sun/misc/Unsafe"|"jdk/internal/misc/Unsafe") {
+                        // No hay objetos Unsafe en el perfil (acceso nativo cerrado): instanceof es siempre falso; checkcast levanta CCE si el receptor no es nulo.
+                        "false".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/lang/CharSequence" {"charsequence_instance(heap,r,PROJECT_INTERFACES)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/nio/file/Path" {"path_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/util/RandomAccess" {"list_random_access_instance(heap,r)".to_owned()
