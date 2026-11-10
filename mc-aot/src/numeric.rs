@@ -2250,6 +2250,15 @@ impl NumericCompiler<'_> {
                         lambda.impl_owner.as_str(),
                         lambda.impl_name.as_str(),
                         lambda.impl_desc.as_str(),
+                    ) == (9, "java/util/concurrent/BlockingQueue", "add", "(Ljava/lang/Object;)Z")
+                    {
+                        // Cola enlazada sin cota: queue.offer sin límite de capacidad (capacidad acotada no modelada).
+                        format!("collection_add(heap,{}, {}) as i32", actual[0], actual[1])
+                    } else if (
+                        lambda.impl_kind,
+                        lambda.impl_owner.as_str(),
+                        lambda.impl_name.as_str(),
+                        lambda.impl_desc.as_str(),
                     ) == (
                         9,
                         "java/lang/StackWalker$StackFrame",
@@ -2893,6 +2902,7 @@ impl NumericCompiler<'_> {
                     "(Ljava/io/OutputStream;)V"
                 )
                 | (9, "java/util/Set", "add", "(Ljava/lang/Object;)Z")
+                | (9, "java/util/concurrent/BlockingQueue", "add", "(Ljava/lang/Object;)Z")
                 | (
                     9,
                     "java/lang/StackWalker$StackFrame",
