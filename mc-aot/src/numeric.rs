@@ -2299,6 +2299,20 @@ impl NumericCompiler<'_> {
                         "Some(stream_empty(heap))".into()
                     } else if (lambda.impl_kind, lambda.impl_owner.as_str(), lambda.impl_name.as_str(), lambda.impl_desc.as_str()) == (9, "java/util/Map", "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;") {
                         format!("{{let _=map_put(heap,{0},{1},{2},false);}}", actual[0], actual[1], actual[2])
+                    } else if (lambda.impl_kind, lambda.impl_owner.as_str(), lambda.impl_name.as_str(), lambda.impl_desc.as_str()) == (9, "java/util/Map", "get", "(Ljava/lang/Object;)Ljava/lang/Object;") {
+                        format!("map_get(heap,{},{})", actual[0], actual[1])
+                    } else if (lambda.impl_kind, lambda.impl_owner.as_str(), lambda.impl_name.as_str(), lambda.impl_desc.as_str()) == (9, "java/util/Map", "containsKey", "(Ljava/lang/Object;)Z") {
+                        format!("map_contains(heap,{},{}) as i32", actual[0], actual[1])
+                    } else if (lambda.impl_kind, lambda.impl_owner.as_str(), lambda.impl_name.as_str(), lambda.impl_desc.as_str()) == (9, "java/util/Set", "contains", "(Ljava/lang/Object;)Z") {
+                        format!("set_contains(heap,{},{}) as i32", actual[0], actual[1])
+                    } else if (lambda.impl_kind, lambda.impl_owner.as_str(), lambda.impl_name.as_str(), lambda.impl_desc.as_str()) == (9, "java/util/Collection", "contains", "(Ljava/lang/Object;)Z") {
+                        format!("set_contains(heap,{},{}) as i32", actual[0], actual[1])
+                    } else if (lambda.impl_kind, lambda.impl_owner.as_str(), lambda.impl_name.as_str(), lambda.impl_desc.as_str()) == (9, "java/util/List", "contains", "(Ljava/lang/Object;)Z") {
+                        format!("list_contains(heap,{},{}) as i32", actual[0], actual[1])
+                    } else if (lambda.impl_kind, lambda.impl_owner.as_str(), lambda.impl_name.as_str(), lambda.impl_desc.as_str()) == (9, "java/util/List", "indexOf", "(Ljava/lang/Object;)I") {
+                        format!("list_index_of(heap,{},{})", actual[0], actual[1])
+                    } else if (lambda.impl_kind, lambda.impl_owner.as_str(), lambda.impl_name.as_str(), lambda.impl_desc.as_str()) == (9, "java/util/Map$Entry", "getValue", "()Ljava/lang/Object;") {
+                        format!("map_entry_value(heap,{})", actual[0])
                     } else if (lambda.impl_kind, lambda.impl_owner.as_str(), lambda.impl_name.as_str(), lambda.impl_desc.as_str()) == (6, "java/util/List", "copyOf", "(Ljava/util/Collection;)Ljava/util/List;") {
                         format!("Some(list_copy_of(heap,{}))", actual[0])
                     } else if (lambda.impl_kind, lambda.impl_owner.as_str(), lambda.impl_name.as_str(), lambda.impl_desc.as_str()) == (8, "java/util/ArrayList", "<init>", "(Ljava/util/Collection;)V") {
