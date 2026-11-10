@@ -297,6 +297,7 @@ fn jdk_function_method(owner: &str, name: &str, desc: &str) -> bool {
                 "(Ljava/lang/Object;Ljava/lang/Object;)Z",
             )
             | ("java/nio/file/PathMatcher", "matches", "(Ljava/nio/file/Path;)Z")
+            | ("java/util/function/DoubleUnaryOperator", "applyAsDouble", "(D)D")
     )
 }
 // Equivalentes monohilo concretos, no despacho general de interfaces.
@@ -1158,6 +1159,7 @@ impl NumericCompiler<'_> {
                         | "java/util/concurrent/Callable"
                         | "java/util/concurrent/CompletionStage"
                         | "java/nio/file/PathMatcher"
+                        | "java/util/function/DoubleUnaryOperator"
                 )
             {
                 active.remove(name);
@@ -1317,6 +1319,7 @@ impl NumericCompiler<'_> {
                         | "java/util/concurrent/Callable"
                         | "java/util/concurrent/CompletionStage"
                         | "java/nio/file/PathMatcher"
+                        | "java/util/function/DoubleUnaryOperator"
                 )
             {
                 active.remove(name);
