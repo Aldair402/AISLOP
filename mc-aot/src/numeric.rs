@@ -2924,6 +2924,7 @@ impl NumericCompiler<'_> {
                 | (6, "java/lang/Boolean", "valueOf", "(Ljava/lang/String;)Ljava/lang/Boolean;")
                 | (6, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;")
                 | (6, "java/lang/Integer", "parseInt", "(Ljava/lang/String;)I")
+                | (6, "java/lang/Long", "parseLong", "(Ljava/lang/String;)J")
                 | (9, "java/util/Map", "get", "(Ljava/lang/Object;)Ljava/lang/Object;")
                 | (9, "java/util/Map", "containsKey", "(Ljava/lang/Object;)Z")
                 | (9, "java/util/Set", "contains", "(Ljava/lang/Object;)Z")
