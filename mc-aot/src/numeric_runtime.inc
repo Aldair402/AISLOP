@@ -2671,6 +2671,7 @@ fn list_remove(h:&mut Heap,r:Option<usize>,i:i32)->Option<usize>{let id=list_id(
 fn spliterator_init(h:&mut Heap,r:Option<usize>,size:i64,flags:i32){let id=array_id(h,r);if !matches!(h.arrays[id],Array::Obj(_,_)|Array::SharedObj(_,_)|Array::LocalObj(_,_,_)){error("AbstractSpliterator: receptor no soportado");}let flags=if flags&64!=0 {flags|16384} else {flags};h.spliterators.insert(id,(size,flags));}
 fn spliterator_state(h:&Heap,r:Option<usize>)->(i64,i32){let id=array_id(h,r);*h.spliterators.get(&id).unwrap_or_else(||error("Spliterator: receptor fuera del perfil"))}
 fn stream_support(h:&mut Heap,r:Option<usize>,parallel:i32)->usize{let id=array_id(h,r);let (_,flags)=spliterator_state(h,Some(id));if flags&4!=0{raise("IllegalStateException","");}if parallel!=0{error("StreamSupport: stream paralelo no soportado");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::LazyStream(id,false,None,false));out}
+
 fn comparator_comparing(h:&mut Heap,extractor:Option<usize>)->usize {let f=array_id(h,extractor);if !matches!(h.arrays[f],Array::Lambda(_,"java/util/function/Function",_)|Array::IdentityFunction){error("Comparator.comparing: Function fuera del perfil");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Comparing(f));id}
 fn comparator_comparing_with(h:&mut Heap,extractor:Option<usize>,cmp:Option<usize>)->usize{let f=array_id(h,extractor);if !matches!(h.arrays[f],Array::Lambda(_,"java/util/function/Function",_)|Array::IdentityFunction){error("Comparator.comparing(Function,Comparator): Function fuera del perfil");}let c=array_id(h,cmp);if !matches!(h.arrays[c],Array::Comparing(_)|Array::ComparingInt(_)|Array::ComparingThen(_,_)|Array::ComparingKey(_,_)){error("Comparator.comparing(Function,Comparator): comparador fuera del perfil");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ComparingKey(f,c));id}
 fn comparator_then_comparing(h:&mut Heap,r:Option<usize>,extractor:Option<usize>)->usize{let recv=array_id(h,r);if !matches!(h.arrays[recv],Array::Comparing(_)|Array::ComparingInt(_)|Array::ComparingThen(_,_)|Array::ComparingKey(_,_)){error("Comparator.thenComparing: receptor fuera del perfil");}let f=array_id(h,extractor);if !matches!(h.arrays[f],Array::Lambda(_,"java/util/function/Function",_)|Array::IdentityFunction){error("Comparator.thenComparing: Function fuera del perfil");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ComparingThen(recv,f));id}
@@ -2686,7 +2687,19 @@ fn comparator_compare_chain(h:&mut Heap,id:usize,a:Option<usize>,b:Option<usize>
 fn comparator_compare(h:&mut Heap,r:Option<usize>,a:Option<usize>,b:Option<usize>,apply:fn(&mut Heap,Option<usize>,Option<usize>)->Option<usize>,apply_int:fn(&mut Heap,Option<usize>,Option<usize>)->i32)->i32 {let id=array_id(h,r);comparator_compare_chain(h,id,a,b,apply,apply_int)}
 // ArrayList's stream is lazy and observes the list at the terminal operation.
 // Consumption of this source is intentionally rejected until traversal semantics exist.
-fn collection_stream(h:&mut Heap,r:Option<usize>)->usize {let id=array_id(h,r);if !matches!(h.arrays[id],Array::List(_,_)|Array::Set(_,_)|Array::HashSet(_,_)|Array::KeySet(_,_)|Array::ImmutableSet(_)){error("Collection.stream: fuente fuera del perfil");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::LazyStream(id,false,None,false));out}
+fn buffered_reader_lines(h:&mut Heap,r:Option<usize>)->usize{
+  let id=array_id(h,r);
+  if matches!(h.arrays[id],Array::Reader(_,_,_,true)){raise("IOException","Stream closed");}
+  reader_ready(h,id);
+  let buf=match &h.arrays[id]{Array::Reader(_,Some(v),_,_)=>v.clone(),_=>unreachable!()};
+  let text=String::from_utf16(&buf).unwrap_or_else(|_|error("BufferedReader.lines: UTF-16 sin pares validos no soportado"));
+  let mut items:Vec<Option<usize>>=Vec::new();
+  for line in text.lines(){items.push(Some(new_string(h,line.encode_utf16().collect())));}
+  if let Array::Reader(_,_,_,closed)=&mut h.arrays[id]{*closed=true;}
+  if h.elements.checked_add(items.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}h.elements+=items.len();
+  let lid=new_arrays_push(h,Array::ImmutableList(items));collection_stream(h,Some(lid))
+}
+fn collection_stream(h:&mut Heap,r:Option<usize>)->usize {let id=array_id(h,r);if !matches!(h.arrays[id],Array::List(_,_)|Array::Set(_,_)|Array::HashSet(_,_)|Array::KeySet(_,_)|Array::ImmutableSet(_)|Array::ImmutableList(_)|Array::EmptyList){error("Collection.stream: fuente fuera del perfil");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::LazyStream(id,false,None,false));out}
 fn stream_is_parallel(h:&Heap,r:Option<usize>)->bool{let id=array_id(h,r);if !matches!(h.arrays[id],Array::LazyStream(_,_,_,_)|Array::SortedStream(_,_,_)|Array::MappedStream(_,_,_)){error("Stream: receptor fuera del perfil");}false}
 fn stream_close(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);match &mut h.arrays[id]{Array::LazyStream(_,linked,parent,taken)=>{*linked=true;if parent.is_none(){*taken=true;}},Array::SortedStream(_,linked,_)|Array::MappedStream(_,linked,_)=>*linked=true,_=>error("Stream: receptor fuera del perfil")}}
 // forEach de la ruta Log4j; el Spliterator debe ser el bytecode oficial verificado.
