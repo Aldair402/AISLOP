@@ -610,6 +610,7 @@ fn array_load(h:&Heap,r:Option<usize>,i:i32,op:u8)->V {
         _=>panic!("tipo de array incompatible para carga"),
     }
 }
+fn reflect_array_get(h:&Heap,arr:Option<usize>,index:i32)->Option<usize>{match array_load(h,arr,index,0x32){V::R(x)=>x,_=>panic!("tipo de array incompatible")}}
 fn array_store(h:&mut Heap,r:Option<usize>,i:i32,val:V,op:u8) {
     let id=array_id(h,r);
     if matches!(h.arrays[id],Array::SharedRefs(_,_)) {
@@ -639,6 +640,7 @@ fn array_store(h:&mut Heap,r:Option<usize>,i:i32,val:V,op:u8) {
         _=>panic!("tipo de array incompatible para escritura"),
     }
 }
+fn reflect_array_set(h:&mut Heap,arr:Option<usize>,index:i32,value:Option<usize>){array_store(h,arr,index,V::R(value),0x53)}
 fn parse_array(h:&mut Heap,text:&str,kind:char,prior:&[(char,Option<usize>)])->Option<usize> {
     if text=="null" {return None;}
     if let Some(a)=text.strip_prefix('@') {
