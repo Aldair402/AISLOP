@@ -2385,6 +2385,13 @@ fn files_new_reader(h:&mut Heap,file:Option<usize>,charset:Option<usize>)->usize
     let units=match std::str::from_utf8(&bytes){Ok(s)=>s.encode_utf16().collect::<Vec<u16>>(),Err(_)=>{let ex=new_exception(h,"MalformedInputException");init_exception(h,Some(ex),"MalformedInputException",None);throw_ref(h,Some(ex));}};
     if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let rid=h.arrays.len();h.arrays.push(Array::Reader(None,Some(units),0,false));rid
 }
+fn files_new_buffered_reader_path(h:&mut Heap,path:Option<usize>)->usize{
+    let id=array_id(h,path);
+    let path=match &h.arrays[id]{Array::Path(s,_)=>s.clone(),_=>error("Files.newBufferedReader: Path no inicializado")};
+    let bytes=match std::fs::read(if path.is_empty(){"."}else{&path}){Ok(b)=>b,Err(e)=>{let kind=match e.kind(){std::io::ErrorKind::NotFound=>"NoSuchFileException",std::io::ErrorKind::PermissionDenied=>"AccessDeniedException",_=>error(&format!("Files.newBufferedReader: E/S no traducida: {e}"))};let msg=new_string(h,path.encode_utf16().collect());let ex=new_exception(h,kind);init_exception(h,Some(ex),kind,Some(msg));throw_ref(h,Some(ex));}};
+    let units=match std::str::from_utf8(&bytes){Ok(s)=>s.encode_utf16().collect::<Vec<u16>>(),Err(_)=>error("Files.newBufferedReader: UTF-8 inválido no soportado")};
+    if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let rid=h.arrays.len();h.arrays.push(Array::Reader(None,Some(units),0,false));rid
+}
 // AtomicReference solo para ejecución monohilo; no proporciona memoria concurrente.
 // Solo monohilo; la versión con contención requiere el heap concurrente futuro.
 fn rw_lock_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ReadWriteLock(0,0,None,None));id}

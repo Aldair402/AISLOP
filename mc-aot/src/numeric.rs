@@ -4133,6 +4133,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("com/google/common/collect/Lists","newArrayList","()Ljava/util/ArrayList;") if self.multi_classes.is_some()=>"Some(lists_new_array_list(heap))".into(),
                         ("com/google/common/collect/Lists","reverse","(Ljava/util/List;)Ljava/util/List;") if self.multi_classes.is_some()=>"Some(lists_reverse(heap,x0))".into(),
                         ("com/google/common/io/Files","newReader","(Ljava/io/File;Ljava/nio/charset/Charset;)Ljava/io/BufferedReader;") if self.multi_classes.is_some()=>"Some(files_new_reader(heap,x0,x1))".into(),
+                        ("java/nio/file/Files","newBufferedReader","(Ljava/nio/file/Path;)Ljava/io/BufferedReader;") if self.multi_classes.is_some()=>"Some(files_new_buffered_reader_path(heap,x0))".into(),
                         ("com/google/common/cache/CacheBuilder","newBuilder","()Lcom/google/common/cache/CacheBuilder;") if self.multi_classes.is_some()=>"Some(cache_builder_new(heap))".into(),
                         ("java/util/Objects","requireNonNullElse","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;") if self.multi_classes.is_some()=>"if x0.is_some(){x0}else{x1}".into(),
                         ("java/lang/StackWalker","getInstance","()Ljava/lang/StackWalker;") if self.multi_classes.is_some()=>"Some(default_stack_walker(heap))".into(),
