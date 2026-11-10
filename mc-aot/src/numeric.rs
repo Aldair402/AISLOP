@@ -296,6 +296,7 @@ fn jdk_function_method(owner: &str, name: &str, desc: &str) -> bool {
                 "test",
                 "(Ljava/lang/Object;Ljava/lang/Object;)Z",
             )
+            | ("java/nio/file/PathMatcher", "matches", "(Ljava/nio/file/Path;)Z")
     )
 }
 // Equivalentes monohilo concretos, no despacho general de interfaces.
