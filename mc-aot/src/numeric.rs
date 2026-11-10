@@ -2145,6 +2145,9 @@ impl NumericCompiler<'_> {
                             super::metadata::Type::Object(n) if n == "java/util/SequencedMap" => {
                                 Some(format!("builtin_instance(heap,a{i},\"map\")"))
                             }
+                            super::metadata::Type::Object(n) if n == "java/util/concurrent/CompletableFuture" || n == "java/util/concurrent/CompletionStage" => {
+                                Some(format!("builtin_instance(heap,a{i},\"completedfuture\")"))
+                            }
                             super::metadata::Type::Object(n) if n == "java/lang/Integer" => {
                                 Some(format!("builtin_instance(heap,a{i},\"integer\")"))
                             }
