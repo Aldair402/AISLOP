@@ -2140,6 +2140,18 @@ fn properties_load_line(h:&mut Heap,id:usize,line:&[u16]){
  let key=properties_decode(&line[..end]);let data=properties_decode(&line[value..]);let v=new_string(h,data);match &mut h.arrays[id]{Array::Properties(map)=>{map.insert(key,v);},_=>unreachable!()}
 }
 // Perfil estrictamente UTC y una propiedad eula=false; reloj real de sistema.
+fn properties_escape_base(units:&[u16],escape_ws:bool,colon_and_eq:bool,leading_hash:bool)->String{let mut out=String::with_capacity(units.len()+16);for (i,&c) in units.iter().enumerate(){match c {0x5C=>out.push_str("\\"),0x3D if colon_and_eq=>out.push_str("\\="),0x3A if colon_and_eq=>out.push_str("\\:"),0x23 if leading_hash&&i==0=>out.push_str("\\#"),0x21 if leading_hash&&i==0=>out.push_str("\\!"),0x20=>{if escape_ws||i==0||i==units.len()-1{out.push('\\');}out.push(' ');},0x0A=>out.push_str("\\n"),0x0D=>out.push_str("\\r"),0x09=>out.push_str("\\t"),0x0B=>out.push_str("\\f"),c if c<0x20||c>0x7E=>out.push_str(&format!("\\u{:04x}",c)),c=>out.push(char::from_u32(c as u32).unwrap_or('\u{FFFD}'))}}out}
+fn properties_store_writer(h:&mut Heap,r:Option<usize>,output:Option<usize>,comment:Option<usize>){
+ let id=java_properties_id(h,r);
+ if std::env::var("MC_AOT_JAVA_TIMEZONE").as_deref()!=Ok("UTC")||std::env::var("TZ").as_deref()!=Ok("UTC"){error("Properties.store: requiere MC_AOT_JAVA_TIMEZONE=UTC y TZ=UTC");}
+ let mut data=String::new();
+ if let Some(c)=comment{let units=string_units(h,Some(c));let esc=properties_escape_base(units,true,false,false);data.push('#');data.push_str(&esc);data.push('\n');}
+ let seconds=std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap_or_else(|_|error("Properties.store: reloj anterior a 1970")).as_secs();let days=seconds/86400;let rem=seconds%86400;let z=i64::try_from(days).unwrap_or_else(|_|error("Properties.store: fecha fuera de rango"))+719468;let era=z/146097;let doe=z-era*146097;let yoe=(doe-doe/1460+doe/36524-doe/146096)/365;let y=yoe+era*400;let doy=doe-(365*yoe+yoe/4-yoe/100);let mp=(5*doy+2)/153;let day=doy-(153*mp+2)/5+1;let month=mp+if mp<10{3}else{-9};let year=y+if month<=2{1}else{0};if !(1970..=9999).contains(&year){error("Properties.store: fecha fuera de rango");}
+ let wd=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][(days as usize+4)%7];let mo=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][(month-1) as usize];data.push_str(&format!("#{wd} {mo} {day:02} {:02}:{:02}:{:02} UTC {year}\n",rem/3600,(rem%3600)/60,rem%60));
+ let mut entries:Vec<(Vec<u16>,usize)>=match &h.arrays[id]{Array::Properties(map)=>map.iter().map(|(k,v)|(k.clone(),*v)).collect(),_=>unreachable!()};entries.sort_by(|a,b|a.0.cmp(&b.0));
+ for (k,v) in entries{let kt=properties_escape_base(&k,false,true,true);let units=string_units(h,Some(v));let vt=properties_escape_base(units,false,false,false);data.push_str(&kt);data.push('=');data.push_str(&vt);data.push('\n');}
+ let out=new_string(h,data.encode_utf16().collect());writer_write_string(h,output,Some(out));
+}
 fn java_properties_store_eula(h:&mut Heap,r:Option<usize>,output:Option<usize>,comment:Option<usize>){
  let id=java_properties_id(h,r);let out=array_id(h,output);
  if std::env::var("MC_AOT_JAVA_TIMEZONE").as_deref()!=Ok("UTC")||std::env::var("TZ").as_deref()!=Ok("UTC"){error("Properties.store: requiere MC_AOT_JAVA_TIMEZONE=UTC y TZ=UTC");}
