@@ -432,6 +432,7 @@ fn jdk_exception_parent(name: &str) -> Option<&'static str> {
     Some(match name {
         "java/security/NoSuchAlgorithmException" => "java/security/GeneralSecurityException",
         "java/security/GeneralSecurityException" => "java/lang/Exception",
+        "java/security/cert/CertificateException" => "java/security/GeneralSecurityException",
         "java/nio/charset/CharacterCodingException" => "java/io/IOException",
         "java/nio/charset/MalformedInputException" => "java/nio/charset/CharacterCodingException",
         "java/nio/charset/UnmappableCharacterException" => "java/nio/charset/CharacterCodingException",
