@@ -2136,6 +2136,15 @@ impl NumericCompiler<'_> {
                             super::metadata::Type::Object(n) if n == "java/util/Map$Entry" => {
                                 Some(format!("builtin_instance(heap,a{i},\"mapentry\")"))
                             }
+                            super::metadata::Type::Object(n) if n == "java/util/SequencedSet" => {
+                                Some(format!("builtin_instance(heap,a{i},\"set\")"))
+                            }
+                            super::metadata::Type::Object(n) if n == "java/util/SequencedCollection" => {
+                                Some(format!("builtin_instance(heap,a{i},\"sequencedcol\")"))
+                            }
+                            super::metadata::Type::Object(n) if n == "java/util/SequencedMap" => {
+                                Some(format!("builtin_instance(heap,a{i},\"map\")"))
+                            }
                             super::metadata::Type::Object(n) if n == "java/lang/Integer" => {
                                 Some(format!("builtin_instance(heap,a{i},\"integer\")"))
                             }
