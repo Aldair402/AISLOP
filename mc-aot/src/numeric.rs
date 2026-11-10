@@ -4297,6 +4297,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/util/List","of","([Ljava/lang/Object;)Ljava/util/List;") if self.multi_classes.is_some()=>"Some(immutable_list_from_array(heap,x0))".into(),
                         ("java/util/List","of","()Ljava/util/List;") if self.multi_classes.is_some()=>"Some(immutable_list_new(heap,Vec::new()))".into(),
                         ("java/util/List","copyOf","(Ljava/util/Collection;)Ljava/util/List;") if self.multi_classes.is_some()=>"Some(list_copy_of(heap,x0))".into(),
+                        ("java/util/Set","copyOf","(Ljava/util/Collection;)Ljava/util/Set;") if self.multi_classes.is_some()=>"Some(set_copy_of(heap,x0))".into(),
                         ("java/util/List","of","(Ljava/lang/Object;)Ljava/util/List;") if self.multi_classes.is_some()=>"Some(immutable_list_new(heap,vec![x0]))".into(),
                         ("java/util/List","of","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;") if self.multi_classes.is_some()=>"Some(immutable_list_new(heap,vec![x0,x1]))".into(),
                         ("java/util/Collections","newSetFromMap","(Ljava/util/Map;)Ljava/util/Set;") if self.multi_classes.is_some()=>"Some(identity_set_new(heap,x0))".into(),

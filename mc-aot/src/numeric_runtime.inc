@@ -1277,7 +1277,7 @@ fn stream_collect(h:&mut Heap,r:Option<usize>,collector:Option<usize>,
   if matches!(h.arrays[cid],Array::ToUnmodifiableSetMarker){
     let (elems,_)=stream_chain_items(h,r,cmp_int,test);
     let mut out:Vec<Option<usize>>=Vec::with_capacity(elems.len());
-    for e in elems{let item=match e{None=>raise("NullPointerException","toUnmodifiableSet: elemento null"),Some(x)=>x};if out.iter().any(|o|map_key_eq(h,*o,Some(item))){continue;}if h.elements.checked_add(1).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}h.elements+=1;out.push(Some(item));}
+    for e in elems{let item=match e{None=>raise("NullPointerException","toUnmodifiableSet: elemento null"),Some(x)=>x};if out.iter().any(|o|map_key_eq(h,*o,Some(item))){raise("IllegalArgumentException","duplicate element in toUnmodifiableSet");}if h.elements.checked_add(1).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}h.elements+=1;out.push(Some(item));}
     if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}
     if out.is_empty(){if let Some(id)=h.empty_set{return id;}}
     let out_id=h.arrays.len();h.arrays.push(Array::ImmutableSet(out));return out_id;
@@ -2075,6 +2075,18 @@ fn list_copy_of(h:&mut Heap,r:Option<usize>)->usize{
 // Hash de List según el contrato java.util (1; 31*h + (e==null ? 0 : e.hashCode())).
 // Builtins se resuelven de forma determinista; objetos proyecto despacha a su
 // Object.hashCode precompilado (o a identidad si no lo sobre-escribe nadie).
+fn immutable_set_new(h:&mut Heap,values:Vec<Option<usize>>)->usize{let mut out:Vec<Option<usize>>=Vec::with_capacity(values.len());for e in values{let item=match e{None=>raise("NullPointerException","Set.copyOf: elemento null"),Some(x)=>x};if out.iter().any(|o|map_key_eq(h,*o,Some(item))){raise("IllegalArgumentException","duplicate element in Set.copyOf");}if h.elements.checked_add(1).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}h.elements+=1;out.push(Some(item));}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}if out.is_empty(){if let Some(id)=h.empty_set{return id;}}let out_id=h.arrays.len();h.arrays.push(Array::ImmutableSet(out));out_id}
+fn set_copy_of(h:&mut Heap,r:Option<usize>)->usize{
+  let id=array_id(h,r);
+  let values:Vec<Option<usize>>=match &h.arrays[id]{
+    Array::List(v,_)|Array::ImmutableList(v)|Array::Set(v,_)|Array::ImmutableSet(v)|Array::HashSet(v,_)|Array::KeySet(v,_)=>v.clone(),
+    Array::ArraysList(a)=>match &h.arrays[*a]{Array::Strings(u)=>u.iter().map(|u|u.as_ref().map(|s|new_string(h,s.clone()))).collect(),Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),_=>unreachable!()},
+    Array::EmptyList|Array::EmptySet=>Vec::new(),
+    Array::Queue(v)|Array::ConcurrentQueue(v)|Array::Deque(v)=>v.iter().copied().map(Some).collect(),
+    Array::MapValues(map)=>map_values_snapshot(h,*map),
+    _=>error("Set.copyOf: colección fuente no soportada")};
+  immutable_set_new(h,values)
+}
 fn list_element_hash(h:&Heap,e:Option<usize>,project_hash:&dyn Fn(&Heap,Option<usize>)->i32)->i32{
   let id=match e{Some(i)=>i,None=>return 0};
   match &h.arrays[id]{
