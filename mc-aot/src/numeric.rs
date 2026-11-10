@@ -2267,6 +2267,17 @@ impl NumericCompiler<'_> {
                     ) == (6, "java/util/Objects", "nonNull", "(Ljava/lang/Object;)Z")
                     {
                         format!("({}.is_some()) as i32", actual[0])
+                    } else if (
+                        lambda.impl_kind,
+                        lambda.impl_owner.as_str(),
+                        lambda.impl_name.as_str(),
+                        lambda.impl_desc.as_str(),
+                    ) == (5, "java/util/concurrent/CompletableFuture", "isDone", "()Z")
+                    {
+                        if !futures_optin()? {
+                            return Err("CompletableFuture: requiere MC_AOT_FUTURES=restricted".into());
+                        }
+                        format!("completed_future_is_done(heap,{})", actual[0])
                     } else if lambda.impl_owner == "java/util/UUID" {
                         format!("Some(uuid_string(heap,{}))", actual[0])
                     } else if (lambda.impl_kind, lambda.impl_owner.as_str(), lambda.impl_name.as_str(), lambda.impl_desc.as_str()) == (9, "java/util/Map$Entry", "getKey", "()Ljava/lang/Object;") {
@@ -2890,6 +2901,7 @@ impl NumericCompiler<'_> {
                 )
                 | (9, "java/lang/StackWalker$StackFrame", "toStackTraceElement", "()Ljava/lang/StackTraceElement;")
                 | (5, "java/lang/String", "trim", "()Ljava/lang/String;")
+                | (5, "java/util/concurrent/CompletableFuture", "isDone", "()Z")
                 | (8, "java/lang/StringBuilder", "<init>", "()V")
                 | (8, "java/util/HashMap", "<init>", "()V")
                 | (
