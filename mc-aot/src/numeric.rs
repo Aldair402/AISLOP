@@ -4117,6 +4117,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/lang/Character","toString","(I)Ljava/lang/String;") if self.multi_classes.is_some()=>"Some(character_to_string(heap,x0))".into(),
                         ("java/util/function/Function","identity","()Ljava/util/function/Function;") if self.multi_classes.is_some()=>"Some(identity_function(heap))".into(),
                         ("java/util/function/UnaryOperator","identity","()Ljava/util/function/UnaryOperator;") if self.multi_classes.is_some()=>"Some(identity_function(heap))".into(),
+                        ("java/lang/Thread","sleep","(J)V") if self.multi_classes.is_some()=>"{let ms=pop_l(&mut stack);thread_sleep(heap,ms);}".into(),
                         ("com/google/common/math/IntMath","sqrt","(ILjava/math/RoundingMode;)I") if self.multi_classes.is_some()=>"let mode=pop_r(&mut stack);let n=pop_i(&mut stack);stack.push(V::I(intmath_sqrt_ceil(heap,n,mode)));".into(),
                         ("java/lang/Long","numberOfLeadingZeros","(J)I") if self.multi_classes.is_some()=>"(x0 as u64).leading_zeros() as i32".into(),
                         ("java/lang/Integer","toHexString","(I)Ljava/lang/String;") if self.multi_classes.is_some()=>r#"Some(new_string(heap,format!("{:x}",x0 as u32).encode_utf16().collect()))"#.into(),

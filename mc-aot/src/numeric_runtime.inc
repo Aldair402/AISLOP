@@ -1035,6 +1035,12 @@ fn nano_time()->i64{
   i64::try_from(nanos).unwrap_or_else(|_|error("System.nanoTime: fuera de rango"))
 }
 fn current_time_millis()->i64{let millis=match std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH){Ok(v)=>i128::try_from(v.as_millis()).unwrap_or_else(|_|error("System.currentTimeMillis: reloj fuera de rango")),Err(e)=>-i128::try_from((e.duration().as_nanos()+999_999)/1_000_000).unwrap_or_else(|_|error("System.currentTimeMillis: reloj fuera de rango"))};i64::try_from(millis).unwrap_or_else(|_|error("System.currentTimeMillis: reloj fuera de rango"))}
+fn thread_sleep(h:&mut Heap,ms:i64){
+  if ms<0{raise("IllegalArgumentException","time argument must be zero or greater");}
+  let id=current_thread(h);
+  if let Array::CurrentThread(flag,_)=&mut h.arrays[id]{if *flag{*flag=false;raise("InterruptedException","");}}
+  std::thread::sleep(std::time::Duration::from_millis(ms as u64));
+}
 fn current_thread(h:&mut Heap)->usize{if let Some(id)=h.arrays.iter().position(|a|matches!(a,Array::CurrentThread(_,_))){return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let name=new_string(h,vec![109,97,105,110]);if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::CurrentThread(false,name));id}
 fn thread_is_interrupted(h:&Heap,r:Option<usize>)->bool{let id=array_id(h,r);match h.arrays[id]{Array::CurrentThread(flag,_)=>flag,_=>error("Thread: solo hilo principal monohilo soportado")}}
 fn thread_interrupt(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);match &mut h.arrays[id]{Array::CurrentThread(flag,_)=>*flag=true,_=>error("Thread: solo hilo principal monohilo soportado")}}
