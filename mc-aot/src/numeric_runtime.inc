@@ -1974,6 +1974,7 @@ fn map_values_snapshot(h:&Heap,id:usize)->Vec<Option<usize>> {
     entries.iter().map(|(_,v)|Some(*v)).collect()
 }
 fn list_construct_capacity(h:&Heap,r:Option<usize>,n:i32){list_id(h,r);if n<0{raise("IllegalArgumentException","");}if n>1_000_000{error("ArrayList: capacidad experimental excedida");}}
+fn collection_reverse(h:&mut Heap,r:Option<usize>){let id=list_id(h,r);match h.arrays[id]{Array::List(..)=>{if let Array::List(v,version)=&mut h.arrays[id]{v.reverse();*version=version.wrapping_add(1);}},Array::ArraysList(a)=>{match &mut h.arrays[a]{Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.reverse(),Array::Strings(v)=>v.reverse(),_=>error("Collections.reverse: backing array no soportado")}},Array::EmptyList=>{},_=>raise("UnsupportedOperationException","")}}
 fn list_sort_strings(h:&mut Heap,r:Option<usize>){let id=list_id(h,r);let mut values=match &h.arrays[id]{Array::List(v,_)=>v.clone(),_=>error("Collections.sort: solo ArrayList")};if values.len()>1{for v in &values{let value=v.unwrap_or_else(||raise("NullPointerException",""));if !matches!(h.arrays[value],Array::Str(_)){error("Collections.sort: solo String")}}values.sort_by(|a,b|string_units(h,*a).cmp(string_units(h,*b)));}if let Array::List(v,version)=&mut h.arrays[id]{*v=values;*version=version.wrapping_add(1);}}
 fn collection_to_array_gen(h:&mut Heap,r:Option<usize>,generator:Option<usize>,
     apply:fn(&mut Heap,Option<usize>,i32)->Option<usize>)->usize {
