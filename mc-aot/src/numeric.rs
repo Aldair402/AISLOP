@@ -3467,6 +3467,8 @@ impl NumericCompiler<'_> {
                         "stack.push(V::R(Some(stderr_ref(heap))));".to_owned()
                     } else if self.multi_classes.is_some() && op==0xb2 && owner=="java/util/logging/Level" && desc=="Ljava/util/logging/Level;" && matches!(field,"ALL"|"FINEST"|"FINER"|"FINE"|"CONFIG"|"INFO"|"WARNING"|"SEVERE"|"OFF") {
                         format!("stack.push(V::R(Some(level_of(heap,{field:?}))));")
+                    } else if self.multi_classes.is_some() && op==0xb2 && (owner,field,desc)==("java/math/RoundingMode","CEILING","Ljava/math/RoundingMode;") {
+                        "stack.push(V::R(Some(rounding_mode_ceiling(heap))));".to_owned()
                     } else if self.multi_classes.is_some() && op==0xb2 && owner=="java/util/Locale" && desc=="Ljava/util/Locale;" && matches!(field,"US"|"ROOT"|"ENGLISH") {
                         // ASCII case mapping == Locale.ROOT; el receptor esta protegido por la guarda ASCII en el helper.
                         "stack.push(V::R(Some(locale_root(heap))));".into()
@@ -4088,6 +4090,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/lang/Character","toString","(I)Ljava/lang/String;") if self.multi_classes.is_some()=>"Some(character_to_string(heap,x0))".into(),
                         ("java/util/function/Function","identity","()Ljava/util/function/Function;") if self.multi_classes.is_some()=>"Some(identity_function(heap))".into(),
                         ("java/util/function/UnaryOperator","identity","()Ljava/util/function/UnaryOperator;") if self.multi_classes.is_some()=>"Some(identity_function(heap))".into(),
+                        ("com/google/common/math/IntMath","sqrt","(ILjava/math/RoundingMode;)I") if self.multi_classes.is_some()=>"let mode=pop_r(&mut stack);let n=pop_i(&mut stack);stack.push(V::I(intmath_sqrt_ceil(heap,n,mode)));".into(),
                         ("java/lang/Long","numberOfLeadingZeros","(J)I") if self.multi_classes.is_some()=>"(x0 as u64).leading_zeros() as i32".into(),
                         ("java/lang/Integer","toHexString","(I)Ljava/lang/String;") if self.multi_classes.is_some()=>r#"Some(new_string(heap,format!("{:x}",x0 as u32).encode_utf16().collect()))"#.into(),
                         ("java/lang/reflect/Modifier", "isPublic"|"isPrivate"|"isProtected"|"isStatic"|"isFinal"|"isSynchronized"|"isVolatile"|"isTransient"|"isNative"|"isInterface"|"isAbstract"|"isStrict", "(I)Z") if self.multi_classes.is_some()=>{let bit=match method{"isPublic"=>1,"isPrivate"=>2,"isProtected"=>4,"isStatic"=>8,"isFinal"=>16,"isSynchronized"=>32,"isVolatile"=>64,"isTransient"=>128,"isNative"=>256,"isInterface"=>512,"isAbstract"=>1024,_=>2048};format!("((x0 & {bit}) != 0) as i32")},
