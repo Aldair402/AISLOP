@@ -1513,6 +1513,7 @@ fn init_exception_cause(h:&mut Heap,r:Option<usize>,kind:&str,message:Option<usi
     init_exception(h,r,kind,message);let id=array_id(h,r);if let Some(c)=cause {if !matches!(h.arrays.get(c),Some(Array::Exception(_,_,_))){error("Throwable causa no soportada");}h.causes.insert(id,c);}
 }
 fn init_exception_from_io_cause(h:&mut Heap,r:Option<usize>,kind:&str,cause:Option<usize>){if cause.is_none(){raise("NullPointerException","");}init_exception_from_cause(h,r,kind,cause)}
+fn jdk_compare_i32(a:i32,b:i32)->i32{if a<b{-1}else if a>b{1}else{0}}
 fn ord_to_int(o:std::cmp::Ordering)->i32{match o{std::cmp::Ordering::Less=>-1,std::cmp::Ordering::Equal=>0,std::cmp::Ordering::Greater=>1}}
 fn float_cmp_java(a:f32,b:f32)->i32{if a.is_nan(){if b.is_nan(){0}else{1}}else if b.is_nan(){-1}else if a==b{if a==0.0&&b==0.0&&a.is_sign_negative()!=b.is_sign_negative(){if a.is_sign_negative(){-1}else{1}}else{0}}else{ord_to_int(a.partial_cmp(&b).unwrap())}}
 fn double_cmp_java(a:f64,b:f64)->i32{if a.is_nan(){if b.is_nan(){0}else{1}}else if b.is_nan(){-1}else if a==b{if a==0.0&&b==0.0&&a.is_sign_negative()!=b.is_sign_negative(){if a.is_sign_negative(){-1}else{1}}else{0}}else{ord_to_int(a.partial_cmp(&b).unwrap())}}
