@@ -1449,6 +1449,8 @@ impl NumericCompiler<'_> {
         let security_manager = meta.parent.as_deref() == Some("java/lang/SecurityManager");
         let record = meta.parent.as_deref() == Some("java/lang/Record");
         // commons-lang3 Fraction y similares: aritmética entera pura sobre Number.
+        let atomic_reference_class = meta.parent.as_deref() == Some("java/util/concurrent/atomic/AtomicReference")
+            && meta.flags & 0x0400 == 0;
         let number_class = meta.parent.as_deref() == Some("java/lang/Number")
             && !meta.flags & 0x0400 == 0x0400;
         let abstract_collection = meta.parent.as_deref() == Some("java/util/AbstractCollection");
@@ -1513,6 +1515,7 @@ impl NumericCompiler<'_> {
                 && !abstract_spliterator
                 && !foreign_exception
                 && !number_class
+                && !atomic_reference_class
                 && !thread_subclass
                 && project_parent.is_none())
         {
