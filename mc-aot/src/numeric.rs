@@ -2133,6 +2133,9 @@ impl NumericCompiler<'_> {
                             super::metadata::Type::Object(n) if n == "java/lang/Enum" => {
                                 Some(format!("builtin_instance(heap,a{i},\"enum\")"))
                             }
+                            super::metadata::Type::Object(n) if n == "java/util/Map$Entry" => {
+                                Some(format!("builtin_instance(heap,a{i},\"mapentry\")"))
+                            }
                             super::metadata::Type::Object(n) if n == "java/lang/Integer" => {
                                 Some(format!("builtin_instance(heap,a{i},\"integer\")"))
                             }
