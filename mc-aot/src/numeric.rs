@@ -2384,6 +2384,8 @@ impl NumericCompiler<'_> {
                         format!("Some(float_value_of(heap,{0}))", actual[0])
                     } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Double" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(D)Ljava/lang/Double;" {
                         format!("Some(double_value_of(heap,{0}))", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/util/Objects" && lambda.impl_name == "toString" && lambda.impl_desc == "(Ljava/lang/Object;)Ljava/lang/String;" {
+                        format!("Some(string_value_of_object(heap,{0}))", actual[0])
                     } else if lambda.impl_kind == 6 || lambda.impl_kind == 7 {
                         let f = if lambda.impl_kind == 7 {
                             extraction.push_str(&format!(
