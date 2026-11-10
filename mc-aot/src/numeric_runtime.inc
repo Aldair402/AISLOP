@@ -492,6 +492,16 @@ fn path_real_path(h:&mut Heap,r:Option<usize>,options:Option<usize>)->Option<usi
   let canonical=match std::fs::canonicalize(if path.is_empty(){"."}else{&path}){Ok(p)=>p,Err(e)=>{let kind=match e.kind(){std::io::ErrorKind::NotFound=>"NoSuchFileException",std::io::ErrorKind::PermissionDenied=>"AccessDeniedException",_=>error(&format!("Path.toRealPath: E/S no traducida: {e}"))};let msg=new_string(h,path.encode_utf16().collect());let ex=new_exception(h,kind);init_exception(h,Some(ex),kind,Some(msg));throw_ref(h,Some(ex));}};
   let s=canonical.to_string_lossy().into_owned();if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Path(s,None));Some(id)
 }
+// Files.createDirectories: comportamiento real std::fs::create_dir_all. Solo atributos vacíos (sin FileAttribute<?>), el perfil no modela permisos POSIX.
+fn files_create_directories(h:&mut Heap,path:Option<usize>,attrs:Option<usize>)->usize{
+  let pid=array_id(h,path);
+  let aid=match attrs{Some(_)=>array_id(h,attrs),None=>usize::MAX};
+  if let Some(a)=attrs{let id=array_id(h,Some(a));if !matches!(&h.arrays[id],Array::Refs(_,v)|Array::ProjectRefs(_,v) if v.is_empty()){error("Files.createDirectories: atributos no soportados (FileAttribute<?>)");}}
+  let p=match &h.arrays[pid]{Array::Path(s,_)=>s.clone(),_=>error("Files.createDirectories: Path no inicializado")};
+  if let Err(e)=std::fs::create_dir_all(if p.is_empty(){"."}else{&p}){let kind=match e.kind(){std::io::ErrorKind::PermissionDenied=>"AccessDeniedException",std::io::ErrorKind::NotFound=>"NoSuchFileException",_=>error(&format!("Files.createDirectories: E/S no traducida: {e}"))};let msg=new_string(h,p.encode_utf16().collect());let ex=new_exception(h,kind);init_exception(h,Some(ex),kind,Some(msg));throw_ref(h,Some(ex));}
+  let _=aid;
+  if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Path(p,None));id
+}
 fn logger_new(h:&mut Heap,name:Option<usize>)->usize{new_arrays_push(h,Array::Logger(name))}
 fn file_init_child(h:&mut Heap,r:Option<usize>,parent:Option<usize>,child:Option<usize>){
   let id=array_id(h,r);
