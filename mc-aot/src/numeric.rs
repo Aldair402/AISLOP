@@ -2410,6 +2410,9 @@ impl NumericCompiler<'_> {
                         && lambda.impl_owner == "java/lang/StringBuilder"
                     {
                         "Some(builder_new(heap))".into()
+                    } else if lambda.impl_kind == 8 && lambda.impl_owner == "java/lang/String" {
+                        // String(String): alias — las cadenas son inmutables; el contenido es idéntico por construcción
+                        format!("Some({})", actual[0])
                     } else if lambda.impl_kind == 8 && lambda.impl_owner == "java/util/HashMap" {
                         "Some(hashmap_new(heap))".into()
                     } else if lambda.impl_kind == 8 && lambda.impl_owner == "java/io/BufferedOutputStream" {
@@ -2952,6 +2955,7 @@ impl NumericCompiler<'_> {
                 | (5, "java/util/concurrent/CompletableFuture", "isDone", "()Z")
                 | (8, "java/lang/StringBuilder", "<init>", "()V")
                 | (8, "java/util/HashMap", "<init>", "()V")
+                | (8, "java/lang/String", "<init>", "(Ljava/lang/String;)V")
                 | (
                     5,
                     "java/time/format/DateTimeFormatter",
