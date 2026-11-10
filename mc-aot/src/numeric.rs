@@ -4112,6 +4112,11 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/lang/invoke/MethodHandles","publicLookup","()Ljava/lang/invoke/MethodHandles$Lookup;") if self.multi_classes.is_some()=>"Some(virtual_thread_lookup(heap))".into(),
                         ("java/lang/invoke/MethodHandles","lookup","()Ljava/lang/invoke/MethodHandles$Lookup;") if self.multi_classes.is_some()=>"Some(virtual_thread_lookup(heap))".into(),
                         ("java/lang/invoke/MethodType","methodType","(Ljava/lang/Class;)Ljava/lang/invoke/MethodType;") if self.multi_classes.is_some()=>"Some(method_type_of(heap,x0))".into(),
+                        ("java/security/AccessController","doPrivileged","(Ljava/security/PrivilegedAction;)Ljava/lang/Object;") if self.multi_classes.is_some()=>{
+                            self.interface_call("java/security/PrivilegedAction","run","()Ljava/lang/Object;")?;
+                            let id=self.interface_calls.iter().position(|v|v.0=="java/security/PrivilegedAction"&&v.1=="run"&&v.2=="()Ljava/lang/Object;").ok_or("PrivilegedAction.run no registrada")?;
+                            format!("let action=pop_r(&mut stack);stack.push(V::R(interface_dispatch_{id}(heap,action)));").into()
+                        },
                         ("java/util/Arrays","sort","([C)V") if self.multi_classes.is_some()=>"array_sort_char(heap,x0)".into(),
                         ("java/util/Arrays","fill","([CC)V") if self.multi_classes.is_some()=>"array_fill_char(heap,x0,x1)".into(),
                         ("java/util/Arrays","fill","([BB)V") if self.multi_classes.is_some()=>"array_fill_byte(heap,x0,x1)".into(),
