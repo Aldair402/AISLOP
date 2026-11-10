@@ -4420,7 +4420,8 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     let (owner,name,desc)=method_ref(&m.cp,idx)?;let sig=signature_ext(desc,self.multi_classes.is_some())?;
                     let expected=1+sig.args.iter().map(|t|if matches!(*t,'J'|'D'){2}else{1}).sum::<usize>();
                     if zero!=0 || count!=expected {return Err("invokeinterface inválido".into());}
-                    if self.multi_classes.is_some() && (owner,name,desc)==("java/util/stream/Stream","forEach","(Ljava/util/function/Consumer;)V") {
+                    if self.multi_classes.is_some() && (owner,name,desc)==("java/lang/AutoCloseable","close","()V") {"let r=pop_r(&mut stack);let _=r;error(\"AutoCloseable.close: objeto no verificable en el perfil (los handles nativos siempre caen en trampa etiquetada)\");".into()}
+                    else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/stream/Stream","forEach","(Ljava/util/function/Consumer;)V") {
                         self.verify_log4j_service_spliterator()?;
                         self.interface_call("java/util/Spliterator","tryAdvance","(Ljava/util/function/Consumer;)Z")?;
                         self.interface_call("java/util/function/Consumer","accept","(Ljava/lang/Object;)V")?;
