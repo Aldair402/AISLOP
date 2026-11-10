@@ -1156,6 +1156,7 @@ impl NumericCompiler<'_> {
                         | "java/util/concurrent/RunnableScheduledFuture"
                         | "java/util/concurrent/Callable"
                         | "java/util/concurrent/CompletionStage"
+                        | "java/nio/file/PathMatcher"
                 )
             {
                 active.remove(name);
@@ -1314,6 +1315,7 @@ impl NumericCompiler<'_> {
                         | "java/util/concurrent/RunnableScheduledFuture"
                         | "java/util/concurrent/Callable"
                         | "java/util/concurrent/CompletionStage"
+                        | "java/nio/file/PathMatcher"
                 )
             {
                 active.remove(name);
