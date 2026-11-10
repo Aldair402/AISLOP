@@ -3928,6 +3928,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/lang/invoke/MethodHandle","invokeExact","(JI)Ljava/nio/ByteBuffer;") if self.multi_classes.is_some()=>"{let i=pop_i(&mut stack);let j=pop_l(&mut stack);let mh=pop_r(&mut stack);let _=(mh,j,i);error(\"MethodHandle.invokeExact(JI)ByteBuffer: buffer directo nativo no modelado (hasUnsafe()==false en el perfil)\")}".into(),
                         ("sun/misc/Unsafe","arrayIndexScale","(Ljava/lang/Class;)I") if self.multi_classes.is_some()=>"{let c=pop_r(&mut stack);let r=pop_r(&mut stack);let _=(r,c);error(\"Unsafe.arrayIndexScale: acceso nativo no modelado (PlatformDependent solo debe llegar aquí si hasUnsafe()==true, que el perfil siempre informa falso)\")}".into(),
                         ("sun/misc/Unsafe","allocateMemory","(J)J") if self.multi_classes.is_some()=>"{let sz=pop_l(&mut stack);let r=pop_r(&mut stack);let _=(r,sz);error(\"Unsafe.allocateMemory: memoria nativa no modelada (fuera del perfil)\")}".into(),
+                        ("sun/misc/Unsafe","freeMemory","(J)V") if self.multi_classes.is_some()=>"{let addr=pop_l(&mut stack);let r=pop_r(&mut stack);let _=(r,addr);error(\"Unsafe.freeMemory: memoria nativa no modelada (fuera del perfil)\")}".into(),
                         _=>return Err(format!("invokevirtual no soportado: {owner}.{name}{desc}")),
                     }
                 },
