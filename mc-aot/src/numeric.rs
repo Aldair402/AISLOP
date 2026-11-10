@@ -3962,6 +3962,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("sun/misc/Unsafe","freeMemory","(J)V") if self.multi_classes.is_some()=>"{let addr=pop_l(&mut stack);let r=pop_r(&mut stack);let _=(r,addr);error(\"Unsafe.freeMemory: memoria nativa no modelada (fuera del perfil)\")}".into(),
                         ("sun/misc/Unsafe","objectFieldOffset","(Ljava/lang/reflect/Field;)J") if self.multi_classes.is_some()=>"{let f=pop_r(&mut stack);let r=pop_r(&mut stack);let _=(r,f);error(\"Unsafe.objectFieldOffset: offsets nativos no modelados (fuera del perfil)\")}".into(),
                         ("sun/misc/Unsafe","arrayBaseOffset","(Ljava/lang/Class;)I") if self.multi_classes.is_some()=>"{let c=pop_r(&mut stack);let r=pop_r(&mut stack);let _=(r,c);error(\"Unsafe.arrayBaseOffset: offsets nativos no modelados (fuera del perfil)\")}".into(),
+                        ("sun/misc/Unsafe","addressSize","()I") if self.multi_classes.is_some()=>"{let r=pop_r(&mut stack);let _=r;error(\"Unsafe.addressSize: tamaño nativo no modelado (fuera del perfil)\")}".into(),
                         _=>return Err(format!("invokevirtual no soportado: {owner}.{name}{desc}")),
                     }
                 },
