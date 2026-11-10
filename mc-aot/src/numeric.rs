@@ -353,6 +353,8 @@ fn collection_intrinsic(owner: &str, name: &str, desc: &str) -> Option<&'static 
         (_,true,_,_,"drainTo","(Ljava/util/Collection;I)I")=>Some("let max=pop_i(&mut stack);let dst=pop_r(&mut stack);let src=pop_r(&mut stack);stack.push(V::I(queue_drain_to(heap,src,dst,max)));"),
         (_,true,_,_,"offer","(Ljava/lang/Object;)Z")=>Some("let v=pop_r(&mut stack);let q=pop_r(&mut stack);queue_offer(heap,q,v);stack.push(V::I(1));"),
         (_,true,_,_,"poll","()Ljava/lang/Object;")=>Some("let q=pop_r(&mut stack);stack.push(V::R(queue_poll(heap,q,true)));"),
+        // Sin hilos: no hay bloqueo real — el poll temporizado devuelve inmediatamente (cola enlazada, esperas no modeladas).
+        (_,true,_,_,"poll","(JLjava/util/concurrent/TimeUnit;)Ljava/lang/Object;")=>Some("let unit=pop_r(&mut stack);let timeout=pop_l(&mut stack);let q=pop_r(&mut stack);let _=(unit,timeout);stack.push(V::R(queue_poll(heap,q,true)));"),
         (_,true,_,_,"peek","()Ljava/lang/Object;")=>Some("let q=pop_r(&mut stack);stack.push(V::R(queue_poll(heap,q,false)));"),
         (_,_,true,_,"indexOf","(Ljava/lang/Object;)I")=>Some("let v=pop_r(&mut stack);let l=pop_r(&mut stack);stack.push(V::I(list_index_of(heap,l,v)));"),
         (_,_,true,_,"toString","()Ljava/lang/String;")=>Some("let l=pop_r(&mut stack);stack.push(V::R(Some(list_to_string(heap,l))));"),
