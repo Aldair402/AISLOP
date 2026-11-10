@@ -2918,6 +2918,8 @@ impl NumericCompiler<'_> {
         let jdk_ok = matches!(
             (impl_kind, impl_owner, impl_name, impl_desc),
             (6, "java/util/Objects", "nonNull", "(Ljava/lang/Object;)Z")
+                | (6, "java/lang/Boolean", "valueOf", "(Ljava/lang/String;)Ljava/lang/Boolean;")
+                | (6, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;")
                 | (9, "java/util/Map", "get", "(Ljava/lang/Object;)Ljava/lang/Object;")
                 | (9, "java/util/Map", "containsKey", "(Ljava/lang/Object;)Z")
                 | (9, "java/util/Set", "contains", "(Ljava/lang/Object;)Z")
