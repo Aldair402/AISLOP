@@ -1412,6 +1412,7 @@ impl NumericCompiler<'_> {
                         | "java/util/AbstractMap"
                         | "java/util/AbstractSet"
                         | "java/io/PrintStream"
+                        | "java/util/concurrent/atomic/AtomicReference"
                 ) {
                     break;
                 }
