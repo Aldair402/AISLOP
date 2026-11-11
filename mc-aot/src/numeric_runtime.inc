@@ -2646,6 +2646,14 @@ fn reentrant_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite exp
 fn reentrant_count(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match h.arrays[id]{Array::ReentrantLock(n)=>n,_=>error("Lock concreto no soportado")}}
 fn reentrant_lock(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);match h.arrays[id]{Array::ReentrantLock(_)=>if let Array::ReentrantLock(n)=&mut h.arrays[id]{*n=n.checked_add(1).unwrap_or_else(||error("ReentrantLock: profundidad excedida"));},Array::ReadLock(parent)=>if let Array::ReadWriteLock(read,_,_,_)=&mut h.arrays[parent]{*read=read.checked_add(1).unwrap_or_else(||error("ReadLock: profundidad excedida"));},Array::WriteLock(parent)=>if let Array::ReadWriteLock(read,write,_,_)=&mut h.arrays[parent]{if *read>0&&*write==0{error("ReadWriteLock: upgrade bloquearía el hilo");}*write=write.checked_add(1).unwrap_or_else(||error("WriteLock: profundidad excedida"));},_=>error("Lock concreto no soportado")}}
 fn reentrant_unlock(h:&mut Heap,r:Option<usize>){let id=array_id(h,r);let target=match h.arrays[id]{Array::ReentrantLock(_)=>(id,0),Array::ReadLock(p)=>(p,1),Array::WriteLock(p)=>(p,2),_=>error("Lock concreto no soportado")};let n=match (&mut h.arrays[target.0],target.1){(Array::ReentrantLock(n),0)=>n,(Array::ReadWriteLock(n,_,_,_),1)=>n,(Array::ReadWriteLock(_,n,_,_),2)=>n,_=>unreachable!()};if *n==0{raise("IllegalMonitorStateException","");}*n-=1;}
+// tryLock acotado: sin contención siempre adquiere salvo upgrade lectura→escritura (devolvería bloqueo infinito en monohilo).
+fn reentrant_try_lock(h:&mut Heap,r:Option<usize>)->i32{
+  let id=array_id(h,r);
+  match h.arrays[id]{
+    Array::WriteLock(parent)=>{if let Array::ReadWriteLock(read,_,_,_)=&h.arrays[parent]{if *read>0{return 0;}}reentrant_lock(h,r);1},
+    Array::ReentrantLock(_)|Array::ReadLock(_)=>{reentrant_lock(h,r);1},
+    _=>error("Lock concreto no soportado")}
+}
 fn atomic_integer_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::AtomicInteger(0));id}
 // ForkJoinPool: objeto de configuración real (parallelism validado 1..=32767, modo async),
 // sin hilos ni robo de trabajo en el backend multi-static. NO es un pool ejecutable:
