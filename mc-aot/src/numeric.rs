@@ -4764,6 +4764,9 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && name=="java/util/Map$Entry" {"tree_entry_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/io/Serializable" {
                         "serializable_instance(heap,r,PROJECT_INTERFACES)".to_owned()
+                    } else if self.multi_classes.is_some() && name=="java/lang/ref/Reference" {
+                        // No hay objetos Reference en el perfil (hooks de apagado, no alcanzables en el boot); instanceof siempre falso, checkcast levanta CCE si el receptor no es nulo.
+                        "false".to_owned()
                     } else if self.multi_classes.is_some() && (known_exception(name).is_some() || (project_class(name) && self.resolve_exception_type(name).is_ok())) {
                         format!("exception_instance(heap,r,{name:?})")
                     } else if self.multi_classes.is_some() && jdk_function_interface(name) {
