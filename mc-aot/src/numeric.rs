@@ -3009,6 +3009,7 @@ impl NumericCompiler<'_> {
                 | (9, "java/util/Set", "contains", "(Ljava/lang/Object;)Z")
                 | (9, "java/util/Collection", "contains", "(Ljava/lang/Object;)Z")
                 | (9, "java/util/List", "contains", "(Ljava/lang/Object;)Z")
+                | (9, "java/util/List", "add", "(Ljava/lang/Object;)Z")
                 | (9, "java/util/Map", "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")
                 | (9, "java/util/function/IntFunction", "apply", "(I)Ljava/lang/Object;")
                 | (6, "java/util/stream/Stream", "empty", "()Ljava/util/stream/Stream;")
