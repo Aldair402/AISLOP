@@ -4413,6 +4413,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/util/List","of","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;") if self.multi_classes.is_some()=>"Some(immutable_list_new(heap,vec![x0,x1]))".into(),
                         ("java/util/Collections","newSetFromMap","(Ljava/util/Map;)Ljava/util/Set;") if self.multi_classes.is_some()=>"Some(identity_set_new(heap,x0))".into(),
                         ("java/util/Collections","sort","(Ljava/util/List;)V") if self.multi_classes.is_some()=>"{list_sort_strings(heap,x0);}".into(),
+                        ("java/util/Collections","sort","(Ljava/util/List;Ljava/util/Comparator;)V") if self.multi_classes.is_some()=>{self.interface_call("java/util/Comparator","compare","(Ljava/lang/Object;Ljava/lang/Object;)I")?;let id=self.interface_calls.iter().position(|v|v.0=="java/util/Comparator"&&v.1=="compare"&&v.2=="(Ljava/lang/Object;Ljava/lang/Object;)I").ok_or("Comparator.compare no registrada")?;format!("list_sort_comparator(heap,x0,x1,interface_dispatch_{id});").into()},
                         ("java/util/Collections","reverse","(Ljava/util/List;)V") if self.multi_classes.is_some()=>"collection_reverse(heap,x0);".into(),
                         ("java/lang/Integer","compare","(II)I") if self.multi_classes.is_some()=>"jdk_compare_i32(x0,x1)".into(),
                         ("java/lang/Short","compare","(SS)I") if self.multi_classes.is_some()=>"jdk_compare_i32(x0,x1)".into(),
