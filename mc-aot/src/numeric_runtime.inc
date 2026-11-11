@@ -431,8 +431,9 @@ fn level_of(h:&mut Heap,raw:&str)->usize{
 }
 fn logger_log(h:&mut Heap,level:Option<usize>,msg:Option<usize>,throwable:Option<usize>){
   let _=level;
-  print_string_line(h,Some(stderr_ref(h)),msg);
-  if throwable.is_some(){let s=new_string(h,"[exception suppressed]".encode_utf16().collect());print_string_line(h,Some(stderr_ref(h)),Some(s));}
+  let err=stderr_ref(h);
+  print_string_line(h,Some(err),msg);
+  if throwable.is_some(){let s=new_string(h,"[exception suppressed]".encode_utf16().collect());let err=stderr_ref(h);print_string_line(h,Some(err),Some(s));}
 }
 fn aru_new(h:&mut Heap,name:Option<usize>)->usize{new_arrays_push(h,Array::UpdaterMarker(name))}
 fn virtual_thread_lookup(h:&mut Heap)->usize{new_arrays_push(h,Array::VirtualThreadLookup)}
