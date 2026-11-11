@@ -2495,6 +2495,7 @@ fn loading_cache_get(h:&mut Heap,r:Option<usize>,key:Option<usize>)->Option<usiz
     let now=std::time::Instant::now();
     let ttl=match &h.arrays[id]{Array::LoadingCache(state)=>state.expiry_ns,_=>error("LoadingCache concreto no soportado")};
     let mut loader=None;let mut max=None;let mut expire_on_access=false;
+    let mut keys:Option<Vec<usize>>=None;
     if let Array::LoadingCache(state)=&mut h.arrays[id]{
         loader=state.loader;max=state.max_size;expire_on_access=state.expire_on_access;
         let ttl_i=ttl.map(|t|t as i128).unwrap_or(i128::MAX);
@@ -2504,10 +2505,12 @@ fn loading_cache_get(h:&mut Heap,r:Option<usize>,key:Option<usize>)->Option<usiz
             if !fresh{state.entries.remove(i);continue;}
             i+=1;
         }
-        let keys:Vec<usize>=state.entries.iter().map(|e|e.key).collect();
+        keys=Some(state.entries.iter().map(|e|e.key).collect());
+    }
+    if let Some(keys)=keys{
         let mut hit:Option<usize>=None;
         for i in 0..keys.len(){if cache_entry_eq(h,keys[i],kid){hit=Some(i);break;}}
-        if let Some(i)=hit{let value=state.entries[i].value;state.entries[i].accessed=now;return Some(value);}
+        if let Some(i)=hit{if let Array::LoadingCache(state)=&mut h.arrays[id]{let value=state.entries[i].value;state.entries[i].accessed=now;return Some(value);}}
     }
     let loader=loader.unwrap_or_else(||error("LoadingCache.get: la caché no tiene CacheLoader"));
     let dispatch=match &h.arrays[id]{Array::LoadingCache(state)=>state.loader_dispatch.unwrap(),_=>unreachable!()};
