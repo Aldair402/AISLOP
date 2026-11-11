@@ -676,7 +676,7 @@ fn partition(source: &str) -> Result<Partition, String> {
             .map(|&idx| (offs[items[idx].start], offs[items[idx].end], idx))
             .collect();
         sorted_fns.sort_by_key(|&(s, _, _)| s);
-        let tokens = ident_tokens(source, 0, source.len(), true);
+        let tokens = ident_tokens(source, 0, source.len(), false); // todas las refs: fn items pasados como argumento (stream_collect(.., interface_dispatch_40, ..)) también crean dependencia callee-antes-que-caller
         for s in tokens {
             let (_, te) = token_bounds(source, s);
             let name = &source[s..te];
@@ -744,7 +744,7 @@ fn partition(source: &str) -> Result<Partition, String> {
             continue;
         }
         let (bs, be) = (offs[items[idx].start], offs[items[idx].end]);
-        for s in ident_tokens(source, bs, be, true) {
+        for s in ident_tokens(source, bs, be, false) { // semillas: cualquier referencia (aunque sea como valor)
             let (_, te) = token_bounds(source, s);
             let name = &source[s..te];
             if let Some(owners) = fn_name_map.get(name) {
