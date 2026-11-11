@@ -3166,22 +3166,22 @@ impl NumericCompiler<'_> {
                     return Err("lambda método implementación no encontrado".into());
                 }
             } else if impl_kind == 7 {
-                // REF_invokeSpecial recurría a la máquina virtual al PRIMER argumento
-                // del SAM como receptor (a.combine(b) ejecuta a.combine(b)), no a un
-                // receptor capturado: en la práctica la captura puede ser cero
-                // argumentos y el tipo estático del primer parámetro instanciado es
-                // lo que liga. Se exige: el método existe, es privado no estático de
-                // la propia clase, y el primer parámetro instanciado es una
-                // referencia (borrada o exacta).
+                // REF_invokeSpecial liga el receptor al inicio de los argumentos
+                // efectivos: con un SAM de cero parámetros (p.ej. Supplier) el
+                // receptor se captura en la creación (`this::m`), y con un SAM con
+                // parámetros el receptor es el primer parámetro instanciado.
+                // combined[0] ya quedó verificado como asignable en args_ok; se exige
+                // además que el método exista y sea privado no estático de la propia
+                // clase.
                 if impl_owner != class
-                    || !matches!(inst.args.first(),Some(Type::Object(_)|Type::Array(_)))
+                    || !matches!(combined.first(),Some(Type::Object(_)|Type::Array(_)))
                     || !meta.methods.iter().any(|m| {
                         m.name == impl_name
                             && m.descriptor == impl_desc
                             && m.flags & 0x000a == 0x0002
                     })
                 {
-                    return Err("lambda REF_7: solo un método privado no estático de su propia clase, con el receptor como primer parámetro instanciado".into());
+                    return Err("lambda REF_7: solo un método privado no estático de su propia clase, con el receptor como inicio de los argumentos efectivos".into());
                 }
             } else if impl_kind == 9 {
                 self.verify_cast_interface(impl_owner)?;
