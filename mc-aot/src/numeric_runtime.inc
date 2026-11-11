@@ -281,12 +281,22 @@ fn floor_mod_i(a:i32,b:i32)->i32 {let r=rem_i(a,b);if r!=0 && (a^b)<0 {r.wrappin
 fn floor_div_l(a:i64,b:i64)->i64 {let q=div_l(a,b);let r=rem_l(a,b);if r!=0 && (a^b)<0 {q.wrapping_sub(1)} else {q}}
 fn floor_mod_l(a:i64,b:i64)->i64 {let r=rem_l(a,b);if r!=0 && (a^b)<0 {r.wrapping_add(b)} else {r}}
 
+struct FutureState{pending:bool,value:Option<usize>}
+struct ScheduledTask{runnable:usize,future:usize,due:std::time::Instant,dispatch:fn(&mut Heap,Option<usize>)}
+struct ScheduledThreadPoolExecutor{core_pool_size:i32,factory:Option<usize>,pending:Vec<ScheduledTask>}
+// Una tarea cancelada o completada deja de estar pendiente pero conserva su
+// estado terminal; las esperas sobre ella no existen en este perfil.
+struct CacheEntry{key:usize,value:usize,stored:std::time::Instant,accessed:std::time::Instant}
+struct LoadingCacheState{expiry_ns:Option<u64>,expire_on_access:bool,max_size:Option<u64>,loader:Option<usize>,loader_dispatch:Option<fn(&mut Heap,Option<usize>,Option<usize>)->Option<usize>>,entries:Vec<CacheEntry>}
+struct UrlParts{scheme:String,host:String,port:i32,file:String,query:Option<String>}
+struct HttpUrlConnection{url:usize,method:&'static str,request_properties:Vec<(String,String)>,connect_timeout:i32,read_timeout:i32,use_caches:bool,do_output:bool}
+struct GsonBuilderState{adapters:Vec<(String,usize)>,hierarchy:Vec<(String,usize)>}
 struct ForkJoinPoolState{parallelism:i32,async_mode:bool,factory:Option<usize>,handler:Option<usize>}
-enum Array { Z(Vec<bool>), B(Vec<i8>), C(Vec<u16>), S(Vec<i16>), I(Vec<i32>), J(Vec<i64>), F(Vec<f32>), D(Vec<f64>), Strings(Vec<Option<usize>>), Str(Vec<u16>), Boolean(bool), Integer(i32), Long(i64), Byte(i8), Short(i16), Character(u16), Float(f32), Double(f64), StackOption, TimeUnit(u8), StackWalker(bool), StackWalkStream(Vec<&'static str>,usize,bool,usize,bool), StackStage(usize,bool,u8,usize), StackFrame(&'static str,bool), Duration(i64,i32), CompletedFuture(Option<usize>), AtomicRef(Option<usize>), AtomicLong(i64), AtomicInteger(i32), ReentrantLock(i32), ReadWriteLock(i32,i32,Option<usize>,Option<usize>), ReadLock(usize), WriteLock(usize), CurrentProcess, CurrentThread(bool,usize), RuntimeSingleton, RuntimePermission(Option<usize>), WeakLoader(Option<usize>), Collector(usize,usize,usize), JoinCollector(Option<usize>,Option<usize>,Option<usize>), Comparing(usize), ComparingThen(usize,usize), ComparingKey(usize,usize), BaseModule, BootLayer, JfrModule, Lambda(usize,&'static str,Vec<V>), IdentityFunction, IsoInstantFormatter, RootLocale, Path(String,Option<usize>), File(Option<String>,Option<usize>), CrashDateFormatter, Optional(Option<usize>), Pattern(usize,i32), Matcher(usize,usize,Option<(usize,usize,Option<(usize,usize)>)>), Uuid([u8;16]), Date(i64), Zoned(i64,i32), Instant(i64,i32), ResourceStream(&'static [u8],usize,bool), ByteInput(Option<usize>,usize,usize,usize), FileInput(Option<std::fs::File>), FileOutput(Option<std::fs::File>), Uri(usize), Properties(std::collections::HashMap<Vec<u16>,usize>), PropertiesEntries(usize), PropertiesEmptyIter(usize), Utf8Charset, Reader(Option<usize>,Option<Vec<u16>>,usize,bool), Builder(Vec<u16>), Stdout, Stderr, Exception(&'static str,&'static str,Option<usize>), Obj(&'static str,Vec<V>), SharedObj(&'static str,NumericObjectHandle), LocalObj(&'static str,Vec<V>,Option<usize>), Map(Vec<(usize,usize)>,usize,bool), HashMap(Vec<(Option<usize>,Option<usize>)>), IdentityMap(Vec<(Option<usize>,Option<usize>)>), IdentitySet(usize), LinkedMap(Vec<(Option<usize>,Option<usize>)>,i32), LinkedIter(usize,Vec<Option<usize>>,usize,i32), TreeMap(Vec<(usize,Option<usize>)>,i32), TreeEntries(usize), TreeEntry(usize,usize,i32), TreeIter(usize,Vec<usize>,usize,i32,bool), EmptyMap, EnumSet(Vec<usize>), EnumSetIter(Vec<usize>,usize), EmptyList, EmptySet, ImmutableSet(Vec<Option<usize>>), ImmutableList(Vec<Option<usize>>), EmptyIterator, MapValues(usize), Queue(std::collections::VecDeque<usize>), ConcurrentQueue(std::collections::VecDeque<usize>), Deque(std::collections::VecDeque<usize>), Local(Option<usize>), SuppliedLocal(usize,Option<Option<usize>>), Class(&'static str), List(Vec<Option<usize>>,i32), ArraysList(usize), ArraysListIter(usize,usize), Set(Vec<Option<usize>>,i32), HashSet(Vec<Option<usize>>,i32), KeySet(Vec<Option<usize>>,i32), AppLoader, PlatformLoader, Refs(u8,Vec<Option<usize>>), ProjectRefs(&'static str,Vec<Option<usize>>), SharedRefs(&'static str,NumericArrayHandle), Constructor(&'static str), ReflectMethod(usize), Service(&'static str,&'static [&'static str],usize,Vec<usize>), ServiceIter(usize,usize), LazyStream(usize,bool,Option<usize>,bool), SortedStream(usize,bool,usize), MappedStream(usize,bool,usize), StreamSink(Vec<usize>,usize), ListIter(usize,usize,i32), SetIter(usize,Vec<Option<usize>>,usize,i32), EmptyEnumeration, ForkJoinPool(ForkJoinPoolState), ThreadPoolExecutor(Option<usize>), ZipFsProvider, ComparingInt(usize), BitSet(Vec<u64>), ToListMarker, ToImmutableListMarker, ToSetMarker, IntStream(i32,i32), IntStreamClosed, ImmutableMap(Vec<(Option<usize>,Option<usize>)>), ToMapMarker(usize,usize), ToUnmodifiableMapMarker(usize,usize), ScopedValue(bool,Option<usize>), ScopedCarrier(usize,Option<usize>), DecimalFormat(Vec<u16>,Option<usize>), DecimalFormatSymbols(usize), HexFormat(bool), ByteBuffer(Vec<i8>), HashFn(&'static str), HashCode([u8;16]), BufferedOutput(usize,Vec<u8>), GzipOut(usize,flate2::write::GzEncoder<Vec<u8>>), DeflateOut(usize,flate2::write::DeflateEncoder<Vec<u8>>), GzipIn(usize,Option<Vec<u8>>,usize), DeflateIn(usize,Option<Vec<u8>>,usize) }
+enum Array { Z(Vec<bool>), B(Vec<i8>), C(Vec<u16>), S(Vec<i16>), I(Vec<i32>), J(Vec<i64>), F(Vec<f32>), D(Vec<f64>), Strings(Vec<Option<usize>>), Str(Vec<u16>), Boolean(bool), Integer(i32), Long(i64), Byte(i8), Short(i16), Character(u16), Float(f32), Double(f64), StackOption, TimeUnit(u8), StackWalker(bool), StackWalkStream(Vec<&'static str>,usize,bool,usize,bool), StackStage(usize,bool,u8,usize), StackFrame(&'static str,bool), Duration(i64,i32), CompletableFuture(FutureState), ScheduledThreadPool(ScheduledThreadPoolExecutor), ScheduledFuture(bool), Url(Option<Vec<u16>>), HttpUrlConnection(HttpUrlConnection), GsonBuilder(GsonBuilderState), Gson(GsonBuilderState), CacheBuilder(LoadingCacheState), LoadingCache(LoadingCacheState), AtomicRef(Option<usize>), AtomicLong(i64), AtomicInteger(i32), ReentrantLock(i32), ReadWriteLock(i32,i32,Option<usize>,Option<usize>), ReadLock(usize), WriteLock(usize), CurrentProcess, CurrentThread(bool,usize), RuntimeSingleton, RuntimePermission(Option<usize>), WeakLoader(Option<usize>), Collector(usize,usize,usize), JoinCollector(Option<usize>,Option<usize>,Option<usize>), Comparing(usize), ComparingThen(usize,usize), ComparingKey(usize,usize), BaseModule, BootLayer, JfrModule, Lambda(usize,&'static str,Vec<V>), IdentityFunction, IsoInstantFormatter, RootLocale, Path(String,Option<usize>), File(Option<String>,Option<usize>), CrashDateFormatter, Optional(Option<usize>), Pattern(usize,i32), Matcher(usize,usize,Option<(usize,usize,Option<(usize,usize)>)>), Uuid([u8;16]), Date(i64), Zoned(i64,i32), Instant(i64,i32), ResourceStream(&'static [u8],usize,bool), ByteInput(Option<usize>,usize,usize,usize), FileInput(Option<std::fs::File>), FileOutput(Option<std::fs::File>), Uri(usize), Properties(std::collections::HashMap<Vec<u16>,usize>), PropertiesEntries(usize), PropertiesEmptyIter(usize), Utf8Charset, Reader(Option<usize>,Option<Vec<u16>>,usize,bool), Builder(Vec<u16>), Stdout, Stderr, Exception(&'static str,&'static str,Option<usize>), Obj(&'static str,Vec<V>), SharedObj(&'static str,NumericObjectHandle), LocalObj(&'static str,Vec<V>,Option<usize>), Map(Vec<(usize,usize)>,usize,bool), HashMap(Vec<(Option<usize>,Option<usize>)>), IdentityMap(Vec<(Option<usize>,Option<usize>)>), IdentitySet(usize), LinkedMap(Vec<(Option<usize>,Option<usize>)>,i32), LinkedIter(usize,Vec<Option<usize>>,usize,i32), TreeMap(Vec<(usize,Option<usize>)>,i32), TreeEntries(usize), TreeEntry(usize,usize,i32), TreeIter(usize,Vec<usize>,usize,i32,bool), EmptyMap, EnumSet(Vec<usize>), EnumSetIter(Vec<usize>,usize), EmptyList, EmptySet, ImmutableSet(Vec<Option<usize>>), ImmutableList(Vec<Option<usize>>), EmptyIterator, MapValues(usize), Queue(std::collections::VecDeque<usize>), ConcurrentQueue(std::collections::VecDeque<usize>), Deque(std::collections::VecDeque<usize>), Local(Option<usize>), SuppliedLocal(usize,Option<Option<usize>>), Class(&'static str), List(Vec<Option<usize>>,i32), ArraysList(usize), ArraysListIter(usize,usize), Set(Vec<Option<usize>>,i32), HashSet(Vec<Option<usize>>,i32), KeySet(Vec<Option<usize>>,i32), AppLoader, PlatformLoader, Refs(u8,Vec<Option<usize>>), ProjectRefs(&'static str,Vec<Option<usize>>), SharedRefs(&'static str,NumericArrayHandle), Constructor(&'static str), ReflectMethod(usize), Service(&'static str,&'static [&'static str],usize,Vec<usize>), ServiceIter(usize,usize), LazyStream(usize,bool,Option<usize>,bool), SortedStream(usize,bool,usize), MappedStream(usize,bool,usize), StreamSink(Vec<usize>,usize), ListIter(usize,usize,i32), SetIter(usize,Vec<Option<usize>>,usize,i32), EmptyEnumeration, ForkJoinPool(ForkJoinPoolState), ThreadPoolExecutor(Option<usize>), ZipFsProvider, ComparingInt(usize), BitSet(Vec<u64>), ToListMarker, ToImmutableListMarker, ToSetMarker, IntStream(i32,i32), IntStreamClosed, ImmutableMap(Vec<(Option<usize>,Option<usize>)>), ToMapMarker(usize,usize), ToUnmodifiableMapMarker(usize,usize), ScopedValue(bool,Option<usize>), ScopedCarrier(usize,Option<usize>), DecimalFormat(Vec<u16>,Option<usize>), DecimalFormatSymbols(usize), HexFormat(bool), ByteBuffer(Vec<i8>), HashFn(&'static str), HashCode([u8;16]), Proxy(u8), BufferedOutput(usize,Vec<u8>), GzipOut(usize,flate2::write::GzEncoder<Vec<u8>>), DeflateOut(usize,flate2::write::DeflateEncoder<Vec<u8>>), GzipIn(usize,Option<Vec<u8>>,usize), DeflateIn(usize,Option<Vec<u8>>,usize) }
 impl Array {
     fn len(&self)->usize {match self {Self::Z(v)=>v.len(),Self::B(v)=>v.len(),Self::C(v)=>v.len(),Self::S(v)=>v.len(),Self::I(v)=>v.len(),Self::J(v)=>v.len(),Self::F(v)=>v.len(),Self::D(v)=>v.len(),Self::Strings(v)=>v.len(),Self::Refs(_,v)=>v.len(),Self::ProjectRefs(_,v)=>v.len(),Self::SharedRefs(_,a)=>a.slots.lock().map(|s|s.len()).unwrap_or(0),_=>panic!("se esperaba array")}}
 }
-#[derive(Default)] struct Heap { bridge_owner:std::sync::Arc<()>, arrays:Vec<Array>, elements:usize, fields:Vec<V>, interfaces:&'static [(&'static str,&'static str)], init_states:Vec<u8>, intern:std::collections::HashMap<Vec<u16>,usize>, stdout:Option<usize>, stderr:Option<usize>, properties:Option<std::collections::HashMap<Vec<u16>,usize>>, classes:std::collections::HashMap<&'static str,usize>, simple_names:std::collections::HashMap<&'static str,usize>, monitors:std::collections::HashMap<usize,usize>, app_loader:Option<usize>, platform_loader:Option<usize>, context_loader:Option<Option<usize>>, time_units:[Option<usize>;7], enum_values:std::collections::HashMap<usize,(Option<usize>,i32)>, enum_directories:std::collections::HashMap<&'static str,Vec<(usize,usize)>>, causes:std::collections::HashMap<usize,usize>, suppressed:std::collections::HashMap<usize,Vec<usize>>, map_views:std::collections::HashMap<usize,usize>, booleans:[Option<usize>;2], parents:std::collections::HashMap<&'static str,&'static str>, exception_messages:std::collections::HashMap<usize,Option<usize>>, uri_syntax:std::collections::HashMap<usize,(usize,usize,i32)>, uri_schemes:std::collections::HashMap<usize,usize>, uri_paths:std::collections::HashMap<usize,usize>, stack_option:Option<usize>, default_stack_walker:Option<usize>, duration_zero:Option<usize>, integers:std::collections::HashMap<i32,usize>, longs:std::collections::HashMap<i64,usize>, bytes:std::collections::HashMap<i8,usize>, shorts:std::collections::HashMap<i16,usize>, characters:std::collections::HashMap<u16,usize>, tree_entry_views:std::collections::HashMap<usize,usize>, active_maps:Vec<usize>, identity_function:Option<usize>, iso_instant:Option<usize>, root_locale:Option<usize>, decimal_symbols_root:Option<usize>, hex_default:Option<usize>, hex_upper:Option<usize>, builder_caps:std::collections::HashMap<usize,(i32,bool)>, optional_empty:Option<usize>, utf8_charset:Option<usize>, empty_map:Option<usize>, empty_list:Option<usize>, empty_set:Option<usize>, zip_fs_provider:Option<usize>, immutable_empty:Option<usize>, empty_iterator:Option<usize>, current_process:Option<usize>, runtime_singleton:Option<usize>, line_separator:Option<usize>, base_module:Option<usize>, boot_layer:Option<usize>, jfr_module:Option<usize>, lambdas:std::collections::HashMap<usize,usize>, spliterators:std::collections::HashMap<usize,(i64,i32)>, walk_scopes:Vec<bool> }
+#[derive(Default)] struct Heap { bridge_owner:std::sync::Arc<()>, arrays:Vec<Array>, elements:usize, fields:Vec<V>, interfaces:&'static [(&'static str,&'static str)], init_states:Vec<u8>, intern:std::collections::HashMap<Vec<u16>,usize>, stdout:Option<usize>, stderr:Option<usize>, properties:Option<std::collections::HashMap<Vec<u16>,usize>>, classes:std::collections::HashMap<&'static str,usize>, simple_names:std::collections::HashMap<&'static str,usize>, monitors:std::collections::HashMap<usize,usize>, app_loader:Option<usize>, platform_loader:Option<usize>, context_loader:Option<Option<usize>>, time_units:[Option<usize>;7], enum_values:std::collections::HashMap<usize,(Option<usize>,i32)>, enum_directories:std::collections::HashMap<&'static str,Vec<(usize,usize)>>, causes:std::collections::HashMap<usize,usize>, suppressed:std::collections::HashMap<usize,Vec<usize>>, map_views:std::collections::HashMap<usize,usize>, booleans:[Option<usize>;2], parents:std::collections::HashMap<&'static str,&'static str>, exception_messages:std::collections::HashMap<usize,Option<usize>>, uri_syntax:std::collections::HashMap<usize,(usize,usize,i32)>, uri_schemes:std::collections::HashMap<usize,usize>, uri_paths:std::collections::HashMap<usize,usize>, stack_option:Option<usize>, default_stack_walker:Option<usize>, duration_zero:Option<usize>, integers:std::collections::HashMap<i32,usize>, longs:std::collections::HashMap<i64,usize>, bytes:std::collections::HashMap<i8,usize>, shorts:std::collections::HashMap<i16,usize>, characters:std::collections::HashMap<u16,usize>, tree_entry_views:std::collections::HashMap<usize,usize>, active_maps:Vec<usize>, identity_function:Option<usize>, iso_instant:Option<usize>, root_locale:Option<usize>, decimal_symbols_root:Option<usize>, hex_default:Option<usize>, hex_upper:Option<usize>, builder_caps:std::collections::HashMap<usize,(i32,bool)>, optional_empty:Option<usize>, utf8_charset:Option<usize>, empty_map:Option<usize>, empty_list:Option<usize>, empty_set:Option<usize>, zip_fs_provider:Option<usize>, proxy_no_proxy:Option<usize>, immutable_empty:Option<usize>, empty_iterator:Option<usize>, current_process:Option<usize>, runtime_singleton:Option<usize>, line_separator:Option<usize>, base_module:Option<usize>, boot_layer:Option<usize>, jfr_module:Option<usize>, lambdas:std::collections::HashMap<usize,usize>, spliterators:std::collections::HashMap<usize,(i64,i32)>, walk_scopes:Vec<bool> }
 fn error(label:&str)->! { eprintln!("{label}");std::process::exit(2) }
 // Guarda explícita del runtime experimental; no simula StackOverflowError.
 thread_local! {static JAVA_STACK:std::cell::RefCell<Vec<&'static str>>=const{std::cell::RefCell::new(Vec::new())};}
@@ -649,7 +659,7 @@ fn parse_string_array(h:&mut Heap,text:&str,prior:&[(char,Option<usize>)])->Opti
 
 fn builtin_instance(h:&Heap,r:Option<usize>,kind:&str)->bool {
     if matches!(kind,"map"|"concurrentmap"|"number"|"list"|"stream"|"stackframe")&&matches!(r.and_then(|id|h.arrays.get(id)),Some(Array::Obj(_,_)|Array::SharedObj(_,_)|Array::LocalObj(_,_,_))){error("Map/Number/List: objeto proyecto no verificado");}
-    match (kind,r.and_then(|id|h.arrays.get(id))) {("list",Some(Array::List(_,_)|Array::ArraysList(_)|Array::ImmutableList(_)|Array::EmptyList))|("number",Some(Array::Byte(_)|Array::Short(_)|Array::Integer(_)|Array::Long(_)|Array::Float(_)|Array::Double(_)))|("stream",Some(Array::LazyStream(_,_,_,_)|Array::SortedStream(_,_,_)|Array::MappedStream(_,_,_)|Array::StackWalkStream(_,_,_,_,_)|Array::StackStage(_,_,_,_)))|("stackframe",Some(Array::StackFrame(_,_)))|("concurrentmap",Some(Array::Map(_,_,_)))|("map",Some(Array::Map(_,_,_)|Array::HashMap(_)|Array::IdentityMap(_)|Array::LinkedMap(_,_)|Array::TreeMap(_,_)|Array::EmptyMap|Array::ImmutableMap(_)))|("set",Some(Array::Set(_,_)|Array::HashSet(_)|Array::EmptySet|Array::ImmutableSet(_)|Array::EnumSet(_)|Array::IdentitySet(_)))|("completedfuture",Some(Array::CompletedFuture(_)))|("optional",Some(Array::Optional(_)))|("class",Some(Array::Class(_)))|("classloader",Some(Array::AppLoader|Array::PlatformLoader))|("printstream",Some(Array::Stdout|Array::Stderr))|("builder",Some(Array::Builder(_)))|("reader",Some(Array::Reader(_,_,_,_)))|("inputstream",Some(Array::ResourceStream(_,_,_)|Array::FileInput(_)|Array::ByteInput(_,_,_,_)|Array::GzipIn(_,_,_)|Array::DeflateIn(_,_,_)))|("uuid",Some(Array::Uuid(_)))|("bitset",Some(Array::BitSet(_)))|("zipfsprovider",Some(Array::ZipFsProvider))|("uri",Some(Array::Uri(_)))|("pattern",Some(Array::Pattern(_,_)))|("long",Some(Array::Long(_)))|("float",Some(Array::Float(_)))|("double",Some(Array::Double(_)))|("byte",Some(Array::Byte(_)))|("short",Some(Array::Short(_)))|("character",Some(Array::Character(_)))|("integer",Some(Array::Integer(_)))|("boolean",Some(Array::Boolean(_)))|("s",Some(Array::Str(_)))|("t",Some(Array::Strings(_)))|("o",Some(_))|("A",Some(Array::Strings(_)))|("A",Some(Array::Refs(_, _)))|("A",Some(Array::ProjectRefs(_, _)))|("C",Some(Array::Refs(14,_)))=>true,(kind,Some(Array::Obj(actual,_)|Array::SharedObj(actual,_)|Array::LocalObj(actual,_,_))) if kind=="enum"=>project_subtype(h,actual,"java/lang/Enum")||interfaces.iter().any(|(c,i)|*c==actual&&*i=="java/lang/Enum"),(kind,Some(Array::TimeUnit(_))) if kind=="enum"=>project_subtype(h,"java/time/TimeUnit","java/lang/Enum")||true,_=>false}
+    match (kind,r.and_then(|id|h.arrays.get(id))) {("list",Some(Array::List(_,_)|Array::ArraysList(_)|Array::ImmutableList(_)|Array::EmptyList))|("number",Some(Array::Byte(_)|Array::Short(_)|Array::Integer(_)|Array::Long(_)|Array::Float(_)|Array::Double(_)))|("stream",Some(Array::LazyStream(_,_,_,_)|Array::SortedStream(_,_,_)|Array::MappedStream(_,_,_)|Array::StackWalkStream(_,_,_,_,_)|Array::StackStage(_,_,_,_)))|("stackframe",Some(Array::StackFrame(_,_)))|("concurrentmap",Some(Array::Map(_,_,_)))|("map",Some(Array::Map(_,_,_)|Array::HashMap(_)|Array::IdentityMap(_)|Array::LinkedMap(_,_)|Array::TreeMap(_,_)|Array::EmptyMap|Array::ImmutableMap(_)))|("set",Some(Array::Set(_,_)|Array::HashSet(_)|Array::EmptySet|Array::ImmutableSet(_)|Array::EnumSet(_)|Array::IdentitySet(_)))|("completedfuture",Some(Array::CompletableFuture(_)))|("optional",Some(Array::Optional(_)))|("class",Some(Array::Class(_)))|("classloader",Some(Array::AppLoader|Array::PlatformLoader))|("printstream",Some(Array::Stdout|Array::Stderr))|("builder",Some(Array::Builder(_)))|("reader",Some(Array::Reader(_,_,_,_)))|("inputstream",Some(Array::ResourceStream(_,_,_)|Array::FileInput(_)|Array::ByteInput(_,_,_,_)|Array::GzipIn(_,_,_)|Array::DeflateIn(_,_,_)))|("uuid",Some(Array::Uuid(_)))|("bitset",Some(Array::BitSet(_)))|("zipfsprovider",Some(Array::ZipFsProvider))|("uri",Some(Array::Uri(_)))|("U",Some(Array::Url(_)))|("httpconnection",Some(Array::HttpUrlConnection(_)))|("pattern",Some(Array::Pattern(_,_)))|("long",Some(Array::Long(_)))|("float",Some(Array::Float(_)))|("double",Some(Array::Double(_)))|("byte",Some(Array::Byte(_)))|("short",Some(Array::Short(_)))|("character",Some(Array::Character(_)))|("integer",Some(Array::Integer(_)))|("boolean",Some(Array::Boolean(_)))|("s",Some(Array::Str(_)))|("t",Some(Array::Strings(_)))|("o",Some(_))|("A",Some(Array::Strings(_)))|("A",Some(Array::Refs(_, _)))|("A",Some(Array::ProjectRefs(_, _)))|("C",Some(Array::Refs(14,_)))=>true,(kind,Some(Array::Obj(actual,_)|Array::SharedObj(actual,_)|Array::LocalObj(actual,_,_))) if kind=="enum"=>project_subtype(h,actual,"java/lang/Enum")||interfaces.iter().any(|(c,i)|*c==actual&&*i=="java/lang/Enum"),(kind,Some(Array::TimeUnit(_))) if kind=="enum"=>project_subtype(h,"java/time/TimeUnit","java/lang/Enum")||true,_=>false}
 }
 fn serializable_instance(h:&Heap,r:Option<usize>,interfaces:&[(&str,&str)])->bool{let Some(id)=r else{return false};if h.enum_values.contains_key(&id){return true;}match h.arrays.get(id){
  Some(Array::Obj(_,_)|Array::SharedObj(_,_)|Array::LocalObj(_,_,_)|Array::Lambda(_,_,_)|Array::IdentityFunction)=>project_instance(h,r,"java/io/Serializable",interfaces),
@@ -925,6 +935,7 @@ fn bitset_to_bytes(h:&mut Heap,r:Option<usize>)->usize{let id=bitset_check(h,r);
 fn bitset_clone(h:&mut Heap,r:Option<usize>)->usize{let id=bitset_check(h,r);let words=match &h.arrays[id]{Array::BitSet(w)=>w.clone(),_=>unreachable!()};let out=h.arrays.len();h.arrays.push(Array::BitSet(words));out}
 fn bitset_hash_code(h:&Heap,r:Option<usize>)->i32{let id=bitset_check(h,r);match &h.arrays[id]{Array::BitSet(w)=>{let mut hash:u32=0x9e3779b9;for x in w{hash^=(x.wrapping_add(0x9e3779b97f4a7c15)) as u32;hash=hash.wrapping_mul(16777619);hash^=(*x>>32) as u32;hash=hash.wrapping_mul(16777619);}hash as i32},_=>unreachable!()}}
 fn bitset_equals(h:&Heap,r:Option<usize>,other:Option<usize>)->i32{let id=bitset_check(h,r);let Some(o)=other else{return 0};match (&h.arrays[id],h.arrays.get(o)){(Array::BitSet(a),Some(Array::BitSet(b)))=>{let strip=|x:&Vec<u64>|{let mut x=x.clone();while x.last()==Some(&0){x.pop();}x};(strip(a)==strip(b)) as i32},_=>0}}
+fn proxy_no_proxy(h:&mut Heap)->usize{if let Some(id)=h.proxy_no_proxy{return id;}let id=new_arrays_push(h,Array::Proxy(0));h.proxy_no_proxy=Some(id);id}
 fn zip_fs_provider(h:&mut Heap)->usize{if let Some(id)=h.zip_fs_provider{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ZipFsProvider);h.zip_fs_provider=Some(id);id}
 // Proveedor inerte que modela el jdk.zipfs de la JDK: esquema "jar". Nunca abre
 // filesystems; newFileSystem aborta explícitamente donde se use.
@@ -1201,7 +1212,7 @@ fn exception_matches(kind:&str,catch:&str)->bool {
     }
     let mut t=kind;
     loop {
-        let full=match t {"URISyntaxException"=>"java/net/URISyntaxException".to_owned(),"IOException"=>"java/io/IOException".to_owned(),"FileNotFoundException"=>"java/io/FileNotFoundException".to_owned(),"EOFException"=>"java/io/EOFException".to_owned(),"FileSystemException"|"NoSuchFileException"|"AccessDeniedException"=>format!("java/nio/file/{t}"),"UncheckedIOException"=>"java/io/UncheckedIOException".to_owned(),"DateTimeException"=>"java/time/DateTimeException".to_owned(),"InvocationTargetException"=>"java/lang/reflect/InvocationTargetException".to_owned(),"ServiceConfigurationError"=>"java/util/ServiceConfigurationError".to_owned(),"NoSuchElementException"=>"java/util/NoSuchElementException".to_owned(),"ConcurrentModificationException"=>"java/util/ConcurrentModificationException".to_owned(),_=>format!("java/lang/{t}")};
+        let full=match t {"URISyntaxException"=>"java/net/URISyntaxException".to_owned(),"IOException"=>"java/io/IOException".to_owned(),"FileNotFoundException"=>"java/io/FileNotFoundException".to_owned(),"EOFException"=>"java/io/EOFException".to_owned(),"FileSystemException"|"NoSuchFileException"|"AccessDeniedException"=>format!("java/nio/file/{t}"),"UncheckedIOException"=>"java/io/UncheckedIOException".to_owned(),"DateTimeException"=>"java/time/DateTimeException".to_owned(),"InvocationTargetException"=>"java/lang/reflect/InvocationTargetException".to_owned(),"ServiceConfigurationError"=>"java/util/ServiceConfigurationError".to_owned(),"NoSuchElementException"=>"java/util/NoSuchElementException".to_owned(),"ConcurrentModificationException"=>"java/util/ConcurrentModificationException".to_owned(),"MalformedURLException"=>"java/net/MalformedURLException".to_owned(),"ProtocolException"=>"java/net/ProtocolException".to_owned(),"JsonParseException"=>"com/google/gson/JsonParseException".to_owned(),"MalformedInputException"=>"java/nio/charset/MalformedInputException".to_owned(),_=>format!("java/lang/{t}")};
         if full==catch {return true;}
         t=match t {
             "Throwable"=>return false,
@@ -1210,7 +1221,8 @@ fn exception_matches(kind:&str,catch:&str)->bool {
             "InternalError"=>"VirtualMachineError",
             "ExceptionInInitializerError"|"NoClassDefFoundError"=>"LinkageError",
             "NoSuchFileException"|"AccessDeniedException"=>"FileSystemException",
-            "FileSystemException"|"FileNotFoundException"|"EOFException"=>"IOException",
+            "FileSystemException"|"FileNotFoundException"|"EOFException"|"MalformedURLException"|"ProtocolException"|"MalformedInputException"=>"IOException",
+            "JsonParseException"=>"RuntimeException",
             "IOException"|"URISyntaxException"|"RuntimeException"|"ReflectiveOperationException"|"InterruptedException"=>"Exception",
             "ClassNotFoundException"|"NoSuchMethodException"|"InstantiationException"|"IllegalAccessException"|"InvocationTargetException"=>"ReflectiveOperationException",
             "NumberFormatException"=>"IllegalArgumentException",
@@ -1957,7 +1969,7 @@ fn java_properties_load(h:&mut Heap,r:Option<usize>,stream:Option<usize>){
  if continuing||!logical.is_empty(){properties_load_line(h,id,&logical);}
 }
 
-fn property_allowed(k:&[u16])->bool {let log4j=k.len()>=5&&k[..5].iter().zip("log4j".encode_utf16()).all(|(a,b)|(*a|32)==(b|32));log4j||k.iter().copied().eq("max.bg.threads".encode_utf16())||k.starts_with(&[115,108,102,52,106,46])||k.starts_with(&[77,67,95,68,69,66,85,71,95])||k.starts_with(&[105,111,46,110,101,116,116,121,46])}
+fn property_allowed(k:&[u16])->bool {let log4j=k.len()>=5&&k[..5].iter().zip("log4j".encode_utf16()).all(|(a,b)|(*a|32)==(b|32));log4j||k.iter().copied().eq("max.bg.threads".encode_utf16())||k.starts_with(&[115,108,102,52,106,46])||k.starts_with(&[77,67,95,68,69,66,85,71,95])||k.starts_with(&[105,111,46,110,101,116,116,121,46])||k.starts_with(&[109,105,110,101,99,114,97,102,116,46,97,112,105,46])}
 fn property_key(h:&Heap,r:Option<usize>)->Vec<u16> {
     let k=string_units(h,r).to_vec();if k.is_empty(){raise("IllegalArgumentException","");}
     if !property_allowed(&k){error("propiedad JVM no soportada: solo log4j*, slf4j.*, MC_DEBUG_*, io.netty.* o max.bg.threads");}k
@@ -2025,9 +2037,181 @@ fn class_get_name(h:&mut Heap,r:Option<usize>)->usize {
     let id=array_id(h,r);let name=match h.arrays[id]{Array::Class(n)=>n,_=>panic!("se esperaba Class")};
     let units:Vec<u16>=name.replace('/',".").encode_utf16().collect();string_literal(h,&units)
 }
-// Perfil monohilo: future completado normalmente, sin callbacks ni cancelación.
-fn completed_future_new(h:&mut Heap,value:Option<usize>)->usize{if let Some(id)=value {let _=array_id(h,Some(id));}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::CompletedFuture(value));id}
-fn completed_future_value(h:&Heap,r:Option<usize>)->Option<usize>{let id=array_id(h,r);match h.arrays[id]{Array::CompletedFuture(value)=>value,_=>error("CompletableFuture: solo completado normal del perfil")}}
+// Estados Java del perfil monohilo: pendientes bloquean al que se una (error audible),
+// los normales se entregan, completar declara transición pendiente→terminado como Java.
+fn completed_future_state_new(h:&mut Heap,pending:bool,value:Option<usize>)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::CompletableFuture(FutureState{pending,value}));id}
+fn completed_future_new(h:&mut Heap,value:Option<usize>)->usize{if let Some(id)=value {let _=array_id(h,Some(id));}completed_future_state_new(h,false,value)}
+fn pending_future_new(h:&mut Heap)->usize{completed_future_state_new(h,true,None)}
+fn pending_future_init(h:&Heap,r:Option<usize>){let id=array_id(h,r);if !matches!(h.arrays[id],Array::CompletableFuture(FutureState{pending:true,..})){error("CompletableFuture pendiente inválido");}}
+fn gson_builder_init(h:&Heap,r:Option<usize>){let id=array_id(h,r);if !matches!(h.arrays[id],Array::GsonBuilder(_)){error("GsonBuilder pendiente inválido");}}
+fn cache_builder_init(h:&Heap,r:Option<usize>){let id=array_id(h,r);if !matches!(h.arrays[id],Array::CacheBuilder(_)){error("CacheBuilder pendiente inválido");}}
+fn completed_future_value(h:&Heap,r:Option<usize>)->Option<usize>{let id=array_id(h,r);match &h.arrays[id]{Array::CompletableFuture(state)=>{if state.pending {error("CompletableFuture.join: el futuro sigue pendiente en el perfil monohilo");}state.value},_=>error("CompletableFuture concreto no soportado")}}
+fn completed_future_complete(h:&mut Heap,r:Option<usize>,value:Option<usize>)->i32{if let Some(id)=value {let _=array_id(h,Some(id));}let id=array_id(h,r);match &mut h.arrays[id]{Array::CompletableFuture(state)=>{let was=state.pending;state.pending=false;state.value=value;was as i32},_=>error("CompletableFuture concreto no soportado")}}
+fn completed_future_is_done(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match &h.arrays[id]{Array::CompletableFuture(state)=>(!state.pending) as i32,_=>error("CompletableFuture concreto no soportado")}}
+fn completed_future_get_now(h:&Heap,r:Option<usize>,fallback:Option<usize>)->Option<usize>{let id=array_id(h,r);match &h.arrays[id]{Array::CompletableFuture(state)=>{if state.pending {fallback} else {state.value}},_=>error("CompletableFuture concreto no soportado")}}
+fn timeunit_to_nanos(unit:i32)->i64{let mult:i64=match unit {0=>1,1=>1_000,2=>1_000_000,3=>1_000_000_000,4=>60_000_000_000,5=>3_600_000_000_000,_=>86_400_000_000_000};mult}
+// ScheduledThreadPoolExecutor: el perfil no tiene hilos; execute() corre inline
+// (Java también corre sin retardo cero) y schedule() encola con la fecha real; el
+// drenaje ocurre en scheduled_pool_poll, que la máquina de ticks invoca una vez por ciclo.
+fn scheduled_future_new(h:&mut Heap,done:bool)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ScheduledFuture(done));id}
+fn scheduled_future_is_done(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match h.arrays[id]{Array::ScheduledFuture(done)=>done as i32,_=>error("ScheduledFuture concreto no soportado")}}
+fn scheduled_thread_pool_new(h:&mut Heap,core_pool_size:i32,factory:Option<usize>)->usize{if core_pool_size<0{raise("IllegalArgumentException","corePoolSize");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}array_id(h,factory);let id=h.arrays.len();h.arrays.push(Array::ScheduledThreadPool(ScheduledThreadPoolExecutor{core_pool_size,factory,pending:Vec::new()}));id}
+fn scheduled_pool_id(h:&Heap,r:Option<usize>)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::ScheduledThreadPool(_)){error("ScheduledExecutorService no soportado: receptor concreto");}id}
+fn scheduled_pool_schedule(h:&mut Heap,pool:Option<usize>,runnable:Option<usize>,delay_ns:i64,dispatch:fn(&mut Heap,Option<usize>))->usize{
+    let pool=scheduled_pool_id(h,pool);let task=array_id(h,runnable);let fut=scheduled_future_new(h,false);
+    let delay=std::time::Duration::from_nanos(delay_ns.max(0) as u64);
+    let due=std::time::Instant::now()+delay;
+    match &mut h.arrays[pool]{Array::ScheduledThreadPool(p)=>{p.pending.push(ScheduledTask{runnable:task,future:fut,due,dispatch});},_=>unreachable!()}
+    scheduled_pool_poll(h);
+    fut
+}
+fn scheduled_pool_poll(h:&mut Heap){
+    let len=h.arrays.len();
+    for pool in 0..len{
+        let now=std::time::Instant::now();
+        let pending=match &mut h.arrays[pool]{Array::ScheduledThreadPool(p)=>std::mem::take(&mut p.pending),_=>continue};
+        let mut keep=Vec::with_capacity(pending.len());
+        for task in pending{
+            if task.due<=now{
+                if let Array::ScheduledFuture(done)=&mut h.arrays[task.future]{*done=true;}
+                let _opaque=call_guard("<jdk-callback>");
+                (task.dispatch)(h,Some(task.runnable));
+            } else {keep.push(task);}
+        }
+        if let Array::ScheduledThreadPool(p)=&mut h.arrays[pool]{p.pending=keep;}
+    }
+}
+// java.net.URL — parseo cerrado del perfil: http y https con autoridad host[:puerto].
+// Sin red en el constructor (como Java), y getters reales; los demás accesos a la
+// conexión de red fallan en voz alta como JVM sin conectividad.
+fn url_parse(units:&[u16])->UrlParts{
+    let text:String = String::from_utf16(units).unwrap_or_else(|_|raise("MalformedURLException","UTF-16 no representable"));
+    let fail=|msg:&str|->UrlParts{raise("MalformedURLException",msg)};
+    let sep=match text.find("://"){Some(i)=>i,None=>return fail("unknown protocol: separador de protocolo ausente")};
+    let scheme=&text[..sep];
+    if scheme.is_empty()||!scheme.chars().next().unwrap().is_ascii_alphabetic()||!scheme.chars().all(|c|c.is_ascii_lowercase()||c.is_ascii_digit()||matches!(c,'+'|'-'|'.')){return fail("unknown protocol");}
+    if scheme!="http"&&scheme!="https"{return fail("protocol not supported: solo http y https");}
+    let rest=&text[sep+3..];
+    let auth_end=rest.find(['/','?','#']).unwrap_or(rest.len());
+    let authority=&rest[..auth_end];
+    if authority.is_empty(){return fail("empty host");}
+    let (hostport,_userinfo) = match authority.rfind('@'){Some(i)=>(&authority[i+1..],Some(&authority[..i])),None=>(&authority[..],None)};
+    if hostport.is_empty(){return fail("empty host");}
+    let (host,port) = if let Some(rest2)=hostport.strip_prefix('['){
+        let end=match rest2.find(']'){Some(i)=>i,None=>return fail("malformed IPv6 literal")};
+        let host=&rest2[..end];
+        let after=&rest2[end+1..];
+        let port=if let Some(p)=after.strip_prefix(':'){p.parse::<i32>().unwrap_or_else(|_|raise("MalformedURLException","port"))}else if after.is_empty(){-1}else{return fail("unexpected characters after IPv6 literal")};
+        (host.to_string(),port)
+    } else {
+        match hostport.rfind(':'){Some(i)=>{let host=&hostport[..i];let p=&hostport[i+1..];if p.is_empty(){return fail("empty port")}if !p.chars().all(|c|c.is_ascii_digit()){return fail("port")}let port=p.parse::<i32>().unwrap_or_else(|_|raise("MalformedURLException","port"));if port>65535{return fail("port out of range")}(host.to_string(),port)},None=>(hostport.to_string(),-1)}
+    };
+    if host.is_empty(){return fail("empty host");}
+    if host.chars().any(|c|c.is_whitespace()||(c as u32)<0x20){return fail("invalid host");}
+    if host.split('.').any(|label|label.is_empty())&&!host.starts_with('['){return fail("malformed host: etiqueta vacía");}
+    let remainder=&rest[auth_end..];
+    let (file,query) = match remainder.find(['?','#']){
+        Some(i) if remainder[i..].starts_with('?')=>{
+            let path=&remainder[..i];
+            let q_end=remainder[i+1..].find('#').map(|j|i+1+j).unwrap_or(remainder.len());
+            (path.to_string(),Some(remainder[i+1..q_end].to_string()))
+        },
+        Some(i)=>(remainder[..i].to_string(),None),
+        None=>(remainder.to_string(),None),
+    };
+    UrlParts{scheme:scheme.to_string(),host,port,file,query}
+}
+fn url_pending_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Url(None));id}
+fn url_init(h:&mut Heap,r:Option<usize>,value:Option<usize>){let v=string_units(h,value);let _=url_parse(&v);let id=array_id(h,r);match &mut h.arrays[id]{Array::Url(slot)=>{if slot.is_some(){error("URL pendiente ya inicializada");}*slot=Some(v);},_=>error("URL pendiente inválida")}}
+fn url_units(h:&Heap,r:Option<usize>)->Vec<u16>{let id=array_id(h,r);match h.arrays.get(id){Some(Array::Url(Some(units)))=>units.clone(),Some(Array::Url(None))=>error("URL concreto no inicializado"),_=>error("URL concreto no soportado")}}
+fn url_from_string(h:&mut Heap,units:&[u16])->usize{let _=url_parse(units);if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Url(Some(units.to_vec())));id}
+fn url_get_protocol(h:&mut Heap,r:Option<usize>)->usize{let units=url_units(h,r);let text=String::from_utf16(&units).unwrap_or_default();let scheme=url_parse(&units).scheme;let _=text;new_string(h,scheme.encode_utf16().collect())}
+fn url_get_host(h:&mut Heap,r:Option<usize>)->usize{let units=url_units(h,r);new_string(h,url_parse(&units).host.encode_utf16().collect())}
+fn url_get_port(h:&Heap,r:Option<usize>)->i32{let units=url_units(h,r);url_parse(&units).port}
+fn url_get_file(h:&mut Heap,r:Option<usize>)->usize{let units=url_units(h,r);let parts=url_parse(&units);let mut file=parts.file;if let Some(q)=parts.query{file.push('?');file.push_str(&q);}new_string(h,file.encode_utf16().collect())}
+fn url_get_query(h:&mut Heap,r:Option<usize>)->Option<usize>{let units=url_units(h,r);url_parse(&units).query.map(|q|new_string(h,q.encode_utf16().collect()))}
+fn url_to_string(h:&mut Heap,r:Option<usize>)->usize{let units=url_units(h,r);new_string(h,units)}
+fn url_encoder_encode(h:&mut Heap,r:Option<usize>,_charset:Option<usize>)->usize{
+    let units=string_units(h,r);let mut out:Vec<u8>=Vec::with_capacity(units.len()*3);
+    let push_hex=|out:&mut Vec<u8>,b:u8|{out.push(37);let hi=b>>4;let lo=b&0xf;out.push(if hi<10 {b'0'+hi} else {b'A'+(hi-10)});out.push(if lo<10 {b'0'+lo} else {b'A'+(lo-10)});};
+    let decoded=String::from_utf16(&units).unwrap_or_else(|_|error("URLEncoder: entrada UTF-16 inválida"));
+    for ch in decoded.chars(){
+        let cp:u32=ch as u32;
+        if (0x41..=0x5a).contains(&cp)||(0x61..=0x7a).contains(&cp)||(0x30..=0x39).contains(&cp)||matches!(cp,42|46|45|95){out.push(cp as u8);continue;}
+        if cp==32{out.push(43);continue;}
+        let mut buf=[0u8;4];let enc=ch.encode_utf8(&mut buf);
+        for &b in enc.as_bytes(){push_hex(&mut out,b);}
+    }
+    let out_units:Vec<u16>=out.iter().map(|b|*b as u16).collect();
+    new_string(h,out_units)
+}
+fn http_connection_new(h:&mut Heap,url:Option<usize>)->usize{let url_id=array_id(h,url);if !matches!(h.arrays.get(url_id),Some(Array::Url(_))){error("HttpURLConnection: URL concreto no soportado");}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::HttpUrlConnection(HttpUrlConnection{url:url_id,method:"GET",request_properties:Vec::new(),connect_timeout:0,read_timeout:0,use_caches:true,do_output:false}));id}
+fn http_connection_id(h:&Heap,r:Option<usize>)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::HttpUrlConnection(_)){error("HttpURLConnection concreto no soportado");}id}
+fn http_connection_set_request_method(h:&mut Heap,r:Option<usize>,method:Option<usize>){let id=http_connection_id(h,r);let units=string_units(h,method);let name:String=match units.iter().map(|u|*u as u8 as char).collect::<String>().as_str(){"GET"=>"GET","POST"=>"POST","HEAD"=>"HEAD","PUT"=>"PUT","DELETE"=>"DELETE","OPTIONS"=>"OPTIONS","TRACE"=>"TRACE","PATCH"=>"PATCH",_=>raise("ProtocolException","método no soportado")};match &mut h.arrays[id]{Array::HttpUrlConnection(c)=>{c.method=name;},_=>unreachable!()}}
+fn http_connection_set_request_property(h:&mut Heap,r:Option<usize>,key:Option<usize>,value:Option<usize>){let id=http_connection_id(h,r);let k=string_units(h,key);let v=string_units(h,value);let k:String=k.iter().map(|u|*u as char).collect();let v:String=v.iter().map(|u|*u as char).collect();match &mut h.arrays[id]{Array::HttpUrlConnection(c)=>{c.request_properties.push((k,v));},_=>unreachable!()}}
+fn http_connection_set_use_caches(h:&mut Heap,r:Option<usize>,v:bool){let id=http_connection_id(h,r);match &mut h.arrays[id]{Array::HttpUrlConnection(c)=>c.use_caches=v,_=>unreachable!()}}
+fn http_connection_set_do_output(h:&mut Heap,r:Option<usize>,v:bool){let id=http_connection_id(h,r);match &mut h.arrays[id]{Array::HttpUrlConnection(c)=>c.do_output=v,_=>unreachable!()}}
+fn http_connection_set_connect_timeout(h:&mut Heap,r:Option<usize>,v:i32){let id=http_connection_id(h,r);match &mut h.arrays[id]{Array::HttpUrlConnection(c)=>c.connect_timeout=v,_=>unreachable!()}}
+fn http_connection_set_read_timeout(h:&mut Heap,r:Option<usize>,v:i32){let id=http_connection_id(h,r);match &mut h.arrays[id]{Array::HttpUrlConnection(c)=>c.read_timeout=v,_=>unreachable!()}}
+// El perfil cerrado carece de pila TLS/HTTP: ninguna conexión abre socket y toda
+// negociación falla con IOException audible (como una JVM aislada). Los endpoints
+// seguros de Minecraft son HTTPS y, por tanto, siempre fallan aquí.
+fn http_connection_refuse(h:&mut Heap,_r:Option<usize>) -> ! {raise("IOException","connection refused: el perfil AOT cerrado no implementa HTTP/TLS; la JVM aislada también fallaría")}
+fn http_connection_disconnect(_h:&mut Heap,r:Option<usize>){let _=r;()}
+fn http_connection_get_url(h:&mut Heap,r:Option<usize>)->usize{let id=http_connection_id(h,r);let url=match &h.arrays[id]{Array::HttpUrlConnection(c)=>c.url,_=>unreachable!()};url}
+fn gson_builder_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::GsonBuilder(GsonBuilderState{adapters:Vec::new(),hierarchy:Vec::new()}));id}
+fn gson_builder_id(h:&Heap,r:Option<usize>)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::GsonBuilder(_)){error("GsonBuilder concreto no soportado");}id}
+fn gson_builder_register(h:&mut Heap,r:Option<usize>,ty:Option<usize>,adapter:Option<usize>,hierarchy:bool)->usize{let id=gson_builder_id(h,r);let adapter_id=array_id(h,adapter);let name=match ty.and_then(|t|h.arrays.get(t)){Some(Array::Class(n))=>n.to_string(),Some(Array::Obj(_,_))=>error("Class concreto no soportado"),None=>error("registrador gson: tipo nulo"),_=>error("registrador gson: receptor de tipo no soportado")};match &mut h.arrays[id]{Array::GsonBuilder(state)=>{if hierarchy{state.hierarchy.push((name,adapter_id));}else{state.adapters.push((name,adapter_id));}},_=>unreachable!()}id}
+fn gson_builder_create(h:&mut Heap,r:Option<usize>)->usize{let id=gson_builder_id(h,r);let state=match &h.arrays[id]{Array::GsonBuilder(state)=>GsonBuilderState{adapters:state.adapters.clone(),hierarchy:state.hierarchy.clone()},_=>unreachable!()};if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let gid=h.arrays.len();h.arrays.push(Array::Gson(state));gid}
+fn gson_from_json_unsupported(h:&mut Heap,_r:Option<usize>) -> ! {raise("JsonParseException","gson: fromJson no está modelado en el perfil cerrado; la caché de perfiles vacía de fábrica nunca pasa por aquí")}
+fn cache_builder_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::CacheBuilder(LoadingCacheState{expiry_ns:None,expire_on_access:false,max_size:None,loader:None,loader_dispatch:None,entries:Vec::new()}));id}
+fn cache_builder_id(h:&Heap,r:Option<usize>)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::CacheBuilder(_)){error("CacheBuilder concreto no soportado");}id}
+fn cache_expire_internal(h:&mut Heap,r:Option<usize>,ns:i64,on_access:bool)->usize{let id=cache_builder_id(h,r);if ns<0{raise("IllegalArgumentException","duration must be positive");}match &mut h.arrays[id]{Array::CacheBuilder(state)=>{state.expiry_ns=Some(ns as u64);state.expire_on_access=on_access;},_=>unreachable!()}id}
+fn cache_expire_after_write(h:&mut Heap,r:Option<usize>,ns:i64)->usize{cache_expire_internal(h,r,ns,false)}
+fn cache_expire_after_access(h:&mut Heap,r:Option<usize>,ns:i64)->usize{cache_expire_internal(h,r,ns,true)}
+fn cache_maximum_size(h:&mut Heap,r:Option<usize>,max:i64)->usize{let id=cache_builder_id(h,r);if max<0{raise("IllegalArgumentException","maximumSize must not be negative");}match &mut h.arrays[id]{Array::CacheBuilder(state)=>state.max_size=Some(max as u64),_=>unreachable!()}id}
+fn cache_build(h:&mut Heap,r:Option<usize>,loader:Option<usize>,dispatch:fn(&mut Heap,Option<usize>,Option<usize>)->Option<usize>)->usize{let id=cache_builder_id(h,r);array_id(h,loader);let state=match &h.arrays[id]{Array::CacheBuilder(state)=>LoadingCacheState{expiry_ns:state.expiry_ns,expire_on_access:state.expire_on_access,max_size:state.max_size,loader,loader_dispatch:Some(dispatch),entries:Vec::new()},_=>unreachable!()};if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let cid=h.arrays.len();h.arrays.push(Array::LoadingCache(state));cid}
+fn cache_entry_eq(h:&Heap,a:usize,b:usize)->bool{if a==b{return true;}match (h.arrays.get(a),h.arrays.get(b)){(Some(Array::Str(x)),Some(Array::Str(y)))=>x==y,_=>false}}
+fn loading_cache_get(h:&mut Heap,r:Option<usize>,key:Option<usize>)->Option<usize>{
+    let id=array_id(h,r);let kid=array_id(h,key);
+    let now=std::time::Instant::now();
+    let ttl=match &h.arrays[id]{Array::LoadingCache(state)=>state.expiry_ns,_=>error("LoadingCache concreto no soportado")};
+    let mut loader=None;let mut max=None;let mut expire_on_access=false;
+    if let Array::LoadingCache(state)=&mut h.arrays[id]{
+        loader=state.loader;max=state.max_size;expire_on_access=state.expire_on_access;
+        let ttl_i=ttl.map(|t|t as i128).unwrap_or(i128::MAX);
+        let mut i=0;
+        while i<state.entries.len(){
+            let fresh=ttl_i==i128::MAX||now.duration_since(state.entries[i].stored).as_nanos()<ttl_i as u128;
+            if !fresh{state.entries.remove(i);continue;}
+            i+=1;
+        }
+        for entry in &mut state.entries{
+            if cache_entry_eq(h,entry.key,kid){entry.accessed=now;return Some(entry.value);}
+        }
+    }
+    let loader=loader.unwrap_or_else(||error("LoadingCache.get: la caché no tiene CacheLoader"));
+    let dispatch=match &h.arrays[id]{Array::LoadingCache(state)=>state.loader_dispatch.unwrap(),_=>unreachable!()};
+    let _opaque=call_guard("<jdk-callback>");
+    let loaded=(dispatch)(h,Some(loader),Some(kid));
+    let value=loaded.unwrap_or_else(||raise("NullPointerException","CacheLoader devuelto null"));
+    if let Array::LoadingCache(state)=&mut h.arrays[id]{
+        state.entries.push(CacheEntry{key:kid,value,stored:now,accessed:now});
+        if let Some(max)=max{while state.entries.len() as u64>max{let mut oldest=0usize;for i in 1..state.entries.len(){if state.entries[i].accessed<state.entries[oldest].accessed{oldest=i;}}state.entries.remove(oldest);}}
+    }
+    let _=expire_on_access;
+    Some(value)
+}
+fn lists_new_array_list(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::List(Vec::new(),0));id}
+fn lists_reverse(h:&mut Heap,r:Option<usize>)->usize{let id=array_id(h,r);let items:Vec<Option<usize>>=match &h.arrays[id]{Array::List(v,_)=>v.clone().into_iter().rev().collect(),_=>error("Lists.reverse: receptor no soportado")};if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::List(items,0));out}
+fn files_new_reader(h:&mut Heap,file:Option<usize>,charset:Option<usize>)->usize{
+    let id=array_id(h,file);
+    let path=match &h.arrays[id]{Array::File(Some(s),_)=>s.clone(),_=>error("Files.newReader: File no inicializado")};
+    let cid=array_id(h,charset);if !matches!(h.arrays.get(cid),Some(Array::Utf8Charset)){error("Files.newReader: solo UTF-8 verificado");}
+    let bytes=match std::fs::read(if path.is_empty(){"."}else{&path}){Ok(b)=>b,Err(e)=>{let kind=match e.kind(){std::io::ErrorKind::NotFound=>"FileNotFoundException",std::io::ErrorKind::PermissionDenied=>"AccessDeniedException",_=>error(&format!("Files.newReader: E/S no traducida: {e}"))};let msg=new_string(h,path.encode_utf16().collect());let ex=new_exception(h,kind);init_exception(h,Some(ex),kind,Some(msg));throw_ref(h,Some(ex));}};
+    let units=match std::str::from_utf8(&bytes){Ok(s)=>s.encode_utf16().collect::<Vec<u16>>(),Err(_)=>{let ex=new_exception(h,"MalformedInputException");init_exception(h,Some(ex),"MalformedInputException",None);throw_ref(h,Some(ex));}};
+    if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let rid=h.arrays.len();h.arrays.push(Array::Reader(None,Some(units),0,false));rid
+}
 // AtomicReference solo para ejecución monohilo; no proporciona memoria concurrente.
 // Solo monohilo; la versión con contención requiere el heap concurrente futuro.
 fn rw_lock_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ReadWriteLock(0,0,None,None));id}
@@ -2061,6 +2245,8 @@ fn atomic_ref_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite ex
 fn atomic_ref_get(h:&Heap,r:Option<usize>)->Option<usize>{let id=array_id(h,r);match h.arrays[id]{Array::AtomicRef(v)=>v,_=>error("AtomicReference no soportada")}}
 fn atomic_ref_set(h:&mut Heap,r:Option<usize>,v:Option<usize>){let id=array_id(h,r);match &mut h.arrays[id]{Array::AtomicRef(value)=>*value=v,_=>error("AtomicReference no soportada")}}
 fn duration_from_millis(h:&mut Heap,m:i64)->usize{if m==0{if let Some(id)=h.duration_zero{return id;}}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Duration(m.div_euclid(1000),(m.rem_euclid(1000)*1_000_000) as i32));if m==0{h.duration_zero=Some(id);}id}
+fn duration_from_seconds(h:&mut Heap,s:i64)->usize{if s==0{if let Some(id)=h.duration_zero{return id;}}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Duration(s,0));id}
+fn duration_from_minutes(h:&mut Heap,m:i64)->usize{let s=match m.checked_mul(60){Some(v)=>v,None=>raise("ArithmeticException","")};duration_from_seconds(h,s)}
 fn duration_parts(h:&Heap,r:Option<usize>)->(i64,i32){let id=array_id(h,r);match h.arrays[id]{Array::Duration(s,n)=>(s,n),_=>error("Duration concreto no soportado")}}
 fn duration_nanos(h:&Heap,r:Option<usize>)->i64{let (s,n)=duration_parts(h,r);let value=(s as i128)*1_000_000_000i128+n as i128;i64::try_from(value).unwrap_or_else(|_|raise("ArithmeticException",""))}
 fn duration_millis(h:&Heap,r:Option<usize>)->i64{let (s,n)=duration_parts(h,r);let value=((s as i128)*1_000_000_000+n as i128)/1_000_000;i64::try_from(value).unwrap_or_else(|_|raise("ArithmeticException",""))}
@@ -2111,7 +2297,7 @@ fn class_as_subclass(h:&mut Heap,source:Option<usize>,target:Option<usize>,relat
 fn object_get_class(h:&mut Heap,r:Option<usize>)->usize {
     let id=array_id(h,r);let name=match &h.arrays[id]{
         Array::Obj(n,_)|Array::SharedObj(n,_)|Array::LocalObj(n,_,_)=>*n,Array::Str(_)=>"java/lang/String",Array::Boolean(_)=>"java/lang/Boolean",Array::Integer(_)=>"java/lang/Integer",Array::Short(_)=>"java/lang/Short",Array::Double(_)=>"java/lang/Double",Array::Builder(_)=>"java/lang/StringBuilder",
-        Array::CompletedFuture(_)=>"java/util/concurrent/CompletableFuture",Array::TimeUnit(_)=>"java/util/concurrent/TimeUnit",Array::RuntimePermission(_)=>"java/lang/RuntimePermission",Array::Stdout|Array::Stderr=>"java/io/PrintStream",Array::Class(_)=>"java/lang/Class",Array::Local(_)=>"java/lang/ThreadLocal",Array::ForkJoinPool(_)=>"java/util/concurrent/ForkJoinPool",Array::ThreadPoolExecutor(_)=>"java/util/concurrent/ThreadPoolExecutor",
+        Array::CompletableFuture(_)=>"java/util/concurrent/CompletableFuture",Array::ScheduledThreadPool(_)=>"java/util/concurrent/ScheduledThreadPoolExecutor",Array::ScheduledFuture(_)=>"java/util/concurrent/ScheduledFuture",Array::Url(_)=>"java/net/URL",Array::HttpUrlConnection(_)=>"java/net/HttpURLConnection",Array::GsonBuilder(_)=>"com/google/gson/GsonBuilder",Array::Gson(_)=>"com/google/gson/Gson",Array::CacheBuilder(_)=>"com/google/common/cache/CacheBuilder",Array::LoadingCache(_)=>"com/google/common/cache/LoadingCache",Array::TimeUnit(_)=>"java/util/concurrent/TimeUnit",Array::RuntimePermission(_)=>"java/lang/RuntimePermission",Array::Stdout|Array::Stderr=>"java/io/PrintStream",Array::Class(_)=>"java/lang/Class",Array::Local(_)=>"java/lang/ThreadLocal",Array::ForkJoinPool(_)=>"java/util/concurrent/ForkJoinPool",Array::ThreadPoolExecutor(_)=>"java/util/concurrent/ThreadPoolExecutor",
         Array::Map(_,_,_)=>"java/util/concurrent/ConcurrentHashMap",Array::Queue(_)=>"java/util/concurrent/LinkedBlockingQueue",Array::ConcurrentQueue(_)=>"java/util/concurrent/ConcurrentLinkedQueue",Array::Deque(_)=>"java/util/ArrayDeque",Array::HashMap(_)=>"java/util/HashMap",Array::LinkedMap(_,_)=>"java/util/LinkedHashMap",Array::TreeMap(_,_)=>"java/util/TreeMap",Array::Character(_)=>"java/lang/Character",Array::List(_,_)=>"java/util/ArrayList",Array::Set(_,_)=>"java/util/LinkedHashSet",Array::ImmutableSet(_)=>"java/util/ImmutableSet",Array::HashSet(_,_)=>"java/util/HashSet",
         Array::Z(_)=>"[Z",Array::B(_)=>"[B",Array::C(_)=>"[C",Array::S(_)=>"[S",Array::I(_)=>"[I",Array::J(_)=>"[J",Array::F(_)=>"[F",Array::D(_)=>"[D",Array::Strings(_)=>"[Ljava/lang/String;",Array::Refs(13,_)=>"[Ljava/lang/Object;",Array::Refs(14,_)=>"[Ljava/lang/Class;",
         Array::Exception(k,_,_) if k.contains('/')=>*k,
