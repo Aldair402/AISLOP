@@ -2305,6 +2305,14 @@ impl NumericCompiler<'_> {
                         lambda.impl_owner.as_str(),
                         lambda.impl_name.as_str(),
                         lambda.impl_desc.as_str(),
+                    ) == (9, "java/util/List", "add", "(Ljava/lang/Object;)Z")
+                    {
+                        format!("collection_add(heap,{}, {}) as i32", actual[0], actual[1])
+                    } else if (
+                        lambda.impl_kind,
+                        lambda.impl_owner.as_str(),
+                        lambda.impl_name.as_str(),
+                        lambda.impl_desc.as_str(),
                     ) == (
                         9,
                         "java/lang/StackWalker$StackFrame",
