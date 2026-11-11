@@ -2165,6 +2165,25 @@ fn java_properties_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Lími
 fn java_properties_id(h:&Heap,r:Option<usize>)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::Properties(_)){error("Properties concreto no soportado");}id}
 fn java_properties_entryset(h:&mut Heap,r:Option<usize>)->usize{let id=java_properties_id(h,r);if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::PropertiesEntries(id));out}
 fn properties_empty_iter(h:&Heap,id:usize){match &h.arrays[id]{Array::Properties(map) if map.is_empty()=>{},_=>error("Properties.entrySet: iteración no vacía o modificada no soportada")}}
+fn java_properties_key_set(h:&mut Heap,r:Option<usize>)->usize{
+    // Solo claves del perfil explícito; no se fabrican propiedades del JDK (java.version, etc.).
+    let id=java_properties_id(h,r);
+    let keys:Vec<Vec<u16>>=match &h.arrays[id]{Array::Properties(map)=>map.keys().cloned().collect(),_=>unreachable!()};
+    if h.elements.checked_add(keys.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
+    h.elements+=keys.len();
+    if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}
+    let mut out=Vec::with_capacity(keys.len());
+    for key in keys{let s=new_string(h,key);out.push(Some(s));}
+    if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}
+    let id=h.arrays.len();h.arrays.push(Array::KeySet(out,0));id
+}
+fn system_properties(h:&mut Heap)->usize{
+    // Instantánea de las propiedades explícitas MC_AOT_JAVA_PROPERTIES; no simula la JVM completa.
+    properties_init(h);
+    let props=h.properties.as_ref().unwrap().clone();
+    if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}
+    let id=h.arrays.len();h.arrays.push(Array::Properties(props));id
+}
 fn java_properties_remove(h:&mut Heap,r:Option<usize>,key:Option<usize>)->Option<usize>{let k=match key{None=>raise("NullPointerException",""),Some(k) if !matches!(h.arrays.get(k),Some(Array::Str(_)))=>raise("ClassCastException","java/util/Properties clave no String"),Some(k)=>string_units(h,Some(k)).to_vec()};let id=java_properties_id(h,r);match &mut h.arrays[id]{Array::Properties(map)=>map.remove(&k),_=>unreachable!()}}
 fn java_properties_get(h:&Heap,r:Option<usize>,key:Option<usize>,fallback:Option<usize>)->Option<usize>{let id=java_properties_id(h,r);let key=string_units(h,key);match &h.arrays[id]{Array::Properties(map)=>map.get(key).copied().or(fallback),_=>unreachable!()}}
 fn java_properties_set(h:&mut Heap,r:Option<usize>,key:Option<usize>,value:Option<usize>)->Option<usize>{let id=java_properties_id(h,r);let key=string_units(h,key).to_vec();let value=value.unwrap_or_else(||raise("NullPointerException",""));let _=string_units(h,Some(value));match &mut h.arrays[id]{Array::Properties(map)=>map.insert(key,value),_=>unreachable!()}}
