@@ -1485,6 +1485,22 @@ fn exception_matches(kind:&str,catch:&str)->bool {
         };
     }
 }
+fn print_stack_trace(h:&Heap,r:Option<usize>) {
+    // No hay frames Java reales (archivo/línea/método) en el perfil; se imprime
+    // de forma honesta la cabecera con el tipo y el mensaje, sin migaja inventada.
+    match r {
+        None=>eprintln!("Exception in thread \"main\" java.lang.NullPointerException"),
+        Some(id)=>{
+            if id>=h.arrays.len() {eprintln!("Exception in thread \"main\" <referencia inválida>");return;}
+            match &h.arrays[id] {
+                Array::Exception(kind,message,_)=>{
+                    if message.is_empty(){eprintln!("Exception in thread \"main\" {kind}")}else{eprintln!("Exception in thread \"main\" {kind}: {message}")}
+                }
+                _=>eprintln!("Exception in thread \"main\" <receptor no es un Throwable del perfil>"),
+            }
+        }
+    }
+}
 fn run_java(f:impl FnOnce()) {
     let old=std::panic::take_hook();
     std::panic::set_hook(Box::new(move |info| {if !info.payload().is::<JException>() {old(info)}}));
