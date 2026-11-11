@@ -296,7 +296,7 @@ enum Array { Z(Vec<bool>), B(Vec<i8>), C(Vec<u16>), S(Vec<i16>), I(Vec<i32>), J(
 impl Array {
     fn len(&self)->usize {match self {Self::Z(v)=>v.len(),Self::B(v)=>v.len(),Self::C(v)=>v.len(),Self::S(v)=>v.len(),Self::I(v)=>v.len(),Self::J(v)=>v.len(),Self::F(v)=>v.len(),Self::D(v)=>v.len(),Self::Strings(v)=>v.len(),Self::Refs(_,v)=>v.len(),Self::ProjectRefs(_,v)=>v.len(),Self::SharedRefs(_,a)=>a.slots.lock().map(|s|s.len()).unwrap_or(0),_=>panic!("se esperaba array")}}
 }
-#[derive(Default)] struct Heap { bridge_owner:std::sync::Arc<()>, arrays:Vec<Array>, elements:usize, fields:Vec<V>, interfaces:&'static [(&'static str,&'static str)], init_states:Vec<u8>, intern:std::collections::HashMap<Vec<u16>,usize>, stdout:Option<usize>, stderr:Option<usize>, properties:Option<std::collections::HashMap<Vec<u16>,usize>>, classes:std::collections::HashMap<&'static str,usize>, simple_names:std::collections::HashMap<&'static str,usize>, monitors:std::collections::HashMap<usize,usize>, app_loader:Option<usize>, platform_loader:Option<usize>, context_loader:Option<Option<usize>>, time_units:[Option<usize>;7], enum_values:std::collections::HashMap<usize,(Option<usize>,i32)>, enum_directories:std::collections::HashMap<&'static str,Vec<(usize,usize)>>, causes:std::collections::HashMap<usize,usize>, suppressed:std::collections::HashMap<usize,Vec<usize>>, map_views:std::collections::HashMap<usize,usize>, booleans:[Option<usize>;2], parents:std::collections::HashMap<&'static str,&'static str>, exception_messages:std::collections::HashMap<usize,Option<usize>>, uri_syntax:std::collections::HashMap<usize,(usize,usize,i32)>, uri_schemes:std::collections::HashMap<usize,usize>, uri_paths:std::collections::HashMap<usize,usize>, stack_option:Option<usize>, default_stack_walker:Option<usize>, duration_zero:Option<usize>, integers:std::collections::HashMap<i32,usize>, longs:std::collections::HashMap<i64,usize>, bytes:std::collections::HashMap<i8,usize>, shorts:std::collections::HashMap<i16,usize>, characters:std::collections::HashMap<u16,usize>, tree_entry_views:std::collections::HashMap<usize,usize>, active_maps:Vec<usize>, identity_function:Option<usize>, iso_instant:Option<usize>, root_locale:Option<usize>, decimal_symbols_root:Option<usize>, hex_default:Option<usize>, hex_upper:Option<usize>, builder_caps:std::collections::HashMap<usize,(i32,bool)>, optional_empty:Option<usize>, utf8_charset:Option<usize>, empty_map:Option<usize>, empty_list:Option<usize>, empty_set:Option<usize>, zip_fs_provider:Option<usize>, proxy_no_proxy:Option<usize>, immutable_empty:Option<usize>, empty_iterator:Option<usize>, current_process:Option<usize>, runtime_singleton:Option<usize>, line_separator:Option<usize>, base_module:Option<usize>, boot_layer:Option<usize>, jfr_module:Option<usize>, lambdas:std::collections::HashMap<usize,usize>, spliterators:std::collections::HashMap<usize,(i64,i32)>, walk_scopes:Vec<bool>, rounding_mode_ceiling:Option<usize>, byte_order_little:Option<usize>, byte_order_big:Option<usize> }
+#[derive(Default)] struct Heap { bridge_owner:std::sync::Arc<()>, arrays:Vec<Array>, elements:usize, fields:Vec<V>, interfaces:&'static [(&'static str,&'static str)], init_states:Vec<u8>, intern:std::collections::HashMap<Vec<u16>,usize>, stdout:Option<usize>, stderr:Option<usize>, properties:Option<std::collections::HashMap<Vec<u16>,usize>>, classes:std::collections::HashMap<&'static str,usize>, simple_names:std::collections::HashMap<&'static str,usize>, monitors:std::collections::HashMap<usize,usize>, app_loader:Option<usize>, platform_loader:Option<usize>, context_loader:Option<Option<usize>>, time_units:[Option<usize>;7], enum_values:std::collections::HashMap<usize,(Option<usize>,i32)>, enum_directories:std::collections::HashMap<&'static str,Vec<(usize,usize)>>, causes:std::collections::HashMap<usize,usize>, suppressed:std::collections::HashMap<usize,Vec<usize>>, map_views:std::collections::HashMap<usize,usize>, booleans:[Option<usize>;2], parents:std::collections::HashMap<&'static str,&'static str>, exception_messages:std::collections::HashMap<usize,Option<usize>>, uri_syntax:std::collections::HashMap<usize,(usize,usize,i32)>, uri_schemes:std::collections::HashMap<usize,usize>, uri_paths:std::collections::HashMap<usize,usize>, stack_option:Option<usize>, default_stack_walker:Option<usize>, duration_zero:Option<usize>, integers:std::collections::HashMap<i32,usize>, longs:std::collections::HashMap<i64,usize>, bytes:std::collections::HashMap<i8,usize>, shorts:std::collections::HashMap<i16,usize>, characters:std::collections::HashMap<u16,usize>, tree_entry_views:std::collections::HashMap<usize,usize>, active_maps:Vec<usize>, identity_function:Option<usize>, iso_instant:Option<usize>, root_locale:Option<usize>, decimal_symbols_root:Option<usize>, hex_default:Option<usize>, hex_upper:Option<usize>, builder_caps:std::collections::HashMap<usize,(i32,bool)>, optional_empty:Option<usize>, utf8_charset:Option<usize>, empty_map:Option<usize>, empty_list:Option<usize>, empty_set:Option<usize>, zip_fs_provider:Option<usize>, proxy_no_proxy:Option<usize>, immutable_empty:Option<usize>, empty_iterator:Option<usize>, current_process:Option<usize>, runtime_singleton:Option<usize>, line_separator:Option<usize>, base_module:Option<usize>, boot_layer:Option<usize>, jfr_module:Option<usize>, lambdas:std::collections::HashMap<usize,usize>, spliterators:std::collections::HashMap<usize,(i64,i32)>, walk_scopes:Vec<bool>, rounding_mode_ceiling:Option<usize>, byte_order_little:Option<usize>, byte_order_big:Option<usize>, base64_states:std::collections::HashMap<usize,(u8,bool,i32,Vec<u8>)> }
 fn fence_release(){std::sync::atomic::fence(std::sync::atomic::Ordering::Release)}
 fn fence_acquire(){std::sync::atomic::fence(std::sync::atomic::Ordering::Acquire)}
 fn fence_seqcst(){std::sync::atomic::fence(std::sync::atomic::Ordering::SeqCst)}
@@ -2326,6 +2326,56 @@ fn units_to_utf8(units:&[u16])->Vec<u8>{
   out
 }
 fn new_arrays_push(h:&mut Heap,a:Array)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(a);id}
+// Base64 (RFC 4648): alfabeto 0=estándar, 1=URL-safe, 2=MIME (lineLength + separador propios).
+// El objeto Encoder/Decoder es un literal de clase con estado real en h.base64_states (el JDK
+// cachea singletons; aquí no hay identidad observable en el perfil).
+const BASE64_STD:&[u8;64]=b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+const BASE64_URL:&[u8;64]=b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+fn base64_state(h:&Heap,id:usize)->(u8,bool,i32,Vec<u8>){match h.base64_states.get(&id){Some(s)=>s.clone(),None=>error("Base64: receptor fuera del perfil")}}
+fn base64_encoder(h:&mut Heap,alphabet:u8,nopad:bool,mime_len:i32,mime_sep:Vec<u8>)->usize{let id=new_arrays_push(h,Array::Class("java/util/Base64$Encoder"));h.base64_states.insert(id,(alphabet,nopad,mime_len,mime_sep));id}
+fn base64_decoder(h:&mut Heap,alphabet:u8)->usize{let id=new_arrays_push(h,Array::Class("java/util/Base64$Decoder"));h.base64_states.insert(id,(alphabet,false,0,Vec::new()));id}
+fn base64_without_padding(h:&mut Heap,r:Option<usize>)->usize{let id=array_id(h,r);let (alphabet,nopad,len,sep)=base64_state(h,id);if !matches!(h.arrays[id],Array::Class(_)){error("Base64$Encoder: receptor fuera del perfil");}base64_encoder(h,alphabet,true,len,sep)}
+fn base64_mime_encoder(h:&mut Heap,mime_len:i32,sep:Option<usize>)->usize{let sd=match sep.and_then(|s|h.arrays.get(s)){Some(Array::B(v))=>v.iter().map(|b|*b as u8).collect(),Some(_)=>error("Base64.getMimeEncoder: separador no es byte[]"),None=>raise("NullPointerException","")};base64_encoder(h,2,false,mime_len,sd)}
+fn base64_encode_bytes(bytes:&[u8],alphabet:u8,nopad:bool,mime_len:i32,mime_sep:&[u8])->Vec<u8>{
+  let alpha=if alphabet==1{BASE64_URL}else{BASE64_STD};
+  let mut out:Vec<u8>=Vec::with_capacity((bytes.len()+2)/3*4);
+  for chunk in bytes.chunks(3){
+    let b0=chunk[0] as u32;let b1=if chunk.len()>1{chunk[1] as u32}else{0};let b2=if chunk.len()>2{chunk[2] as u32}else{0};
+    let n=(b0<<16)|(b1<<8)|b2;
+    out.push(alpha[((n>>18)&63) as usize]);out.push(alpha[((n>>12)&63) as usize]);
+    if chunk.len()>1{out.push(alpha[((n>>6)&63) as usize]);}else if !nopad{out.push(b'=');}
+    if chunk.len()>2{out.push(alpha[(n&63) as usize]);}else if !nopad{out.push(b'=');}
+  }
+  // MIME: la línea nunca excede mime_len caracteres de base64; el separador se inserta al final de cada línea.
+  if alphabet==2&&mime_len>0&&!mime_sep.is_empty(){let mut wrapped:Vec<u8>=Vec::with_capacity(out.len()+out.len()/mime_len as usize*mime_sep.len());let mut col=0i32;for i in 0..out.len(){wrapped.push(out[i]);col+=1;if col==mime_len&&i+1<out.len(){wrapped.extend_from_slice(mime_sep);col=0;}}out=wrapped;}
+  out
+}
+fn base64_decode_bytes(h:&Heap,bytes:&[u8],alphabet:u8)->Vec<u8>{
+  let alpha=if alphabet==1{BASE64_URL}else{BASE64_STD};
+  let mime=alphabet==2;
+  let mut table=[255u8;256];for (i,c) in alpha.iter().enumerate(){table[*c as usize]=i as u8;}
+  let mut cleaned:Vec<u8>=Vec::with_capacity(bytes.len());
+  for &b in bytes{if mime&&(b==b'\r'||b==b'\n'){continue;}cleaned.push(b);}
+  let mut out:Vec<u8>=Vec::with_capacity(cleaned.len()/4*3+3);
+  let mut acc:u32=0;let mut nbits:u32=0;let mut pad=0u32;
+  for &b in &cleaned{
+    if b==b'='{pad+=1;continue;}
+    let v=table[b as usize];
+    if v==255{raise("IllegalArgumentException","Illegal base64 character");}
+    if pad>0{raise("IllegalArgumentException","Illegal base64 padding");}
+    acc=(acc<<6)|(v as u32);nbits+=6;
+    if nbits>=8{nbits-=8;out.push(((acc>>nbits)&0xff) as u8);}
+  }
+  // El final con '=' debe cuadrar con el número de bits completos; la semántica JDK exige longitud múltiplo de 4 y como mucho 2 de relleno.
+  if cleaned.len()%4!=0||pad>2{raise("IllegalArgumentException","Input byte array has wrong ending byte");}
+  out
+}
+fn base64_encoder_state(h:&Heap,r:Option<usize>)->(u8,bool,i32,Vec<u8>){let id=array_id(h,r);if !matches!(h.arrays[id],Array::Class(_)){error("Base64$Encoder: receptor fuera del perfil");}base64_state(h,id)}
+fn base64_decoder_state(h:&Heap,r:Option<usize>)->(u8,bool,i32,Vec<u8>){let id=array_id(h,r);if !matches!(h.arrays[id],Array::Class(_)){error("Base64$Decoder: receptor fuera del perfil");}base64_state(h,id)}
+fn base64_encoder_encode(h:&mut Heap,r:Option<usize>,bytes:Option<usize>)->usize{let (alphabet,nopad,len,sep)=base64_encoder_state(h,r);let id=array_id(h,bytes);let data=match &h.arrays[id]{Array::B(v)=>v.clone(),_=>error("Base64$Encoder.encode: byte[] fuera del perfil")};let encoded=base64_encode_bytes(&data,alphabet,nopad,len,&sep);new_arrays_push(h,Array::B(encoded.into_iter().map(|b|b as i8).collect()))}
+fn base64_encoder_encode_to_string(h:&mut Heap,r:Option<usize>,bytes:Option<usize>)->usize{let (alphabet,nopad,len,sep)=base64_encoder_state(h,r);let id=array_id(h,bytes);let data=match &h.arrays[id]{Array::B(v)=>v.clone(),_=>error("Base64$Encoder.encodeToString: byte[] fuera del perfil")};let encoded=base64_encode_bytes(&data,alphabet,nopad,len,&sep);new_string(h,encoded.into_iter().map(|b|b as u16).collect())}
+fn base64_decoder_decode_string(h:&mut Heap,r:Option<usize>,text:Option<usize>)->usize{let (alphabet,_,_,_)=base64_decoder_state(h,r);let units=string_units(h,text).to_vec();if units.iter().any(|u|*u>0x7f){raise("IllegalArgumentException","Illegal base64 character in input string");}let bytes:Vec<u8>=units.iter().map(|u|*u as u8).collect();let decoded=base64_decode_bytes(h,&bytes,alphabet);new_arrays_push(h,Array::B(decoded.into_iter().map(|b|b as i8).collect()))}
+fn base64_decoder_decode_bytes(h:&mut Heap,r:Option<usize>,input:Option<usize>)->usize{let (alphabet,_,_,_)=base64_decoder_state(h,r);let id=array_id(h,input);let data=match &h.arrays[id]{Array::B(v)=>v.clone(),_=>error("Base64$Decoder.decode: byte[] fuera del perfil")};let bytes:Vec<u8>=data.into_iter().map(|b|b as u8).collect();let decoded=base64_decode_bytes(h,&bytes,alphabet);new_arrays_push(h,Array::B(decoded.into_iter().map(|b|b as i8).collect()))}
 fn hash_fn_md5(h:&mut Heap)->usize{new_arrays_push(h,Array::HashFn("MD5"))}
 fn hash_fn_hash_string(h:&mut Heap,r:Option<usize>,text:Option<usize>,charset:Option<usize>)->usize{
   let algo={let id=array_id(h,r);match h.arrays[id]{Array::HashFn(s)=>s,_=>error("HashFunction concreto no soportado")}};
