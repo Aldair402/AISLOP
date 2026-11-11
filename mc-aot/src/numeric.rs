@@ -321,6 +321,7 @@ fn collection_intrinsic(owner: &str, name: &str, desc: &str) -> Option<&'static 
             | "java/util/concurrent/BlockingQueue"
             | "java/util/concurrent/LinkedBlockingQueue"
             | "java/util/concurrent/ConcurrentLinkedQueue"
+            | "java/util/concurrent/ConcurrentLinkedDeque"
     );
     let list = matches!(owner, "java/util/List" | "java/util/ArrayList");
     let set = matches!(
@@ -4184,9 +4185,9 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         "let ordinal=pop_i(&mut stack);let name=pop_r(&mut stack);let r=pop_r(&mut stack);enum_init(heap,r,name,ordinal);".into()
                     } else                     if self.multi_classes.is_some() && matches!((owner,desc),("java/lang/ThreadLocal"|"java/lang/InheritableThreadLocal","()V")) {
                         "let r=pop_r(&mut stack);threadlocal_id(heap,r);".into()
-                    } else if self.multi_classes.is_some() && matches!(owner,"java/util/concurrent/ConcurrentHashMap"|"java/util/concurrent/LinkedBlockingQueue"|"java/util/concurrent/ConcurrentLinkedQueue"|"java/util/ArrayDeque"|"java/util/ArrayList"|"java/util/HashSet"|"java/util/LinkedHashSet"|"java/util/TreeSet") && desc=="()V" {
+                    } else if self.multi_classes.is_some() && matches!(owner,"java/util/concurrent/ConcurrentHashMap"|"java/util/concurrent/LinkedBlockingQueue"|"java/util/concurrent/ConcurrentLinkedQueue"|"java/util/concurrent/ConcurrentLinkedDeque"|"java/util/ArrayDeque"|"java/util/ArrayList"|"java/util/HashSet"|"java/util/LinkedHashSet"|"java/util/TreeSet") && desc=="()V" {
                         format!("let r=pop_r(&mut stack);collection_init(heap,r,{owner:?});")
-                    } else if self.multi_classes.is_some() && matches!(owner,"java/util/concurrent/ConcurrentHashMap"|"java/util/ArrayDeque"|"java/util/ArrayList"|"java/util/HashSet"|"java/util/LinkedHashSet"|"java/util/TreeSet"|"java/util/ArrayDeque") && desc=="(I)V" {
+                    } else if self.multi_classes.is_some() && matches!(owner,"java/util/concurrent/ConcurrentHashMap"|"java/util/concurrent/ConcurrentLinkedDeque"|"java/util/ArrayDeque"|"java/util/ArrayList"|"java/util/HashSet"|"java/util/LinkedHashSet"|"java/util/TreeSet"|"java/util/ArrayDeque") && desc=="(I)V" {
                         format!("let cap=pop_i(&mut stack);let r=pop_r(&mut stack);let _=cap;collection_init(heap,r,{owner:?});")
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/Spliterators$AbstractSpliterator","(JI)V") {
                         "let flags=pop_i(&mut stack);let estimate=pop_l(&mut stack);let r=pop_r(&mut stack);spliterator_init(heap,r,estimate,flags);".into()
@@ -4563,7 +4564,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/lang/Comparable","compareTo","(Ljava/lang/Object;)I") {"let other=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::I(comparable_compare(heap,r,other)));".into()}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("com/google/common/cache/LoadingCache","getUnchecked","(Ljava/lang/Object;)Ljava/lang/Object;") {format!("let key=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(loading_cache_get(heap,r,key)));")}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("com/google/common/cache/LoadingCache","get","(Ljava/lang/Object;)Ljava/lang/Object;") {format!("let key=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(loading_cache_get(heap,r,key)));")}
-                    else if self.multi_classes.is_some() && matches!(owner,"java/lang/Iterable"|"java/util/Collection"|"java/util/List"|"java/util/Set"|"java/util/SortedSet"|"java/util/NavigableSet"|"java/util/ArrayList"|"java/util/HashSet"|"java/util/LinkedHashSet"|"java/util/TreeSet"|"java/util/EnumSet"|"java/util/Queue"|"java/util/Deque"|"java/util/concurrent/ConcurrentLinkedQueue"|"java/util/concurrent/LinkedBlockingQueue") && name=="forEach" && desc=="(Ljava/util/function/Consumer;)V" {self.interface_call("java/util/function/Consumer","accept","(Ljava/lang/Object;)V")?;let i=self.interface_calls.iter().position(|v|v.0=="java/util/function/Consumer"&&v.1=="accept"&&v.2=="(Ljava/lang/Object;)V").ok_or("Consumer.accept no registrada")?;format!("let action=pop_r(&mut stack);let r=pop_r(&mut stack);collection_for_each(heap,r,action,interface_dispatch_{i});").into()}
+                    else if self.multi_classes.is_some() && matches!(owner,"java/lang/Iterable"|"java/util/Collection"|"java/util/List"|"java/util/Set"|"java/util/SortedSet"|"java/util/NavigableSet"|"java/util/ArrayList"|"java/util/HashSet"|"java/util/LinkedHashSet"|"java/util/TreeSet"|"java/util/EnumSet"|"java/util/Queue"|"java/util/Deque"|"java/util/concurrent/ConcurrentLinkedQueue"|"java/util/concurrent/ConcurrentLinkedDeque"|"java/util/concurrent/LinkedBlockingQueue") && name=="forEach" && desc=="(Ljava/util/function/Consumer;)V" {self.interface_call("java/util/function/Consumer","accept","(Ljava/lang/Object;)V")?;let i=self.interface_calls.iter().position(|v|v.0=="java/util/function/Consumer"&&v.1=="accept"&&v.2=="(Ljava/lang/Object;)V").ok_or("Consumer.accept no registrada")?;format!("let action=pop_r(&mut stack);let r=pop_r(&mut stack);collection_for_each(heap,r,action,interface_dispatch_{i});").into()}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/util/Map","keySet","()Ljava/util/Set;") {"let r=pop_r(&mut stack);stack.push(V::R(Some(map_key_set(heap,r))));".into()}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/lang/reflect/ParameterizedType","getOwnerType","()Ljava/lang/reflect/Type;") {"let r=pop_r(&mut stack);stack.push(V::R(gson_parameterized(heap,r,0)));".into()}
                     else if self.multi_classes.is_some() && (owner,name,desc)==("java/lang/reflect/ParameterizedType","getRawType","()Ljava/lang/reflect/Type;") {"let r=pop_r(&mut stack);stack.push(V::R(gson_parameterized(heap,r,1)));".into()}
@@ -4674,7 +4675,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         "stack.push(V::R(Some(builder_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/lang/ThreadLocal" {
                         "stack.push(V::R(Some(threadlocal_new(heap))));".into()
-                    } else if self.multi_classes.is_some() && matches!(class,"java/util/concurrent/ConcurrentHashMap"|"java/util/concurrent/LinkedBlockingQueue"|"java/util/concurrent/ConcurrentLinkedQueue"|"java/util/ArrayDeque"|"java/util/ArrayList"|"java/util/HashSet"|"java/util/LinkedHashSet"|"java/util/TreeSet") {
+                    } else if self.multi_classes.is_some() && matches!(class,"java/util/concurrent/ConcurrentHashMap"|"java/util/concurrent/LinkedBlockingQueue"|"java/util/concurrent/ConcurrentLinkedQueue"|"java/util/concurrent/ConcurrentLinkedDeque"|"java/util/ArrayDeque"|"java/util/ArrayList"|"java/util/HashSet"|"java/util/LinkedHashSet"|"java/util/TreeSet") {
                         format!("stack.push(V::R(Some(collection_new(heap,{class:?}))));")
                     } else if self.multi_classes.is_some() && class=="java/lang/Object" {
                         "stack.push(V::R(Some(object_new(heap,\"java/lang/Object\",vec![],false))));".into()
