@@ -1166,6 +1166,13 @@ impl NumericCompiler<'_> {
                         | "java/nio/file/PathMatcher"
                         | "java/util/function/DoubleUnaryOperator"
                         | "java/util/function/ToDoubleFunction"
+                        // LMAX Disruptor: dependencia opcional de log4j-core AUSENTE
+                        // del bundle stock (hasAsyncLoggers()==false en vanilla).
+                        // Se aceptan sin inspección de jar para compilar el <clinit>
+                        // de AsyncLoggerConfigDisruptor (lambdas nunca inicializadas en
+                        // el perfil); cualquier invocación real falla explícitamente.
+                        | "com/lmax/disruptor/EventFactory"
+                        | "com/lmax/disruptor/EventTranslatorTwoArg"
                 )
             {
                 active.remove(name);
@@ -1327,6 +1334,13 @@ impl NumericCompiler<'_> {
                         | "java/nio/file/PathMatcher"
                         | "java/util/function/DoubleUnaryOperator"
                         | "java/util/function/ToDoubleFunction"
+                        // LMAX Disruptor: dependencia opcional de log4j-core AUSENTE
+                        // del bundle stock (hasAsyncLoggers()==false en vanilla).
+                        // Se aceptan sin inspección de jar para compilar el <clinit>
+                        // de AsyncLoggerConfigDisruptor (lambdas nunca inicializadas en
+                        // el perfil); cualquier invocación real falla explícitamente.
+                        | "com/lmax/disruptor/EventFactory"
+                        | "com/lmax/disruptor/EventTranslatorTwoArg"
                 )
             {
                 active.remove(name);
