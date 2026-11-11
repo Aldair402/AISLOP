@@ -4487,6 +4487,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/lang/Boolean","valueOf","(Ljava/lang/String;)Ljava/lang/Boolean;") if self.multi_classes.is_some()=>"{let b=boolean_parse(heap,x0);Some(boolean_value_of(heap,b))}".into(),
                         ("java/lang/Boolean","valueOf","(Z)Ljava/lang/Boolean;") if self.multi_classes.is_some()=>"Some(boolean_value_of(heap,x0!=0))".into(),
                         ("java/util/ServiceLoader","load","(Ljava/lang/Class;Ljava/lang/ClassLoader;)Ljava/util/ServiceLoader;") if self.multi_classes.is_some()=>{self.uses_service_loader=true;"Some(service_load(heap,x0,x1,SERVICE_CATALOG))".into()},
+                        ("java/util/ServiceLoader","load","(Ljava/lang/Class;)Ljava/util/ServiceLoader;") if self.multi_classes.is_some()=>{self.uses_service_loader=true;"{let loader=thread_context_loader(heap,Some(current_thread(heap)));Some(service_load(heap,x0,loader,SERVICE_CATALOG))}".into()},
                         ("java/lang/System","getSecurityManager","()Ljava/lang/SecurityManager;") if self.multi_classes.is_some()=>"None".into(),
                         ("java/lang/System","setSecurityManager","(Ljava/lang/SecurityManager;)V") if self.multi_classes.is_some()=>"raise(\"UnsupportedOperationException\",\"\")".into(),
                         ("java/lang/String","format","(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;") if self.multi_classes.is_some()=>"Some(string_format_basic(heap,x0,x1))".into(),

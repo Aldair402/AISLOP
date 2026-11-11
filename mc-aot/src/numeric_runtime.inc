@@ -2754,7 +2754,9 @@ fn service_load(h:&mut Heap,service:Option<usize>,loader:Option<usize>,catalog:&
     let sid=array_id(h,service);let name=match h.arrays[sid]{Array::Class(n)=>n,_=>panic!("se esperaba Class")};
     let lid=loader.unwrap_or_else(||error("ServiceLoader: loader null no soportado"));
     if !matches!(h.arrays.get(lid),Some(Array::AppLoader)){error("ServiceLoader: loader no soportado");}
-    let providers=catalog.iter().find(|(n,_)|*n==name).map(|(_,p)|*p).unwrap_or_else(||error("ServiceLoader: servicio sin catálogo soportado"));
+    // Classpath cerrado: la ausencia de META-INF/services/<servicio> significa
+    // cero proveedores en este bundle; no se inventan entradas ni reflexión.
+    let providers=catalog.iter().find(|(n,_)|*n==name).map(|(_,p)|*p).unwrap_or(&[]);
     if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::Service(name,providers,0,Vec::new()));id
 }
 fn service_iterator(h:&mut Heap,service:Option<usize>)->usize {
