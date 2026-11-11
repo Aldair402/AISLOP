@@ -2361,22 +2361,34 @@ impl NumericCompiler<'_> {
                     } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Boolean" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(Z)Ljava/lang/Boolean;" {
                         format!("Some(boolean_value_of(heap,{0}!=0))", actual[0])
                     } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Boolean" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(Ljava/lang/String;)Ljava/lang/Boolean;" {
-                        format!("Some(boolean_value_of(heap,boolean_parse(heap,{0})))", actual[0])
-                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Boolean" && lambda.impl_name == "parseBoolean" && lambda.impl_desc == "(Ljava/lang/String;)Z" && inst.returns == super::metadata::Type::Boolean {
-                        // shorthand solo si el SAM devuelve boolean primitivo; SAM Object SAM usa la rama genérica con encuadrado (booleano→Boolean)
-                        format!("boolean_parse(heap,{0}) as i32", actual[0])
+                        format!("{{let v=boolean_parse(heap,{0});Some(boolean_value_of(heap,v))}}", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Boolean" && lambda.impl_name == "parseBoolean" && lambda.impl_desc == "(Ljava/lang/String;)Z" {
+                        if inst.returns == super::metadata::Type::Boolean {
+                            format!("boolean_parse(heap,{0}) as i32", actual[0])
+                        } else {
+                            // SAM borrado a Object: encuadrado necesario
+                            format!("{{let v=boolean_parse(heap,{0});Some(boolean_value_of(heap,v))}}", actual[0])
+                        }
                     } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Integer" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(I)Ljava/lang/Integer;" {
                         format!("Some(integer_value_of(heap,{0}))", actual[0])
                     } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Integer" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(Ljava/lang/String;)Ljava/lang/Integer;" {
-                        format!("Some(integer_value_of(heap,integer_parse(heap,{0})))", actual[0])
-                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Integer" && lambda.impl_name == "parseInt" && lambda.impl_desc == "(Ljava/lang/String;)I" && inst.returns == super::metadata::Type::Int {
-                        format!("integer_parse(heap,{0})", actual[0])
+                        format!("{{let v=integer_parse(heap,{0});Some(integer_value_of(heap,v))}}", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Integer" && lambda.impl_name == "parseInt" && lambda.impl_desc == "(Ljava/lang/String;)I" {
+                        if inst.returns == super::metadata::Type::Int {
+                            format!("integer_parse(heap,{0})", actual[0])
+                        } else {
+                            format!("{{let v=integer_parse(heap,{0});Some(integer_value_of(heap,v))}}", actual[0])
+                        }
                     } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Long" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(J)Ljava/lang/Long;" {
                         format!("Some(long_value_of(heap,{0}))", actual[0])
                     } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Long" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(Ljava/lang/String;)Ljava/lang/Long;" {
-                        format!("Some(long_value_of(heap,long_parse(heap,{0})))", actual[0])
-                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Long" && lambda.impl_name == "parseLong" && lambda.impl_desc == "(Ljava/lang/String;)J" && inst.returns == super::metadata::Type::Long {
-                        format!("long_parse(heap,{0})", actual[0])
+                        format!("{{let v=long_parse(heap,{0});Some(long_value_of(heap,v))}}", actual[0])
+                    } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Long" && lambda.impl_name == "parseLong" && lambda.impl_desc == "(Ljava/lang/String;)J" {
+                        if inst.returns == super::metadata::Type::Long {
+                            format!("long_parse(heap,{0})", actual[0])
+                        } else {
+                            format!("{{let v=long_parse(heap,{0});Some(long_value_of(heap,v))}}", actual[0])
+                        }
                     } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Short" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(S)Ljava/lang/Short;" {
                         format!("Some(short_value_of(heap,{0}))", actual[0])
                     } else if lambda.impl_kind == 6 && lambda.impl_owner == "java/lang/Byte" && lambda.impl_name == "valueOf" && lambda.impl_desc == "(B)Ljava/lang/Byte;" {
@@ -2443,17 +2455,30 @@ impl NumericCompiler<'_> {
                             format!("let result={f}(heap{args});Some(boolean_value_of(heap,result!=0))")
                         } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Int,super::metadata::Type::Object(_))) {
                             // SAM borrado (Object) pero el objetivo devuelve int: el valor debe ir encuadrado porque el SAM declara Object
-                            format!("Some(integer_value_of(heap,{f}(heap{args})))")
+                            format!("{{let v={f}(heap{args});Some(integer_value_of(heap,v))}}")
                         } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Long,super::metadata::Type::Object(_))) {
-                            format!("Some(long_value_of(heap,{f}(heap{args})))")
+                            format!("{{let v={f}(heap{args});Some(long_value_of(heap,v))}}")
                         } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Byte,super::metadata::Type::Object(_))) {
-                            format!("Some(byte_value_of(heap,{f}(heap{args})))")
+                            format!("{{let v={f}(heap{args});Some(byte_value_of(heap,v))}}")
                         } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Float,super::metadata::Type::Object(_))) {
-                            format!("Some(float_value_of(heap,{f}(heap{args})))")
+                            format!("{{let v={f}(heap{args});Some(float_value_of(heap,v))}}")
                         } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Double,super::metadata::Type::Object(_))) {
-                            format!("Some(double_value_of(heap,{f}(heap{args})))")
+                            format!("{{let v={f}(heap{args});Some(double_value_of(heap,v))}}")
                         } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Boolean,super::metadata::Type::Object(_))) {
-                            format!("Some(boolean_value_of(heap,{f}(heap{args}) != 0))")
+                            format!("{{let v={f}(heap{args});Some(boolean_value_of(heap,v != 0))}}")
+                        } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Int,super::metadata::Type::Object(_))) {
+                            // SAM borrado (Object) pero el objetivo devuelve int: el valor debe ir encuadrado porque el SAM declara Object
+                            format!("{{let v={f}(heap{args});Some(integer_value_of(heap,v))}}")
+                        } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Long,super::metadata::Type::Object(_))) {
+                            format!("{{let v={f}(heap{args});Some(long_value_of(heap,v))}}")
+                        } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Byte,super::metadata::Type::Object(_))) {
+                            format!("{{let v={f}(heap{args});Some(byte_value_of(heap,v))}}")
+                        } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Float,super::metadata::Type::Object(_))) {
+                            format!("{{let v={f}(heap{args});Some(float_value_of(heap,v))}}")
+                        } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Double,super::metadata::Type::Object(_))) {
+                            format!("{{let v={f}(heap{args});Some(double_value_of(heap,v))}}")
+                        } else if matches!((&target.returns,&inst.returns),(super::metadata::Type::Boolean,super::metadata::Type::Object(_))) {
+                            format!("{{let v={f}(heap{args});Some(boolean_value_of(heap,v != 0))}}")
                         } else {
                             format!("{f}(heap{args})")
                         }
@@ -2463,7 +2488,8 @@ impl NumericCompiler<'_> {
                         "Some(builder_new(heap))".into()
                     } else if lambda.impl_kind == 8 && lambda.impl_owner == "java/lang/String" {
                         // String(String): alias — las cadenas son inmutables; el contenido es idéntico por construcción
-                        format!("Some({})", actual[0])
+                        // El SAM borrado de Function devuelve Object (Option<usize> de handles): actual[0] ya es Option<usize>
+                        actual[0].clone()
                     } else if lambda.impl_kind == 8 && lambda.impl_owner == "java/util/HashMap" {
                         "Some(hashmap_new(heap))".into()
                     } else if lambda.impl_kind == 8 && lambda.impl_owner == "java/io/BufferedOutputStream" {
