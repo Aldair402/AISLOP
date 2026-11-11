@@ -3867,8 +3867,8 @@ impl NumericCompiler<'_> {
                         ("java/util/concurrent/locks/ReentrantLock","isHeldByCurrentThread","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I((reentrant_count(heap,r)>0) as i32));".into(),
                         ("java/time/format/DateTimeFormatter","formatTo","(Ljava/time/temporal/TemporalAccessor;Ljava/lang/Appendable;)V") if self.multi_classes.is_some()=>r#"error("DateTimeFormatter.formatTo: formateo de fecha no implementado");"#.into(),
                         ("java/time/format/DateTimeFormatter","withZone","(Ljava/time/ZoneId;)Ljava/time/format/DateTimeFormatter;") if self.multi_classes.is_some()=>r#"error("DateTimeFormatter.withZone: zonas no implementadas");"#.into(),
-                        ("java/lang/ref/WeakReference"|"java/lang/ref/Reference","get","()Ljava/lang/Object;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(weak_loader_get(heap,r)));".into(),
-                        ("java/lang/ref/WeakReference"|"java/lang/ref/Reference","clear","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);weak_loader_set(heap,r,None);".into(),
+                        ("java/lang/ref/WeakReference"|"java/lang/ref/Reference"|"java/lang/ref/SoftReference","get","()Ljava/lang/Object;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(weak_loader_get(heap,r)));".into(),
+                        ("java/lang/ref/WeakReference"|"java/lang/ref/Reference"|"java/lang/ref/SoftReference","clear","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);weak_loader_set(heap,r,None);".into(),
                         ("java/lang/ref/ReferenceQueue","poll","()Ljava/lang/ref/Reference;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(reference_queue_poll(heap,r)));".into(),
                         ("java/lang/RuntimePermission"|"java/security/BasicPermission"|"java/security/Permission","getName","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(runtime_permission_name(heap,r))));".into(),
                         ("java/lang/RuntimePermission"|"java/security/BasicPermission"|"java/security/Permission","getActions","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);runtime_permission_name(heap,r);stack.push(V::R(Some(string_literal(heap,&[]))));".into(),
@@ -4217,7 +4217,9 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/PrintStream","(Ljava/io/OutputStream;)V") {"error(\"PrintStream(OutputStream): no soportado\");".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/PrintStream","(Ljava/io/OutputStream;ZLjava/nio/charset/Charset;)V") {"let charset=pop_r(&mut stack);let _auto=pop_i(&mut stack);let out=pop_r(&mut stack);let r=pop_r(&mut stack);check_any_object(heap,r);check_any_object(heap,out);let _=charset;".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/lang/ref/WeakReference","(Ljava/lang/Object;)V") {"let value=pop_r(&mut stack);let r=pop_r(&mut stack);weak_loader_set(heap,r,value);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/lang/ref/SoftReference","(Ljava/lang/Object;)V") {"let value=pop_r(&mut stack);let r=pop_r(&mut stack);weak_loader_set(heap,r,value);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/lang/ref/WeakReference","(Ljava/lang/Object;Ljava/lang/ref/ReferenceQueue;)V") {"let queue=pop_r(&mut stack);let value=pop_r(&mut stack);let r=pop_r(&mut stack);if let Some(q)=queue{let _=reference_queue_id(heap,Some(q));}weak_loader_set(heap,r,value);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/lang/ref/SoftReference","(Ljava/lang/Object;Ljava/lang/ref/ReferenceQueue;)V") {"let queue=pop_r(&mut stack);let value=pop_r(&mut stack);let r=pop_r(&mut stack);if let Some(q)=queue{let _=reference_queue_id(heap,Some(q));}weak_loader_set(heap,r,value);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/lang/RuntimePermission","(Ljava/lang/String;)V") {"let name=pop_r(&mut stack);let r=pop_r(&mut stack);runtime_permission_init(heap,r,name);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/lang/ref/ReferenceQueue","()V") {"let r=pop_r(&mut stack);reference_queue_id(heap,r);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/WeakHashMap","()V") {"let r=pop_r(&mut stack);weak_hashmap_id(heap,r);".into()
@@ -4798,6 +4800,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && class=="java/io/FileOutputStream" {"error(\"new FileOutputStream: no soportado\");".into()
                     } else if self.multi_classes.is_some() && class=="java/io/PrintStream" {"error(\"new PrintStream: no soportado\");".into()
                     } else if self.multi_classes.is_some() && class=="java/lang/ref/ReferenceQueue" {"stack.push(V::R(Some(reference_queue_new(heap))));".into()
+                    } else if self.multi_classes.is_some() && class=="java/lang/ref/SoftReference" {"stack.push(V::R(Some(weak_loader_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/util/WeakHashMap" {"stack.push(V::R(Some(weak_hashmap_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/lang/ref/WeakReference" {"stack.push(V::R(Some(weak_loader_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/util/concurrent/ForkJoinPool" {"stack.push(V::R(Some(forkjoin_pool_new(heap))));".into()
@@ -4906,7 +4909,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && name=="java/util/Map$Entry" {"map_entry_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/io/Serializable" {
                         "serializable_instance(heap,r,PROJECT_INTERFACES)".to_owned()
-                    } else if self.multi_classes.is_some() && (name=="java/lang/ref/Reference" || name=="java/lang/ref/WeakReference") {
+                    } else if self.multi_classes.is_some() && (name=="java/lang/ref/Reference" || name=="java/lang/ref/WeakReference" || name=="java/lang/ref/SoftReference") {
                         // Las Reference del perfil son WeakLoader fuertes (sin GC); instanceof/checkcast operan sobre ese modelo.
                         "weak_reference_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && (known_exception(name).is_some() || (project_class(name) && self.resolve_exception_type(name).is_ok())) {
