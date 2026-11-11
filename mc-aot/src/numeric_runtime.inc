@@ -1808,7 +1808,7 @@ fn immutable_list_from_array(h:&mut Heap,r:Option<usize>)->usize{let id=array_id
 fn standardlevel_enumset(h:&mut Heap,class:Option<usize>,slot:usize)->usize{let cid=array_id(h,class);if !matches!(h.arrays[cid],Array::Class("org/apache/logging/log4j/spi/StandardLevel")){error("EnumSet.allOf: clase fuera del perfil");}let arr=match h.fields.get(slot){Some(V::R(Some(a)))=>*a,_=>error("EnumSet.allOf: valores aún no preparados")};let values=match &h.arrays[arr]{Array::ProjectRefs("org/apache/logging/log4j/spi/StandardLevel",v)=>v.iter().map(|v|v.unwrap_or_else(||error("EnumSet.allOf: valor nulo"))).collect::<Vec<_>>(),_=>error("EnumSet.allOf: array incompatible")};for (i,id) in values.iter().enumerate(){if h.enum_values.get(id).map(|(_,n)|*n)!=Some(i as i32){error("EnumSet.allOf: ordinal inconsistente");}}if h.arrays.len()>=10000||h.elements.saturating_add(values.len())>1_000_000{error("Límite experimental de heap excedido");}h.elements+=values.len();let out=h.arrays.len();h.arrays.push(Array::EnumSet(values));out}
 fn empty_list(h:&mut Heap)->usize{if let Some(id)=h.empty_list{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::EmptyList);h.empty_list=Some(id);id}
 fn list_item_eq(h:&Heap,a:Option<usize>,b:Option<usize>)->bool{
-  match (a,b){(None,None)=>true,(Some(x),Some(y))=>x==y||matches!((&h.arrays[x],&h.arrays[y]),(Array::Str(u),Array::Str(v))=>u==v),_=>false}
+  match (a,b){(None,None)=>true,(Some(x),Some(y))=>x==y||matches!((&h.arrays[x],&h.arrays[y]),(Array::Str(u),Array::Str(v)) if u==v),_=>false}
 }
 fn list_contains(h:&Heap,r:Option<usize>,val:Option<usize>)->bool{list_index_of(h,r,val)>=0}
 fn list_index_of(h:&Heap,r:Option<usize>,val:Option<usize>)->i32{
@@ -1881,7 +1881,7 @@ fn set_of_n(h:&mut Heap,values:Vec<Option<usize>>)->usize{
   // rechazados al aplicarlos, no en silencio).
   for v in &values{if v.is_none(){raise("NullPointerException","element cannot be null");}}
   let mut seen:Vec<usize>=Vec::with_capacity(values.len());
-  for v in &values{if let Some(id)=v{let dup=seen.iter().any(|&x|{if x==id{true}else{matches!((&h.arrays[x],&h.arrays[id]),(Array::Str(a),Array::Str(b))=>a==b)}});if dup{raise("IllegalArgumentException","duplicate element");}seen.push(id);}}
+  for v in &values{if let Some(id)=v{let dup=seen.iter().any(|&x|{if x==id{true}else{matches!((&h.arrays[x],&h.arrays[id]),(Array::Str(a),Array::Str(b)) if a==b)}});if dup{raise("IllegalArgumentException","duplicate element");}seen.push(id);}}
   if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}if h.elements.checked_add(values.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
   let id=h.arrays.len();h.elements+=values.len();h.arrays.push(Array::Set(values,0));id
 }
@@ -2084,6 +2084,7 @@ fn set_copy_of(h:&mut Heap,r:Option<usize>)->usize{
     Array::List(v,_)|Array::ImmutableList(v)|Array::Set(v,_)|Array::ImmutableSet(v)|Array::HashSet(v,_)|Array::KeySet(v,_)=>v.clone(),
     Array::ArraysList(a)=>match &h.arrays[*a]{Array::Strings(u)=>u.iter().map(|u|u.as_ref().map(|s|new_string(h,s.clone()))).collect(),Array::Refs(_,v)|Array::ProjectRefs(_,v)=>v.clone(),_=>unreachable!()},
     Array::EmptyList|Array::EmptySet=>Vec::new(),
+    Array::EnumSet(v)=>v.iter().copied().map(Some).collect(),
     Array::Queue(v)|Array::ConcurrentQueue(v)|Array::Deque(v)=>v.iter().copied().map(Some).collect(),
     Array::MapValues(map)=>map_values_snapshot(h,*map),
     _=>error("Set.copyOf: colección fuente no soportada")};
@@ -2884,18 +2885,6 @@ fn set_pos(h:&Heap,id:usize,val:Option<usize>)->Option<usize>{
 }
 fn set_contains(h:&Heap,r:Option<usize>,val:Option<usize>)->bool{let id=array_id(h,r);if let Array::IdentitySet(map)=h.arrays[id]{return map_contains(h,Some(map),val);}set_pos(h,id,val).is_some()}
 fn set_remove(h:&mut Heap,r:Option<usize>,val:Option<usize>)->bool{let id=array_id(h,r);if matches!(h.arrays[id],Array::ImmutableSet(_)){raise("UnsupportedOperationException","");}if let Array::IdentitySet(map)=h.arrays[id]{return map_remove(h,Some(map),val).is_some();}let pos=set_pos(h,id,val);if let Some(i)=pos{if let Array::Set(v,n)|Array::HashSet(v,n)|Array::KeySet(v,n)=&mut h.arrays[id]{v.remove(i);*n=n.wrapping_add(1);}true}else{false}}
-fn set_copy_of(h:&mut Heap,r:Option<usize>)->usize{
-  let id=array_id(h,r);
-  let values:Vec<Option<usize>> = match &h.arrays[id]{
-    Array::Set(v,_)|Array::HashSet(v,_)|Array::KeySet(v,_)|Array::ImmutableSet(v)=>v.clone(),
-    Array::EmptySet=>Vec::new(),
-    Array::EnumSet(v)=>v.iter().map(|x|Some(*x)).collect(),
-    _=>error("Collections.unmodifiableSet: fuente fuera del perfil")};
-  if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}
-  if h.elements.checked_add(values.len()).map_or(true,|n|n>1_000_000){error("Límite experimental de heap excedido");}
-  h.elements+=values.len();
-  let out=h.arrays.len();h.arrays.push(Array::ImmutableSet(values));out
-}
 fn collection_add(h:&mut Heap,r:Option<usize>,val:Option<usize>)->bool{let id=array_id(h,r);if let Array::IdentitySet(map)=h.arrays[id]{let value=boolean_value_of(h,true);return map_put(h,Some(map),val,Some(value),false).is_none();}if matches!(h.arrays[id],Array::ArraysList(_)|Array::EmptyList|Array::EmptySet|Array::ImmutableList(_)|Array::ImmutableSet(_)){raise("UnsupportedOperationException","");}if matches!(h.arrays[id],Array::Queue(_)|Array::ConcurrentQueue(_)|Array::Deque(_)){queue_offer(h,r,val);return true;}
     if matches!(h.arrays[id],Array::Set(_,_)|Array::HashSet(_,_)|Array::KeySet(_,_)) && set_pos(h,id,val).is_some(){return false;}
     if !matches!(h.arrays[id],Array::List(_,_)|Array::Set(_,_)|Array::HashSet(_,_)|Array::KeySet(_,_)|Array::ImmutableSet(_)){error("Collection concreta no soportada");}if h.elements>=1_000_000{error("Límite experimental de heap excedido");}h.elements+=1;
