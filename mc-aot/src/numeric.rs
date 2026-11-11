@@ -323,7 +323,8 @@ fn collection_intrinsic(owner: &str, name: &str, desc: &str) -> Option<&'static 
             | "java/util/concurrent/ConcurrentLinkedQueue"
             | "java/util/concurrent/ConcurrentLinkedDeque"
     );
-    let list = matches!(owner, "java/util/List" | "java/util/ArrayList");
+    // CopyOnWriteArrayList se modela como ArrayList monohilo (sin escrituras compartidas ni iteración con mutación concurrente en el perfil).
+    let list = matches!(owner, "java/util/List" | "java/util/ArrayList" | "java/util/concurrent/CopyOnWriteArrayList");
     let set = matches!(
         owner,
         "java/util/Set"
@@ -4165,7 +4166,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         else{return Err(format!("invokespecial no soportado: {owner}.{method}{desc}"));}
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/lang/SecurityManager","()V") {
                         "let r=pop_r(&mut stack);check_any_object(heap,r);".into()
-                    } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/CopyOnWriteArrayList","()V") {r#"error("CopyOnWriteArrayList: concurrencia no implementada");"#.into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/CopyOnWriteArrayList","()V") {format!("let r=pop_r(&mut stack);collection_init(heap,r,{owner:?});")
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/WeakHashMap","()V") {"error(\"WeakHashMap(): semántica de claves débiles no implementada\");".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/text/SimpleDateFormat","(Ljava/lang/String;)V") {"error(\"SimpleDateFormat(String): no soportado\");".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/text/SimpleDateFormat","(Ljava/lang/String;Ljava/util/Locale;)V") {"error(\"SimpleDateFormat(String, Locale): no soportado (ruta de reporte de fallos; no ejecutada en el boot)\");".into()
@@ -4690,7 +4691,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     if known_exception(class).is_some() || (project_class(class) && self.resolve_exception_type(class).is_ok()) {
                         self.validate_exception_class(class)?;let kind=known_exception(class).unwrap_or(class);
                         format!("stack.push(V::R(Some(new_exception(heap,{kind:?}))));")
-                    } else if self.multi_classes.is_some() && class=="java/util/concurrent/CopyOnWriteArrayList" {r#"error("CopyOnWriteArrayList: concurrencia no implementada");"#.into()
+                    } else if self.multi_classes.is_some() && class=="java/util/concurrent/CopyOnWriteArrayList" {format!("stack.push(V::R(Some(collection_new(heap,{class:?}))));")
                     } else if self.multi_classes.is_some() && class=="java/util/Properties" {"stack.push(V::R(Some(java_properties_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/io/File" {"stack.push(V::R(Some(file_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/util/concurrent/locks/ReentrantReadWriteLock" {"stack.push(V::R(Some(rw_lock_new(heap))));".into()
