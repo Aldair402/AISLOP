@@ -1035,6 +1035,7 @@ fn byte_buffer_alloc_direct(h:&mut Heap,capacity:i32)->usize{if capacity<0{raise
 fn byte_buffer_wrap(h:&mut Heap,r:Option<usize>)->usize{if r.is_none(){raise("NullPointerException","array");}let id=array_id(h,r);let bytes=match &h.arrays[id]{Array::B(v)=>v.clone(),_=>error("ByteBuffer.wrap: array fuente no soportado")};if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::ByteBuffer(bytes));out}
 // --- Predicate.negate(): composición perezosa (tag Obj propio con el interior en campos) ---
 // Identity hashCode for Object: heap index is address-like and stable during the run.
+fn object_hashcode_ref(_h:&Heap,r:Option<usize>)->i32{object_identity_hash(r)}
 fn object_identity_hash(r:Option<usize>)->i32{match r{Some(id)=>{let mut h=0x9E3779B1u32.wrapping_mul(id as u32);h^=h>>16;h=h.wrapping_mul(0x85EBCA6Bu32);h as i32},None=>0}}
 fn predicate_negate(h:&mut Heap,r:Option<usize>)->usize{
   let inner=array_id(h,r);
