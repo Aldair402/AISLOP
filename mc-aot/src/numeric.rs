@@ -1421,6 +1421,7 @@ impl NumericCompiler<'_> {
                         | "java/util/Spliterators$AbstractSpliterator"
                         | "java/lang/Number"
                         | "java/lang/Thread"
+                        | "java/io/OutputStream"
                         | "java/lang/InheritableThreadLocal"
                         | "java/lang/SecurityManager"
                         | "java/lang/Exception"
@@ -1487,6 +1488,8 @@ impl NumericCompiler<'_> {
         let abstract_list = meta.parent.as_deref() == Some("java/util/AbstractList");
         let abstract_sequential_list =
             meta.parent.as_deref() == Some("java/util/AbstractSequentialList");
+        // Envoltorio de flujo de salida JDK: delega en un campo propio; sin estado propio.
+        let output_stream_subclass = meta.parent.as_deref() == Some("java/io/OutputStream");
         // netty MultithreadEventExecutorGroup: ejecutor abstracto JDK; herencia transparente.
         let abstract_executor_service =
             meta.parent.as_deref() == Some("java/util/concurrent/AbstractExecutorService");
@@ -1538,6 +1541,7 @@ impl NumericCompiler<'_> {
                 && !print_stream
                 && !abstract_list
                 && !abstract_sequential_list
+                && !output_stream_subclass
                 && !abstract_executor_service
                 && !abstract_spliterator
                 && !foreign_exception
@@ -3810,6 +3814,10 @@ impl NumericCompiler<'_> {
                         ("java/util/Properties","store","(Ljava/io/OutputStream;Ljava/lang/String;)V") if self.multi_classes.is_some()=>"let comment=pop_r(&mut stack);let output=pop_r(&mut stack);let r=pop_r(&mut stack);java_properties_store_eula(heap,r,output,comment);".into(),
                         ("java/util/Properties","store","(Ljava/io/Writer;Ljava/lang/String;)V") if self.multi_classes.is_some()=>"let comment=pop_r(&mut stack);let output=pop_r(&mut stack);let r=pop_r(&mut stack);properties_store_writer(heap,r,output,comment);".into(),
                         ("java/io/OutputStream","close","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);file_output_close(heap,r);".into(),
+                        ("java/io/OutputStream","write","(I)V") if self.multi_classes.is_some()=>"let b=pop_i(&mut stack);let r=pop_r(&mut stack);stream_write_byte(heap,r,b);".into(),
+                        ("java/io/OutputStream","write","([B)V") if self.multi_classes.is_some()=>"let buf=pop_r(&mut stack);let r=pop_r(&mut stack);stream_write_array(heap,r,buf,0,-1);".into(),
+                        ("java/io/OutputStream","write","([BII)V") if self.multi_classes.is_some()=>"let len=pop_i(&mut stack);let off=pop_i(&mut stack);let buf=pop_r(&mut stack);let r=pop_r(&mut stack);stream_write_array(heap,r,buf,off,len);".into(),
+                        ("java/io/OutputStream","flush","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);output_flush(heap,r);".into(),
                         ("java/util/Properties","load","(Ljava/io/InputStream;)V") if self.multi_classes.is_some()=>"let input=pop_r(&mut stack);let r=pop_r(&mut stack);java_properties_load(heap,r,input);".into(),
                         ("java/util/Properties","getProperty","(Ljava/lang/String;)Ljava/lang/String;") if self.multi_classes.is_some()=>"let k=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(java_properties_get(heap,r,k,None)));".into(),
                         ("java/util/Properties","get","(Ljava/lang/Object;)Ljava/lang/Object;") if self.multi_classes.is_some()=>"let k=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(java_properties_get(heap,r,k,None)));".into(),
@@ -4166,6 +4174,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         else{return Err(format!("invokespecial no soportado: {owner}.{method}{desc}"));}
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/lang/SecurityManager","()V") {
                         "let r=pop_r(&mut stack);check_any_object(heap,r);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/io/OutputStream","()V") {"let r=pop_r(&mut stack);check_any_object(heap,r);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/CopyOnWriteArrayList","()V") {format!("let r=pop_r(&mut stack);collection_init(heap,r,{owner:?});")
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/WeakHashMap","()V") {"error(\"WeakHashMap(): semántica de claves débiles no implementada\");".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/text/SimpleDateFormat","(Ljava/lang/String;)V") {"error(\"SimpleDateFormat(String): no soportado\");".into()

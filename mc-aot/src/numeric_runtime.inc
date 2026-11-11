@@ -921,34 +921,40 @@ fn gzip_in_materialized(h:&mut Heap,id:usize)->Vec<u8>{gzip_in_ready(h,id);match
 fn deflate_in_materialized(h:&mut Heap,id:usize)->Vec<u8>{deflate_in_ready(h,id);match &h.arrays[id]{Array::DeflateIn(_,Some(v),_)=>v.clone(),_=>unreachable!()}}
 fn output_write_bytes(h:&mut Heap,inner:Option<usize>,bytes:&[u8]){
   let id=array_id(h,inner);
-  let kind=match &h.arrays[id]{Array::FileOutput(_)=>0u8,Array::BufferedOutput(..)=>1,Array::GzipOut(..)=>2,Array::DeflateOut(..)=>3,_=>error("OutputStream concreto no soportado")};
+  let kind=match &h.arrays[id]{Array::FileOutput(_)=>0u8,Array::BufferedOutput(..)=>1,Array::GzipOut(..)=>2,Array::DeflateOut(..)=>3,Array::Stdout=>4,Array::Stderr=>5,_=>error("OutputStream concreto no soportado")};
   match kind{
     0=>{use std::io::Write;let file=match &mut h.arrays[id]{Array::FileOutput(f)=>f.as_mut().unwrap_or_else(||raise("IOException","Stream closed")),_=>unreachable!()};file.write_all(bytes).unwrap_or_else(|_|error("OutputStream.write: E/S no traducida"))}
     1=>buffered_output_append(h,Some(id),bytes),
     2=>gzip_out_write_all(h,Some(id),bytes),
     3=>deflate_out_write_all(h,Some(id),bytes),
+    4=>{use std::io::Write;let mut out=std::io::stdout();out.write_all(bytes).unwrap_or_else(|_|error("OutputStream.write: E/S no traducida"))}
+    5=>{use std::io::Write;let mut out=std::io::stderr();out.write_all(bytes).unwrap_or_else(|_|error("OutputStream.write: E/S no traducida"))}
     _=>unreachable!(),
   }
 }
 fn output_flush(h:&mut Heap,inner:Option<usize>){
   let id=array_id(h,inner);
-  let kind=match &h.arrays[id]{Array::FileOutput(_)=>0u8,Array::BufferedOutput(..)=>1,Array::GzipOut(..)=>2,Array::DeflateOut(..)=>3,_=>error("OutputStream concreto no soportado")};
+  let kind=match &h.arrays[id]{Array::FileOutput(_)=>0u8,Array::BufferedOutput(..)=>1,Array::GzipOut(..)=>2,Array::DeflateOut(..)=>3,Array::Stdout=>4,Array::Stderr=>5,_=>error("OutputStream concreto no soportado")};
   match kind{
     0=>{use std::io::Write;let file=match &mut h.arrays[id]{Array::FileOutput(f)=>f.as_mut().unwrap_or_else(||raise("IOException","Stream closed")),_=>unreachable!()};file.flush().unwrap_or_else(|_|error("OutputStream.flush: E/S no traducida"))}
     1=>buffered_output_flush(h,Some(id)),
     2=>gzip_out_flush(h,Some(id)),
     3=>deflate_out_flush(h,Some(id)),
+    4=>{use std::io::Write;let mut out=std::io::stdout();out.flush().unwrap_or_else(|_|error("OutputStream.flush: E/S no traducida"))}
+    5=>{use std::io::Write;let mut out=std::io::stderr();out.flush().unwrap_or_else(|_|error("OutputStream.flush: E/S no traducida"))}
     _=>unreachable!(),
   }
 }
 fn output_close(h:&mut Heap,inner:Option<usize>){
   let id=array_id(h,inner);
-  let kind=match &h.arrays[id]{Array::FileOutput(_)=>0u8,Array::BufferedOutput(..)=>1,Array::GzipOut(..)=>2,Array::DeflateOut(..)=>3,_=>error("OutputStream concreto no soportado")};
+  let kind=match &h.arrays[id]{Array::FileOutput(_)=>0u8,Array::BufferedOutput(..)=>1,Array::GzipOut(..)=>2,Array::DeflateOut(..)=>3,Array::Stdout=>4,Array::Stderr=>5,_=>error("OutputStream concreto no soportado")};
   match kind{
     0=>file_output_close(h,Some(id)),
     1=>buffered_output_close(h,Some(id)),
     2=>gzip_out_close(h,Some(id)),
     3=>deflate_out_close(h,Some(id)),
+    4=>output_flush(h,Some(id)),
+    5=>output_flush(h,Some(id)),
     _=>unreachable!(),
   }
 }
