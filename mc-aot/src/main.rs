@@ -14,6 +14,7 @@ mod frame_vm;
 mod rayon_scheduler;
 #[allow(dead_code)]
 mod scheduler;
+mod split_source;
 use std::{
     env, fs,
     path::{Path, PathBuf},
@@ -762,6 +763,26 @@ fn run() -> Result<()> {
         let source=numeric::compile_shared_worker_demo(jar,&args[3],&methods,&plan)?;
         return emit_rayon_binary(&args[6],&source);
     }
+    if args.get(1).map(String::as_str) == Some("split-source") {
+        if args.len() != 4 {
+            return Err("uso: mc-aot split-source <source.rs> <outdir>".into());
+        }
+        let source = fs::read_to_string(Path::new(&args[2])).map_err(|e| format!("no se pudo leer {}: {e}", args[2]))?;
+        let files = split_source::split_crate(&source).map_err(|e| format!("split falló: {e}"))?;
+        let outdir = PathBuf::from(&args[3]);
+        if outdir.exists() {
+            fs::remove_dir_all(&outdir).map_err(|e| format!("no se pudo limpiar {}: {e}", outdir.display()))?;
+        }
+        for (rel, contents) in &files {
+            let path = outdir.join(rel.replace('/', std::path::MAIN_SEPARATOR_STR));
+            if let Some(parent) = path.parent() {
+                fs::create_dir_all(parent).map_err(|e| format!("mkdir {}: {e}", parent.display()))?;
+            }
+            fs::write(&path, contents).map_err(|e| format!("write {}: {e}", path.display()))?;
+        }
+        println!("workspace en {}", outdir.display());
+        return Ok(());
+    }
     if args.get(1).map(String::as_str) == Some("multi-static-demo") {
         if args.len() < 7 || (args.len() - 5) % 2 != 0 {
             return Err("uso: mc-aot multi-static-demo <server.jar> <clase> <binario> <método> <descriptor> [...]".into());
@@ -771,7 +792,7 @@ fn run() -> Result<()> {
             .map(|x| (x[0].clone(), x[1].clone()))
             .collect::<Vec<_>>();
         let source = numeric::compile_multi_static_demo(Path::new(&args[2]), &args[3], &methods)?;
-        return emit_binary(&args[4], &source);
+        return emit_binary_split(&args[4], &source);
     }
     if args.get(1).map(String::as_str) == Some("static-demo") {
         if args.len() < 7 || (args.len() - 5) % 2 != 0 {
@@ -972,6 +993,48 @@ fn emit_rayon_binary(output_path: &str, source: &str) -> Result<()> {
     );
     Ok(())
 }
+fn emit_binary_split(output_path: &str, source: &str) -> Result<()> {
+    let out = PathBuf::from(output_path);
+    let split_dir = PathBuf::from(format!("{}.split", out.display()));
+    if split_dir.exists() {
+        fs::remove_dir_all(&split_dir).map_err(|e| format!("no se pudo limpiar {}: {e}", split_dir.display()))?;
+    }
+    let files = split_source::split_crate(source).map_err(|e| format!("split del fuente falló: {e}"))?;
+    for (rel, contents) in &files {
+        let path = split_dir.join(rel.replace('/', std::path::MAIN_SEPARATOR_STR));
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent).map_err(|e| format!("mkdir {}: {e}", parent.display()))?;
+        }
+        fs::write(&path, contents).map_err(|e| format!("write {}: {e}", path.display()))?;
+    }
+    // Escribir una copia del fuente íntegro para inspección/depuración
+    let source_path = PathBuf::from(format!("{}.rs", out.display()));
+    fs::write(&source_path, source).map_err(|e| format!("no se pudo escribir fuente: {e}"))?;
+    let release = std::env::var_os("MC_AOT_SPLIT_RELEASE").is_some();
+    let mut cmd = Command::new("cargo");
+    cmd.arg("build").arg("--quiet");
+    if release {
+        cmd.arg("--release");
+    }
+    cmd.arg("--manifest-path")
+        .arg(split_dir.join("Cargo.toml"))
+        .env("CARGO_BUILD_JOBS", "1");
+    let status = cmd.status().map_err(|e| format!("no se pudo iniciar cargo: {e}"))?;
+    if !status.success() {
+        return Err("cargo falló; no se puede asegurar un binario válido".into());
+    }
+    let profile = if release { "release" } else { "debug" };
+    let built = split_dir.join("target").join(profile).join("mc_aot_generated");
+    fs::copy(&built, &out).map_err(|e| format!("no se pudo copiar binario {}: {e}", built.display()))?;
+    println!(
+        "Binario nativo (split): {}\nWorkspace: {}\nRust generado: {}",
+        out.display(),
+        split_dir.display(),
+        source_path.display()
+    );
+    Ok(())
+}
+
 fn emit_binary(output_path: &str, source: &str) -> Result<()> {
     let output = PathBuf::from(output_path);
     let source_path = PathBuf::from(format!("{}.rs", output.display()));

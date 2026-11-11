@@ -3,8 +3,11 @@
 # Uso: source mc-toolchain.sh   (deja cargo/rustc/java en PATH y JAVA_HOME)
 set -euo pipefail
 export TMPDIR=/var/tmp
-export CARGO_HOME=/tmp/mc-cargo
-export RUSTUP_HOME=/tmp/mc-rustup
+# Las raíces por defecto viven en /var/tmp (rootfs); /tmp es tmpfs (~1G) y suele
+# quedarse sin espacio durante la descarga de la toolchain.
+export MC_TOOLCHAIN_ROOT="${MC_TOOLCHAIN_ROOT:-/var/tmp}"
+export CARGO_HOME="$MC_TOOLCHAIN_ROOT/mc-cargo"
+export RUSTUP_HOME="$MC_TOOLCHAIN_ROOT/mc-rustup"
 export JDK=/var/tmp/mc-java25
 
 if [[ ! -x "$CARGO_HOME/bin/cargo" ]]; then
