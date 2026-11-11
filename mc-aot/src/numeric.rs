@@ -1415,6 +1415,11 @@ impl NumericCompiler<'_> {
                     parent.as_str(),
                     "java/lang/Object"
                         | "java/lang/Enum"
+                        | "java/util/AbstractList"
+                        | "java/util/AbstractSequentialList"
+                        | "java/util/Spliterators$AbstractSpliterator"
+                        | "java/lang/Number"
+                        | "java/lang/Thread"
                         | "java/lang/InheritableThreadLocal"
                         | "java/lang/SecurityManager"
                         | "java/lang/Exception"
