@@ -1673,6 +1673,9 @@ fn object_id(h:&Heap,r:Option<usize>,class:&str)->usize {
     let id=array_id(h,r);match &h.arrays[id] {Array::Obj(actual,_)|Array::SharedObj(actual,_)|Array::LocalObj(actual,_,_) if project_subtype(h,actual,class)=>id,_=>panic!("despacho de objeto no soportado")}
 }
 fn check_object_class(h:&Heap,r:Option<usize>,class:&str){let _=object_id(h,r,class);}
+fn object_id_interface(h:&Heap,r:Option<usize>,class:&str)->usize {
+    let id=array_id(h,r);match &h.arrays[id] {Array::Obj(_,_)|Array::SharedObj(_,_)|Array::LocalObj(_,_,_) if project_instance(h,Some(id),class,h.interfaces)=>id,_=>panic!("despacho de interfaz no soportado")}
+}
 fn check_any_object(h:&Heap,r:Option<usize>){let id=array_id(h,r);if !matches!(h.arrays[id],Array::Obj(_, _)|Array::SharedObj(_,_)|Array::LocalObj(_,_,_)){panic!("constructor Object sobre referencia no admitida")}}
 fn object_load(h:&Heap,r:Option<usize>,class:&str,slot:usize)->V {
     let id=object_id(h,r,class);match &h.arrays[id] {Array::Obj(_,f)|Array::LocalObj(_,f,_)=>f[slot],Array::SharedObj(_,f)=>f.fields.lock().expect("objeto compartido dañado")[slot],_=>unreachable!()}

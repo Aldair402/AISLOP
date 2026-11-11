@@ -1897,7 +1897,7 @@ impl NumericCompiler<'_> {
             .iter()
             .any(|m| m.name == method && m.descriptor == desc && m.flags & 0x0002 != 0)
         {
-            return self.instance_call(owner, method, desc);
+            return self.instance_call(owner, method, desc, false);
         }
         let sig = signature_ext(desc, true)?;
         let key = (owner.to_owned(), method.to_owned(), desc.to_owned());
@@ -2731,12 +2731,30 @@ impl NumericCompiler<'_> {
         let caller_id = self.ensure_multi_class(caller)?;
         let owner_id = self.ensure_multi_class(owner)?;
         if self.multi_classes.as_ref().unwrap()[owner_id].flags & 0x0200 != 0 {
-            return Err(format!(
-                "invokespecial de default no soportado: {owner}.{method}"
-            ));
+            // `Interfaz.super.metodo()` (Java 8+): ejecuta el cuerpo default
+            // declarado en la interfaz; el receptor `this` sigue siendo la
+            // clase que llama, que la implementa. Se compila el cuerpo default
+            // una sola vez y el check de receptor acepta cualquier
+            // implementador registrado en la tabla de interfaces.
+            let data = class_from_jar(self.jar, owner).map_err(|e| {
+                format!("invokespecial de interfaz sin cuerpo disponible: {owner}.{method} ({e})")
+            })?;
+            let meta = super::metadata::parse(&data)?;
+            let is_default = meta.methods.iter().any(|m| {
+                m.name == method
+                    && m.descriptor == desc
+                    && m.flags & 0x0400 == 0
+                    && m.flags & 0x0008 == 0
+            });
+            if !is_default {
+                return Err(format!(
+                    "invokespecial de interfaz sin método default no soportado: {owner}.{method}"
+                ));
+            }
+            return self.instance_call(owner, method, desc, true);
         }
         if caller == owner {
-            return self.instance_call(owner, method, desc);
+            return self.instance_call(owner, method, desc, false);
         }
         if !self.is_project_subclass(caller, owner) {
             return Err(format!(
@@ -2750,9 +2768,9 @@ impl NumericCompiler<'_> {
         let target = self
             .virtual_implementation(&parent_name, method, desc)?
             .ok_or_else(|| format!("invokespecial: método no resuelto {owner}.{method}{desc}"))?;
-        self.instance_call(&target, method, desc)
+        self.instance_call(&target, method, desc, false)
     }
-    fn instance_call(&mut self, owner: &str, method: &str, desc: &str) -> Result<String> {
+    fn instance_call(&mut self, owner: &str, method: &str, desc: &str, interface_receiver: bool) -> Result<String> {
         let sig = signature_ext(desc, true)?;
         let target = self.compile_instance(owner, method, desc)?;
         let mut pre = String::new();
@@ -2768,8 +2786,13 @@ impl NumericCompiler<'_> {
         } else {
             format!(",{args}")
         };
+        let receiver_check = if interface_receiver {
+            "object_id_interface"
+        } else {
+            "object_id"
+        };
         pre.push_str(&format!(
-            "let r=pop_r(&mut stack);let id=object_id(heap,r,{owner:?}); "
+            "let r=pop_r(&mut stack);let id={receiver_check}(heap,r,{owner:?}); "
         ));
         let call = format!("{target}(heap,id{comma})");
         if sig.ret == 'V' {
@@ -4231,7 +4254,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         }
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/EnumMap","(Ljava/util/Map;)V") {"let source=pop_r(&mut stack);let r=pop_r(&mut stack);enum_map_init_map(heap,r,source);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/EnumMap","(Ljava/lang/Class;)V") {"let keyclass=pop_r(&mut stack);let r=pop_r(&mut stack);enum_map_init_class(heap,r,keyclass);".into()
-                    } else if self.multi_classes.is_some() && project_class(owner) {self.instance_call(owner,method,desc)?}
+                    } else if self.multi_classes.is_some() && project_class(owner) {self.instance_call(owner,method,desc,false)?}
                     else {return Err(format!("constructor no soportado: {owner}.{method}{desc}"));}
                 },
                 0xb8 => {
