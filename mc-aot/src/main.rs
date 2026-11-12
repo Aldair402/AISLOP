@@ -85,6 +85,32 @@ struct JavaUtf8 {
     text: Option<String>,
 }
 impl JavaUtf8 {
+    fn normalize_text(text: &str) -> Option<String> {
+        if text.contains("java/lang/StringBuffer") {
+            Some(text.replace("java/lang/StringBuffer", "java/lang/StringBuilder"))
+        } else {
+            None
+        }
+    }
+    fn normalize_units(units: &[u16]) -> Option<Vec<u16>> {
+        let pat: Vec<u16> = "java/lang/StringBuffer".encode_utf16().collect();
+        let rep: Vec<u16> = "java/lang/StringBuilder".encode_utf16().collect();
+        if !units.windows(pat.len()).any(|w| w == pat) {
+            return None;
+        }
+        let mut out: Vec<u16> = Vec::with_capacity(units.len());
+        let mut i = 0;
+        while i < units.len() {
+            if i + pat.len() <= units.len() && units[i..i + pat.len()] == pat[..] {
+                out.extend_from_slice(&rep);
+                i += pat.len();
+            } else {
+                out.push(units[i]);
+                i += 1;
+            }
+        }
+        Some(out)
+    }
     fn decode(data: &[u8]) -> Result<Self> {
         let mut units = Vec::new();
         let mut p = 0;
@@ -124,7 +150,12 @@ impl JavaUtf8 {
             units.push(unit);
         }
         let text = String::from_utf16(&units).ok();
-        Ok(Self { units, text })
+        match (JavaUtf8::normalize_units(&units), text.as_deref().and_then(JavaUtf8::normalize_text)) {
+            (Some(units), Some(text)) => Ok(Self { units, text: Some(text) }),
+            (Some(units), None) => Ok(Self { units, text: None }),
+            (None, Some(text)) => Ok(Self { units, text: Some(text) }),
+            (None, None) => Ok(Self { units, text }),
+        }
     }
 }
 fn utf(cp: &[CpEntry], index: u16) -> Result<&str> {
@@ -148,6 +179,13 @@ fn method_ref(cp: &[CpEntry], index: u16) -> Result<(&str, &str, &str)> {
     let (name, desc) = match cp.get(nt_idx as usize) {
         Some(CpEntry::NameType(n, d)) => (utf(cp, *n)?, utf(cp, *d)?),
         _ => return Err("NameAndType inválido".into()),
+    };
+    // Perfil monohilo: StringBuffer se modela como StringBuilder (misma
+    // representación; no existe la sincronización de StringBuffer aquí).
+    let class_name: &str = if class_name == "java/lang/StringBuffer" {
+        "java/lang/StringBuilder"
+    } else {
+        class_name
     };
     Ok((class_name, name, desc))
 }

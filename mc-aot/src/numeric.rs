@@ -513,6 +513,7 @@ fn known_exception(t: &str) -> Option<&'static str> {
         "java/lang/ClassCastException" => "ClassCastException",
         "java/lang/ArrayStoreException" => "ArrayStoreException",
         "java/net/MalformedURLException" => "MalformedURLException",
+        "java/text/ParseException" => "ParseException",
         "java/net/ProtocolException" => "ProtocolException",
         "java/nio/charset/MalformedInputException" => "MalformedInputException",
         _ => return None,
@@ -4048,6 +4049,27 @@ impl NumericCompiler<'_> {
                             if name=="ordinal" {"let r=pop_r(&mut stack);stack.push(V::I(enum_ordinal(heap,r)));".into()} else {"let r=pop_r(&mut stack);stack.push(V::R(enum_name(heap,r)));".into()}
                         },
                         _ if self.multi_classes.is_some() && owner.starts_with('[') && name=="clone" && desc=="()Ljava/lang/Object;" => "let r=pop_r(&mut stack);stack.push(V::R(Some(ref_array_clone(heap,r))));".into(),
+                        ("java/text/NumberFormat","setGroupingUsed","(Z)V") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);decimal_format_set_grouping_used(heap,r,(v&1)!=0);".into(),
+                        ("java/text/SimpleDateFormat","format","(Ljava/util/Date;)Ljava/lang/String;") if self.multi_classes.is_some()=>"let d=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(simple_date_format_format(heap,r,d))));".into(),
+                        ("java/text/DateFormat","format","(Ljava/util/Date;)Ljava/lang/String;") if self.multi_classes.is_some()=>"let d=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(simple_date_format_format(heap,r,d))));".into(),
+                        ("java/text/SimpleDateFormat","parse","(Ljava/lang/String;)Ljava/util/Date;") if self.multi_classes.is_some()=>"let s=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(simple_date_format_parse(heap,r,s))));".into(),
+                        ("java/text/SimpleDateFormat","parse","(Ljava/lang/String;Ljava/text/ParsePosition;)Ljava/util/Date;") if self.multi_classes.is_some()=>"let p=pop_r(&mut stack);let s=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(simple_date_format_parse_position(heap,r,s,p)));".into(),
+                        ("java/text/DateFormat","parse","(Ljava/lang/String;)Ljava/util/Date;") if self.multi_classes.is_some()=>"let s=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(simple_date_format_parse(heap,r,s))));".into(),
+                        ("java/text/SimpleDateFormat","toPattern","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(simple_date_format_to_pattern(heap,r))));".into(),
+                        ("java/text/SimpleDateFormat","setLenient","(Z)V") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);simple_date_format_set_lenient(heap,r,(v&1)!=0);".into(),
+                        ("java/text/ParsePosition","getIndex","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(parse_position_get_index(heap,r)));".into(),
+                        ("java/text/ParsePosition","setIndex","(I)V") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);parse_position_set_index(heap,r,v);".into(),
+                        ("java/text/ParsePosition","getErrorIndex","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(parse_position_get_error_index(heap,r)));".into(),
+                        ("java/text/ParsePosition","setErrorIndex","(I)V") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);parse_position_set_error_index(heap,r,v);".into(),
+                        ("java/text/NumberFormat","format","(D)Ljava/lang/String;") if self.multi_classes.is_some()=>"let v=pop_d(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(decimal_format_format_double(heap,r,v))));".into(),
+                        ("java/text/NumberFormat","format","(J)Ljava/lang/String;") if self.multi_classes.is_some()=>"let v=pop_l(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(decimal_format_format_long(heap,r,v))));".into(),
+                        ("java/text/DecimalFormat","format","(D)Ljava/lang/String;") if self.multi_classes.is_some()=>"let v=pop_d(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(decimal_format_format_double(heap,r,v))));".into(),
+                        ("java/text/DecimalFormat","format","(J)Ljava/lang/String;") if self.multi_classes.is_some()=>"let v=pop_l(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(decimal_format_format_long(heap,r,v))));".into(),
+                        ("java/text/DecimalFormat","setMaximumFractionDigits","(I)V") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);decimal_format_set_max_frac(heap,r,v);".into(),
+                        ("java/util/HexFormat","toHexDigits","(I)Ljava/lang/String;") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(hex_digits_int(heap,r,v))));".into(),
+                        ("java/util/HexFormat","toHexDigits","(J)Ljava/lang/String;") if self.multi_classes.is_some()=>"let v=pop_l(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(hex_digits_long(heap,r,v))));".into(),
+                        ("java/util/HexFormat","toHexDigits","(JI)Ljava/lang/String;") if self.multi_classes.is_some()=>"let d=pop_i(&mut stack);let v=pop_l(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(hex_digits_long_padded(heap,r,v,d))));".into(),
+                        ("java/util/HexFormat","withPrefix","(Ljava/lang/String;)Ljava/util/HexFormat;") if self.multi_classes.is_some()=>"let p=pop_r(&mut stack);let r=pop_r(&mut stack);stack.push(V::R(Some(hex_format_with_prefix(heap,r,p))));".into(),
                         ("java/lang/StringBuilder","capacity","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(builder_capacity(heap,r)));".into(),
                         ("java/lang/StringBuilder","setLength","(I)V") if self.multi_classes.is_some()=>"let n=pop_i(&mut stack);let r=pop_r(&mut stack);builder_set_length(heap,r,n);".into(),
                         ("java/lang/StringBuilder","trimToSize","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);builder_trim(heap,r);".into(),
@@ -4235,8 +4257,9 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/OutputStream","()V") {"let r=pop_r(&mut stack);check_any_object(heap,r);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/concurrent/CopyOnWriteArrayList","()V") {format!("let r=pop_r(&mut stack);collection_init(heap,r,{owner:?});")
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/WeakHashMap","()V") {"error(\"WeakHashMap(): semántica de claves débiles no implementada\");".into()
-                    } else if self.multi_classes.is_some() && (owner,desc)==("java/text/SimpleDateFormat","(Ljava/lang/String;)V") {"error(\"SimpleDateFormat(String): no soportado\");".into()
-                    } else if self.multi_classes.is_some() && (owner,desc)==("java/text/SimpleDateFormat","(Ljava/lang/String;Ljava/util/Locale;)V") {"error(\"SimpleDateFormat(String, Locale): no soportado (ruta de reporte de fallos; no ejecutada en el boot)\");".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/text/SimpleDateFormat","(Ljava/lang/String;)V") {"let pattern=pop_r(&mut stack);let r=pop_r(&mut stack);simple_date_format_init(heap,r,pattern,None);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/text/SimpleDateFormat","(Ljava/lang/String;Ljava/util/Locale;)V") {"let locale=pop_r(&mut stack);let pattern=pop_r(&mut stack);let r=pop_r(&mut stack);simple_date_format_init(heap,r,pattern,locale);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/text/ParsePosition","(I)V") {"let v=pop_i(&mut stack);let r=pop_r(&mut stack);let target=array_id(heap,r);if !matches!(heap.arrays[target],Array::ParsePosition(_,_)){error(\"ParsePosition.<init>: receptor fuera del perfil\");}match &mut heap.arrays[target]{Array::ParsePosition(i,e)=>{*i=v;*e=-1;},_=>unreachable!()}".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/FileOutputStream","(Ljava/lang/String;)V") {"error(\"FileOutputStream(String): no soportado\");".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/PrintStream","(Ljava/io/OutputStream;)V") {"error(\"PrintStream(OutputStream): no soportado\");".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/PrintStream","(Ljava/io/OutputStream;ZLjava/nio/charset/Charset;)V") {"let charset=pop_r(&mut stack);let _auto=pop_i(&mut stack);let out=pop_r(&mut stack);let r=pop_r(&mut stack);check_any_object(heap,r);check_any_object(heap,out);let _=charset;".into()
@@ -4291,6 +4314,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/IdentityHashMap","()V") {"let r=pop_r(&mut stack);identity_map_id(heap,r);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/HashMap","(I)V") {"let n=pop_i(&mut stack);let r=pop_r(&mut stack);hashmap_init_capacity(heap,r,n);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/HashMap","()V") {"let r=pop_r(&mut stack);hashmap_id(heap,r);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/text/DecimalFormat","(Ljava/lang/String;)V") {"let pattern=pop_r(&mut stack);let r=pop_r(&mut stack);decimal_format_init_default(heap,r,pattern);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/text/DecimalFormat","(Ljava/lang/String;Ljava/text/DecimalFormatSymbols;)V") {"let symbols=pop_r(&mut stack);let pattern=pop_r(&mut stack);let r=pop_r(&mut stack);decimal_format_init(heap,r,pattern,symbols);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/HashMap","(Ljava/util/Map;)V") {"let source=pop_r(&mut stack);let r=pop_r(&mut stack);hashmap_init_map(heap,r,source);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/ByteArrayInputStream","([B)V") {"let b=pop_r(&mut stack);let r=pop_r(&mut stack);byte_input_init(heap,r,b);".into()
@@ -4329,6 +4353,9 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if owner=="net/minecraft/IdentifierException" && matches!(desc,"(Ljava/lang/String;)V"|"(Ljava/lang/String;Ljava/lang/Throwable;)V") && self.multi_classes.is_some() {
                         self.validate_exception_class(owner)?;
                         "error(\"IdentifierException: constructor con escapeJava no implementado\");".into()
+                    } else if self.multi_classes.is_some() && owner=="java/text/ParseException" && desc=="(Ljava/lang/String;I)V" {
+                        // El índice de error no se conserva (limitación documentada del perfil); el tipo y el mensaje son exactos.
+                        "let _index=pop_i(&mut stack);let msg=pop_r(&mut stack);let r=pop_r(&mut stack);init_exception(heap,r,\"ParseException\",msg);".into()
                     } else if self.multi_classes.is_some() && owner=="java/net/URISyntaxException" && matches!(desc,"(Ljava/lang/String;Ljava/lang/String;)V"|"(Ljava/lang/String;Ljava/lang/String;I)V") {
                         if desc.ends_with(";I)V") {"let index=pop_i(&mut stack);let reason=pop_r(&mut stack);let input=pop_r(&mut stack);let r=pop_r(&mut stack);uri_syntax_init(heap,r,input,reason,index);".into()} else {"let reason=pop_r(&mut stack);let input=pop_r(&mut stack);let r=pop_r(&mut stack);uri_syntax_init(heap,r,input,reason,-1);".into()}
                     } else if known_exception(owner).is_some() || (project_class(owner) && self.resolve_exception_type(owner).is_ok()) {
@@ -4574,6 +4601,19 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/lang/Double","doubleToLongBits","(D)J") if self.multi_classes.is_some()=>"if x0.is_nan(){0x7ff8000000000000u64 as i64}else{x0.to_bits() as i64}".into(),
                         ("java/lang/ThreadLocal","withInitial","(Ljava/util/function/Supplier;)Ljava/lang/ThreadLocal;") if self.multi_classes.is_some()=>"Some(threadlocal_with_initial(heap,x0))".into(),
                         ("java/text/DecimalFormatSymbols","getInstance","(Ljava/util/Locale;)Ljava/text/DecimalFormatSymbols;") if self.multi_classes.is_some()=>"Some(decimal_symbols_get_instance(heap,x0))".into(),
+                        ("java/text/NumberFormat","getNumberInstance","(Ljava/util/Locale;)Ljava/text/NumberFormat;") if self.multi_classes.is_some()=>"Some(number_format_get_number_instance(heap,x0))".into(),
+                        ("java/text/NumberFormat","getIntegerInstance","(Ljava/util/Locale;)Ljava/text/NumberFormat;") if self.multi_classes.is_some()=>"Some(number_format_get_integer_instance(heap,x0))".into(),
+                        ("java/text/DateFormat","getDateInstance","()Ljava/text/DateFormat;") if self.multi_classes.is_some()=>"Some({let root=locale_root(heap);fixed_locale_format(heap,Some(root),0)})".into(),
+                        ("java/text/DateFormat","getTimeInstance","()Ljava/text/DateFormat;") if self.multi_classes.is_some()=>"Some({let root=locale_root(heap);fixed_locale_format(heap,Some(root),1)})".into(),
+                        ("java/text/DateFormat","getDateInstance","(I)Ljava/text/DateFormat;") if self.multi_classes.is_some()=>"Some({let root=locale_root(heap);fixed_locale_format(heap,Some(root),0)})".into(),
+                        ("java/text/DateFormat","getTimeInstance","(I)Ljava/text/DateFormat;") if self.multi_classes.is_some()=>"Some({let root=locale_root(heap);fixed_locale_format(heap,Some(root),1)})".into(),
+                        ("java/text/DateFormat","getDateInstance","(ILjava/util/Locale;)Ljava/text/DateFormat;") if self.multi_classes.is_some()=>"Some(fixed_locale_format(heap,x1,0))".into(),
+                        ("java/text/DateFormat","getTimeInstance","(ILjava/util/Locale;)Ljava/text/DateFormat;") if self.multi_classes.is_some()=>"Some(fixed_locale_format(heap,x1,1))".into(),
+                        ("java/text/DateFormat","getDateTimeInstance","()Ljava/text/DateFormat;") if self.multi_classes.is_some()=>"Some({let root=locale_root(heap);fixed_locale_format(heap,Some(root),2)})".into(),
+                        ("java/text/DateFormat","getDateTimeInstance","(II)Ljava/text/DateFormat;") if self.multi_classes.is_some()=>"Some({let root=locale_root(heap);fixed_locale_format(heap,Some(root),2)})".into(),
+                        ("java/text/DateFormat","getDateTimeInstance","(IILjava/util/Locale;)Ljava/text/DateFormat;") if self.multi_classes.is_some()=>"Some(fixed_locale_format(heap,x2,2))".into(),
+                        ("java/text/DateFormat","getInstance","()Ljava/text/DateFormat;") if self.multi_classes.is_some()=>"Some({let root=locale_root(heap);fixed_locale_format(heap,Some(root),2)})".into(),
+                        ("java/text/DateFormat","getNumberFormat","()Ljava/text/NumberFormat;") if self.multi_classes.is_some()=>"Some({let root=locale_root(heap);number_format_get_integer_instance(heap,Some(root))})".into(),
                         ("java/util/HexFormat","of","()Ljava/util/HexFormat;") if self.multi_classes.is_some()=>"Some(hex_format_of(heap))".into(),
                         // El envoltorio vivo no está modelado; gson lo origina sobre un
                         // ArrayList privado que nunca muta, así el snapshot es equivalente.
@@ -4595,6 +4635,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/nio/ByteBuffer","wrap","([B)Ljava/nio/ByteBuffer;") if self.multi_classes.is_some()=>"Some(byte_buffer_wrap(heap,x0))".into(),
                         ("java/nio/ByteBuffer","allocateDirect","(I)Ljava/nio/ByteBuffer;") if self.multi_classes.is_some()=>"Some(byte_buffer_alloc_direct(heap,x0))".into(),
                         ("java/util/HexFormat","fromHexDigits","(Ljava/lang/CharSequence;)I") if self.multi_classes.is_some()=>"hex_from_digits(heap,x0)".into(),
+                        ("java/util/HexFormat","fromHexDigitsToLong","(Ljava/lang/CharSequence;II)J") if self.multi_classes.is_some()=>"hex_from_digits_to_long(heap,x0,x1,x2)".into(),
                         ("java/time/Instant","now","()Ljava/time/Instant;") if self.multi_classes.is_some()=>"Some(instant_now(heap))".into(),
                         ("java/time/Duration","between","(Ljava/time/temporal/Temporal;Ljava/time/temporal/Temporal;)Ljava/time/Duration;") if self.multi_classes.is_some()=>"Some(duration_between_instants(heap,x0,x1))".into(),
                         ("java/time/Duration","ofMillis","(J)Ljava/time/Duration;") if self.multi_classes.is_some()=>"Some(duration_from_millis(heap,x0))".into(),
@@ -4650,6 +4691,26 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/lang/System","getProperty","(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;") if self.multi_classes.is_some()=>"property_get(heap,x0).or(x1)".into(),
                         ("java/lang/System","setProperty","(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;") if self.multi_classes.is_some()=>"property_set(heap,x0,x1)".into(),
                         ("java/lang/System","clearProperty","(Ljava/lang/String;)Ljava/lang/String;") if self.multi_classes.is_some()=>"property_clear(heap,x0)".into(),
+                        ("java/lang/Math","sqrt","(D)D")=>"x0.sqrt()".into(),
+                        ("java/lang/Math","cos","(D)D")=>"x0.cos()".into(),
+                        ("java/lang/Math","sin","(D)D")=>"x0.sin()".into(),
+                        ("java/lang/Math","tan","(D)D")=>"x0.tan()".into(),
+                        ("java/lang/Math","acos","(D)D")=>"x0.acos()".into(),
+                        ("java/lang/Math","asin","(D)D")=>"x0.asin()".into(),
+                        ("java/lang/Math","atan2","(DD)D")=>"x0.atan2(x1)".into(),
+                        ("java/lang/Math","exp","(D)D")=>"x0.exp()".into(),
+                        ("java/lang/Math","ceil","(D)D")=>"x0.ceil()".into(),
+                        ("java/lang/Math","floor","(D)D")=>"x0.floor()".into(),
+                        ("java/lang/Math","rint","(D)D")=>"x0.round_ties_even()".into(),
+                        ("java/lang/Math","round","(D)J")=>"((x0 + 0.5).floor()) as i64".into(),
+                        ("java/lang/Math","round","(F)I")=>"((x0 + 0.5f32).floor()) as i32".into(),
+                        ("java/lang/Math","signum","(D)D")=>"signum_d(x0)".into(),
+                        ("java/lang/Math","signum","(F)F")=>"signum_f(x0)".into(),
+                        ("java/lang/Math","fma","(DDD)D")=>"x0.mul_add(x1,x2)".into(),
+                        ("java/lang/Math","fma","(FFF)F")=>"x0.mul_add(x1,x2)".into(),
+                        ("java/lang/Math","random","()D")=>"random_next(heap)".into(),
+                        ("java/lang/Math","toDegrees","(D)D")=>"x0 * 57.29577951308232f64".into(),
+                        ("java/lang/Math","toRadians","(D)D")=>"x0 * 0.017453292519943295f64".into(),
                         ("java/lang/Math","abs","(I)I")|("java/lang/Math","abs","(J)J") => "x0.wrapping_abs()".to_string(),
                         ("java/lang/Math","abs","(D)D")=>"x0.abs()".into(),
                         ("java/lang/Math","abs","(F)F")=>"x0.abs()".into(),
@@ -4664,6 +4725,18 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/lang/Math","floorDiv","(JJ)J")=>"floor_div_l(x0,x1)".into(),
                         ("java/lang/Math","floorMod","(JJ)J")=>"floor_mod_l(x0,x1)".into(),
                         ("java/lang/Math","addExact","(II)I")=>"x0.checked_add(x1).unwrap_or_else(||raise(\"ArithmeticException\",\"integer overflow\"))".into(),
+                        ("java/lang/Math","addExact","(JJ)J")=>"x0.checked_add(x1).unwrap_or_else(||raise(\"ArithmeticException\",\"integer overflow\"))".into(),
+                        ("java/lang/Math","subtractExact","(II)I")=>"x0.checked_sub(x1).unwrap_or_else(||raise(\"ArithmeticException\",\"integer overflow\"))".into(),
+                        ("java/lang/Math","subtractExact","(JJ)J")=>"x0.checked_sub(x1).unwrap_or_else(||raise(\"ArithmeticException\",\"integer overflow\"))".into(),
+                        ("java/lang/Math","multiplyExact","(II)I")=>"x0.checked_mul(x1).unwrap_or_else(||raise(\"ArithmeticException\",\"integer overflow\"))".into(),
+                        ("java/lang/Math","multiplyExact","(JJ)J")=>"x0.checked_mul(x1).unwrap_or_else(||raise(\"ArithmeticException\",\"integer overflow\"))".into(),
+                        ("java/lang/Math","log","(D)D")=>"x0.ln()".into(),
+                        ("java/lang/Math","log1p","(D)D")=>"x0.ln_1p()".into(),
+                        ("java/lang/Math","pow","(DD)D")=>"x0.powf(x1)".into(),
+                        ("java/lang/Math","copySign","(DD)D")=>"x0.copysign(x1)".into(),
+                        ("java/lang/Math","nextUp","(D)D")=>"x0.next_up()".into(),
+                        ("java/lang/Math","nextDown","(D)D")=>"x0.next_down()".into(),
+                        ("java/lang/Math","getExponent","(D)I")=>"math_get_exponent_d(x0)".into(),
                         ("java/lang/Math","toIntExact","(J)I")=>"int_exact(x0)".into(),
                         ("java/util/Map","entry","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/Map$Entry;") if self.multi_classes.is_some()=>"Some(map_entry_new(heap,x0,x1))".into(),
                         ("java/util/Map","ofEntries","([Ljava/util/Map$Entry;)Ljava/util/Map;") if self.multi_classes.is_some()=>"Some(of_entries(heap,x0))".into(),
@@ -4835,7 +4908,8 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && class=="java/io/StringReader" {"stack.push(V::R(Some(reader_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/util/WeakHashMap" {"error(\"new WeakHashMap: semántica de claves débiles no implementada\");".into()
                     } else if self.multi_classes.is_some() && class=="java/text/DecimalFormat" {"stack.push(V::R(Some(decimal_format_new(heap))));".into()
-                    } else if self.multi_classes.is_some() && class=="java/text/SimpleDateFormat" {"error(\"new SimpleDateFormat: no soportado\");".into()
+                    } else if self.multi_classes.is_some() && class=="java/text/SimpleDateFormat" {"stack.push(V::R(Some(simple_date_format_new_noargs(heap))));".into()
+                    } else if self.multi_classes.is_some() && class=="java/text/ParsePosition" {"stack.push(V::R(Some(parse_position_new(heap,0))));".into()
                     } else if self.multi_classes.is_some() && class=="java/io/FileOutputStream" {"error(\"new FileOutputStream: no soportado\");".into()
                     } else if self.multi_classes.is_some() && class=="java/io/PrintStream" {"error(\"new PrintStream: no soportado\");".into()
                     } else if self.multi_classes.is_some() && class=="java/lang/ref/ReferenceQueue" {"stack.push(V::R(Some(reference_queue_new(heap))));".into()
@@ -4850,6 +4924,8 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         "stack.push(V::R(Some(scheduled_thread_pool_placeholder(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/util/Date" {
                         "stack.push(V::R(Some(date_new(heap))));".into()
+                    } else if self.multi_classes.is_some() && class=="java/lang/StringBuffer" {
+                        "stack.push(V::R(Some(builder_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/lang/StringBuilder" {
                         "stack.push(V::R(Some(builder_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/lang/ThreadLocal" {
@@ -4961,7 +5037,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         self.verify_project_cast_target(name)?;
                         format!("project_instance(heap,r,{name:?},PROJECT_INTERFACES)")
                     } else {
-                        let kind=match name {"java/lang/String"=>"s","java/io/PrintStream" if self.multi_classes.is_some()=>"printstream","java/lang/ClassLoader" if self.multi_classes.is_some()=>"classloader","java/lang/Class" if self.multi_classes.is_some()=>"class","java/util/Optional" if self.multi_classes.is_some()=>"optional","java/util/concurrent/CompletableFuture" if self.multi_classes.is_some() && futures_optin().ok()==Some(true)=>"completedfuture","java/net/URI" if self.multi_classes.is_some()=>"uri","java/nio/file/spi/FileSystemProvider" if self.multi_classes.is_some()=>"zipfsprovider","java/util/BitSet" if self.multi_classes.is_some()=>"bitset","java/lang/Enum" if self.multi_classes.is_some()=>"enum","java/lang/StackWalker$StackFrame" if self.multi_classes.is_some()=>"stackframe","java/util/stream/Stream" if self.multi_classes.is_some()=>"stream","javax/script/ScriptEngineFactory" if self.multi_classes.is_some()=>"scriptfactory","javax/script/Compilable" if self.multi_classes.is_some()=>"compilable","javax/script/CompiledScript" if self.multi_classes.is_some()=>"compiledscript","java/util/concurrent/ScheduledThreadPoolExecutor" if self.multi_classes.is_some()=>"schedpool","java/util/Map" if self.multi_classes.is_some()=>"map","java/util/concurrent/ConcurrentMap" if self.multi_classes.is_some()=>"concurrentmap","java/util/List" if self.multi_classes.is_some()=>"list","java/util/Set" if self.multi_classes.is_some()=>"set","java/util/Properties" if self.multi_classes.is_some()=>"properties","java/lang/Number" if self.multi_classes.is_some()=>"number","java/lang/StringBuilder" if self.multi_classes.is_some()=>"builder","java/io/Reader" if self.multi_classes.is_some()=>"reader","java/io/InputStream" if self.multi_classes.is_some()=>"inputstream","java/lang/Integer" if self.multi_classes.is_some()=>"integer","java/lang/Boolean" if self.multi_classes.is_some()=>"boolean","java/lang/Long" if self.multi_classes.is_some()=>"long","java/lang/Short" if self.multi_classes.is_some()=>"short","java/lang/Character" if self.multi_classes.is_some()=>"character","java/lang/Double" if self.multi_classes.is_some()=>"double","java/lang/Float" if self.multi_classes.is_some()=>"float","java/lang/Byte" if self.multi_classes.is_some()=>"byte","[Ljava/lang/reflect/Type;" if self.multi_classes.is_some()=>"ta","[Ljava/lang/String;"=>"t","java/lang/Object"=>"o","java/net/Proxy" if self.multi_classes.is_some()=>"proxy","java/net/URL" if self.multi_classes.is_some()=>"U","java/net/HttpURLConnection" if self.multi_classes.is_some()=>"httpconnection","java/net/InetSocketAddress" if self.multi_classes.is_some()=>"inetsocketaddress","java/lang/reflect/Type" if self.multi_classes.is_some()=>"type","java/lang/reflect/ParameterizedType" if self.multi_classes.is_some()=>"ptype","java/lang/reflect/GenericArrayType" if self.multi_classes.is_some()=>"gatype","java/lang/reflect/WildcardType" if self.multi_classes.is_some()=>"wtype","java/lang/reflect/TypeVariable" if self.multi_classes.is_some()=>"tvtype","[Ljava/lang/Object;" if self.multi_classes.is_some()=>"A","[Ljava/lang/Enum;" if self.multi_classes.is_some()=>"A","[Ljava/lang/Class;" if self.multi_classes.is_some()=>"C",_=>return Err(format!("checkcast/instanceof no soportado: {name}"))};
+                        let kind=match name {"java/lang/String"=>"s","java/io/PrintStream" if self.multi_classes.is_some()=>"printstream","java/lang/ClassLoader" if self.multi_classes.is_some()=>"classloader","java/lang/Class" if self.multi_classes.is_some()=>"class","java/util/Optional" if self.multi_classes.is_some()=>"optional","java/util/concurrent/CompletableFuture" if self.multi_classes.is_some() && futures_optin().ok()==Some(true)=>"completedfuture","java/net/URI" if self.multi_classes.is_some()=>"uri","java/nio/file/spi/FileSystemProvider" if self.multi_classes.is_some()=>"zipfsprovider","java/util/BitSet" if self.multi_classes.is_some()=>"bitset","java/lang/Enum" if self.multi_classes.is_some()=>"enum","java/lang/StackWalker$StackFrame" if self.multi_classes.is_some()=>"stackframe","java/util/stream/Stream" if self.multi_classes.is_some()=>"stream","javax/script/ScriptEngineFactory" if self.multi_classes.is_some()=>"scriptfactory","javax/script/Compilable" if self.multi_classes.is_some()=>"compilable","javax/script/CompiledScript" if self.multi_classes.is_some()=>"compiledscript","java/util/concurrent/ScheduledThreadPoolExecutor" if self.multi_classes.is_some()=>"schedpool","java/util/Map" if self.multi_classes.is_some()=>"map","java/util/concurrent/ConcurrentMap" if self.multi_classes.is_some()=>"concurrentmap","java/util/List" if self.multi_classes.is_some()=>"list","java/util/Set" if self.multi_classes.is_some()=>"set","java/util/Properties" if self.multi_classes.is_some()=>"properties","java/lang/Number" if self.multi_classes.is_some()=>"number","java/lang/StringBuilder" if self.multi_classes.is_some()=>"builder","java/lang/StringBuffer" if self.multi_classes.is_some()=>"builder","java/io/Reader" if self.multi_classes.is_some()=>"reader","java/io/InputStream" if self.multi_classes.is_some()=>"inputstream","java/lang/Integer" if self.multi_classes.is_some()=>"integer","java/lang/Boolean" if self.multi_classes.is_some()=>"boolean","java/lang/Long" if self.multi_classes.is_some()=>"long","java/lang/Short" if self.multi_classes.is_some()=>"short","java/lang/Character" if self.multi_classes.is_some()=>"character","java/lang/Double" if self.multi_classes.is_some()=>"double","java/lang/Float" if self.multi_classes.is_some()=>"float","java/lang/Byte" if self.multi_classes.is_some()=>"byte","[Ljava/lang/reflect/Type;" if self.multi_classes.is_some()=>"ta","[Ljava/lang/String;"=>"t","java/lang/Object"=>"o","java/net/Proxy" if self.multi_classes.is_some()=>"proxy","java/net/URL" if self.multi_classes.is_some()=>"U","java/net/HttpURLConnection" if self.multi_classes.is_some()=>"httpconnection","java/net/InetSocketAddress" if self.multi_classes.is_some()=>"inetsocketaddress","java/lang/reflect/Type" if self.multi_classes.is_some()=>"type","java/lang/reflect/ParameterizedType" if self.multi_classes.is_some()=>"ptype","java/lang/reflect/GenericArrayType" if self.multi_classes.is_some()=>"gatype","java/lang/reflect/WildcardType" if self.multi_classes.is_some()=>"wtype","java/lang/reflect/TypeVariable" if self.multi_classes.is_some()=>"tvtype","[Ljava/lang/Object;" if self.multi_classes.is_some()=>"A","[Ljava/lang/Enum;" if self.multi_classes.is_some()=>"A","[Ljava/lang/Class;" if self.multi_classes.is_some()=>"C",_=>return Err(format!("checkcast/instanceof no soportado: {name}"))};
                         format!("builtin_instance(heap,r,{kind:?})")
                     };
                     if op==0xc0 {format!("let r=pop_r(&mut stack);if r.is_some()&&!{pred} {{raise(\"ClassCastException\",\"\");}}stack.push(V::R(r));")}

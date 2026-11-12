@@ -292,11 +292,11 @@ struct UrlParts{scheme:String,host:String,port:i32,file:String,query:Option<Stri
 struct HttpUrlConnection{url:usize,method:&'static str,request_properties:Vec<(String,String)>,connect_timeout:i32,read_timeout:i32,use_caches:bool,do_output:bool}
 struct GsonBuilderState{adapters:Vec<(String,usize)>,hierarchy:Vec<(String,usize)>}
 struct ForkJoinPoolState{parallelism:i32,async_mode:bool,factory:Option<usize>,handler:Option<usize>}
-enum Array { Z(Vec<bool>), B(Vec<i8>), C(Vec<u16>), S(Vec<i16>), I(Vec<i32>), J(Vec<i64>), F(Vec<f32>), D(Vec<f64>), Strings(Vec<Option<usize>>), Str(Vec<u16>), Boolean(bool), Integer(i32), Long(i64), Byte(i8), Short(i16), Character(u16), Float(f32), Double(f64), StackOption, TimeUnit(u8), StackWalker(bool), StackWalkStream(Vec<&'static str>,usize,bool,usize,bool), StackStage(usize,bool,u8,usize), StackFrame(&'static str,bool), Duration(i64,i32), CompletableFuture(FutureState), ScheduledThreadPool(ScheduledThreadPoolExecutor), ScheduledFuture(bool), Url(Option<Vec<u16>>), HttpUrlConnection(HttpUrlConnection), GsonBuilder(GsonBuilderState), Gson(GsonBuilderState), CacheBuilder(LoadingCacheState), LoadingCache(LoadingCacheState), AtomicRef(Option<usize>), AtomicLong(i64), AtomicInteger(i32), ReentrantLock(i32), ReadWriteLock(i32,i32,Option<usize>,Option<usize>), ReadLock(usize), WriteLock(usize), CurrentProcess, CurrentThread(bool,usize), RuntimeSingleton, RuntimePermission(Option<usize>), WeakLoader(Option<usize>), ReferenceQueue, WeakHashMap(Vec<(Option<usize>,Option<usize>)>), Collector(usize,usize,usize), JoinCollector(Option<usize>,Option<usize>,Option<usize>), Comparing(usize), ComparingThen(usize,usize), ComparingKey(usize,usize), BaseModule, BootLayer, JfrModule, Lambda(usize,&'static str,Vec<V>), IdentityFunction, IsoInstantFormatter, RootLocale, Path(String,Option<usize>), File(Option<String>,Option<usize>), CrashDateFormatter, Optional(Option<usize>), Pattern(usize,i32), Matcher(usize,usize,Option<(usize,usize,Option<(usize,usize)>)>), Uuid([u8;16]), Date(i64), Zoned(i64,i32), Instant(i64,i32), ResourceStream(&'static [u8],usize,bool), ByteInput(Option<usize>,usize,usize,usize), FileInput(Option<std::fs::File>), FileOutput(Option<std::fs::File>), Uri(usize), Properties(std::collections::HashMap<Vec<u16>,usize>), PropertiesEntries(usize), PropertiesEmptyIter(usize), Utf8Charset, Reader(Option<usize>,Option<Vec<u16>>,usize,bool), Builder(Vec<u16>), Stdout, Stderr, Exception(&'static str,&'static str,Option<usize>), Obj(&'static str,Vec<V>), SharedObj(&'static str,NumericObjectHandle), LocalObj(&'static str,Vec<V>,Option<usize>), Map(Vec<(usize,usize)>,usize,bool), HashMap(Vec<(Option<usize>,Option<usize>)>), IdentityMap(Vec<(Option<usize>,Option<usize>)>), IdentitySet(usize), LinkedMap(Vec<(Option<usize>,Option<usize>)>,i32), LinkedIter(usize,Vec<Option<usize>>,usize,i32), TreeMap(Vec<(usize,Option<usize>)>,i32), TreeEntries(usize), TreeEntry(usize,usize,i32), TreeIter(usize,Vec<usize>,usize,i32,bool), EmptyMap, EnumSet(Vec<usize>), EnumSetIter(Vec<usize>,usize), EmptyList, EmptySet, ImmutableSet(Vec<Option<usize>>), ImmutableList(Vec<Option<usize>>), EmptyIterator, MapValues(usize), Queue(std::collections::VecDeque<usize>), ConcurrentQueue(std::collections::VecDeque<usize>), ConcurrentDeque(std::collections::VecDeque<usize>), Deque(std::collections::VecDeque<usize>), Local(Option<usize>), SuppliedLocal(usize,Option<Option<usize>>), Class(&'static str), List(Vec<Option<usize>>,i32), ArraysList(usize), ArraysListIter(usize,usize), Set(Vec<Option<usize>>,i32), HashSet(Vec<Option<usize>>,i32), KeySet(Vec<Option<usize>>,i32), AppLoader, PlatformLoader, Refs(u8,Vec<Option<usize>>), ProjectRefs(&'static str,Vec<Option<usize>>), SharedRefs(&'static str,NumericArrayHandle), Constructor(&'static str), ReflectMethod(usize), Service(&'static str,&'static [&'static str],usize,Vec<usize>), ServiceIter(usize,usize), LazyStream(usize,bool,Option<usize>,bool), SortedStream(usize,bool,usize), MappedStream(usize,bool,usize), StreamSink(Vec<usize>,usize), ListIter(usize,usize,i32), SetIter(usize,Vec<Option<usize>>,usize,i32), EmptyEnumeration, ForkJoinPool(ForkJoinPoolState), ThreadPoolExecutor(Option<usize>), ZipFsProvider, ComparingInt(usize), ComparingNatural, BitSet(Vec<u64>), ToListMarker, ToImmutableListMarker, ToSetMarker, ToUnmodifiableSetMarker, IntStream(i32,i32), IntStreamClosed, VirtualThreadLookup, VirtualThreadHandle, MethodTypeBoolean, ImmutableMap(Vec<(Option<usize>,Option<usize>)>), ToMapMarker(usize,usize), ToUnmodifiableMapMarker(usize,usize), ScopedValue(bool,Option<usize>), ScopedCarrier(usize,Option<usize>), DecimalFormat(Vec<u16>,Option<usize>), DecimalFormatSymbols(usize), HexFormat(bool), ByteBuffer(Vec<i8>), HashFn(&'static str), HashCode([u8;16]), Proxy(u8), BufferedOutput(usize,Vec<u8>), GzipOut(usize,flate2::write::GzEncoder<Vec<u8>>), DeflateOut(usize,flate2::write::DeflateEncoder<Vec<u8>>), GzipIn(usize,Option<Vec<u8>>,usize), DeflateIn(usize,Option<Vec<u8>>,usize), BufferedWriter(usize), Logger(Option<usize>), Level(u8), SelectorProviderMarker, UpdaterMarker(Option<usize>), AtomicBoolean(bool), RoundingMode(u8), ByteOrderLittle, ByteOrderBig, ToUnmodifiableListMarker }
+enum Array { Z(Vec<bool>), B(Vec<i8>), C(Vec<u16>), S(Vec<i16>), I(Vec<i32>), J(Vec<i64>), F(Vec<f32>), D(Vec<f64>), Strings(Vec<Option<usize>>), Str(Vec<u16>), Boolean(bool), Integer(i32), Long(i64), Byte(i8), Short(i16), Character(u16), Float(f32), Double(f64), StackOption, TimeUnit(u8), StackWalker(bool), StackWalkStream(Vec<&'static str>,usize,bool,usize,bool), StackStage(usize,bool,u8,usize), StackFrame(&'static str,bool), Duration(i64,i32), CompletableFuture(FutureState), ScheduledThreadPool(ScheduledThreadPoolExecutor), ScheduledFuture(bool), Url(Option<Vec<u16>>), HttpUrlConnection(HttpUrlConnection), GsonBuilder(GsonBuilderState), Gson(GsonBuilderState), CacheBuilder(LoadingCacheState), LoadingCache(LoadingCacheState), AtomicRef(Option<usize>), AtomicLong(i64), AtomicInteger(i32), ReentrantLock(i32), ReadWriteLock(i32,i32,Option<usize>,Option<usize>), ReadLock(usize), WriteLock(usize), CurrentProcess, CurrentThread(bool,usize), RuntimeSingleton, RuntimePermission(Option<usize>), WeakLoader(Option<usize>), ReferenceQueue, WeakHashMap(Vec<(Option<usize>,Option<usize>)>), Collector(usize,usize,usize), JoinCollector(Option<usize>,Option<usize>,Option<usize>), Comparing(usize), ComparingThen(usize,usize), ComparingKey(usize,usize), BaseModule, BootLayer, JfrModule, Lambda(usize,&'static str,Vec<V>), IdentityFunction, IsoInstantFormatter, RootLocale, Path(String,Option<usize>), File(Option<String>,Option<usize>), CrashDateFormatter, Optional(Option<usize>), Pattern(usize,i32), Matcher(usize,usize,Option<(usize,usize,Option<(usize,usize)>)>), Uuid([u8;16]), Date(i64), Zoned(i64,i32), Instant(i64,i32), ResourceStream(&'static [u8],usize,bool), ByteInput(Option<usize>,usize,usize,usize), FileInput(Option<std::fs::File>), FileOutput(Option<std::fs::File>), Uri(usize), Properties(std::collections::HashMap<Vec<u16>,usize>), PropertiesEntries(usize), PropertiesEmptyIter(usize), Utf8Charset, Reader(Option<usize>,Option<Vec<u16>>,usize,bool), Builder(Vec<u16>), Stdout, Stderr, Exception(&'static str,&'static str,Option<usize>), Obj(&'static str,Vec<V>), SharedObj(&'static str,NumericObjectHandle), LocalObj(&'static str,Vec<V>,Option<usize>), Map(Vec<(usize,usize)>,usize,bool), HashMap(Vec<(Option<usize>,Option<usize>)>), IdentityMap(Vec<(Option<usize>,Option<usize>)>), IdentitySet(usize), LinkedMap(Vec<(Option<usize>,Option<usize>)>,i32), LinkedIter(usize,Vec<Option<usize>>,usize,i32), TreeMap(Vec<(usize,Option<usize>)>,i32), TreeEntries(usize), TreeEntry(usize,usize,i32), TreeIter(usize,Vec<usize>,usize,i32,bool), EmptyMap, EnumSet(Vec<usize>), EnumSetIter(Vec<usize>,usize), EmptyList, EmptySet, ImmutableSet(Vec<Option<usize>>), ImmutableList(Vec<Option<usize>>), EmptyIterator, MapValues(usize), Queue(std::collections::VecDeque<usize>), ConcurrentQueue(std::collections::VecDeque<usize>), ConcurrentDeque(std::collections::VecDeque<usize>), Deque(std::collections::VecDeque<usize>), Local(Option<usize>), SuppliedLocal(usize,Option<Option<usize>>), Class(&'static str), List(Vec<Option<usize>>,i32), ArraysList(usize), ArraysListIter(usize,usize), Set(Vec<Option<usize>>,i32), HashSet(Vec<Option<usize>>,i32), KeySet(Vec<Option<usize>>,i32), AppLoader, PlatformLoader, Refs(u8,Vec<Option<usize>>), ProjectRefs(&'static str,Vec<Option<usize>>), SharedRefs(&'static str,NumericArrayHandle), Constructor(&'static str), ReflectMethod(usize), Service(&'static str,&'static [&'static str],usize,Vec<usize>), ServiceIter(usize,usize), LazyStream(usize,bool,Option<usize>,bool), SortedStream(usize,bool,usize), MappedStream(usize,bool,usize), StreamSink(Vec<usize>,usize), ListIter(usize,usize,i32), SetIter(usize,Vec<Option<usize>>,usize,i32), EmptyEnumeration, ForkJoinPool(ForkJoinPoolState), ThreadPoolExecutor(Option<usize>), ZipFsProvider, ComparingInt(usize), ComparingNatural, BitSet(Vec<u64>), ToListMarker, ToImmutableListMarker, ToSetMarker, ToUnmodifiableSetMarker, IntStream(i32,i32), IntStreamClosed, VirtualThreadLookup, VirtualThreadHandle, MethodTypeBoolean, ImmutableMap(Vec<(Option<usize>,Option<usize>)>), ToMapMarker(usize,usize), ToUnmodifiableMapMarker(usize,usize), ScopedValue(bool,Option<usize>), ScopedCarrier(usize,Option<usize>), DecimalFormat(Vec<u16>,Option<usize>,bool,i32), DecimalFormatSymbols(usize), HexFormat(bool,Option<usize>), ByteBuffer(Vec<i8>), HashFn(&'static str), HashCode([u8;16]), Proxy(u8), BufferedOutput(usize,Vec<u8>), GzipOut(usize,flate2::write::GzEncoder<Vec<u8>>), DeflateOut(usize,flate2::write::DeflateEncoder<Vec<u8>>), GzipIn(usize,Option<Vec<u8>>,usize), DeflateIn(usize,Option<Vec<u8>>,usize), BufferedWriter(usize), Logger(Option<usize>), Level(u8), SelectorProviderMarker, UpdaterMarker(Option<usize>), AtomicBoolean(bool), RoundingMode(u8), SimpleDateFormat(Vec<u16>,usize,bool), ParsePosition(i32,i32), ByteOrderLittle, ByteOrderBig, ToUnmodifiableListMarker }
 impl Array {
     fn len(&self)->usize {match self {Self::Z(v)=>v.len(),Self::B(v)=>v.len(),Self::C(v)=>v.len(),Self::S(v)=>v.len(),Self::I(v)=>v.len(),Self::J(v)=>v.len(),Self::F(v)=>v.len(),Self::D(v)=>v.len(),Self::Strings(v)=>v.len(),Self::Refs(_,v)=>v.len(),Self::ProjectRefs(_,v)=>v.len(),Self::SharedRefs(_,a)=>a.slots.lock().map(|s|s.len()).unwrap_or(0),_=>panic!("se esperaba array")}}
 }
-#[derive(Default)] struct Heap { bridge_owner:std::sync::Arc<()>, arrays:Vec<Array>, elements:usize, fields:Vec<V>, interfaces:&'static [(&'static str,&'static str)], init_states:Vec<u8>, intern:std::collections::HashMap<Vec<u16>,usize>, stdout:Option<usize>, stderr:Option<usize>, properties:Option<std::collections::HashMap<Vec<u16>,usize>>, classes:std::collections::HashMap<&'static str,usize>, simple_names:std::collections::HashMap<&'static str,usize>, monitors:std::collections::HashMap<usize,usize>, app_loader:Option<usize>, platform_loader:Option<usize>, context_loader:Option<Option<usize>>, time_units:[Option<usize>;7], enum_values:std::collections::HashMap<usize,(Option<usize>,i32)>, enum_directories:std::collections::HashMap<&'static str,Vec<(usize,usize)>>, causes:std::collections::HashMap<usize,usize>, suppressed:std::collections::HashMap<usize,Vec<usize>>, map_views:std::collections::HashMap<usize,usize>, booleans:[Option<usize>;2], parents:std::collections::HashMap<&'static str,&'static str>, exception_messages:std::collections::HashMap<usize,Option<usize>>, uri_syntax:std::collections::HashMap<usize,(usize,usize,i32)>, uri_schemes:std::collections::HashMap<usize,usize>, uri_paths:std::collections::HashMap<usize,usize>, stack_option:Option<usize>, default_stack_walker:Option<usize>, duration_zero:Option<usize>, integers:std::collections::HashMap<i32,usize>, longs:std::collections::HashMap<i64,usize>, bytes:std::collections::HashMap<i8,usize>, shorts:std::collections::HashMap<i16,usize>, characters:std::collections::HashMap<u16,usize>, tree_entry_views:std::collections::HashMap<usize,usize>, active_maps:Vec<usize>, identity_function:Option<usize>, iso_instant:Option<usize>, root_locale:Option<usize>, decimal_symbols_root:Option<usize>, hex_default:Option<usize>, hex_upper:Option<usize>, builder_caps:std::collections::HashMap<usize,(i32,bool)>, optional_empty:Option<usize>, utf8_charset:Option<usize>, empty_map:Option<usize>, empty_list:Option<usize>, empty_set:Option<usize>, zip_fs_provider:Option<usize>, proxy_no_proxy:Option<usize>, immutable_empty:Option<usize>, empty_iterator:Option<usize>, current_process:Option<usize>, runtime_singleton:Option<usize>, line_separator:Option<usize>, base_module:Option<usize>, boot_layer:Option<usize>, jfr_module:Option<usize>, lambdas:std::collections::HashMap<usize,usize>, spliterators:std::collections::HashMap<usize,(i64,i32)>, walk_scopes:Vec<bool>, rounding_mode_ceiling:Option<usize>, byte_order_little:Option<usize>, byte_order_big:Option<usize>, base64_states:std::collections::HashMap<usize,(u8,bool,i32,Vec<u8>)>, packages:std::collections::HashMap<usize,(Vec<u16>,Option<Vec<u16>>,Option<Vec<u16>>,Option<Vec<u16>>,Option<Vec<u16>>)> }
+#[derive(Default)] struct Heap { bridge_owner:std::sync::Arc<()>, arrays:Vec<Array>, elements:usize, fields:Vec<V>, interfaces:&'static [(&'static str,&'static str)], init_states:Vec<u8>, intern:std::collections::HashMap<Vec<u16>,usize>, stdout:Option<usize>, stderr:Option<usize>, properties:Option<std::collections::HashMap<Vec<u16>,usize>>, classes:std::collections::HashMap<&'static str,usize>, simple_names:std::collections::HashMap<&'static str,usize>, monitors:std::collections::HashMap<usize,usize>, app_loader:Option<usize>, platform_loader:Option<usize>, context_loader:Option<Option<usize>>, time_units:[Option<usize>;7], enum_values:std::collections::HashMap<usize,(Option<usize>,i32)>, enum_directories:std::collections::HashMap<&'static str,Vec<(usize,usize)>>, causes:std::collections::HashMap<usize,usize>, suppressed:std::collections::HashMap<usize,Vec<usize>>, map_views:std::collections::HashMap<usize,usize>, booleans:[Option<usize>;2], parents:std::collections::HashMap<&'static str,&'static str>, exception_messages:std::collections::HashMap<usize,Option<usize>>, uri_syntax:std::collections::HashMap<usize,(usize,usize,i32)>, uri_schemes:std::collections::HashMap<usize,usize>, uri_paths:std::collections::HashMap<usize,usize>, stack_option:Option<usize>, default_stack_walker:Option<usize>, duration_zero:Option<usize>, integers:std::collections::HashMap<i32,usize>, longs:std::collections::HashMap<i64,usize>, bytes:std::collections::HashMap<i8,usize>, shorts:std::collections::HashMap<i16,usize>, characters:std::collections::HashMap<u16,usize>, tree_entry_views:std::collections::HashMap<usize,usize>, active_maps:Vec<usize>, identity_function:Option<usize>, iso_instant:Option<usize>, root_locale:Option<usize>, decimal_symbols_root:Option<usize>, hex_default:Option<usize>, hex_upper:Option<usize>, builder_caps:std::collections::HashMap<usize,(i32,bool)>, optional_empty:Option<usize>, utf8_charset:Option<usize>, empty_map:Option<usize>, empty_list:Option<usize>, empty_set:Option<usize>, zip_fs_provider:Option<usize>, proxy_no_proxy:Option<usize>, immutable_empty:Option<usize>, empty_iterator:Option<usize>, current_process:Option<usize>, runtime_singleton:Option<usize>, line_separator:Option<usize>, base_module:Option<usize>, boot_layer:Option<usize>, jfr_module:Option<usize>, lambdas:std::collections::HashMap<usize,usize>, spliterators:std::collections::HashMap<usize,(i64,i32)>, walk_scopes:Vec<bool>, rounding_mode_ceiling:Option<usize>, byte_order_little:Option<usize>, byte_order_big:Option<usize>, base64_states:std::collections::HashMap<usize,(u8,bool,i32,Vec<u8>)>, packages:std::collections::HashMap<usize,(Vec<u16>,Option<Vec<u16>>,Option<Vec<u16>>,Option<Vec<u16>>,Option<Vec<u16>>)>, random_seed:u64 }
 fn fence_release(){std::sync::atomic::fence(std::sync::atomic::Ordering::Release)}
 fn fence_acquire(){std::sync::atomic::fence(std::sync::atomic::Ordering::Acquire)}
 fn fence_seqcst(){std::sync::atomic::fence(std::sync::atomic::Ordering::SeqCst)}
@@ -1532,7 +1532,7 @@ fn exception_matches(kind:&str,catch:&str)->bool {
     }
     let mut t=kind;
     loop {
-        let full=match t {"URISyntaxException"=>"java/net/URISyntaxException".to_owned(),"IOException"=>"java/io/IOException".to_owned(),"FileNotFoundException"=>"java/io/FileNotFoundException".to_owned(),"EOFException"=>"java/io/EOFException".to_owned(),"FileSystemException"|"NoSuchFileException"|"AccessDeniedException"=>format!("java/nio/file/{t}"),"UncheckedIOException"=>"java/io/UncheckedIOException".to_owned(),"DateTimeException"=>"java/time/DateTimeException".to_owned(),"InvocationTargetException"=>"java/lang/reflect/InvocationTargetException".to_owned(),"ServiceConfigurationError"=>"java/util/ServiceConfigurationError".to_owned(),"NoSuchElementException"=>"java/util/NoSuchElementException".to_owned(),"ConcurrentModificationException"=>"java/util/ConcurrentModificationException".to_owned(),"MalformedURLException"=>"java/net/MalformedURLException".to_owned(),"ProtocolException"=>"java/net/ProtocolException".to_owned(),"JsonParseException"=>"com/google/gson/JsonParseException".to_owned(),"MalformedInputException"=>"java/nio/charset/MalformedInputException".to_owned(),_=>format!("java/lang/{t}")};
+        let full=match t {"URISyntaxException"=>"java/net/URISyntaxException".to_owned(),"IOException"=>"java/io/IOException".to_owned(),"FileNotFoundException"=>"java/io/FileNotFoundException".to_owned(),"EOFException"=>"java/io/EOFException".to_owned(),"FileSystemException"|"NoSuchFileException"|"AccessDeniedException"=>format!("java/nio/file/{t}"),"UncheckedIOException"=>"java/io/UncheckedIOException".to_owned(),"DateTimeException"=>"java/time/DateTimeException".to_owned(),"InvocationTargetException"=>"java/lang/reflect/InvocationTargetException".to_owned(),"ServiceConfigurationError"=>"java/util/ServiceConfigurationError".to_owned(),"NoSuchElementException"=>"java/util/NoSuchElementException".to_owned(),"ConcurrentModificationException"=>"java/util/ConcurrentModificationException".to_owned(),"MalformedURLException"=>"java/net/MalformedURLException".to_owned(),"ProtocolException"=>"java/net/ProtocolException".to_owned(),"JsonParseException"=>"com/google/gson/JsonParseException".to_owned(),"MalformedInputException"=>"java/nio/charset/MalformedInputException".to_owned(),"ParseException"=>"java/text/ParseException".to_owned(),_=>format!("java/lang/{t}")};
         if full==catch {return true;}
         t=match t {
             "Throwable"=>return false,
@@ -1543,7 +1543,7 @@ fn exception_matches(kind:&str,catch:&str)->bool {
             "NoSuchFieldError"|"NoSuchMethodError"|"AbstractMethodError"|"InstantiationError"=>"IncompatibleClassChangeError",
             "ExceptionInInitializerError"|"NoClassDefFoundError"=>"LinkageError",
             "NoSuchFileException"|"AccessDeniedException"=>"FileSystemException",
-            "FileSystemException"|"FileNotFoundException"|"EOFException"|"MalformedURLException"|"ProtocolException"|"MalformedInputException"=>"IOException",
+            "FileSystemException"|"FileNotFoundException"|"EOFException"|"MalformedURLException"|"ProtocolException"|"MalformedInputException"=>"IOException","ParseException"=>"Exception",
             "JsonParseException"=>"RuntimeException",
             "IOException"|"URISyntaxException"|"RuntimeException"|"ReflectiveOperationException"|"InterruptedException"=>"Exception",
             "ClassNotFoundException"|"NoSuchMethodException"|"InstantiationException"|"IllegalAccessException"|"InvocationTargetException"=>"ReflectiveOperationException",
@@ -2153,9 +2153,250 @@ fn list_random_access_instance(h:&Heap,r:Option<usize>)->bool{let id=array_id(h,
 // DecimalFormat mínimo: el patrón se almacena tal cual (sin validar); el formateo
 // aún no está modelado y aborta explícitamente si se alcanza. Los símbolos deben
 // proceder de DecimalFormatSymbols.getInstance para el locale dado.
-fn decimal_format_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::DecimalFormat(Vec::new(),None));id}
+fn decimal_format_new(h:&mut Heap)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::DecimalFormat(Vec::new(),None,true,-1));id}
 fn decimal_symbols_get_instance(h:&mut Heap,locale:Option<usize>)->usize{let id=array_id(h,locale);if !matches!(h.arrays[id],Array::RootLocale){error("DecimalFormatSymbols.getInstance: solo Locale.ROOT soportado en el perfil");}if let Some(id)=h.decimal_symbols_root{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::DecimalFormatSymbols(id));h.decimal_symbols_root=Some(out);out}
-fn decimal_format_init(h:&mut Heap,r:Option<usize>,pattern:Option<usize>,symbols:Option<usize>){let id=array_id(h,r);let sid=array_id(h,symbols);if !matches!(h.arrays[sid],Array::DecimalFormatSymbols(_)){error("DecimalFormat.<init>: símbolos fuera del perfil");}let p=string_units(h,pattern).to_vec();match &mut h.arrays[id]{Array::DecimalFormat(v,s)=>{*v=p;*s=Some(sid);},_=>error("DecimalFormat: receptor fuera del perfil")}}
+fn math_get_exponent_d(v:f64)->i32{let bits=v.to_bits();let raw=((bits>>52)&0x7ff) as i32;if raw==0{-1023}else if raw==0x7ff{1024}else{raw-1023}}
+fn random_next(h:&mut Heap)->f64{if h.random_seed==0{let n=std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d|d.as_nanos() as u64).unwrap_or(0x9e3779b97f4a7c15);h.random_seed=(n^0x9e3779b97f4a7c15)|1;}let mut x=h.random_seed;x^=x<<13;x^=x>>7;x^=x<<17;h.random_seed=x;(x>>11) as f64/9007199254740992.0}
+fn signum_d(v:f64)->f64{if v==0.0||v.is_nan(){v}else if v>0.0{1.0}else{-1.0}}
+fn signum_f(v:f32)->f32{if v==0.0||v.is_nan(){v}else if v>0.0{1.0}else{-1.0}}
+struct ParsedDecimal{pos_prefix:Vec<u16>,pos_suffix:Vec<u16>,neg_prefix:Vec<u16>,neg_suffix:Vec<u16>,int_min:i32,frac_min:i32,frac_max:i32,grouping:bool,sci:bool,exp_min:i32,exp_plus:bool,sci_int_digits:i32}
+fn parse_decimal_sub(units:&[u16],body:Option<(i32,i32,i32,bool,bool,i32,bool,i32)>)->(Vec<u16>,Vec<u16>,(i32,i32,i32,bool,bool,i32,bool,i32)){
+    let core_char=|c:u16|matches!(c,0x30..=0x39|0x23|0x2e|0x2c);
+    let first=units.iter().position(|&c|core_char(c));
+    let mut last:Option<usize>=None;
+    for (i,&c) in units.iter().enumerate(){if core_char(c){last=Some(i);}}
+    match (first,last){
+        (Some(f),Some(l)) if f<=l => {
+            let prefix=units[..f].to_vec();let suffix=units[l+1..].to_vec();let core=&units[f..=l];
+            let epos=core.iter().position(|&c|c==0x45||c==0x65);
+            let (mantissa,exp_part):(&[u16],Option<&[u16]>)=match epos{Some(i)=>(&core[..i],Some(&core[i+1..])),None=>(core,None)};
+            let dpos=mantissa.iter().position(|&c|c==0x2e);
+            let (int_p,frac_p):(&[u16],&[u16])=match dpos{Some(i)=>(&mantissa[..i],&mantissa[i+1..]),None=>(mantissa,&[])};
+            let is_digit=|c:u16|c==0x30||c==0x23;
+            let int_digits=int_p.iter().filter(|&&c|is_digit(c)).count() as i32;
+            let int_min=int_p.iter().filter(|&&c|c==0x30).count() as i32;
+            let frac_max=frac_p.iter().filter(|&&c|is_digit(c)).count() as i32;
+            let frac_min=frac_p.iter().filter(|&&c|c==0x30).count() as i32;
+            let grouping=int_p.iter().any(|&c|c==0x2c);
+            let sci=exp_part.is_some();
+            let sci_int_digits=int_digits.max(1);
+            let (exp_min,exp_plus)=exp_part.map(|ep|{let mut idx=0;let mut sign_plus=false;if !ep.is_empty()&&(ep[0]==0x2b||ep[0]==0x2d){sign_plus=ep[0]==0x2b;idx=1;}(ep[idx..].iter().filter(|&&c|c==0x30).count() as i32,sign_plus)}).unwrap_or((0,false));
+            (prefix,suffix,(int_min,frac_min,frac_max,grouping,sci,exp_min,exp_plus,sci_int_digits))
+        }
+        _ => match body {
+            Some(b) => (units.to_vec(),Vec::new(),b),
+            None => (units.to_vec(),Vec::new(),(0,0,0,false,false,0,false,1)),
+        }
+    }
+}
+fn parse_decimal_pattern(units:&[u16])->ParsedDecimal{
+    let semi=units.iter().position(|&c|c==0x3b);
+    let (pos_u,neg_u):(&[u16],Option<&[u16]>)=match semi{Some(i)=>(&units[..i],Some(&units[i+1..])),None=>(units,None)};
+    let (pos_prefix,pos_suffix,body)=parse_decimal_sub(pos_u,None);
+    let (int_min,frac_min,frac_max,grouping,sci,exp_min,exp_plus,sci_int_digits)=body;
+    let (neg_prefix,neg_suffix)=match neg_u{
+        Some(nu) => {
+            if nu.iter().any(|&c|c==0x30||c==0x23){let (p,s,_)=parse_decimal_sub(nu,Some(body));(p,s)}
+            else {(nu.to_vec(),Vec::new())}
+        }
+        None => {let mut p=vec![0x2d];p.extend_from_slice(&pos_prefix);(p,pos_suffix.clone())}
+    };
+    ParsedDecimal{pos_prefix,pos_suffix,neg_prefix,neg_suffix,int_min,frac_min,frac_max,grouping,sci,exp_min,exp_plus,sci_int_digits}
+}
+fn utf16_digits(v:u128)->Vec<u16>{v.to_string().encode_utf16().collect()}
+fn push_grouped(units:&mut Vec<u16>,digits:&[u16],grouping:bool){
+    if !grouping{units.extend_from_slice(digits);return;}
+    let len=digits.len();
+    for (i,&d) in digits.iter().enumerate(){if i>0&&(len-i)%3==0{units.push(0x2c);}units.push(d);}
+}
+fn push_frac(units:&mut Vec<u16>,frac_v:u128,frac_len:usize,frac_min:i32,frac_max:i32)->bool{
+    if frac_max==0{return false;}
+    let mut digits:Vec<u16>=frac_v.to_string().encode_utf16().collect();
+    while digits.len()<frac_len{digits.insert(0,b'0' as u16);}
+    let mut keep=frac_max;
+    while keep>frac_min&&keep>0&&digits[keep as usize-1]==b'0' as u16{keep-=1;}
+    if keep==0{return false;}
+    digits.truncate(keep as usize);
+    units.push(0x2e);units.extend_from_slice(&digits);true
+}
+fn decimal_format_pad_int(units:&mut Vec<u16>,int_v:u128,int_min:i32,grouping:bool){
+    let mut digits=utf16_digits(int_v);
+    while (digits.len() as i32)<int_min{digits.insert(0,b'0' as u16);}
+    push_grouped(units,&digits,grouping);
+}
+fn decimal_format_format_double(h:&mut Heap,r:Option<usize>,v:f64)->usize{
+    let id=array_id(h,r);
+    let (pattern,symbols,grouping_flag,max_frac_override)=match &h.arrays[id]{Array::DecimalFormat(p,s,g,m)=>(p.clone(),*s,*g,*m),_=>error("DecimalFormat.format: receptor fuera del perfil")};
+    let sid=symbols.unwrap_or_else(||error("DecimalFormat.format: sin símbolos"));
+    if !matches!(h.arrays[sid],Array::DecimalFormatSymbols(_)){error("DecimalFormat.format: símbolos fuera del perfil")}
+    let pd=parse_decimal_pattern(&pattern);
+    let frac_max=if max_frac_override>=0{max_frac_override}else{pd.frac_max};
+    let frac_min=pd.frac_min.min(frac_max);
+    let grouping=pd.grouping&&grouping_flag;
+    let neg=!v.is_nan()&&(v<0.0||(v==0.0&&v.is_sign_negative()));
+    let prefix=if neg{&pd.neg_prefix}else{&pd.pos_prefix};
+    let suffix=if neg{&pd.neg_suffix}else{&pd.pos_suffix};
+    let mut units:Vec<u16>=prefix.clone();
+    if v.is_nan(){units.extend_from_slice(&[0x004e,0x0061,0x004e]);units.extend_from_slice(suffix);return new_string(h,units);}
+    if v.is_infinite(){units.push(0x221e);units.extend_from_slice(suffix);return new_string(h,units);}
+    let av=v.abs();
+    if pd.sci{
+        let step=pd.sci_int_digits;
+        let (e,mantissa):(i32,f64);
+        if av==0.0{e=0;mantissa=0.0;}
+        else{
+            let mut e0=av.log10().floor() as i32;
+            let mut p=10f64.powi(e0);
+            if av<p{e0-=1;}else if av>=p*10.0{e0+=1;}
+            let mut e2=e0-e0.rem_euclid(step);
+            let mut mant=av/10f64.powi(e2);
+            let scale=10f64.powi(frac_max);
+            let rm=(mant*scale).round_ties_even()/scale;
+            if rm>=10f64.powi(step){mant=rm/10f64.powi(step);e2+=step;}else{mant=rm;}
+            e=e2;mantissa=mant;
+        }
+        if frac_max<=15{
+            let scale=10f64.powi(frac_max) as i128;
+            let m=(mantissa*scale as f64).round_ties_even() as i128;
+            let int_v=(m/scale) as u128;
+            let frac_v=(m%scale) as u128;
+            decimal_format_pad_int(&mut units,int_v,pd.int_min.max(step),false);
+            push_frac(&mut units,frac_v,frac_max as usize,frac_min,frac_max);
+        }else{
+            let s=format!("{:.*}",frac_max as usize,mantissa);
+            units.extend(s.encode_utf16());
+        }
+        units.push(0x0045);
+        if e<0{units.push(0x002d);}else if pd.exp_plus{units.push(0x002b);}
+        let mut ed=e.unsigned_abs().to_string();
+        while (ed.len() as i32)<pd.exp_min{ed=format!("0{ed}");}
+        units.extend(ed.encode_utf16());
+        units.extend_from_slice(suffix);
+        return new_string(h,units);
+    }
+    if frac_max<=15{
+        let scale=10f64.powi(frac_max) as i128;
+        if av<4_503_599_627_370_496.0{
+            let m=(av*scale as f64).round_ties_even() as i128;
+            let int_v=(m/scale) as u128;
+            let frac_v=(m%scale) as u128;
+            decimal_format_pad_int(&mut units,int_v,pd.int_min.max(1),grouping);
+            push_frac(&mut units,frac_v,frac_max as usize,frac_min,frac_max);
+            units.extend_from_slice(suffix);
+            return new_string(h,units);
+        }
+    }
+    let s=format!("{:.*}",frac_max as usize,av);
+    let parts:Vec<&str>=s.split('.').collect();
+    let int_digits:Vec<u16>=parts[0].encode_utf16().collect();
+    push_grouped(&mut units,&int_digits,grouping);
+    if parts.len()>1{
+        let mut frac:Vec<u16>=parts[1].encode_utf16().collect();
+        while frac.len()>frac_min as usize&&!frac.is_empty()&&frac[frac.len()-1]==b'0' as u16{frac.pop();}
+        if !frac.is_empty(){units.push(0x2e);units.extend_from_slice(&frac);}
+    }
+    units.extend_from_slice(suffix);
+    new_string(h,units)
+}
+fn decimal_format_format_long(h:&mut Heap,r:Option<usize>,v:i64)->usize{
+    let id=array_id(h,r);
+    let (pattern,symbols,grouping_flag,max_frac_override)=match &h.arrays[id]{Array::DecimalFormat(p,s,g,m)=>(p.clone(),*s,*g,*m),_=>error("DecimalFormat.format: receptor fuera del perfil")};
+    let sid=symbols.unwrap_or_else(||error("DecimalFormat.format: sin símbolos"));
+    if !matches!(h.arrays[sid],Array::DecimalFormatSymbols(_)){error("DecimalFormat.format: símbolos fuera del perfil")}
+    let pd=parse_decimal_pattern(&pattern);
+    if pd.sci{return decimal_format_format_double(h,r,v as f64);}
+    let frac_max=if max_frac_override>=0{max_frac_override}else{pd.frac_max};
+    let frac_min=pd.frac_min.min(frac_max);
+    let grouping=pd.grouping&&grouping_flag;
+    let neg=v<0;
+    let prefix=if neg{&pd.neg_prefix}else{&pd.pos_prefix};
+    let suffix=if neg{&pd.neg_suffix}else{&pd.pos_suffix};
+    let mag=(v as i128).unsigned_abs();
+    let mut units:Vec<u16>=prefix.clone();
+    decimal_format_pad_int(&mut units,mag,pd.int_min.max(1),grouping);
+    if frac_min>0{units.push(0x2e);for _ in 0..frac_min{units.push(b'0' as u16);}}
+    units.extend_from_slice(suffix);
+    new_string(h,units)
+}
+fn days_from_civil(y:i64,m:i64,d:i64)->i64{let y=if m<=2{y-1}else{y};let era=if y>=0{y}else{y-399}/400;let yoe=y-era*400;let mp=if m>2{m-3}else{m+9};let doy=(153*mp+2)/5+d-1;let doe=yoe*365+yoe/4-yoe/100+doy;era*146097+doe-719468}
+fn civil_from_days(z:i64)->(i64,i64,i64){let z=z+719468;let era=if z>=0{z}else{z-146096}/146097;let doe=z-era*146097;let yoe=(doe-doe/1460+doe/36524-doe/146096)/365;let y=yoe+era*400;let doy=doe-(365*yoe+yoe/4-yoe/100);let mp=(5*doy+2)/153;let d=doy-(153*mp+2)/5+1;let mi=if mp<10{mp+3}else{mp-9};let y=if mi<=2{y+1}else{y};(y,mi,d)}
+fn sdf_token(units:&[u16],start:usize)->(usize,Vec<u16>){let c=units[start];let mut end=start+1;while end<units.len()&&units[end]==c{end+=1;}(end,units[start..end].to_vec())}
+fn sdf_literal_text(pattern:&[u16],i:&mut usize)->Vec<u16>{let mut out=Vec::new();while *i<pattern.len(){let c=pattern[*i];if c==0x0027{if *i+1<pattern.len()&&pattern[*i+1]==0x0027{out.push(0x0027);*i+=2;}else{*i+=1;return out;}}else{out.push(c);*i+=1;}}out}
+fn sdf_render_core(pattern:&[u16],millis:i64)->Vec<u16>{
+    let secs=millis.div_euclid(1000);let (days,rem)=(secs.div_euclid(86400),secs.rem_euclid(86400));
+    let (y,mo,d)=civil_from_days(days);let hh=rem/3600;let mi=(rem%3600)/60;let ss=rem%60;
+    let mut out:Vec<u16>=Vec::new();let mut i=0usize;
+    let pad2=|out:&mut Vec<u16>,v:i64|{out.push(b'0' as u16+((v/10)%10) as u16);out.push(b'0' as u16+(v%10) as u16);};
+    while i<pattern.len(){
+        let c=pattern[i];
+        if c==0x0027{i+=1;let lit=sdf_literal_text(pattern,&mut i);out.extend_from_slice(&lit);continue;}
+        if (0x0061..=0x007a).contains(&c)||(0x0041..=0x005a).contains(&c){
+            let (end,tok)=sdf_token(pattern,i);i=end;let n=tok.len();
+            match c{
+                0x0079 => { // y year (weekyear 'Y' deliberadamente fuera del perfil)
+                    let w=(n as i64).max(2);let ys=y.unsigned_abs().to_string();let mut s=ys.encode_utf16().collect::<Vec<u16>>();while (s.len() as i64)<w{s.insert(0,b'0' as u16);}if y<0{out.push(0x002d);}out.extend_from_slice(&s);}
+                0x004d => {pad2(&mut out,mo);} // M month number
+                0x0064 => {pad2(&mut out,d);}  // d day
+                0x0048 => {pad2(&mut out,hh);} // H hour
+                0x006d => {pad2(&mut out,mi);} // m minute
+                0x0073 => {pad2(&mut out,ss);} // s second
+                0x007a => {out.extend_from_slice(&[0x0055,0x0054,0x0043]);} // z -> UTC (perfil: solo UTC)
+                0x005a => {out.extend_from_slice(&[0x002b,0x0030,0x0030,0x0030,0x0030]);} // Z -> +0000
+                _ => {let bad:String=String::from_utf16_lossy(&tok);let leaked:&'static str=Box::leak(format!("SimpleDateFormat: letra de patrón fuera del perfil: {bad}").into_boxed_str());error(leaked);}
+            }
+            continue;
+        }
+        out.push(c);i+=1;
+    }
+    out
+}
+fn sdf_parse_core(pattern:&[u16],text:&[u16])->Option<i64>{
+    let mut i=0usize;let mut j=0usize;let mut y:i64=1970;let mut mo:i64=1;let mut d:i64=1;let mut hh:i64=0;let mut mi:i64=0;let mut ss:i64=0;
+    let read_digits=|text:&[u16],j:&mut usize,min:i64,max:i64|->Option<i64>{let start=*j;let mut v:i64=0;while *j<text.len()&&(0x0030..=0x0039).contains(&text[*j])&&(*j-start)<max as usize{v=v*10+(text[*j]-b'0' as u16) as i64;*j+=1;}if (*j-start)<min as usize{None}else{Some(v)}};
+    while i<pattern.len(){
+        let c=pattern[i];
+        if c==0x0027{i+=1;let lit=sdf_literal_text(pattern,&mut i);for &u in &lit{if j>=text.len()||text[j]!=u{return None;}j+=1;}continue;}
+        if (0x0061..=0x007a).contains(&c)||(0x0041..=0x005a).contains(&c){
+            let (end,tok)=sdf_token(pattern,i);i=end;let n=tok.len() as i64;
+            match c{
+                0x0079 => {y=read_digits(text,&mut j,(n).max(2),n.max(4))?;}
+                0x004d => {mo=read_digits(text,&mut j,n.max(1),n.max(2))?;}
+                0x0064 => {d=read_digits(text,&mut j,n.max(1),n.max(2))?;}
+                0x0048 => {hh=read_digits(text,&mut j,n.max(1),2)?;}
+                0x006d => {mi=read_digits(text,&mut j,n.max(1),2)?;}
+                0x0073 => {ss=read_digits(text,&mut j,n.max(1),2)?;}
+                0x007a => {let expect:[u16;3]=[0x0055,0x0054,0x0043];for &u in &expect{if j>=text.len()||text[j]!=u{return None;}j+=1;}}
+                0x005a => {let expect:[u16;5]=[0x002b,0x0030,0x0030,0x0030,0x0030];for &u in &expect{if j>=text.len()||text[j]!=u{return None;}j+=1;}}
+                _ => return None,
+            }
+            continue;
+        }
+        if j>=text.len()||text[j]!=c{return None;}
+        i+=1;j+=1;
+    }
+    if mo<1||mo>12||d<1||d>31||hh>23||mi>59||ss>59{return None;}
+    Some(days_from_civil(y,mo,d)*86400_000+(hh*3600+mi*60+ss)*1000)
+}
+fn simple_date_format_init(h:&mut Heap,r:Option<usize>,pattern:Option<usize>,locale:Option<usize>){let id=array_id(h,r);let lid=match locale{Some(l)=>array_id(h,Some(l)),None=>locale_root(h)};if !matches!(h.arrays[lid],Array::RootLocale){error("SimpleDateFormat: solo Locale.ROOT soportado en el perfil");}let units=string_units(h,pattern).to_vec();match &mut h.arrays[id]{Array::SimpleDateFormat(p,l,lenient)=>{*p=units;*l=lid;*lenient=true;},_=>error("SimpleDateFormat.<init>: receptor fuera del perfil")}}
+fn simple_date_format_new_noargs(h:&mut Heap)->usize{let units="yyyy-MM-dd HH:mm:ss".encode_utf16().collect();let id=locale_root(h);if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::SimpleDateFormat(units,id,true));out}
+fn fixed_locale_format(h:&mut Heap,locale:Option<usize>,kind:i32)->usize{let id=array_id(h,locale);if !matches!(h.arrays[id],Array::RootLocale){error("DateFormat: solo Locale.ROOT soportado en el perfil");}let units:Vec<u16>=match kind{0=>"yyyy-MM-dd",1=>"HH:mm:ss",_=>"yyyy-MM-dd HH:mm:ss"}.encode_utf16().collect();if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::SimpleDateFormat(units,id,true));out}
+fn sdf_get(h:&Heap,r:Option<usize>)->(Vec<u16>,usize,bool){let id=array_id(h,r);match &h.arrays[id]{Array::SimpleDateFormat(p,l,lenient)=>(p.clone(),*l,*lenient),_=>error("SimpleDateFormat: receptor fuera del perfil")}}
+fn simple_date_format_to_pattern(h:&mut Heap,r:Option<usize>)->usize{let (p,_,_)=sdf_get(h,r);new_string(h,p)}
+fn simple_date_format_set_lenient(h:&mut Heap,r:Option<usize>,lenient:bool){let id=array_id(h,r);match &mut h.arrays[id]{Array::SimpleDateFormat(_,_,l)=>*l=lenient,_=>error("SimpleDateFormat.setLenient: receptor fuera del perfil")}}
+fn simple_date_format_format(h:&mut Heap,r:Option<usize>,date:Option<usize>)->usize{let (p,_,_)=sdf_get(h,r);let did=array_id(h,date);let millis=match h.arrays[did]{Array::Date(n)=>n,_=>error("SimpleDateFormat.format: Date concreto no soportado")};new_string(h,sdf_render_core(&p,millis))}
+fn simple_date_format_parse(h:&mut Heap,r:Option<usize>,text:Option<usize>)->usize{let (p,_,_)=sdf_get(h,r);let units=string_units(h,text).to_vec();let millis=sdf_parse_core(&p,&units).unwrap_or_else(||{let s=String::from_utf16_lossy(&units);let leaked:&'static str=Box::leak(format!("Unparseable date: {s}").into_boxed_str());raise("ParseException",leaked)});let id=date_new(h);date_set(h,Some(id),millis);id}
+fn simple_date_format_parse_position(h:&mut Heap,r:Option<usize>,text:Option<usize>,pos:Option<usize>)->Option<usize>{let (p,_,_)=sdf_get(h,r);let units=string_units(h,text).to_vec();match sdf_parse_core(&p,&units){Some(millis)=>{let id=date_new(h);date_set(h,Some(id),millis);let pid=array_id(h,pos);match &mut h.arrays[pid]{Array::ParsePosition(index,_)=>*index=units.len() as i32,_=>error("SimpleDateFormat.parse: ParsePosition concreto no soportado")}Some(id)},None=>{let pid=array_id(h,pos);match &mut h.arrays[pid]{Array::ParsePosition(_,err)=>*err=0,_=>error("SimpleDateFormat.parse: ParsePosition concreto no soportado")}None}}}
+fn parse_position_new(h:&mut Heap,index:i32)->usize{if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::ParsePosition(index,-1));id}
+fn parse_position_get_index(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match h.arrays[id]{Array::ParsePosition(i,_)=>i,_=>error("ParsePosition concreto no soportado")}}
+fn parse_position_set_index(h:&mut Heap,r:Option<usize>,v:i32){let id=array_id(h,r);match &mut h.arrays[id]{Array::ParsePosition(i,_)=>*i=v,_=>error("ParsePosition concreto no soportado")}}
+fn parse_position_get_error_index(h:&Heap,r:Option<usize>)->i32{let id=array_id(h,r);match h.arrays[id]{Array::ParsePosition(_,e)=>e,_=>error("ParsePosition concreto no soportado")}}
+fn parse_position_set_error_index(h:&mut Heap,r:Option<usize>,v:i32){let id=array_id(h,r);match &mut h.arrays[id]{Array::ParsePosition(_,e)=>*e=v,_=>error("ParsePosition concreto no soportado")}}
+fn decimal_format_set_grouping_used(h:&mut Heap,r:Option<usize>,flag:bool){let id=array_id(h,r);match &mut h.arrays[id]{Array::DecimalFormat(_,_,g,_)=>{*g=flag;},_=>error("DecimalFormat.setGroupingUsed: receptor fuera del perfil")}}
+fn number_format_get_integer_instance(h:&mut Heap,locale:Option<usize>)->usize{let lid=array_id(h,locale);if !matches!(h.arrays[lid],Array::RootLocale){error("NumberFormat.getIntegerInstance: solo Locale.ROOT/US/ENGLISH soportado en el perfil");}let sid=decimal_symbols_get_instance(h,Some(lid));if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();let pattern:Vec<u16>="#,##0".encode_utf16().collect();h.arrays.push(Array::DecimalFormat(pattern,Some(sid),true,-1));id}
+fn decimal_format_set_max_frac(h:&mut Heap,r:Option<usize>,v:i32){if v<0{raise("IllegalArgumentException","maximumFractionDigits must be >= 0")}let id=array_id(h,r);match &mut h.arrays[id]{Array::DecimalFormat(_,_,_,m)=>{*m=v;},_=>error("DecimalFormat.setMaximumFractionDigits: receptor fuera del perfil")}}
+fn number_format_get_number_instance(h:&mut Heap,locale:Option<usize>)->usize{let lid=array_id(h,locale);if !matches!(h.arrays[lid],Array::RootLocale){error("NumberFormat.getNumberInstance: solo Locale.ROOT/US/ENGLISH soportado en el perfil");}let sid=decimal_symbols_get_instance(h,Some(lid));if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();let pattern:Vec<u16>="#,##0.###".encode_utf16().collect();h.arrays.push(Array::DecimalFormat(pattern,Some(sid),true,-1));id}
+fn decimal_format_init_default(h:&mut Heap,r:Option<usize>,pattern:Option<usize>){let root=locale_root(h);let sid=decimal_symbols_get_instance(h,Some(root));decimal_format_init(h,r,pattern,Some(sid))}
+fn decimal_format_init(h:&mut Heap,r:Option<usize>,pattern:Option<usize>,symbols:Option<usize>){let id=array_id(h,r);let sid=array_id(h,symbols);if !matches!(h.arrays[sid],Array::DecimalFormatSymbols(_)){error("DecimalFormat.<init>: símbolos fuera del perfil");}let p=string_units(h,pattern).to_vec();match &mut h.arrays[id]{Array::DecimalFormat(v,s,_g,m)=>{*v=p;*s=Some(sid);*m=-1;},_=>error("DecimalFormat: receptor fuera del perfil")}}
 fn singleton_list(h:&mut Heap,e:Option<usize>)->usize{immutable_list_new(h,vec![e])}
 fn list_copy_of(h:&mut Heap,r:Option<usize>)->usize{
   let id=array_id(h,r);
@@ -2217,9 +2458,16 @@ fn list_hash(h:&Heap,r:Option<usize>,project_hash:fn(&Heap,Option<usize>)->i32)-
     _=>error("List.hashCode: receptor fuera del perfil")}
   n
 }
-fn hex_format_of(h:&mut Heap)->usize{if let Some(id)=h.hex_default{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::HexFormat(false));h.hex_default=Some(id);id}
-fn hex_format_with_upper_case(h:&mut Heap,r:Option<usize>)->usize{let id=array_id(h,r);if !matches!(h.arrays[id],Array::HexFormat(_)){error("HexFormat: receptor fuera del perfil");}if let Some(id)=h.hex_upper{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::HexFormat(true));h.hex_upper=Some(out);out}
-fn hex_digits_byte(h:&mut Heap,r:Option<usize>,v:i32)->usize{let id=array_id(h,r);let upper=match h.arrays[id]{Array::HexFormat(u)=>u,_=>error("HexFormat: receptor fuera del perfil")};let b=(v&0xff) as u8;let (hi,lo)=(b>>4,b&0x0f);let unit=|d:u8|->u16{let c=if d<10{b'0'+d}else if upper{b'A'+d-10}else{b'a'+d-10};c as u16};new_string(h,vec![unit(hi),unit(lo)])}
+fn hex_format_of(h:&mut Heap)->usize{if let Some(id)=h.hex_default{return id;}if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let id=h.arrays.len();h.arrays.push(Array::HexFormat(false,None));h.hex_default=Some(id);id}
+fn hex_format_with_upper_case(h:&mut Heap,r:Option<usize>)->usize{let id=array_id(h,r);let prefix=match h.arrays[id]{Array::HexFormat(_,p)=>p,_=>error("HexFormat: receptor fuera del perfil")};if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::HexFormat(true,prefix));out}
+fn hex_format_with_prefix(h:&mut Heap,r:Option<usize>,prefix:Option<usize>)->usize{let id=array_id(h,r);let upper=match h.arrays[id]{Array::HexFormat(u,_)=>u,_=>error("HexFormat: receptor fuera del perfil")};if h.arrays.len()>=10000{error("Límite experimental de heap excedido");}let out=h.arrays.len();h.arrays.push(Array::HexFormat(upper,prefix));out}
+fn hex_prefix_units(h:&Heap,prefix:Option<usize>)->Vec<u16>{match prefix{Some(pid)=>string_units(h,Some(pid)).to_vec(),None=>Vec::new()}}
+fn hex_push_digits(h:&mut Heap,r:Option<usize>,value:u64,count:i32)->Vec<u16>{let (upper,prefix)=match &h.arrays[array_id(h,r)]{Array::HexFormat(u,p)=>(*u,*p),_=>error("HexFormat: receptor fuera del perfil")};let mut units=hex_prefix_units(h,prefix);let n=count.max(0) as usize;if n<=16{for i in 0..n{let nib=((value>>(4*(n-1-i)))&0xf) as u8;let c=if nib<10{b'0'+nib}else if upper{b'A'+nib-10}else{b'a'+nib-10};units.push(c as u16);}}else{for _ in 0..(n-16){units.push(b'0' as u16);}for i in 0..16usize{let nib=((value>>(4*(15-i)))&0xf) as u8;let c=if nib<10{b'0'+nib}else if upper{b'A'+nib-10}else{b'a'+nib-10};units.push(c as u16);}}units}
+fn hex_digits_int(h:&mut Heap,r:Option<usize>,v:i32)->usize{let units=hex_push_digits(h,r,(v as u32) as u64,8);new_string(h,units)}
+fn hex_digits_long(h:&mut Heap,r:Option<usize>,v:i64)->usize{let units=hex_push_digits(h,r,v as u64,16);new_string(h,units)}
+fn hex_digits_long_padded(h:&mut Heap,r:Option<usize>,v:i64,decimal_digits:i32)->usize{if decimal_digits<0{raise("IllegalArgumentException","decimalDigits must be >= 0")}if decimal_digits<=16{let mask=if decimal_digits==16{u64::MAX}else{(1u64<<(4*decimal_digits))-1};let units=hex_push_digits(h,r,(v as u64)&mask,decimal_digits);new_string(h,units)}else{let units=hex_push_digits(h,r,v as u64,decimal_digits);new_string(h,units)}}
+fn hex_digits_byte(h:&mut Heap,r:Option<usize>,v:i32)->usize{let units=hex_push_digits(h,r,(v&0xff) as u64,2);new_string(h,units)}
+fn hex_from_digits_to_long(h:&mut Heap,s:Option<usize>,from:i32,to:i32)->i64{let units=string_units(h,s);let(from,to)=(from as i64,to as i64);if from<0||to<from||(to as usize)>units.len(){raise("StringIndexOutOfBoundsException","")}if to-from>16{raise("NumberFormatException","Too many hex digits for long")}let mut v:i64=0;for c in &units[from as usize..to as usize]{let d:i64=match *c{0x30..=0x39=>(*c-0x30) as i64,0x41..=0x46=>(*c-0x41+10) as i64,0x61..=0x66=>(*c-0x61+10) as i64,_=>raise("NumberFormatException","not a hex digit")};v=(v<<4)|d;}v}
 fn hex_from_digits(h:&mut Heap,s:Option<usize>)->i32{let units=string_units(h,s);if units.len()!=2{raise("NumberFormatException","String must contain exactly two hex digits");}let digit=|c:u16|->i32{match c{0x30..=0x39=>(c-0x30) as i32,0x41..=0x46=>(c-0x41+10) as i32,0x61..=0x66=>(c-0x61+10) as i32,_=>raise("NumberFormatException","not a hex digit")}};digit(units[0])*16+digit(units[1])}
 fn char_is_valid_code_point(h:&Heap,v:i32)->bool{let _=h;v>=0&&v<=0x10ffff&&(v<0xd800||v>0xdfff)}
 // ThreadLocal exacto por defecto en un único hilo; sin subclases ni withInitial.
@@ -2402,8 +2650,8 @@ fn base64_decode_bytes(h:&Heap,bytes:&[u8],alphabet:u8)->Vec<u8>{
 }
 fn base64_encoder_state(h:&Heap,r:Option<usize>)->(u8,bool,i32,Vec<u8>){let id=array_id(h,r);if !matches!(h.arrays[id],Array::Class(_)){error("Base64$Encoder: receptor fuera del perfil");}base64_state(h,id)}
 fn base64_decoder_state(h:&Heap,r:Option<usize>)->(u8,bool,i32,Vec<u8>){let id=array_id(h,r);if !matches!(h.arrays[id],Array::Class(_)){error("Base64$Decoder: receptor fuera del perfil");}base64_state(h,id)}
-fn base64_encoder_encode(h:&mut Heap,r:Option<usize>,bytes:Option<usize>)->usize{let (alphabet,nopad,len,sep)=base64_encoder_state(h,r);let id=array_id(h,bytes);let data=match &h.arrays[id]{Array::B(v)=>v.clone(),_=>error("Base64$Encoder.encode: byte[] fuera del perfil")};let encoded=base64_encode_bytes(&data,alphabet,nopad,len,&sep);new_arrays_push(h,Array::B(encoded.into_iter().map(|b|b as i8).collect()))}
-fn base64_encoder_encode_to_string(h:&mut Heap,r:Option<usize>,bytes:Option<usize>)->usize{let (alphabet,nopad,len,sep)=base64_encoder_state(h,r);let id=array_id(h,bytes);let data=match &h.arrays[id]{Array::B(v)=>v.clone(),_=>error("Base64$Encoder.encodeToString: byte[] fuera del perfil")};let encoded=base64_encode_bytes(&data,alphabet,nopad,len,&sep);new_string(h,encoded.into_iter().map(|b|b as u16).collect())}
+fn base64_encoder_encode(h:&mut Heap,r:Option<usize>,bytes:Option<usize>)->usize{let (alphabet,nopad,len,sep)=base64_encoder_state(h,r);let id=array_id(h,bytes);let data:Vec<u8>=match &h.arrays[id]{Array::B(v)=>v.iter().map(|&b|b as u8).collect(),_=>error("Base64$Encoder.encode: byte[] fuera del perfil")};let encoded=base64_encode_bytes(&data,alphabet,nopad,len,&sep);new_arrays_push(h,Array::B(encoded.into_iter().map(|b|b as i8).collect()))}
+fn base64_encoder_encode_to_string(h:&mut Heap,r:Option<usize>,bytes:Option<usize>)->usize{let (alphabet,nopad,len,sep)=base64_encoder_state(h,r);let id=array_id(h,bytes);let data:Vec<u8>=match &h.arrays[id]{Array::B(v)=>v.iter().map(|&b|b as u8).collect(),_=>error("Base64$Encoder.encodeToString: byte[] fuera del perfil")};let encoded=base64_encode_bytes(&data,alphabet,nopad,len,&sep);new_string(h,encoded.into_iter().map(|b|b as u16).collect())}
 fn base64_decoder_decode_string(h:&mut Heap,r:Option<usize>,text:Option<usize>)->usize{let (alphabet,_,_,_)=base64_decoder_state(h,r);let units=string_units(h,text).to_vec();if units.iter().any(|u|*u>0x7f){raise("IllegalArgumentException","Illegal base64 character in input string");}let bytes:Vec<u8>=units.iter().map(|u|*u as u8).collect();let decoded=base64_decode_bytes(h,&bytes,alphabet);new_arrays_push(h,Array::B(decoded.into_iter().map(|b|b as i8).collect()))}
 fn base64_decoder_decode_bytes(h:&mut Heap,r:Option<usize>,input:Option<usize>)->usize{let (alphabet,_,_,_)=base64_decoder_state(h,r);let id=array_id(h,input);let data=match &h.arrays[id]{Array::B(v)=>v.clone(),_=>error("Base64$Decoder.decode: byte[] fuera del perfil")};let bytes:Vec<u8>=data.into_iter().map(|b|b as u8).collect();let decoded=base64_decode_bytes(h,&bytes,alphabet);new_arrays_push(h,Array::B(decoded.into_iter().map(|b|b as i8).collect()))}
 fn hash_fn_md5(h:&mut Heap)->usize{new_arrays_push(h,Array::HashFn("MD5"))}
