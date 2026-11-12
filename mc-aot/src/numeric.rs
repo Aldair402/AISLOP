@@ -364,6 +364,7 @@ fn collection_intrinsic(owner: &str, name: &str, desc: &str) -> Option<&'static 
         (_,_,true,_,"get","(I)Ljava/lang/Object;")=>Some("let i=pop_i(&mut stack);let l=pop_r(&mut stack);stack.push(V::R(list_get(heap,l,i)));"),
         (_,_,true,_,"set","(ILjava/lang/Object;)Ljava/lang/Object;")=>Some("let v=pop_r(&mut stack);let i=pop_i(&mut stack);let l=pop_r(&mut stack);stack.push(V::R(list_set(heap,l,i,v)));"),
         (_,_,true,_,"remove","(I)Ljava/lang/Object;")=>Some("let i=pop_i(&mut stack);let l=pop_r(&mut stack);stack.push(V::R(list_remove(heap,l,i)));"),
+        (_,_,true,_,"subList","(II)Ljava/util/List;")=>Some("let to=pop_i(&mut stack);let from=pop_i(&mut stack);let l=pop_r(&mut stack);stack.push(V::R(Some(list_sublist(heap,l,from,to))));"),
         (_,_,_,true,"iterator","()Ljava/util/Iterator;")=>Some("let r=pop_r(&mut stack);stack.push(V::R(Some(collection_iterator(heap,r))));"),
         (_,_,_,true,"addAll","(Ljava/util/Collection;)Z")=>Some("let source=pop_r(&mut stack);let target=pop_r(&mut stack);stack.push(V::I(collection_add_all(heap,target,source) as i32));"),
         (_,_,_,true,"add","(Ljava/lang/Object;)Z")=>Some("let v=pop_r(&mut stack);let c=pop_r(&mut stack);stack.push(V::I(collection_add(heap,c,v) as i32));"),
