@@ -4377,6 +4377,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("java/util/Comparator","comparing","(Ljava/util/function/Function;Ljava/util/Comparator;)Ljava/util/Comparator;") if self.multi_classes.is_some()=>"Some(comparator_comparing_with(heap,x0,x1))".into(),
                         ("java/util/stream/StreamSupport","stream","(Ljava/util/Spliterator;Z)Ljava/util/stream/Stream;") if self.multi_classes.is_some()=>"Some(stream_support(heap,x0,x1))".into(),
                         ("java/util/Objects","requireNonNull","(Ljava/lang/Object;)Ljava/lang/Object;") if self.multi_classes.is_some()=>"require_non_null(heap,x0,None)".into(),
+                        ("java/util/Objects","equals","(Ljava/lang/Object;Ljava/lang/Object;)Z") if self.multi_classes.is_some()=>"stack.push(V::I(map_key_eq(heap,x0,x1) as i32));".into(),
                         ("java/util/Objects","requireNonNull","(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;") if self.multi_classes.is_some()=>"require_non_null(heap,x0,x1)".into(),
                         ("java/util/UUID","randomUUID","()Ljava/util/UUID;") if self.multi_classes.is_some()=>"Some(uuid_random(heap))".into(),
                         ("java/util/regex/Pattern","compile","(Ljava/lang/String;I)Ljava/util/regex/Pattern;") if self.multi_classes.is_some()=>"Some(pattern_compile_duration(heap,x0,x1))".into(),
@@ -4920,6 +4921,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && name=="java/lang/Comparable" {"comparable_instance(heap,r,PROJECT_INTERFACES)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/lang/CharSequence" {"charsequence_instance(heap,r,PROJECT_INTERFACES)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/nio/file/Path" {"path_instance(heap,r)".to_owned()
+                    } else if self.multi_classes.is_some() && matches!(name,"java/util/Iterator"|"java/util/ListIterator") {"iterator_instance(heap,r,PROJECT_INTERFACES)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/util/RandomAccess" {"list_random_access_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/util/Map$Entry" {"map_entry_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/io/Serializable" {
