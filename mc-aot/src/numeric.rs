@@ -1018,6 +1018,13 @@ impl NumericCompiler<'_> {
         if (name, desc) == ("java/io/UncheckedIOException", "(Ljava/io/IOException;)V") {
             return Ok(());
         }
+        if (name, desc) == ("java/lang/AssertionError", "(Ljava/lang/Object;)V") {
+            // JDK 7+: AssertionError(Object). El mensaje real en el bundle es String
+            // (p.ej. concatenación en MappedRegistry.register); el brazo lo valúa con
+            // string_value_of_object (String/null/URI; otro objeto falla en voz alta).
+            self.validate_exception_class(name)?;
+            return Ok(());
+        }
         if (name, desc)
             == (
                 "java/lang/IllegalStateException",
@@ -4311,6 +4318,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         self.validate_exception_ctor(owner,desc)?;
                         let kind=known_exception(owner).unwrap_or(owner);
                         match desc {
+                            "(Ljava/lang/Object;)V" if owner=="java/lang/AssertionError"=>format!("let msg=pop_r(&mut stack);let r=pop_r(&mut stack);let msg=Some(string_value_of_object(heap,msg));init_exception(heap,r,{kind:?},msg);"),
                             "()V"=>format!("let r=pop_r(&mut stack); init_exception(heap,r,{kind:?},None);"),
                             "(Ljava/lang/String;)V"=>format!("let msg=pop_r(&mut stack);let r=pop_r(&mut stack);init_exception(heap,r,{kind:?},msg);"),
                             "(Ljava/io/IOException;)V"=>format!("let cause=pop_r(&mut stack);let r=pop_r(&mut stack);init_exception_from_io_cause(heap,r,{kind:?},cause);"),
@@ -4903,6 +4911,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && matches!(name,"java/lang/AutoCloseable"|"java/io/Closeable") {
                         // Ningún modelo existente devuelve handles/objetos cerrables; métodos instanceof son siempre falsos y checkcast levanta CCE si el receptor no es nulo.
                         "false".to_owned()
+                    } else if self.multi_classes.is_some() && name=="java/lang/Comparable" {"comparable_instance(heap,r,PROJECT_INTERFACES)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/lang/CharSequence" {"charsequence_instance(heap,r,PROJECT_INTERFACES)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/nio/file/Path" {"path_instance(heap,r)".to_owned()
                     } else if self.multi_classes.is_some() && name=="java/util/RandomAccess" {"list_random_access_instance(heap,r)".to_owned()
