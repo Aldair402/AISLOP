@@ -1532,7 +1532,7 @@ fn exception_matches(kind:&str,catch:&str)->bool {
     }
     let mut t=kind;
     loop {
-        let full=match t {"URISyntaxException"=>"java/net/URISyntaxException".to_owned(),"IOException"=>"java/io/IOException".to_owned(),"FileNotFoundException"=>"java/io/FileNotFoundException".to_owned(),"EOFException"=>"java/io/EOFException".to_owned(),"FileSystemException"|"NoSuchFileException"|"AccessDeniedException"=>format!("java/nio/file/{t}"),"UncheckedIOException"=>"java/io/UncheckedIOException".to_owned(),"DateTimeException"=>"java/time/DateTimeException".to_owned(),"InvocationTargetException"=>"java/lang/reflect/InvocationTargetException".to_owned(),"ServiceConfigurationError"=>"java/util/ServiceConfigurationError".to_owned(),"NoSuchElementException"=>"java/util/NoSuchElementException".to_owned(),"ConcurrentModificationException"=>"java/util/ConcurrentModificationException".to_owned(),"MalformedURLException"=>"java/net/MalformedURLException".to_owned(),"ProtocolException"=>"java/net/ProtocolException".to_owned(),"JsonParseException"=>"com/google/gson/JsonParseException".to_owned(),"MalformedInputException"=>"java/nio/charset/MalformedInputException".to_owned(),"ParseException"=>"java/text/ParseException".to_owned(),_=>format!("java/lang/{t}")};
+        let full=match t {"URISyntaxException"=>"java/net/URISyntaxException".to_owned(),"IOException"=>"java/io/IOException".to_owned(),"FileNotFoundException"=>"java/io/FileNotFoundException".to_owned(),"EOFException"=>"java/io/EOFException".to_owned(),"FileSystemException"|"NoSuchFileException"|"AccessDeniedException"=>format!("java/nio/file/{t}"),"UncheckedIOException"=>"java/io/UncheckedIOException".to_owned(),"DateTimeException"=>"java/time/DateTimeException".to_owned(),"InvocationTargetException"=>"java/lang/reflect/InvocationTargetException".to_owned(),"ServiceConfigurationError"=>"java/util/ServiceConfigurationError".to_owned(),"NoSuchElementException"=>"java/util/NoSuchElementException".to_owned(),"ConcurrentModificationException"=>"java/util/ConcurrentModificationException".to_owned(),"MalformedURLException"=>"java/net/MalformedURLException".to_owned(),"ProtocolException"=>"java/net/ProtocolException".to_owned(),"JsonParseException"=>"com/google/gson/JsonParseException".to_owned(),"MalformedInputException"=>"java/nio/charset/MalformedInputException".to_owned(),"ParseException"=>"java/text/ParseException".to_owned(),"CompletionException"=>"java/util/concurrent/CompletionException".to_owned(),_=>format!("java/lang/{t}")};
         if full==catch {return true;}
         t=match t {
             "Throwable"=>return false,
@@ -1549,7 +1549,7 @@ fn exception_matches(kind:&str,catch:&str)->bool {
             "ClassNotFoundException"|"NoSuchMethodException"|"InstantiationException"|"IllegalAccessException"|"InvocationTargetException"=>"ReflectiveOperationException",
             "NumberFormatException"=>"IllegalArgumentException",
             "ArrayIndexOutOfBoundsException"|"StringIndexOutOfBoundsException"=>"IndexOutOfBoundsException",
-            "UncheckedIOException"|"DateTimeException"|"IllegalArgumentException"|"IllegalStateException"|"IllegalCallerException"|"IndexOutOfBoundsException"|"ArithmeticException"|"NullPointerException"|"NegativeArraySizeException"|"ClassCastException"|"ArrayStoreException"|"SecurityException"|"IllegalMonitorStateException"|"UnsupportedOperationException"|"NoSuchElementException"|"ConcurrentModificationException"|"MatchException"=>"RuntimeException",
+            "UncheckedIOException"|"DateTimeException"|"IllegalArgumentException"|"IllegalStateException"|"IllegalCallerException"|"IndexOutOfBoundsException"|"ArithmeticException"|"NullPointerException"|"NegativeArraySizeException"|"ClassCastException"|"ArrayStoreException"|"SecurityException"|"IllegalMonitorStateException"|"UnsupportedOperationException"|"NoSuchElementException"|"ConcurrentModificationException"|"MatchException"|"CompletionException"=>"RuntimeException",
             _=>return false,
         };
     }
@@ -2546,6 +2546,24 @@ fn java_properties_store_eula(h:&mut Heap,r:Option<usize>,output:Option<usize>,c
 fn optional_long_empty(h:&mut Heap)->usize{optional_new(h,None)}
 fn optional_long_of(h:&mut Heap,n:i64)->usize{let boxed=long_value_of(h,n);optional_new(h,Some(boxed))}
 fn optional_long_or_else(h:&Heap,r:Option<usize>,default:i64)->i64{let v=optional_value(h,r);match v{None=>default,Some(id)=>match h.arrays[id]{Array::Long(n)=>n,_=>error("OptionalLong concreto no soportado")}}}
+fn optional_long_get(h:&Heap,r:Option<usize>)->i64{let v=optional_value(h,r);match v{None=>raise("NoSuchElementException","No value present"),Some(id)=>match h.arrays[id]{Array::Long(n)=>n,_=>error("OptionalLong concreto no soportado")}}}
+fn optional_int_empty(h:&mut Heap)->usize{optional_new(h,None)}
+fn optional_int_of(h:&mut Heap,n:i32)->usize{let boxed=integer_value_of(h,n);optional_new(h,Some(boxed))}
+fn optional_int_unbox(h:&Heap,id:usize)->i32{match h.arrays[id]{Array::Integer(n)=>n,_=>error("OptionalInt concreto no soportado")}}
+fn optional_int_get(h:&Heap,r:Option<usize>)->i32{let v=optional_value(h,r);match v{None=>raise("NoSuchElementException","No value present"),Some(id)=>optional_int_unbox(h,id)}}
+fn optional_int_or_else(h:&Heap,r:Option<usize>,default:i32)->i32{let v=optional_value(h,r);match v{None=>default,Some(id)=>optional_int_unbox(h,id)}}
+fn optional_double_empty(h:&mut Heap)->usize{optional_new(h,None)}
+fn optional_double_of(h:&mut Heap,n:f64)->usize{let boxed=double_value_of(h,n);optional_new(h,Some(boxed))}
+fn optional_double_unbox(h:&Heap,id:usize)->f64{match h.arrays[id]{Array::Double(n)=>n,_=>error("OptionalDouble concreto no soportado")}}
+fn optional_double_get(h:&Heap,r:Option<usize>)->f64{let v=optional_value(h,r);match v{None=>raise("NoSuchElementException","No value present"),Some(id)=>optional_double_unbox(h,id)}}
+fn optional_double_or_else(h:&Heap,r:Option<usize>,default:f64)->f64{let v=optional_value(h,r);match v{None=>default,Some(id)=>optional_double_unbox(h,id)}}
+fn list_len(h:&Heap,r:Option<usize>)->i32{let id=list_id(h,r);match &h.arrays[id]{Array::List(v,_)|Array::ImmutableList(v)=>v.len() as i32,Array::ArraysList(a)=>array_len(h,Some(*a)),Array::EmptyList=>0,_=>unreachable!()}}
+fn list_first(h:&Heap,r:Option<usize>)->Option<usize>{if list_len(h,r)==0{raise("NoSuchElementException","getFirst")}else{list_get(h,r,0)}}
+fn list_last(h:&Heap,r:Option<usize>)->Option<usize>{let n=list_len(h,r);if n==0{raise("NoSuchElementException","getLast")}else{list_get(h,r,n-1)}}
+fn deque_first(h:&Heap,r:Option<usize>)->Option<usize>{let id=queue_id(h,r);match &h.arrays[id]{Array::Deque(v)|Array::ConcurrentDeque(v)=>match v.front(){Some(v)=>Some(*v),None=>raise("NoSuchElementException","getFirst")},_=>error("Deque concreto no soportado")}}
+fn deque_last(h:&Heap,r:Option<usize>)->Option<usize>{let id=queue_id(h,r);match &h.arrays[id]{Array::Deque(v)|Array::ConcurrentDeque(v)=>match v.back(){Some(v)=>Some(*v),None=>raise("NoSuchElementException","getLast")},_=>error("Deque concreto no soportado")}}
+fn set_first(h:&Heap,r:Option<usize>)->Option<usize>{let id=array_id(h,r);match &h.arrays[id]{Array::Set(v,_)|Array::ImmutableSet(v)|Array::HashSet(v,_)|Array::KeySet(v,_)=>match v.first(){Some(x)=>*x,None=>raise("NoSuchElementException","getFirst")},Array::EmptySet=>raise("NoSuchElementException","getFirst"),_=>error("SequencedSet concreto no soportado")}}
+fn set_last(h:&Heap,r:Option<usize>)->Option<usize>{let id=array_id(h,r);match &h.arrays[id]{Array::Set(v,_)|Array::ImmutableSet(v)|Array::HashSet(v,_)|Array::KeySet(v,_)=>match v.last(){Some(x)=>*x,None=>raise("NoSuchElementException","getLast")},Array::EmptySet=>raise("NoSuchElementException","getLast"),_=>error("SequencedSet concreto no soportado")}}
 fn md5_digest(data:&[u8])->[u8;16]{
   // RFC 1321. Constantes derivadas en tiempo de compilación del seno: |sin(i+1)| * 2^32.
   const S:[u32;64]=[7,12,17,22,7,12,17,22,7,12,17,22,7,12,17,22,5,9,14,20,5,9,14,20,5,9,14,20,5,9,14,20,4,11,16,23,4,11,16,23,4,11,16,23,4,11,16,23,6,10,15,21,6,10,15,21,6,10,15,21,6,10,15,21];
