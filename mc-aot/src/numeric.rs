@@ -225,6 +225,8 @@ fn jdk_function_interface(name: &str) -> bool {
             | "java/util/function/DoubleSupplier"
             | "java/util/function/BiPredicate"
             | "java/util/Comparator"
+            | "java/io/DataInput"
+            | "java/io/DataOutput"
     )
 }
 fn jdk_function_method(owner: &str, name: &str, desc: &str) -> bool {
@@ -306,6 +308,35 @@ fn jdk_function_method(owner: &str, name: &str, desc: &str) -> bool {
                 "test",
                 "(Ljava/lang/Object;Ljava/lang/Object;)Z",
             )
+            | ("java/io/DataInput", "readBoolean", "()Z")
+            | ("java/io/DataInput", "readByte", "()B")
+            | ("java/io/DataInput", "readShort", "()S")
+            | ("java/io/DataInput", "readUnsignedShort", "()I")
+            | ("java/io/DataInput", "readChar", "()C")
+            | ("java/io/DataInput", "readInt", "()I")
+            | ("java/io/DataInput", "readLong", "()J")
+            | ("java/io/DataInput", "readFloat", "()F")
+            | ("java/io/DataInput", "readDouble", "()D")
+            | ("java/io/DataInput", "readUnsignedByte", "()I")
+            | ("java/io/DataInput", "readFully", "([B)V")
+            | ("java/io/DataInput", "readFully", "([BII)V")
+            | ("java/io/DataInput", "skipBytes", "(I)I")
+            | ("java/io/DataInput", "readLine", "()Ljava/lang/String;")
+            | ("java/io/DataInput", "readUTF", "()Ljava/lang/String;")
+            | ("java/io/DataOutput", "write", "(I)V")
+            | ("java/io/DataOutput", "write", "([B)V")
+            | ("java/io/DataOutput", "write", "([BII)V")
+            | ("java/io/DataOutput", "writeBoolean", "(Z)V")
+            | ("java/io/DataOutput", "writeByte", "(I)V")
+            | ("java/io/DataOutput", "writeShort", "(I)V")
+            | ("java/io/DataOutput", "writeChar", "(I)V")
+            | ("java/io/DataOutput", "writeInt", "(I)V")
+            | ("java/io/DataOutput", "writeLong", "(J)V")
+            | ("java/io/DataOutput", "writeFloat", "(F)V")
+            | ("java/io/DataOutput", "writeDouble", "(D)V")
+            | ("java/io/DataOutput", "writeChars", "(Ljava/lang/String;)V")
+            | ("java/io/DataOutput", "writeBytes", "(Ljava/lang/String;)V")
+            | ("java/io/DataOutput", "writeUTF", "(Ljava/lang/String;)V")
             | ("java/nio/file/PathMatcher", "matches", "(Ljava/nio/file/Path;)Z")
             | ("java/util/function/DoubleUnaryOperator", "applyAsDouble", "(D)D")
             | ("java/util/function/ToDoubleFunction", "applyAsDouble", "(Ljava/lang/Object;)D")
@@ -505,6 +536,7 @@ fn known_exception(t: &str) -> Option<&'static str> {
         "java/net/URISyntaxException" => "URISyntaxException",
         "java/io/IOException" => "IOException",
         "java/io/EOFException" => "EOFException",
+        "java/io/UTFDataFormatException" => "UTFDataFormatException",
         "java/io/FileNotFoundException" => "FileNotFoundException",
         "java/nio/file/FileSystemException" => "FileSystemException",
         "java/nio/file/NoSuchFileException" => "NoSuchFileException",
@@ -1186,6 +1218,8 @@ impl NumericCompiler<'_> {
                         | "java/util/RandomAccess"
                         | "java/io/Closeable"
                         | "java/io/Externalizable"
+                        | "java/io/DataInput"
+                        | "java/io/DataOutput"
                         | "java/util/EventListener"
                         | "java/lang/AutoCloseable"
                         | "java/lang/reflect/Type"
@@ -1356,6 +1390,8 @@ impl NumericCompiler<'_> {
                         | "java/util/RandomAccess"
                         | "java/io/Closeable"
                         | "java/io/Externalizable"
+                        | "java/io/DataInput"
+                        | "java/io/DataOutput"
                         | "java/util/EventListener"
                         | "java/lang/AutoCloseable"
                         | "java/lang/reflect/Type"
@@ -2761,6 +2797,43 @@ impl NumericCompiler<'_> {
                 } else {
                     String::new()
                 };
+                let data_builtin = if prefix == "interface" {
+                    match (owner.as_str(), method.as_str(), desc.as_str()) {
+                        ("java/io/DataInput", "readBoolean", "()Z") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){return data_read_boolean(heap,r);}".to_string()),
+                        ("java/io/DataInput", "readByte", "()B") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){return data_read_byte(heap,r);}".to_string()),
+                        ("java/io/DataInput", "readShort", "()S") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){return data_read_short(heap,r);}".to_string()),
+                        ("java/io/DataInput", "readUnsignedShort", "()I") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){return data_read_unsigned_short(heap,r);}".to_string()),
+                        ("java/io/DataInput", "readChar", "()C") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){return data_read_unsigned_short(heap,r);}".to_string()),
+                        ("java/io/DataInput", "readInt", "()I") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){return data_read_int(heap,r);}".to_string()),
+                        ("java/io/DataInput", "readLong", "()J") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){return data_read_long(heap,r);}".to_string()),
+                        ("java/io/DataInput", "readFloat", "()F") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){return data_read_float(heap,r);}".to_string()),
+                        ("java/io/DataInput", "readDouble", "()D") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){return data_read_double(heap,r);}".to_string()),
+                        ("java/io/DataInput", "readUnsignedByte", "()I") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){return data_read_byte(heap,r) & 0xff;}".to_string()),
+                        ("java/io/DataInput", "readFully", "([B)V") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){data_read_fully_array(heap,r,a0);return;}".to_string()),
+                        ("java/io/DataInput", "readFully", "([BII)V") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){data_read_fully(heap,r,a0,a1,a2);return;}".to_string()),
+                        ("java/io/DataInput", "skipBytes", "(I)I") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){return data_skip_bytes(heap,r,a0);}".to_string()),
+                        ("java/io/DataInput", "readLine", "()Ljava/lang/String;") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){return data_read_line(heap,r);}".to_string()),
+                        ("java/io/DataInput", "readUTF", "()Ljava/lang/String;") => Some("if matches!(heap.arrays[id],Array::DataInputStream(_)){return Some(data_read_utf(heap,r));}".to_string()),
+                        ("java/io/DataOutput", "write", "(I)V") => Some("if matches!(heap.arrays[id],Array::DataOutputStream(_)){data_write_byte(heap,r,a0);return;}".to_string()),
+                        ("java/io/DataOutput", "write", "([B)V") => Some("if matches!(heap.arrays[id],Array::DataOutputStream(_)){data_write_array(heap,r,a0,0,-1);return;}".to_string()),
+                        ("java/io/DataOutput", "write", "([BII)V") => Some("if matches!(heap.arrays[id],Array::DataOutputStream(_)){data_write_array(heap,r,a0,a1,a2);return;}".to_string()),
+                        ("java/io/DataOutput", "writeBoolean", "(Z)V") => Some("if matches!(heap.arrays[id],Array::DataOutputStream(_)){data_write_boolean(heap,r,a0);return;}".to_string()),
+                        ("java/io/DataOutput", "writeByte", "(I)V") => Some("if matches!(heap.arrays[id],Array::DataOutputStream(_)){data_write_byte(heap,r,a0);return;}".to_string()),
+                        ("java/io/DataOutput", "writeShort", "(I)V") => Some("if matches!(heap.arrays[id],Array::DataOutputStream(_)){data_write_short(heap,r,a0);return;}".to_string()),
+                        ("java/io/DataOutput", "writeChar", "(I)V") => Some("if matches!(heap.arrays[id],Array::DataOutputStream(_)){data_write_char(heap,r,a0);return;}".to_string()),
+                        ("java/io/DataOutput", "writeInt", "(I)V") => Some("if matches!(heap.arrays[id],Array::DataOutputStream(_)){data_write_int(heap,r,a0);return;}".to_string()),
+                        ("java/io/DataOutput", "writeLong", "(J)V") => Some("if matches!(heap.arrays[id],Array::DataOutputStream(_)){data_write_long(heap,r,a0);return;}".to_string()),
+                        ("java/io/DataOutput", "writeFloat", "(F)V") => Some("if matches!(heap.arrays[id],Array::DataOutputStream(_)){data_write_float(heap,r,a0);return;}".to_string()),
+                        ("java/io/DataOutput", "writeDouble", "(D)V") => Some("if matches!(heap.arrays[id],Array::DataOutputStream(_)){data_write_double(heap,r,a0);return;}".to_string()),
+                        ("java/io/DataOutput", "writeChars", "(Ljava/lang/String;)V") => Some("if matches!(heap.arrays[id],Array::DataOutputStream(_)){data_write_chars(heap,r,a0);return;}".to_string()),
+                        ("java/io/DataOutput", "writeBytes", "(Ljava/lang/String;)V") => Some("if matches!(heap.arrays[id],Array::DataOutputStream(_)){data_write_bytes(heap,r,a0);return;}".to_string()),
+                        ("java/io/DataOutput", "writeUTF", "(Ljava/lang/String;)V") => Some("if matches!(heap.arrays[id],Array::DataOutputStream(_)){data_write_utf(heap,r,a0);return;}".to_string()),
+                        _ => None,
+                    }
+                    .unwrap_or_default()
+                } else {
+                    String::new()
+                };
                 let target = format!("{owner}.{method}{desc}");
                 let default = if prefix == "virtual"
                     && (owner.as_str(), method.as_str(), desc.as_str())
@@ -2773,7 +2846,7 @@ impl NumericCompiler<'_> {
                 } else {
                     format!("_=>error(&format!(\"{label}: tipo o método no precompilado: {{class}} para {{}}\",{target:?}))")
                 };
-                source.push_str(&format!("fn {prefix}_dispatch_{index}(heap:&mut Heap,r:Option<usize>{params})->{}{{let id=array_id(heap,r);{identity}{compound_predicate}{sink}if let Array::Lambda(n,_,values)=&heap.arrays[id]{{let n=*n;let captures=values.clone();return match n{{{lambdas}_=>error(\"{label}: lambda no precompilada\")}};}}let class=match &heap.arrays[id]{{Array::Obj(c,_)|Array::SharedObj(c,_)|Array::LocalObj(c,_,_)=>*c,_=>error(\"despacho: objeto no soportado\")}};match class{{{cases}{default}}}}}\n",rt(sig.ret)));
+                source.push_str(&format!("fn {prefix}_dispatch_{index}(heap:&mut Heap,r:Option<usize>{params})->{}{{let id=array_id(heap,r);{identity}{compound_predicate}{sink}{data_builtin}if let Array::Lambda(n,_,values)=&heap.arrays[id]{{let n=*n;let captures=values.clone();return match n{{{lambdas}_=>error(\"{label}: lambda no precompilada\")}};}}let class=match &heap.arrays[id]{{Array::Obj(c,_)|Array::SharedObj(c,_)|Array::LocalObj(c,_,_)=>*c,_=>error(\"despacho: objeto no soportado\")}};match class{{{cases}{default}}}}}\n",rt(sig.ret)));
             }
             Ok(source)
         }
@@ -3970,6 +4043,48 @@ impl NumericCompiler<'_> {
                         ("java/io/InputStream"|"java/io/ByteArrayInputStream","reset","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);byte_input_reset(heap,r);".into(),
                         ("java/io/InputStream"|"java/io/ByteArrayInputStream","markSupported","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);byte_input_available(heap,r);stack.push(V::I(1));".into(),
                         ("java/io/InputStream"|"java/io/ByteArrayInputStream","close","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);resource_close(heap,r);".into(),
+                        ("java/io/ByteArrayOutputStream","write","(I)V") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);byte_array_out_write(heap,r,v);".into(),
+                        ("java/io/ByteArrayOutputStream","write","([B)V") if self.multi_classes.is_some()=>"let src=pop_r(&mut stack);let r=pop_r(&mut stack);stream_write_array(heap,r,src,0,-1);".into(),
+                        ("java/io/ByteArrayOutputStream","write","([BII)V") if self.multi_classes.is_some()=>"let len=pop_i(&mut stack);let off=pop_i(&mut stack);let src=pop_r(&mut stack);let r=pop_r(&mut stack);stream_write_array(heap,r,src,off,len);".into(),
+                        ("java/io/ByteArrayOutputStream","reset","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);byte_array_out_reset(heap,r);".into(),
+                        ("java/io/ByteArrayOutputStream","toByteArray","()[B") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(byte_array_out_to_byte_array(heap,r))));".into(),
+                        ("java/io/ByteArrayOutputStream","size","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(byte_array_out_size(heap,r)));".into(),
+                        ("java/io/ByteArrayOutputStream","writeTo","(Ljava/io/OutputStream;)V") if self.multi_classes.is_some()=>"let out=pop_r(&mut stack);let r=pop_r(&mut stack);baos_write_to(heap,r,out);".into(),
+                        ("java/io/ByteArrayOutputStream","flush","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);output_flush(heap,r);".into(),
+                        ("java/io/ByteArrayOutputStream","close","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);output_close(heap,r);".into(),
+                        ("java/io/DataOutputStream","writeBoolean","(Z)V") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);data_write_boolean(heap,r,v);".into(),
+                        ("java/io/DataOutputStream","writeByte","(I)V") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);data_write_byte(heap,r,v);".into(),
+                        ("java/io/DataOutputStream","write","(I)V") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);data_write_byte(heap,r,v);".into(),
+                        ("java/io/DataOutputStream","write","([B)V") if self.multi_classes.is_some()=>"let src=pop_r(&mut stack);let r=pop_r(&mut stack);data_write_array(heap,r,src,0,-1);".into(),
+                        ("java/io/DataOutputStream","write","([BII)V") if self.multi_classes.is_some()=>"let len=pop_i(&mut stack);let off=pop_i(&mut stack);let src=pop_r(&mut stack);let r=pop_r(&mut stack);data_write_array(heap,r,src,off,len);".into(),
+                        ("java/io/DataOutputStream","writeShort","(I)V") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);data_write_short(heap,r,v);".into(),
+                        ("java/io/DataOutputStream","writeChar","(I)V") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);data_write_char(heap,r,v);".into(),
+                        ("java/io/DataOutputStream","writeInt","(I)V") if self.multi_classes.is_some()=>"let v=pop_i(&mut stack);let r=pop_r(&mut stack);data_write_int(heap,r,v);".into(),
+                        ("java/io/DataOutputStream","writeLong","(J)V") if self.multi_classes.is_some()=>"let v=pop_l(&mut stack);let r=pop_r(&mut stack);data_write_long(heap,r,v);".into(),
+                        ("java/io/DataOutputStream","writeFloat","(F)V") if self.multi_classes.is_some()=>"let v=pop_f(&mut stack);let r=pop_r(&mut stack);data_write_float(heap,r,v);".into(),
+                        ("java/io/DataOutputStream","writeDouble","(D)V") if self.multi_classes.is_some()=>"let v=pop_d(&mut stack);let r=pop_r(&mut stack);data_write_double(heap,r,v);".into(),
+                        ("java/io/DataOutputStream","writeChars","(Ljava/lang/String;)V") if self.multi_classes.is_some()=>"let s=pop_r(&mut stack);let r=pop_r(&mut stack);data_write_chars(heap,r,s);".into(),
+                        ("java/io/DataOutputStream","writeBytes","(Ljava/lang/String;)V") if self.multi_classes.is_some()=>"let s=pop_r(&mut stack);let r=pop_r(&mut stack);data_write_bytes(heap,r,s);".into(),
+                        ("java/io/DataOutputStream","writeUTF","(Ljava/lang/String;)V") if self.multi_classes.is_some()=>"let s=pop_r(&mut stack);let r=pop_r(&mut stack);data_write_utf(heap,r,s);".into(),
+                        ("java/io/DataOutputStream","flush","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);data_output_flush(heap,r);".into(),
+                        ("java/io/DataOutputStream","close","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);data_output_close(heap,r);".into(),
+                        ("java/io/DataOutputStream","size","()I") if self.multi_classes.is_some()=>"let _=pop_r(&mut stack);error(\"DataOutputStream.size: contador no modelado\");".into(),
+                        ("java/io/DataInputStream","readBoolean","()Z") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(data_read_boolean(heap,r)));".into(),
+                        ("java/io/DataInputStream","readByte","()B") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(data_read_byte(heap,r)));".into(),
+                        ("java/io/DataInputStream","readShort","()S") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(data_read_short(heap,r)));".into(),
+                        ("java/io/DataInputStream","readUnsignedShort","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(data_read_unsigned_short(heap,r)));".into(),
+                        ("java/io/DataInputStream","readChar","()C") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(data_read_unsigned_short(heap,r)));".into(),
+                        ("java/io/DataInputStream","readInt","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(data_read_int(heap,r)));".into(),
+                        ("java/io/DataInputStream","readLong","()J") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::L(data_read_long(heap,r)));".into(),
+                        ("java/io/DataInputStream","readFloat","()F") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::F(data_read_float(heap,r)));".into(),
+                        ("java/io/DataInputStream","readDouble","()D") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::D(data_read_double(heap,r)));".into(),
+                        ("java/io/DataInputStream","readUnsignedByte","()I") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::I(data_read_byte(heap,r) & 0xff));".into(),
+                        ("java/io/DataInputStream","readFully","([B)V") if self.multi_classes.is_some()=>"let dest=pop_r(&mut stack);let r=pop_r(&mut stack);data_read_fully_array(heap,r,dest);".into(),
+                        ("java/io/DataInputStream","readFully","([BII)V") if self.multi_classes.is_some()=>"let len=pop_i(&mut stack);let off=pop_i(&mut stack);let dest=pop_r(&mut stack);let r=pop_r(&mut stack);data_read_fully(heap,r,dest,off,len);".into(),
+                        ("java/io/DataInputStream","skipBytes","(I)I") if self.multi_classes.is_some()=>"let n=pop_i(&mut stack);let r=pop_r(&mut stack);stack.push(V::I(data_skip_bytes(heap,r,n)));".into(),
+                        ("java/io/DataInputStream","readUTF","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(data_read_utf(heap,r))));".into(),
+                        ("java/io/DataInputStream","readLine","()Ljava/lang/String;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(data_read_line(heap,r)));".into(),
+                        ("java/io/DataInputStream","close","()V") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);data_input_close(heap,r);".into(),
                         ("java/time/ZonedDateTime","toInstant","()Ljava/time/Instant;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);let x=zoned_to_instant(heap,r);stack.push(V::R(Some(x)));".into(),
                         ("java/util/Date","toInstant","()Ljava/time/Instant;") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::R(Some(date_to_instant(heap,r))));".into(),
                         ("java/time/Instant","toEpochMilli","()J") if self.multi_classes.is_some()=>"let r=pop_r(&mut stack);stack.push(V::L(instant_millis(heap,r)));".into(),
@@ -4353,6 +4468,10 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/text/DecimalFormat","(Ljava/lang/String;Ljava/text/DecimalFormatSymbols;)V") {"let symbols=pop_r(&mut stack);let pattern=pop_r(&mut stack);let r=pop_r(&mut stack);decimal_format_init(heap,r,pattern,symbols);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/HashMap","(Ljava/util/Map;)V") {"let source=pop_r(&mut stack);let r=pop_r(&mut stack);hashmap_init_map(heap,r,source);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/ByteArrayInputStream","([B)V") {"let b=pop_r(&mut stack);let r=pop_r(&mut stack);byte_input_init(heap,r,b);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/io/ByteArrayOutputStream","()V") {"let r=pop_r(&mut stack);byte_array_out_check(heap,r);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/io/ByteArrayOutputStream","(I)V") {"let n=pop_i(&mut stack);let r=pop_r(&mut stack);byte_array_out_capacity(heap,r,n);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/io/DataOutputStream","(Ljava/io/OutputStream;)V") {"let out=pop_r(&mut stack);let r=pop_r(&mut stack);data_output_init(heap,r,out);".into()
+                    } else if self.multi_classes.is_some() && (owner,desc)==("java/io/DataInputStream","(Ljava/io/InputStream;)V") {"let in_=pop_r(&mut stack);let r=pop_r(&mut stack);data_input_init(heap,r,in_);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/InputStreamReader","(Ljava/io/InputStream;Ljava/nio/charset/Charset;)V") {"let charset=pop_r(&mut stack);let stream=pop_r(&mut stack);let r=pop_r(&mut stack);reader_init(heap,r,stream,charset);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/io/StringReader","(Ljava/lang/String;)V") {"let v=pop_r(&mut stack);let r=pop_r(&mut stack);string_reader_init(heap,r,v);".into()
                     } else if self.multi_classes.is_some() && (owner,desc)==("java/util/zip/GZIPOutputStream","(Ljava/io/OutputStream;)V") {"let stream=pop_r(&mut stack);let r=pop_r(&mut stack);gzip_out_init(heap,r,stream);".into()
@@ -4613,6 +4732,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         ("com/google/common/math/IntMath","sqrt","(ILjava/math/RoundingMode;)I") if self.multi_classes.is_some()=>"intmath_sqrt_ceil(heap,x0,x1)".into(),
                         ("java/lang/Long","numberOfLeadingZeros","(J)I") if self.multi_classes.is_some()=>"(x0 as u64).leading_zeros() as i32".into(),
                         ("java/lang/Integer","toHexString","(I)Ljava/lang/String;") if self.multi_classes.is_some()=>r#"Some(new_string(heap,format!("{:x}",x0 as u32).encode_utf16().collect()))"#.into(),
+                        ("java/lang/Long","toHexString","(J)Ljava/lang/String;") if self.multi_classes.is_some()=>r#"Some(new_string(heap,format!("{:x}",x0 as u64).encode_utf16().collect()))"#.into(),
                         ("java/lang/reflect/Modifier", "isPublic"|"isPrivate"|"isProtected"|"isStatic"|"isFinal"|"isSynchronized"|"isVolatile"|"isTransient"|"isNative"|"isInterface"|"isAbstract"|"isStrict", "(I)Z") if self.multi_classes.is_some()=>{let bit=match method{"isPublic"=>1,"isPrivate"=>2,"isProtected"=>4,"isStatic"=>8,"isFinal"=>16,"isSynchronized"=>32,"isVolatile"=>64,"isTransient"=>128,"isNative"=>256,"isInterface"=>512,"isAbstract"=>1024,_=>2048};format!("((x0 & {bit}) != 0) as i32")},
                         ("java/lang/Integer","numberOfLeadingZeros","(I)I") if self.multi_classes.is_some()=>"(x0 as u32).leading_zeros() as i32".into(),
                         ("java/lang/Math","asin","(D)D") if self.multi_classes.is_some()=>"mth_asin(x0)".into(),
@@ -4962,6 +5082,9 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                     } else if self.multi_classes.is_some() && class=="java/util/IdentityHashMap" {"stack.push(V::R(Some(identity_map_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/util/HashMap" {"stack.push(V::R(Some(hashmap_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/io/ByteArrayInputStream" {"stack.push(V::R(Some(byte_input_new(heap))));".into()
+                    } else if self.multi_classes.is_some() && class=="java/io/ByteArrayOutputStream" {"stack.push(V::R(Some(byte_array_out_new(heap))));".into()
+                    } else if self.multi_classes.is_some() && class=="java/io/DataOutputStream" {"stack.push(V::R(Some(data_output_new(heap))));".into()
+                    } else if self.multi_classes.is_some() && class=="java/io/DataInputStream" {"stack.push(V::R(Some(data_input_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/io/FileInputStream" {"stack.push(V::R(Some(file_input_pending_new(heap))));".into()
                     } else if self.multi_classes.is_some() && class=="java/lang/Thread" {"error(\"new Thread: no soportado (Server thread / WorldUpgrader thread; el backend AOT es monohilo y no inicia hilos)\");".into()
                     } else if self.multi_classes.is_some() && class=="java/io/InputStreamReader" {"stack.push(V::R(Some(reader_new(heap))));".into()
@@ -5108,7 +5231,7 @@ _ if self.multi_classes.is_some() && project_class(owner)=>self.virtual_call(own
                         self.verify_project_cast_target(name)?;
                         format!("project_instance(heap,r,{name:?},PROJECT_INTERFACES)")
                     } else {
-                        let kind=match name {"java/lang/String"=>"s","java/io/PrintStream" if self.multi_classes.is_some()=>"printstream","java/lang/ClassLoader" if self.multi_classes.is_some()=>"classloader","java/lang/Class" if self.multi_classes.is_some()=>"class","java/util/Optional" if self.multi_classes.is_some()=>"optional","java/util/OptionalInt" if self.multi_classes.is_some()=>"optional","java/util/OptionalDouble" if self.multi_classes.is_some()=>"optional","java/util/OptionalLong" if self.multi_classes.is_some()=>"optional","java/util/SequencedSet" if self.multi_classes.is_some()=>"set","java/util/concurrent/CompletableFuture" if self.multi_classes.is_some() && futures_optin().ok()==Some(true)=>"completedfuture","java/net/URI" if self.multi_classes.is_some()=>"uri","java/nio/file/spi/FileSystemProvider" if self.multi_classes.is_some()=>"zipfsprovider","java/util/BitSet" if self.multi_classes.is_some()=>"bitset","java/lang/Enum" if self.multi_classes.is_some()=>"enum","java/lang/StackWalker$StackFrame" if self.multi_classes.is_some()=>"stackframe","java/util/stream/Stream" if self.multi_classes.is_some()=>"stream","javax/script/ScriptEngineFactory" if self.multi_classes.is_some()=>"scriptfactory","javax/script/Compilable" if self.multi_classes.is_some()=>"compilable","javax/script/CompiledScript" if self.multi_classes.is_some()=>"compiledscript","java/util/concurrent/ScheduledThreadPoolExecutor" if self.multi_classes.is_some()=>"schedpool","java/util/Map" if self.multi_classes.is_some()=>"map","java/util/concurrent/ConcurrentMap" if self.multi_classes.is_some()=>"concurrentmap","java/util/List" if self.multi_classes.is_some()=>"list","java/util/Set" if self.multi_classes.is_some()=>"set","java/util/Properties" if self.multi_classes.is_some()=>"properties","java/lang/Number" if self.multi_classes.is_some()=>"number","java/lang/StringBuilder" if self.multi_classes.is_some()=>"builder","java/lang/StringBuffer" if self.multi_classes.is_some()=>"builder","java/io/Reader" if self.multi_classes.is_some()=>"reader","java/io/InputStream" if self.multi_classes.is_some()=>"inputstream","java/lang/Integer" if self.multi_classes.is_some()=>"integer","java/lang/Boolean" if self.multi_classes.is_some()=>"boolean","java/lang/Long" if self.multi_classes.is_some()=>"long","java/lang/Short" if self.multi_classes.is_some()=>"short","java/lang/Character" if self.multi_classes.is_some()=>"character","java/lang/Double" if self.multi_classes.is_some()=>"double","java/lang/Float" if self.multi_classes.is_some()=>"float","java/lang/Byte" if self.multi_classes.is_some()=>"byte","[Ljava/lang/reflect/Type;" if self.multi_classes.is_some()=>"ta","[Ljava/lang/String;"=>"t","java/lang/Object"=>"o","java/net/Proxy" if self.multi_classes.is_some()=>"proxy","java/net/URL" if self.multi_classes.is_some()=>"U","java/net/HttpURLConnection" if self.multi_classes.is_some()=>"httpconnection","java/net/InetSocketAddress" if self.multi_classes.is_some()=>"inetsocketaddress","java/lang/reflect/Type" if self.multi_classes.is_some()=>"type","java/lang/reflect/ParameterizedType" if self.multi_classes.is_some()=>"ptype","java/lang/reflect/GenericArrayType" if self.multi_classes.is_some()=>"gatype","java/lang/reflect/WildcardType" if self.multi_classes.is_some()=>"wtype","java/lang/reflect/TypeVariable" if self.multi_classes.is_some()=>"tvtype","[Ljava/lang/Object;" if self.multi_classes.is_some()=>"A","[Ljava/lang/Enum;" if self.multi_classes.is_some()=>"A","[Ljava/lang/Class;" if self.multi_classes.is_some()=>"C",_=>return Err(format!("checkcast/instanceof no soportado: {name}"))};
+                        let kind=match name {"java/lang/String"=>"s","java/io/PrintStream" if self.multi_classes.is_some()=>"printstream","java/lang/ClassLoader" if self.multi_classes.is_some()=>"classloader","java/lang/Class" if self.multi_classes.is_some()=>"class","java/util/Optional" if self.multi_classes.is_some()=>"optional","java/util/OptionalInt" if self.multi_classes.is_some()=>"optional","java/util/OptionalDouble" if self.multi_classes.is_some()=>"optional","java/util/OptionalLong" if self.multi_classes.is_some()=>"optional","java/util/SequencedSet" if self.multi_classes.is_some()=>"set","java/util/concurrent/CompletableFuture" if self.multi_classes.is_some() && futures_optin().ok()==Some(true)=>"completedfuture","java/net/URI" if self.multi_classes.is_some()=>"uri","java/nio/file/spi/FileSystemProvider" if self.multi_classes.is_some()=>"zipfsprovider","java/util/BitSet" if self.multi_classes.is_some()=>"bitset","java/lang/Enum" if self.multi_classes.is_some()=>"enum","java/lang/StackWalker$StackFrame" if self.multi_classes.is_some()=>"stackframe","java/util/stream/Stream" if self.multi_classes.is_some()=>"stream","javax/script/ScriptEngineFactory" if self.multi_classes.is_some()=>"scriptfactory","javax/script/Compilable" if self.multi_classes.is_some()=>"compilable","javax/script/CompiledScript" if self.multi_classes.is_some()=>"compiledscript","java/util/concurrent/ScheduledThreadPoolExecutor" if self.multi_classes.is_some()=>"schedpool","java/util/Map" if self.multi_classes.is_some()=>"map","java/util/concurrent/ConcurrentMap" if self.multi_classes.is_some()=>"concurrentmap","java/util/List" if self.multi_classes.is_some()=>"list","java/util/Set" if self.multi_classes.is_some()=>"set","java/util/Properties" if self.multi_classes.is_some()=>"properties","java/lang/Number" if self.multi_classes.is_some()=>"number","java/lang/StringBuilder" if self.multi_classes.is_some()=>"builder","java/lang/StringBuffer" if self.multi_classes.is_some()=>"builder","java/io/Reader" if self.multi_classes.is_some()=>"reader","java/io/InputStream" if self.multi_classes.is_some()=>"inputstream","java/io/DataInput" if self.multi_classes.is_some()=>"inputstream","java/io/OutputStream" if self.multi_classes.is_some()=>"outputstream","java/io/DataOutput" if self.multi_classes.is_some()=>"outputstream","java/lang/Integer" if self.multi_classes.is_some()=>"integer","java/lang/Boolean" if self.multi_classes.is_some()=>"boolean","java/lang/Long" if self.multi_classes.is_some()=>"long","java/lang/Short" if self.multi_classes.is_some()=>"short","java/lang/Character" if self.multi_classes.is_some()=>"character","java/lang/Double" if self.multi_classes.is_some()=>"double","java/lang/Float" if self.multi_classes.is_some()=>"float","java/lang/Byte" if self.multi_classes.is_some()=>"byte","[Ljava/lang/reflect/Type;" if self.multi_classes.is_some()=>"ta","[Ljava/lang/String;"=>"t","java/lang/Object"=>"o","java/net/Proxy" if self.multi_classes.is_some()=>"proxy","java/net/URL" if self.multi_classes.is_some()=>"U","java/net/HttpURLConnection" if self.multi_classes.is_some()=>"httpconnection","java/net/InetSocketAddress" if self.multi_classes.is_some()=>"inetsocketaddress","java/lang/reflect/Type" if self.multi_classes.is_some()=>"type","java/lang/reflect/ParameterizedType" if self.multi_classes.is_some()=>"ptype","java/lang/reflect/GenericArrayType" if self.multi_classes.is_some()=>"gatype","java/lang/reflect/WildcardType" if self.multi_classes.is_some()=>"wtype","java/lang/reflect/TypeVariable" if self.multi_classes.is_some()=>"tvtype","[Ljava/lang/Object;" if self.multi_classes.is_some()=>"A","[Ljava/lang/Enum;" if self.multi_classes.is_some()=>"A","[Ljava/lang/Class;" if self.multi_classes.is_some()=>"C",_=>return Err(format!("checkcast/instanceof no soportado: {name}"))};
                         format!("builtin_instance(heap,r,{kind:?})")
                     };
                     if op==0xc0 {format!("let r=pop_r(&mut stack);if r.is_some()&&!{pred} {{raise(\"ClassCastException\",\"\");}}stack.push(V::R(r));")}
